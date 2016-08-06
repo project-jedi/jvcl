@@ -4,8 +4,8 @@ object frmTreeViewItems: TfrmTreeViewItems
   AutoScroll = False
   BorderWidth = 2
   Caption = 'TreeView Items Editor'
-  ClientHeight = 204
-  ClientWidth = 443
+  ClientHeight = 224
+  ClientWidth = 501
   Color = clBtnFace
   Constraints.MinHeight = 235
   Constraints.MinWidth = 455
@@ -15,19 +15,19 @@ object frmTreeViewItems: TfrmTreeViewItems
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 129
     Top = 0
-    Width = 3
-    Height = 164
+    Height = 184
     Cursor = crHSplit
   end
   object Panel1: TPanel
     Left = 0
-    Top = 164
-    Width = 443
+    Top = 184
+    Width = 501
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
@@ -37,13 +37,13 @@ object frmTreeViewItems: TfrmTreeViewItems
     object Bevel1: TBevel
       Left = 1
       Top = 1
-      Width = 441
+      Width = 499
       Height = 3
       Align = alTop
       Shape = bsTopLine
     end
     object btnCancel: TButton
-      Left = 359
+      Left = 417
       Top = 10
       Width = 75
       Height = 25
@@ -54,7 +54,7 @@ object frmTreeViewItems: TfrmTreeViewItems
       TabOrder = 0
     end
     object btnOK: TButton
-      Left = 279
+      Left = 337
       Top = 10
       Width = 75
       Height = 25
@@ -69,7 +69,7 @@ object frmTreeViewItems: TfrmTreeViewItems
     Left = 0
     Top = 0
     Width = 129
-    Height = 164
+    Height = 184
     Align = alLeft
     DragMode = dmAutomatic
     HideSelection = False
@@ -85,15 +85,15 @@ object frmTreeViewItems: TfrmTreeViewItems
   object Panel2: TPanel
     Left = 132
     Top = 0
-    Width = 311
-    Height = 164
+    Width = 369
+    Height = 184
     Align = alClient
     BevelOuter = bvNone
     Caption = ' '
     TabOrder = 2
     object btnNew: TButton
       Left = 16
-      Top = 63
+      Top = 83
       Width = 80
       Height = 25
       Action = acNewItem
@@ -102,7 +102,7 @@ object frmTreeViewItems: TfrmTreeViewItems
     end
     object btnNewSub: TButton
       Left = 16
-      Top = 95
+      Top = 115
       Width = 80
       Height = 25
       Action = acNewSubItem
@@ -111,7 +111,7 @@ object frmTreeViewItems: TfrmTreeViewItems
     end
     object btnDelete: TButton
       Left = 16
-      Top = 127
+      Top = 147
       Width = 80
       Height = 25
       Action = acDelete
@@ -121,8 +121,8 @@ object frmTreeViewItems: TfrmTreeViewItems
     object gbProperties: TGroupBox
       Left = 112
       Top = 0
-      Width = 195
-      Height = 160
+      Width = 253
+      Height = 180
       Anchors = [akLeft, akTop, akRight, akBottom]
       Caption = ' Properties: '
       TabOrder = 3
@@ -135,66 +135,90 @@ object frmTreeViewItems: TfrmTreeViewItems
       end
       object Label2: TLabel
         Left = 16
-        Top = 56
+        Top = 49
         Width = 61
         Height = 13
         Caption = '&Image Index:'
       end
       object Label3: TLabel
         Left = 16
-        Top = 88
+        Top = 76
         Width = 74
         Height = 13
         Caption = '&Selected Index:'
       end
       object Label4: TLabel
         Left = 16
-        Top = 120
+        Top = 103
         Width = 57
         Height = 13
         Caption = 'State Inde&x:'
       end
-      object cbImage: TComboBox
-        Left = 100
-        Top = 53
-        Width = 88
-        Height = 21
-        Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
-        TabOrder = 0
-        OnChange = edNodeTextChange
-        OnDrawItem = cbImageIndexDrawItem
+      object lblExpandedImageIndex: TLabel
+        Left = 16
+        Top = 130
+        Width = 80
+        Height = 13
+        Caption = 'Expan&ded Index:'
       end
-      object cbSelected: TComboBox
-        Left = 100
-        Top = 85
-        Width = 88
+      object cbImage: TComboBox
+        Left = 112
+        Top = 46
+        Width = 129
         Height = 21
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
         TabOrder = 1
         OnChange = edNodeTextChange
         OnDrawItem = cbImageIndexDrawItem
       end
-      object cbState: TComboBox
-        Left = 100
-        Top = 117
-        Width = 88
+      object cbSelected: TComboBox
+        Left = 112
+        Top = 73
+        Width = 129
         Height = 21
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
         TabOrder = 2
+        OnChange = edNodeTextChange
+        OnDrawItem = cbImageIndexDrawItem
+      end
+      object cbState: TComboBox
+        Left = 112
+        Top = 100
+        Width = 129
+        Height = 21
+        Anchors = [akLeft, akTop, akRight]
+        TabOrder = 3
         OnChange = edNodeTextChange
         OnDrawItem = cbStateDrawItem
       end
       object edNodeText: TEdit
         Left = 58
         Top = 19
-        Width = 127
+        Width = 183
         Height = 21
         Anchors = [akLeft, akTop, akRight]
-        TabOrder = 3
+        TabOrder = 0
         OnChange = edNodeTextChange
+      end
+      object CheckBoxEnabled: TCheckBox
+        Left = 16
+        Top = 154
+        Width = 262
+        Height = 17
+        Caption = 'Enabled'
+        TabOrder = 5
+        OnClick = edNodeTextChange
+      end
+      object cbExpandedImageIndex: TComboBox
+        AlignWithMargins = True
+        Left = 112
+        Top = 127
+        Width = 129
+        Height = 21
+        Anchors = [akLeft, akTop, akRight]
+        TabOrder = 4
+        OnChange = edNodeTextChange
+        OnDrawItem = cbStateDrawItem
       end
     end
   end

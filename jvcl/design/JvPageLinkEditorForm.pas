@@ -82,7 +82,7 @@ type
     class function Edit(TreeView: TCustomTreeView; const PageList: IPageList): Boolean;
   end;
 
-procedure ShowPageLinkEditor(TreeView: TJvCustomPageListTreeView);
+function ShowPageLinkEditor(TreeView: TJvCustomPageListTreeView): Boolean;
 
 implementation
 
@@ -94,10 +94,10 @@ uses
 type
   THackTreeView = class(TJvCustomPageListTreeView);
 
-procedure ShowPageLinkEditor(TreeView: TJvCustomPageListTreeView);
+function ShowPageLinkEditor(TreeView: TJvCustomPageListTreeView): Boolean;
 begin
-  if TfrmJvTreeViewLinksEditor.Edit(TreeView, TreeView.PageList) and
-    (THackTreeView(TreeView).Items.Count > 0) then
+  Result := TfrmJvTreeViewLinksEditor.Edit(TreeView, TreeView.PageList);
+  if Result and (THackTreeView(TreeView).Items.Count > 0) then
     THackTreeView(TreeView).Items.GetFirstNode.Expand(False);
 end;
 
@@ -105,7 +105,8 @@ end;
 
 procedure TJvPageLinksProperty.Edit;
 begin
-  ShowPageLinkEditor(GetComponent(0) as TJvCustomPageListTreeView);
+  if ShowPageLinkEditor(GetComponent(0) as TJvCustomPageListTreeView) then
+    Modified;
 end;
 
 function TJvPageLinksProperty.GetAttributes: TPropertyAttributes;

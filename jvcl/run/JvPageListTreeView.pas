@@ -454,9 +454,16 @@ end;
 
 function TJvCustomPageListTreeView.CanChange(Node: TTreeNode): Boolean;
 begin
-  Result := inherited CanChange(Node);
-  if Result and Assigned(Node) and Assigned(FPageList) then
-    Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
+  {$IFDEF RTL200_UP} // Delphi 2009+
+  if (Node <> nil) and not Node.Enabled then
+    Result := False
+  else
+  {$ENDIF RTL200_UP}
+  begin
+    Result := inherited CanChange(Node);
+    if Result and Assigned(Node) and Assigned(FPageList) then
+      Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
+  end;
 end;
 
 procedure TJvCustomPageListTreeView.Change(Node: TTreeNode);
