@@ -145,7 +145,7 @@ begin
       begin
         Column := TAccessCustomDBGrid(DBGrid).Columns[Col];
         if Assigned(Column.Field) then
-          if Column.Field.DataType in [ftString, ftSmallint, ftInteger, ftWord, ftBoolean,
+          if Column.Field.DataType in [ftString, ftWideString, ftSmallint, ftInteger, ftWord, ftBoolean,
             ftFloat, ftCurrency, ftBCD, ftDate, ftTime, ftDateTime,
             ftBytes, ftVarBytes, ftAutoInc, ftMemo, ftFmtMemo
             {$IFDEF COMPILER10_UP}, ftOraTimestamp, ftWideMemo, ftFixedWideChar{$ENDIF COMPILER10_UP}

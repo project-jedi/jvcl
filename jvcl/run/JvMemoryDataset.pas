@@ -1837,7 +1837,7 @@ var
   var
     S: string;
   begin
-    if Field.DataType = ftString then
+    if Field.DataType in [ftString{$IFDEF UNICODE}, ftWideString{$ENDIF}] then
     begin
       if Value = Null then
         Result := Field.IsNull

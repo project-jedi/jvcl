@@ -1095,7 +1095,7 @@ begin
       (DataSource.DataSet <> nil) then
     begin
       F := DataSource.DataSet.FindField(DataField);
-      if Assigned(F) and (F.DataType = ftString) and
+      if Assigned(F) and (F.DataType in [ftString, ftWideString]) and
         (F.Size = MaxLength) then
         MaxLength := 0;
     end;
@@ -1262,7 +1262,7 @@ begin
     end;
     EditMask := FDataLink.Field.EditMask;
     if not (csDesigning in ComponentState) then
-      if (FDataLink.Field.DataType = ftString) and (MaxLength = 0) then
+      if (FDataLink.Field.DataType in [ftString, ftWideString]) and (MaxLength = 0) then
         MaxLength := FDataLink.Field.Size;
     if FFocused and FDataLink.CanModify then
       Text := FDataLink.Field.Text
