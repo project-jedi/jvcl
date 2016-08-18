@@ -824,9 +824,9 @@ begin
     for I := 0 to PageCount - 1 do
       if Pages[i] <> Page then
         Pages[i].Visible := False;
-    {$ELSE}
-    Page.BringToFront;
+    if csDesigning in ComponentState then // Visible:=False has no real effect when in design mode
     {$ENDIF COMPILER9_UP}
+      Page.BringToFront;
     if (ParentForm <> nil) and (FActivePage <> nil) and (ParentForm.ActiveControl = FActivePage) and not (csDesigning in ComponentState) then
     begin
       if Page.CanFocus then
