@@ -2212,6 +2212,7 @@ var
   ClipRect: TRect;
   {$ENDIF JVCLThemesEnabled}
   Rgn: HRGN;
+  Clipped: Boolean;
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -2244,6 +2245,7 @@ begin
   I := DrawTopPages;
   if I >= 0 then
   begin
+    Clipped := False;
     Rgn := 0;
     try
       if Pages.Count > 1 then
@@ -2251,14 +2253,17 @@ begin
         // Button icons are not allowed to be painted into the bottom pages panels
         R := GetPageButtonRect(I + 1);
         Rgn := CreateRectRgn(0, 0, 1, 1);
-        GetClipRgn(Canvas.Handle, Rgn);
+        Clipped := GetClipRgn(Canvas.Handle, Rgn) = 1;
         ExcludeClipRect(Canvas.Handle, R.Left, R.Top, R.Right, ClientHeight);
       end;
       DrawCurrentPage(I);
     finally
       if Rgn <> 0 then
       begin
-        SelectClipRgn(Canvas.Handle, Rgn);
+        if Clipped then
+          SelectClipRgn(Canvas.Handle, Rgn)
+        else
+          SelectClipRgn(Canvas.Handle, 0);
         DeleteObject(Rgn);
       end;
     end;

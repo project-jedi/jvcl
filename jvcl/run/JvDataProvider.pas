@@ -1628,12 +1628,13 @@ end;
 
 procedure TJvDP_ProviderImgAndTextRender.DoDraw;
 var
-  rgn: HRGN;
+  Rgn: HRGN;
   iSaveDC: Integer;
   TxtW: Integer;
+  Clipped: Boolean;
 begin
-  rgn := CreateRectRgn(0,0,0,0);
-  GetClipRgn(Canvas.Handle, rgn);
+  Rgn := CreateRectRgn(0, 0, 1, 1);
+  Clipped := GetClipRgn(Canvas.Handle, Rgn) = 1;
   try
     IntersectClipRect(Canvas.Handle, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
     if HasImage then
@@ -1675,8 +1676,14 @@ begin
     else
       Canvas.TextRect(Rect, Rect.Left, Rect.Top, Text);
   finally
-    SelectClipRgn(Canvas.Handle, rgn);
-    DeleteObject(rgn);
+    if Rgn <> 0 then
+    begin
+      if Clipped then
+        SelectClipRgn(Canvas.Handle, Rgn)
+      else
+        SelectClipRgn(Canvas.Handle, 0);
+      DeleteObject(Rgn);
+    end;
   end;
 end;
 
