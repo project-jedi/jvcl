@@ -2258,7 +2258,7 @@ begin
     finally
       if Rgn <> 0 then
       begin
-        SelectClipRgn(Canvas.Handle, Rgn);
+        SelectClipRgn(Canvas.Handle, 0);
         DeleteObject(Rgn);
       end;
     end;
