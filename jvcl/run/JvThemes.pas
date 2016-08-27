@@ -1172,6 +1172,7 @@ procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; con
 var
   WindowOrg: TPoint;
   OrgRgn, Rgn: THandle;
+  Clipped: Boolean;
   {$IFDEF COMPILER16_UP}
   OldPen: HPEN;
   OldBrush: HBRUSH;
@@ -1191,15 +1192,12 @@ begin
         SetWindowOrgEx(DC, WindowOrg.X + Offset.X, WindowOrg.Y + Offset.Y, nil);
     end;
 
+    Clipped := False;
     OrgRgn := 0;
     if not IsInvalidRect(R) then
     begin
       OrgRgn := CreateRectRgn(0, 0, 1, 1);
-      if GetClipRgn(DC, OrgRgn) = 0 then
-      begin
-        DeleteObject(OrgRgn);
-        OrgRgn := 0;
-      end;
+      Clipped := GetClipRgn(DC, OrgRgn) = 1;
       Rgn := CreateRectRgnIndirect(R);
       SelectClipRgn(DC, Rgn);
       DeleteObject(Rgn);
@@ -1248,7 +1246,10 @@ begin
 
       if OrgRgn <> 0 then
       begin
-        SelectClipRgn(DC, OrgRgn);
+        if Clipped then
+          SelectClipRgn(DC, OrgRgn)
+        else
+          SelectClipRgn(DC, 0);
         DeleteObject(OrgRgn);
       end;
     end;

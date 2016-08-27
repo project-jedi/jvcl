@@ -8974,7 +8974,7 @@ begin
     ARect.Right := ARect.Left + 13;
     ARect.Bottom := ARect.Top + 13;
     { Remember current clipping region }
-    SaveRgn := CreateRectRgn(0, 0, 0, 0);
+    SaveRgn := CreateRectRgn(0, 0, 1, 1);
     HasRgn := GetClipRgn(ACanvas.Handle, SaveRgn) > 0;
     { Clip all outside of the item rectangle }
     IntersectRect(ClipRect, ARect, Rects[iprValue]);
