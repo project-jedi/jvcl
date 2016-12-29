@@ -368,7 +368,7 @@ begin
             fhaCenter:
               X := R1.Left + (R1.Right - R1.Left + Size.cx) div 2;
             fhaRight:
-              Y := R1.Left + Size.cx;
+              X := R1.Left + Size.cx;
           end;
           case CaptionVAlign of
             fvaTop:
