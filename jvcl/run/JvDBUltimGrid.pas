@@ -733,15 +733,15 @@ procedure TJvDBUltimGrid.RestoreGridPosition(Mode: TResyncMode = [rmExact, rmCen
 begin
   if Assigned(FOnRestoreGridPosition) then
   begin
-    if (FSavedBookmark <> {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP}) and DataLink.DataSet.BookmarkValid(Pointer(FSavedBookmark)) then
-      GotoBookmarkEx(DataLink.DataSet, Pointer(FSavedBookmark), [rmExact], False);
+    if (FSavedBookmark <> {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP}) and DataLink.DataSet.BookmarkValid({$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(FSavedBookmark)) then
+      GotoBookmarkEx(DataLink.DataSet, {$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(FSavedBookmark), [rmExact], False);
 
     DataLink.ActiveRecord := FSavedRowPos;
-    FOnRestoreGridPosition(Self, Pointer(FSavedBookmark), FSavedRowPos);
+    FOnRestoreGridPosition(Self, {$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(FSavedBookmark), FSavedRowPos);
   end
   else
-  if (FSavedBookmark <> {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP}) and DataLink.DataSet.BookmarkValid(Pointer(FSavedBookmark)) then
-    GotoBookmarkEx(DataLink.DataSet, Pointer(FSavedBookmark), Mode, False);
+  if (FSavedBookmark <> {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP}) and DataLink.DataSet.BookmarkValid({$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(FSavedBookmark)) then
+    GotoBookmarkEx(DataLink.DataSet, {$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(FSavedBookmark), Mode, False);
 end;
 
 function TJvDBUltimGrid.PrivateSearch(var ResultCol: Integer; var ResultField: TField;
