@@ -4677,6 +4677,7 @@ procedure TJvDockSplitterStyle.AssignToSplitter(Dest: TJvDockSplitter);
 begin
   Dest.Color := Color;
   Dest.Cursor := Cursor;
+  Dest.MinSize := MinSize;
   Dest.ParentColor := ParentColor;
   Dest.ResizeStyle := ResizeStyle;
   if Dest.Align in [alTop, alBottom] then
