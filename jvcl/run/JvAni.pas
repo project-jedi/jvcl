@@ -672,7 +672,7 @@ var
   Icon: TIcon;
   IsIcon: Boolean;
   HotSpot: TPoint;
-  Buffer: array [0..255] of Char;
+  Buffer: array [0..255] of AnsiChar;
 begin
   { Make sure it's a RIFF ANI file }
   if not ReadTag(Stream, Tag) or (Tag.ckID <> FOURCC_RIFF) then
@@ -755,19 +755,19 @@ begin
           if Tag.ckID = FOURCC_INAM then
           begin
             if (cbChunk < Tag.ckSize) or
-              not ReadChunkN(Stream, Tag, Buffer[0], SizeOf(Buffer) - 1) then
+              not ReadChunkN(Stream, Tag, Buffer[0], Length(Buffer) - 1) then
               Break;
             Dec(cbChunk, PadUp(Tag.ckSize));
-            FTitle := Buffer;
+            FTitle := string(Buffer);
           end
           else
           if Tag.ckID = FOURCC_IART then
           begin
             if (cbChunk < Tag.ckSize) or
-              not ReadChunkN(Stream, Tag, Buffer[0], SizeOf(Buffer) - 1) then
+              not ReadChunkN(Stream, Tag, Buffer[0], Length(Buffer) - 1) then
               Break;
             Dec(cbChunk, PadUp(Tag.ckSize));
-            FAuthor := Buffer;
+            FAuthor := string(Buffer);
           end
           else
           begin
@@ -849,6 +849,7 @@ var
   MemStream: TMemoryStream;
   TagRIFF, TagLIST, Tag: TJvAniTag;
   ID: TJvFourCC;
+  AnsiTitle, AnsiAuthor: AnsiString;
 begin
   MemStream := TMemoryStream.Create;
   try
@@ -865,13 +866,15 @@ begin
       if Title <> '' then
       begin
         StartWriteChunk(MemStream, Tag, FOURCC_INAM);
-        MemStream.Write(PChar(Title)^, Length(Title) + 1);
+        AnsiTitle := AnsiString(Title);
+        MemStream.Write(PAnsiChar(AnsiTitle)^, Length(AnsiTitle) + 1);
         EndWriteChunk(MemStream, Tag, 0);
       end;
       if Author <> '' then
       begin
         StartWriteChunk(MemStream, Tag, FOURCC_IART);
-        MemStream.Write(PChar(Author)^, Length(Author) + 1);
+        AnsiAuthor := AnsiString(Author);
+        MemStream.Write(PAnsiChar(AnsiAuthor)^, Length(AnsiAuthor) + 1);
         EndWriteChunk(MemStream, Tag, 0);
       end;
       EndWriteChunk(MemStream, TagLIST, 0);

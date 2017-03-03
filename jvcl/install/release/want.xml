@@ -78,9 +78,6 @@
     <zip zipfile="${fulljclzip}">
       <fileset>
         <exclude name=".cvsignore" />
-        <exclude name="./jvcl/qcommon/**" />
-        <exclude name="./jvcl/qdesign/**" />
-        <exclude name="./jvcl/qrun/**" />
         <include name="./jcl/**" />
         <include name="./jvcl/**" />
       </fileset>
@@ -89,9 +86,6 @@
     <zip zipfile="${fullzip}">
       <fileset>
         <exclude name=".cvsignore" />
-        <exclude name="./jvcl/qcommon/**" />
-        <exclude name="./jvcl/qdesign/**" />
-        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/**" />
       </fileset>
     </zip>
@@ -100,9 +94,6 @@
       <fileset>
         <exclude name=".cvsignore" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/qcommon/**" />
-        <exclude name="./jvcl/qdesign/**" />
-        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/bin/**" />
         <include name="./jvcl/common/**" />
         <include name="./jvcl/dcu/**" />
@@ -121,9 +112,6 @@
     <zip zipfile="${srczip}">
       <fileset>
         <exclude name=".cvsignore" />
-        <exclude name="./jvcl/qcommon/**" />
-        <exclude name="./jvcl/qdesign/**" />
-        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/common/**" />
         <include name="./jvcl/design/**" />
         <include name="./jvcl/install/JVCL3Install/**" />
@@ -144,9 +132,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/qcommon/**" />
-        <exclude name="./jvcl/qdesign/**" />
-        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/*" />
         <include name="./jvcl/**/JvUIB*" />
         <include name="./jvcl/help/**" />
@@ -161,9 +146,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/qcommon/**" />
-        <exclude name="./jvcl/qdesign/**" />
-        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/*" />
         <include name="./jvcl/**/JvTF*" />
         <include name="./jvcl/**/JvTimeFramework*" />
@@ -178,9 +160,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/qcommon/**" />
-        <exclude name="./jvcl/qdesign/**" />
-        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/*" />
         <include name="./jvcl/**/JvMT*" />
         <include name="./jvcl/**/JvManagedThreads*" />
@@ -195,9 +174,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/qcommon/**" />
-        <exclude name="./jvcl/qdesign/**" />
-        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/*" />
         <include name="./jvcl/**/JvDotNet*" />
         <include name="./jvcl/**/JvDBDotNet*" />
@@ -212,9 +188,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/qcommon/**" />
-        <exclude name="./jvcl/qdesign/**" />
-        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/*" />
         <include name="./jvcl/**/JvDock**" />
         <include name="./jvcl/help/**" />
@@ -228,9 +201,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/qcommon/**" />
-        <exclude name="./jvcl/qdesign/**" />
-        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/*" />
         <include name="./jvcl/**/JvXP*" />
         <include name="./jvcl/help/**" />
@@ -244,9 +214,6 @@
         <exclude name="./jvcl/archive/**" />
         <exclude name="./jvcl/images/**" />
         <exclude name="./jvcl/packages/xml/**" />
-        <exclude name="./jvcl/qcommon/**" />
-        <exclude name="./jvcl/qdesign/**" />
-        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/*" />
         <include name="./jvcl/**/JvWizard*" />
         <include name="./jvcl/help/**" />

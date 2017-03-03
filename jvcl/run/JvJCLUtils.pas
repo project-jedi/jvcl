@@ -4820,7 +4820,7 @@ var
 begin
   DateTimeToSystemTime(Value, SystemTime);
   SetString(Result, Buffer, GetDateFormat(GetThreadLocale, DATE_LONGDATE,
-    @SystemTime, nil, Buffer, SizeOf(Buffer) - 1));
+    @SystemTime, nil, Buffer, Length(Buffer) - 1));
   Result := TrimRight(Result);
 end;
 {$ENDIF MSWINDOWS}
@@ -5991,16 +5991,16 @@ end;
 
 function GetWindowsDir: string;
 var
-  Buffer: array [0..MAX_PATH] of Char;
+  Buffer: array [0..MAX_PATH - 1] of Char;
 begin
-  SetString(Result, Buffer, GetWindowsDirectory(Buffer, SizeOf(Buffer)));
+  SetString(Result, Buffer, GetWindowsDirectory(Buffer, Length(Buffer) - 1));
 end;
 
 function GetSystemDir: string;
 var
-  Buffer: array [0..MAX_PATH] of Char;
+  Buffer: array [0..MAX_PATH - 1] of Char;
 begin
-  SetString(Result, Buffer, GetSystemDirectory(Buffer, SizeOf(Buffer)));
+  SetString(Result, Buffer, GetSystemDirectory(Buffer, Length(Buffer) - 1));
 end;
 
 {$ENDIF MSWINDOWS}
@@ -6723,7 +6723,7 @@ begin
   Child := GetWindow(Tray, GW_CHILD);
   while Child <> 0 do
   begin
-    if GetClassName(Child, C, SizeOf(C)) > 0 then
+    if GetClassName(Child, C, Length(C)) > 0 then
     begin
       S := StrPas(C);
       if UpperCase(S) = 'BUTTON' then
@@ -6895,11 +6895,10 @@ var
 begin
   if Windows.IsWindowVisible(Handle) then
   begin
-    GetWindowText(Handle, St, SizeOf(St));
+    GetWindowText(Handle, St, Length(St));
     St2 := St;
     if St2 <> '' then
-      with TStrings(LParam) do
-        AddObject(St2, TObject(Handle));
+      TStrings(LParam).AddObject(St2, TObject(Handle));
   end;
   Result := True;
 end;
@@ -7871,10 +7870,8 @@ function WindowClassName(Wnd: THandle): string;
 var
   Buffer: array [0..255] of Char;
 begin
-  SetString(Result, Buffer, GetClassName(Wnd, Buffer, SizeOf(Buffer) - 1));
+  SetString(Result, Buffer, GetClassName(Wnd, Buffer, Length(Buffer) - 1));
 end;
-
-
 
 function GetAnimation: Boolean;
 var
@@ -8169,22 +8166,17 @@ begin
   AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
 end;
 
-
-  // (p3) duplicated from JvTypes to avoid JVCL dependencies
+procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin, XFinal, YFinal: Integer);
 type
+  // (p3) duplicated from JvTypes to avoid JVCL dependencies
   TJvRGBTriple = packed record
     rgbBlue: Byte;
     rgbGreen: Byte;
     rgbRed: Byte;
   end;
 
-type
   PJvRGBArray = ^TJvRGBArray;
-  TJvRGBArray = array [0..32766] of TJvRGBTriple;
-
-
-procedure AntiAliasRect(Clip: TBitmap;
-  XOrigin, YOrigin, XFinal, YFinal: Integer);
+  TJvRGBArray = array [0..MaxInt div SizeOf(TJvRGBTriple) - 1] of TJvRGBTriple;
 var
   Tmp, X, Y: Integer;
   Line0, Line1, Line2: PJvRGBArray;
@@ -8211,6 +8203,7 @@ begin
   Clip.PixelFormat := pf24bit;
   for Y := YOrigin to YFinal do
   begin
+{$RANGECHECKS OFF}
     Line0 := Clip.ScanLine[Y - 1];
     Line1 := Clip.ScanLine[Y];
     Line2 := Clip.ScanLine[Y + 1];
@@ -8221,6 +8214,9 @@ begin
         4;
       Line1[X].rgbBlue := (Line0[X].rgbBlue + Line2[X].rgbBlue + Line1[X - 1].rgbBlue + Line1[X + 1].rgbBlue) div 4;
     end;
+{$IFDEF RANGECHECKS_ON}
+{$RANGECHECKS ON}
+{$ENDIF RANGECHECKS_ON}
   end;
   Clip.PixelFormat := OPF;
 end;

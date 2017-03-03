@@ -998,7 +998,7 @@ var
 begin
   with PStrData(Data)^ do begin
     SetString(Str, Buffer,
-      LoadString(Instance, Ident, @Buffer[0], sizeof(Buffer)));
+      LoadString(Instance, Ident, @Buffer[0], Length(Buffer)));
     Result := Str = '';
   end;
 end;
@@ -2461,7 +2461,7 @@ begin
     if not Win32PlatformIsUnicode then begin
       SetString(Result, Buffer,
         LoadString(FindResourceHInstance(ResStringRec.Module^),
-          ResStringRec.Identifier, Buffer, SizeOf(Buffer)))
+          ResStringRec.Identifier, Buffer, Length(Buffer)))
     end else begin
       Result := '';
       Len := 0;

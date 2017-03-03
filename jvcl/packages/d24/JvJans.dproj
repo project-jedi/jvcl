@@ -73,7 +73,6 @@
         <DCCReference Include="..\..\run\JvPainterQBForm.pas"/>
         <DCCReference Include="..\..\run\JvPaintFX.pas"/>
         <DCCReference Include="..\..\run\JvQuickPreviewForm.pas"/>
-        <DCCReference Include="..\..\run\JvResample.pas"/>
         <DCCReference Include="..\..\run\JvSAL.pas"/>
         <DCCReference Include="..\..\run\JvSALCore.pas"/>
         <DCCReference Include="..\..\run\JvSALHashList.pas"/>

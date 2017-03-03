@@ -353,7 +353,7 @@ begin
   begin
     FChanging := True;
     try
-      FDataLink.DataSet.GotoBookmark(Pointer(Items.Objects[ItemIndex]));
+      FDataLink.DataSet.GotoBookmark({$IFDEF RTL200_UP}TBookmark{$ENDIF RTL200_UP}(Pointer(Items.Objects[ItemIndex])));
     finally
       FChanging := False;
     end;

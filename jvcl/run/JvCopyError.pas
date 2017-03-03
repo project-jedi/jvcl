@@ -94,11 +94,11 @@ end;
 function TJvCopyError.Execute: TJvDiskRes;
 var
   Required: DWORD;
-  Res: array [0..255] of Char;
+  Res: array [0..MAX_PATH] of Char;
 begin
   case SetupCopyError(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
       PChar(PathToSource), PChar(SourceFile), PCharOrNil(TargetFile),
-      FWin32ErrorCode, JvDiskStylesToDWORD(Style), Res, SizeOf(Res), @Required) of
+      FWin32ErrorCode, JvDiskStylesToDWORD(Style), Res, Length(Res), @Required) of
     DPROMPT_SUCCESS:
       begin
         FNewPath := Res;

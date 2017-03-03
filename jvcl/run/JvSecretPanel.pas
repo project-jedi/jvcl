@@ -425,7 +425,7 @@ begin
       if I = Lines.Count then
         StrCopy(STmp, ' ')
       else
-        StrPLCopy(STmp, Lines[I], SizeOf(STmp) - 1);
+        StrPLCopy(STmp, Lines[I], Length(STmp) - 1);
       if R.Top >= RectHeight(FTxtRect) then
         Break
       else

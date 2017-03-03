@@ -102,17 +102,6 @@ uses
   Math,
   InstallerConsts, PageBuilder, JvConsts, JvResources, Utils, CmdLineUtils;
 
-(* // Main.pas  - see InstallerConsts.pas
-resourcestring
-  RsBtnInstall = '&Install';
-  RsBtnUninstall = '&Uninstall';
-  RsNoPackageInstaller = 'Application error. No PackageInstaller created.';
-  RsCancelInstallation = 'Do you really want to cancel the installation?';
-
-  RsJediHomepage = 'http://projectjedi.sourceforge.net';
-  RsJVCLHomepage = 'http://jvcl.sourceforge.net';
-*)
-
 {$R *.dfm}
 
 procedure TFormMain.DoPagesChanged(Sender: TObject);

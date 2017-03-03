@@ -158,14 +158,14 @@ var
 begin
   VirtualQuery(ExceptAddr, Info, SizeOf(Info));
   if (Info.State <> MEM_COMMIT) or
-    (GetModuleFileName(THandle(Info.AllocationBase), Temp, SizeOf(Temp)) = 0) then
+    (GetModuleFileName(THandle(Info.AllocationBase), Temp, Length(Temp)) = 0) then
   begin
-    GetModuleFileName(HInstance, Temp, SizeOf(Temp));
+    GetModuleFileName(HInstance, Temp, Length(Temp));
     LogicalAddress := ConvertAddr(LogicalAddress);
   end
   else
     INT_PTR(LogicalAddress) := INT_PTR(LogicalAddress) - INT_PTR(Info.AllocationBase);
-  StrLCopy(ModName, AnsiStrRScan(Temp, PathDelim) + 1, SizeOf(ModName) - 1);
+  StrLCopy(ModName, AnsiStrRScan(Temp, PathDelim) + 1, Length(ModName) - 1);
   ModuleName := StrPas(ModName);
 end;
 {$ENDIF MSWINDOWS}
@@ -174,9 +174,9 @@ procedure TJvErrorDialog.ErrorInfo(var LogicalAddress: Pointer; var ModuleName: 
 var
   Temp, ModName: array [0..MAX_PATH] of Char;
 begin
-  GetModuleFileName(HInstance, Temp, SizeOf(Temp));
+  GetModuleFileName(HInstance, Temp, Length(Temp));
   LogicalAddress := ConvertAddr(LogicalAddress);
-  StrLCopy(ModName, AnsiStrRScan(Temp, PathDelim) + 1, SizeOf(ModName) - 1);
+  StrLCopy(ModName, AnsiStrRScan(Temp, PathDelim) + 1, Length(ModName) - 1);
   ModuleName := StrPas(ModName);
 end;
 {$ENDIF UNIX}

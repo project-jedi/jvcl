@@ -104,7 +104,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       Width = 133
       Height = 13
       Cursor = crHandPoint
-      Caption = 'http://jvcl.sourceforge.net '
+      Caption = 'https://github.com/project-jedi/jvcl '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -197,7 +197,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       Width = 133
       Height = 13
       Cursor = crHandPoint
-      Caption = 'http://jvcl.sourceforge.net '
+      Caption = 'https://github.com/project-jedi/jvcl '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11

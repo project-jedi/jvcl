@@ -67,7 +67,6 @@ contains
   JvLogClasses in '..\..\run\JvLogClasses.pas' ,
   JvLogForm in '..\..\run\JvLogForm.pas' {FoLog},
   JvMergeManager in '..\..\run\JvMergeManager.pas' ,
-  JvControlComponent in '..\..\run\JvControlComponent.pas' ,
   JvSpellChecker in '..\..\run\JvSpellChecker.pas' ,
   JvSpellerForm in '..\..\run\JvSpellerForm.pas' {JvSpellerForm},
   JvSpellIntf in '..\..\run\JvSpellIntf.pas' 

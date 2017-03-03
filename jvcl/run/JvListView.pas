@@ -761,7 +761,7 @@ begin
     List := Owner.Owner;
     if Assigned(List) then
     begin
-      ZeroMemory(@Infos, sizeof(Infos));
+      ZeroMemory(@Infos, SizeOf(Infos));
       Infos.mask := LVIF_GROUPID;
       Infos.iItem := Index;
       Infos.iGroupId := FGroupId;
@@ -789,33 +789,25 @@ begin
 end;
 
 procedure TJvListItem.UpdateTileColumns;
-type
-  TCardinalArray = array [0..0] of Cardinal;
 var
   List: TCustomListView;
   TileInfos: TLVTILEINFO;
-  Cols: ^TCardinalArray;
+  Cols: array of UINT;
   I: Integer;
 begin
   List := Owner.Owner;
-  if Assigned(List) then
+  if Assigned(List) and (FTileColumns.Count > 0) then
   begin
-    GetMem(Cols, FTileColumns.Count);
-    try
-      for I := 0 to FTileColumns.Count - 1 do
-      begin
-        Cols[I] := FTileColumns[I];
-      end;
+    SetLength(Cols, FTileColumns.Count);
+    for I := 0 to FTileColumns.Count - 1 do
+      Cols[I] := FTileColumns[I];
 
-      ZeroMemory(@TileInfos, SizeOf(TileInfos));
-      TileInfos.cbSize := SizeOf(TileInfos);
-      TileInfos.iItem := Index;
-      TileInfos.cColumns := FTileColumns.Count;
-      TileInfos.puColumns := PUINT(Cols);
-      SendMessage(List.Handle, LVM_SETTILEINFO, 0, LPARAM(@TileInfos));
-    finally
-      FreeMem(Cols);
-    end;
+    ZeroMemory(@TileInfos, SizeOf(TileInfos));
+    TileInfos.cbSize := SizeOf(TileInfos);
+    TileInfos.iItem := Index;
+    TileInfos.cColumns := FTileColumns.Count;
+    TileInfos.puColumns := PUINT(@Cols[0]);
+    SendMessage(List.Handle, LVM_SETTILEINFO, 0, LPARAM(@TileInfos));
   end;
 end;
 
@@ -1789,7 +1781,7 @@ begin
   FillChar(ItemInfo, SizeOf(ItemInfo), 0);
   ItemInfo.Mask := HDI_TEXT;
   ItemInfo.pszText := Buffer;
-  ItemInfo.cchTextMax := SizeOf(Buffer) - 1;
+  ItemInfo.cchTextMax := Length(Buffer) - 1;
   Header_GetItem(HwndHeader, ItemIndex, ItemInfo);
   if CompareStr(Columns[ItemIndex].Caption, ItemInfo.pszText) = 0 then
   begin

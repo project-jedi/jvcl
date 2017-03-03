@@ -320,6 +320,9 @@ type
     FOnSelectColumns: TJvDBSelectColumnsEvent;
     FOnBeforePaint: TNotifyEvent;
     FOnAfterPaint: TNotifyEvent;
+    FOnBeforeMouseDown: TMouseEvent;
+    FOnAfterMouseDown: TMouseEvent;
+    FMouseDownEvent: TMouseEvent; // only valid while in MouseDown, contains the original OnMouseDown event
 
     FDelphi2010OptionsMigrated: Boolean;
     procedure ReadDelphi2010OptionsMigrated(Reader: TReader);
@@ -427,7 +430,7 @@ type
     procedure DoDrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); virtual;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
     procedure DrawDataCell(const Rect: TRect; Field: TField; State: TGridDrawState); override; { obsolete from Delphi 2.0 }
-    function DrawThemedHighlighting(ACanvas: TCanvas; R: TRect): Boolean;
+    function DrawThemedHighlighting(ACanvas: TCanvas; R: TRect): Boolean; virtual;
     function GetPaintInfo: TJvGridPaintInfo;
 
     function BeginColumnDrag(var Origin: Integer; var Destination: Integer; const MousePt: TPoint): Boolean; override;
@@ -442,6 +445,10 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure SetColumnAttributes; override;
+    procedure DoBeforeMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
+    procedure DoAfterMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
+    procedure HandleMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
+    procedure MouseDownEventHandler(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -469,8 +476,7 @@ type
     procedure ColEnter; override;
     procedure ColExit; override;
 
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-      MousePos: TPoint): Boolean; override;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure EditButtonClick; override;
     procedure CellClick(Column: TColumn); override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -652,6 +658,11 @@ type
     property OnBeforePaint: TNotifyEvent read FOnBeforePaint write FOnBeforePaint;
     { OnBeforePaint: event triggered after the grid was painted. }
     property OnAfterPaint: TNotifyEvent read FOnAfterPaint write FOnAfterPaint;
+
+    { OnBeforeMouseDown is called before handing MouseDown }
+    property OnBeforeMouseDown: TMouseEvent read FOnBeforeMouseDown write FOnBeforeMouseDown;
+    { OnBeforeMouseDown is called after handing MouseDown }
+    property OnAfterMouseDown: TMouseEvent read FOnAfterMouseDown write FOnAfterMouseDown;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -1322,7 +1333,7 @@ procedure TJvDBGrid.GotoSelection(Index: Longint);
 begin
   if MultiSelect and DataLink.Active and (Index < SelectedRows.Count) and
     (Index >= 0) then
-    DataLink.DataSet.GotoBookmark(Pointer(SelectedRows[Index]));
+    DataLink.DataSet.GotoBookmark({$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(SelectedRows[Index]));
 end;
 
 procedure TJvDBGrid.LayoutChanged;
@@ -2367,17 +2378,37 @@ begin
   end;
 end;
 
+procedure TJvDBGrid.DoBeforeMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Assigned(OnBeforeMouseDown) then
+    OnBeforeMouseDown(Self, Button, Shift, X, Y);
+end;
+
+procedure TJvDBGrid.DoAfterMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Assigned(OnAfterMouseDown) then
+    OnAfterMouseDown(Self, Button, Shift, X, Y);
+end;
+
 procedure TJvDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  DoBeforeMouseDown(Button, Shift, X, Y);
+  try
+    HandleMouseDown(Button, Shift, X, Y);
+  finally
+    DoAfterMouseDown(Button, Shift, X, Y);
+  end;
+end;
+
+procedure TJvDBGrid.HandleMouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Cell, LastCell: TGridCoord;
-  MouseDownEvent: TMouseEvent;
   EnableClick: Boolean;
   CursorPos: TPoint;
   lLastSelected, lNewSelected: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
   lCompare: Integer;
   WasAlwaysShowEditor: Boolean;
   WasRowResizing: Boolean;
-  InheritedCalled: Boolean;
 begin
   if not AcquireFocus then
     Exit;
@@ -2386,6 +2417,13 @@ begin
     DblClick;
     Exit;
   end;
+
+  // Redirect OnMouseDown event to MouseDownEventHandler, so we know if the "inherited MouseDown"
+  // called the event. If it didn't we need to do it ourself.
+  FMouseDownEvent := OnMouseDown;
+  if Assigned(FMouseDownEvent) then
+    OnMouseDown := MouseDownEventHandler;
+
   FAcquireFocus := False;
   try
     { XP Theming }
@@ -2484,15 +2522,20 @@ begin
             Exit;
         end;
       end;
-      InheritedCalled := False;
       if Cell.Y >= 0 then
       begin
         if (Cell.X < FixedCols + IndicatorOffset) and DataLink.Active then
         begin
           if dgIndicator in Options then
           begin
-            inherited MouseDown(Button, Shift, 1, Y);
-            InheritedCalled := True;
+            // Don't call OnMouseDown with wrong X, it will be called later with the correct X
+            OnMouseDown := nil;
+            try
+              inherited MouseDown(Button, Shift, 1, Y)
+            finally
+              if Assigned(FMouseDownEvent) then
+                OnMouseDown := MouseDownEventHandler;
+            end;
           end
           else
           if Cell.Y >= TitleOffset then
@@ -2521,17 +2564,13 @@ begin
                 // Disable goRowSizing without all the code that SetOptions executes.
                 TGridOptions(Pointer(@TCustomGridAccess(Self).Options)^) := TCustomGridAccess(Self).Options - [goRowSizing];
                 inherited MouseDown(Button, Shift, 1, Y);
-                InheritedCalled := True;
               finally
                 if WasRowResizing then
                   TGridOptions(Pointer(@TCustomGridAccess(Self).Options)^) := TCustomGridAccess(Self).Options + [goRowSizing];
               end;
             end
             else
-            begin
               inherited MouseDown(Button, Shift, X, Y);
-              InheritedCalled := True;
-            end;
             if (Col = LastCell.X) and (Row <> LastCell.Y) then
             begin
               { ColEnter is not invoked when switching between rows staying in the
@@ -2545,9 +2584,16 @@ begin
           end;
         end;
       end;
-      MouseDownEvent := OnMouseDown;
-      if Assigned(MouseDownEvent) and not InheritedCalled then
-        MouseDownEvent(Self, Button, Shift, X, Y);
+
+      // Call OnMouseDown if the original OnMouseDown was assigned and MouseDownEventHandler
+      // wasn't called yet
+      if Assigned(FMouseDownEvent) then
+      begin
+        OnMouseDown := FMouseDownEvent; // restore event
+        FMouseDownEvent := nil;
+        OnMouseDown(Self, Button, Shift, X, Y);
+      end;
+
       if not (((csDesigning in ComponentState) or (dgColumnResize in Options)) and
         (Cell.Y < TitleOffset)) and (Button = mbLeft) then
       begin
@@ -2572,10 +2618,10 @@ begin
                     DisableControls;
                     try
                       lNewSelected := Bookmark;
-                      lCompare := CompareBookmarks(Pointer(lNewSelected), Pointer(lLastSelected));
+                      lCompare := CompareBookmarks({$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(lNewSelected), {$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(lLastSelected));
                       if lCompare > 0 then
                       begin
-                        GotoBookmark(Pointer(lLastSelected));
+                        GotoBookmark({$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(lLastSelected));
                         Next;
                         while not Eof and not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
                         begin
@@ -2586,7 +2632,7 @@ begin
                       else
                       if lCompare < 0 then
                       begin
-                        GotoBookmark(Pointer(lLastSelected));
+                        GotoBookmark({$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(lLastSelected));
                         Prior;
                         while not Bof and not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
                         begin
@@ -2611,8 +2657,23 @@ begin
       end;
     end;
   finally
+    // We don't restore OnMouseDown if user code somehow changed it
+    if Assigned(FMouseDownEvent) and (TMethod(OnMouseDown).Code = @TJvDBGrid.MouseDownEventHandler) then
+      OnMouseDown := FMouseDownEvent;
+    FMouseDownEvent := nil;
     FAcquireFocus := True;
   end;
+end;
+
+procedure TJvDBGrid.MouseDownEventHandler(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  // This method will be called when the inherited MouseDown() calls the OnMouseDown handler.
+  // So we know that the event was triggered and can prevent it from triggering twice.
+  OnMouseDown := FMouseDownEvent;
+  // Prevent MouseDown from restoring the original OnMouseDown because we already did it here
+  FMouseDownEvent := nil;
+  if Assigned(OnMouseDown) then
+    OnMouseDown(Sender, Button, Shift, X, Y);
 end;
 
 procedure TJvDBGrid.MouseMove(Shift: TShiftState; X, Y: Integer);

@@ -861,7 +861,8 @@ begin
       else if IsBDS and (IDEVersion = 5) then
         FEdition := ''
       else
-        FEdition := 'Pers'; // do not localize
+        //FEdition := 'Pers'; // do not localize
+        FEdition := '';
 
       if Reg.ValueExists('App') then
         FExecutable := Reg.ReadString('App'); // do not localize

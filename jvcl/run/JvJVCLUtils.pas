@@ -2082,17 +2082,20 @@ end;
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
   Boolean;
-type
-  PPoints = ^TPoints;
-  TPoints = array [0..0] of TPoint;
 var
   Rgn: HRGN;
+  Count: Integer;
 begin
-  Rgn := CreatePolygonRgn(PPoints(@Points)^, High(Points) + 1, WINDING);
-  try
-    Result := PtInRegion(Rgn, P.X, P.Y);
-  finally
-    DeleteObject(Rgn);
+  Count := Length(Points);
+  Result := Count > 0;
+  if Result then
+  begin
+    Rgn := CreatePolygonRgn(Points[0], Count, WINDING);
+    try
+      Result := PtInRegion(Rgn, P.X, P.Y);
+    finally
+      DeleteObject(Rgn);
+    end;
   end;
 end;
 

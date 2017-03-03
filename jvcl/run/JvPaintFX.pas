@@ -178,7 +178,6 @@ uses
   JvJCLUtils, JvResources, JvTypes;
 
 const
-  // TJvRGBTriple = TRGBQuad for VisualCLX
   bpp = SizeOf(TJvRGBTriple);
 
 function TrimInt(N, Min, Max: Integer): Integer;
@@ -1653,7 +1652,7 @@ type
     Weight: Single; // Pixel Weight
   end;
 
-  TContributorList = array [0..0] of TContributor;
+  TContributorList = array [0..MaxInt div SizeOf(TContributor) - 1] of TContributor;
   PContributorList = ^TContributorList;
 
   // List of source pixels contributing to a destination pixel
@@ -1662,7 +1661,7 @@ type
     P: PContributorList;
   end;
 
-  TCListList = array [0..0] of TCList;
+  TCListList = array [0..MaxInt div SizeOf(TCList) - 1] of TCList;
   PCListList = ^TCListList;
 
   TRGB = packed record
@@ -1680,65 +1679,51 @@ type
   PColorRGB = ^TColorRGB;
 
   // Physical bitmap ScanLine (row)
-  TRGBList = packed array [0..0] of TColorRGB;
+  TRGBList = packed array [0..MaxInt div SizeOf(TColorRGB) - 1] of TColorRGB;
   PRGBList = ^TRGBList;
 
-class procedure TJvPaintFX.Stretch(Src, Dst: TBitmap; Filter: TFilterProc;
-  AWidth: Single);
+class procedure TJvPaintFX.Stretch(Src, Dst: TBitmap; Filter: TFilterProc; AWidth: Single);
 var
-  xscale, yscale: Single; // Zoom Scale factors
-  I, J, k: Integer; // Loop variables
+  XScale, YScale: Single; // Zoom scale factors
+  I, J, K: Integer; // Loop variables
   Center: Single; // Filter calculation variables
-  Width, fscale, Weight: Single; // Filter calculation variables
+  Width, FScale, Weight: Single; // Filter calculation variables
   Left, Right: Integer; // Filter calculation variables
   N: Integer; // Pixel number
   Work: TBitmap;
   Contrib: PCListList;
-  RGB: TRGB;
+  Rgb: TRGB;
   Color: TColorRGB;
   SourceLine, DestLine: PRGBList;
   (*SourcePixel, *)DestPixel: PColorRGB;
   Delta, DestDelta: Integer;
   SrcWidth, SrcHeight, DstWidth, DstHeight: Integer;
-
-  function Color2RGB(Color: TColor): TColorRGB;
-  begin
-    Result.R := Color and $000000FF;
-    Result.G := (Color and $0000FF00) shr 8;
-    Result.B := (Color and $00FF0000) shr 16;
-  end;
-
-  function RGB2Color(Color: TColorRGB): TColor;
-  begin
-    Result := Color.R or (Color.G shl 8) or (Color.B shl 16);
-  end;
-
 begin
   DstWidth := Dst.Width;
   DstHeight := Dst.Height;
   SrcWidth := Src.Width;
   SrcHeight := Src.Height;
   if (SrcWidth < 1) or (SrcHeight < 1) then
-    raise Exception.CreateRes(@RsESourceBitmapTooSmall);
+    raise EJVCLException.CreateRes(@RsESourceBitmapTooSmall);
 
   // Create intermediate image to hold horizontal zoom
   Work := TBitmap.Create;
   try
     Work.Height := SrcHeight;
     Work.Width := DstWidth;
-    // xscale := DstWidth / SrcWidth;
-    // yscale := DstHeight / SrcHeight;
+    // XScale := DstWidth / SrcWidth;
+    // YScale := DstHeight / SrcHeight;
     // Improvement suggested by David Ullrich:
-    if (SrcWidth = 1) then
-      xscale := DstWidth / SrcWidth
+    if SrcWidth = 1 then
+      XScale := DstWidth / SrcWidth
     else
-      xscale := (DstWidth - 1) / (SrcWidth - 1);
-    if (SrcHeight = 1) then
-      yscale := DstHeight / SrcHeight
+      XScale := (DstWidth - 1) / (SrcWidth - 1);
+    if SrcHeight = 1 then
+      YScale := DstHeight / SrcHeight
     else
-      yscale := (DstHeight - 1) / (SrcHeight - 1);
+      YScale := (DstHeight - 1) / (SrcHeight - 1);
     // This implementation only works on 24-bit images because it uses
-    // TBitmap.ScanLine
+    // TBitmap.Scanline
     Src.PixelFormat := pf24bit;
     Dst.PixelFormat := Src.PixelFormat;
     Work.PixelFormat := Src.PixelFormat;
@@ -1747,17 +1732,18 @@ begin
     // Pre-calculate filter contributions for a row
     // -----------------------------------------------
     GetMem(Contrib, DstWidth * SizeOf(TCList));
+{$RANGECHECKS OFF}
     // Horizontal sub-sampling
     // Scales from bigger to smaller Width
-    if (xscale < 1.0) then
+    if XScale < 1.0 then
     begin
-      Width := AWidth / xscale;
-      fscale := 1.0 / xscale;
+      Width := AWidth / XScale;
+      FScale := 1.0 / XScale;
       for I := 0 to DstWidth - 1 do
       begin
         Contrib^[I].N := 0;
         GetMem(Contrib^[I].P, Trunc(Width * 2.0 + 1) * SizeOf(TContributor));
-        Center := I / xscale;
+        Center := I / XScale;
         // Original code:
         // Left := Ceil(Center - Width);
         // Right := Floor(Center + Width);
@@ -1765,20 +1751,20 @@ begin
         Right := Ceil(Center + Width);
         for J := Left to Right do
         begin
-          Weight := Filter((Center - J) / fscale) / fscale;
-          if (Weight = 0.0) then
+          Weight := Filter((Center - J) / FScale) / FScale;
+          if Weight = 0.0 then
             Continue;
-          if (J < 0) then
+          if J < 0 then
             N := -J
           else
-          if (J >= SrcWidth) then
+          if J >= SrcWidth then
             N := SrcWidth - J + SrcWidth - 1
           else
             N := J;
-          k := Contrib^[I].N;
+          K := Contrib^[I].N;
           Contrib^[I].N := Contrib^[I].N + 1;
-          Contrib^[I].P^[k].Pixel := N;
-          Contrib^[I].P^[k].Weight := Weight;
+          Contrib^[I].P^[K].Pixel := N;
+          Contrib^[I].P^[K].Weight := Weight;
         end;
       end;
     end
@@ -1790,7 +1776,7 @@ begin
       begin
         Contrib^[I].N := 0;
         GetMem(Contrib^[I].P, Trunc(AWidth * 2.0 + 1) * SizeOf(TContributor));
-        Center := I / xscale;
+        Center := I / XScale;
         // Original code:
         // Left := Ceil(Center - AWidth);
         // Right := Floor(Center + AWidth);
@@ -1799,7 +1785,7 @@ begin
         for J := Left to Right do
         begin
           Weight := Filter(Center - J);
-          if (Weight = 0.0) then
+          if Weight = 0.0 then
             Continue;
           if J < 0 then
             N := -J
@@ -1812,10 +1798,10 @@ begin
           if N < 0 then
             N := -N;
 
-          k := Contrib^[I].N;
+          K := Contrib^[I].N;
           Contrib^[I].N := Contrib^[I].N + 1;
-          Contrib^[I].P^[k].Pixel := N;
-          Contrib^[I].P^[k].Weight := Weight;
+          Contrib^[I].P^[K].Pixel := N;
+          Contrib^[I].P^[K].Weight := Weight;
         end;
       end;
     end;
@@ -1823,46 +1809,46 @@ begin
     // ----------------------------------------------------
     // Apply filter to sample horizontally from Src to Work
     // ----------------------------------------------------
-    for k := 0 to SrcHeight - 1 do
+    for K := 0 to SrcHeight - 1 do
     begin
-      SourceLine := Src.ScanLine[k];
-      DestPixel := Work.ScanLine[k];
+      SourceLine := Src.ScanLine[K];
+      DestPixel := Work.ScanLine[K];
       for I := 0 to DstWidth - 1 do
       begin
-        RGB.R := 0.0;
-        RGB.G := 0.0;
-        RGB.B := 0.0;
+        Rgb.R := 0.0;
+        Rgb.G := 0.0;
+        Rgb.B := 0.0;
         for J := 0 to Contrib^[I].N - 1 do
         begin
           Color := SourceLine^[Contrib^[I].P^[J].Pixel];
           Weight := Contrib^[I].P^[J].Weight;
-          if (Weight = 0.0) then
+          if Weight = 0.0 then
             Continue;
-          RGB.R := RGB.R + Color.R * Weight;
-          RGB.G := RGB.G + Color.G * Weight;
-          RGB.B := RGB.B + Color.B * Weight;
+          Rgb.R := Rgb.R + Color.R * Weight;
+          Rgb.G := Rgb.G + Color.G * Weight;
+          Rgb.B := Rgb.B + Color.B * Weight;
         end;
-        if RGB.R > 255.0 then
+        if Rgb.R > 255.0 then
           Color.R := 255
         else
-        if RGB.R < 0.0 then
+        if Rgb.R < 0.0 then
           Color.R := 0
         else
-          Color.R := Round(RGB.R);
-        if RGB.G > 255.0 then
+          Color.R := Round(Rgb.R);
+        if Rgb.G > 255.0 then
           Color.G := 255
         else
-        if RGB.G < 0.0 then
+        if Rgb.G < 0.0 then
           Color.G := 0
         else
-          Color.G := Round(RGB.G);
-        if RGB.B > 255.0 then
+          Color.G := Round(Rgb.G);
+        if Rgb.B > 255.0 then
           Color.B := 255
         else
-        if RGB.B < 0.0 then
+        if Rgb.B < 0.0 then
           Color.B := 0
         else
-          Color.B := Round(RGB.B);
+          Color.B := Round(Rgb.B);
         // Set new Pixel value
         DestPixel^ := Color;
         // Move on to next column
@@ -1881,16 +1867,16 @@ begin
     // -----------------------------------------------
     GetMem(Contrib, DstHeight * SizeOf(TCList));
     // Vertical sub-sampling
-    // Scales from bigger to smaller Height
-    if (yscale < 1.0) then
+    // Scales from bigger to smaller height
+    if YScale < 1.0 then
     begin
-      Width := AWidth / yscale;
-      fscale := 1.0 / yscale;
+      Width := AWidth / YScale;
+      FScale := 1.0 / YScale;
       for I := 0 to DstHeight - 1 do
       begin
         Contrib^[I].N := 0;
         GetMem(Contrib^[I].P, Trunc(Width * 2.0 + 1) * SizeOf(TContributor));
-        Center := I / yscale;
+        Center := I / YScale;
         // Original code:
         // Left := Ceil(Center - Width);
         // Right := Floor(Center + Width);
@@ -1898,7 +1884,7 @@ begin
         Right := Ceil(Center + Width);
         for J := Left to Right do
         begin
-          Weight := Filter((Center - J) / fscale) / fscale;
+          Weight := Filter((Center - J) / FScale) / FScale;
           if Weight = 0.0 then
             Continue;
           if J < 0 then
@@ -1908,22 +1894,22 @@ begin
             N := SrcHeight - J + SrcHeight - 1
           else
             N := J;
-          k := Contrib^[I].N;
+          K := Contrib^[I].N;
           Contrib^[I].N := Contrib^[I].N + 1;
-          Contrib^[I].P^[k].Pixel := N;
-          Contrib^[I].P^[k].Weight := Weight;
+          Contrib^[I].P^[K].Pixel := N;
+          Contrib^[I].P^[K].Weight := Weight;
         end;
       end
     end
     else
       // Vertical super-sampling
-      // Scales from smaller to bigger Height
+      // Scales from smaller to bigger height
     begin
       for I := 0 to DstHeight - 1 do
       begin
         Contrib^[I].N := 0;
         GetMem(Contrib^[I].P, Trunc(AWidth * 2.0 + 1) * SizeOf(TContributor));
-        Center := I / yscale;
+        Center := I / YScale;
         // Original code:
         // Left := Ceil(Center - AWidth);
         // Right := Floor(Center + AWidth);
@@ -1941,10 +1927,10 @@ begin
             N := SrcHeight - J + SrcHeight - 1
           else
             N := J;
-          k := Contrib^[I].N;
+          K := Contrib^[I].N;
           Contrib^[I].N := Contrib^[I].N + 1;
-          Contrib^[I].P^[k].Pixel := N;
-          Contrib^[I].P^[k].Weight := Weight;
+          Contrib^[I].P^[K].Pixel := N;
+          Contrib^[I].P^[K].Weight := Weight;
         end;
       end;
     end;
@@ -1953,65 +1939,66 @@ begin
     // Apply filter to sample vertically from Work to Dst
     // --------------------------------------------------
     SourceLine := Work.ScanLine[0];
+    Delta := 0;
+    DestDelta := 0;
     if Work.Height > 1 then
-      Delta := Integer(Work.ScanLine[1]) - Integer(SourceLine)
-    else
-      Delta := 0;
+      Delta := PAnsiChar(Work.ScanLine[1]) - PAnsiChar(SourceLine);
     DestLine := Dst.ScanLine[0];
     if Dst.Height > 1 then
-      DestDelta := Integer(Dst.ScanLine[1]) - Integer(DestLine)
-    else
-      DestDelta := 0;
-    for k := 0 to DstWidth - 1 do
+      DestDelta := PAnsiChar(Dst.ScanLine[1]) - PAnsiChar(DestLine);
+    for K := 0 to DstWidth - 1 do
     begin
-      DestPixel := pointer(DestLine);
+      DestPixel := Pointer(DestLine);
       for I := 0 to DstHeight - 1 do
       begin
-        RGB.R := 0;
-        RGB.G := 0;
-        RGB.B := 0;
+        Rgb.R := 0;
+        Rgb.G := 0;
+        Rgb.B := 0;
         // Weight := 0.0;
         for J := 0 to Contrib^[I].N - 1 do
         begin
-          Color := PColorRGB(Integer(SourceLine) + Contrib^[I].P^[J].Pixel * Delta)^;
+          Color := PColorRGB(PAnsiChar(SourceLine) + Contrib^[I].P^[J].Pixel * Delta)^;
           Weight := Contrib^[I].P^[J].Weight;
-          if (Weight = 0.0) then
+          if Weight = 0.0 then
             Continue;
-          RGB.R := RGB.R + Color.R * Weight;
-          RGB.G := RGB.G + Color.G * Weight;
-          RGB.B := RGB.B + Color.B * Weight;
+          Rgb.R := Rgb.R + Color.R * Weight;
+          Rgb.G := Rgb.G + Color.G * Weight;
+          Rgb.B := Rgb.B + Color.B * Weight;
         end;
-        if RGB.R > 255.0 then
+        if Rgb.R > 255.0 then
           Color.R := 255
         else
-        if RGB.R < 0.0 then
+        if Rgb.R < 0.0 then
           Color.R := 0
         else
-          Color.R := Round(RGB.R);
-        if RGB.G > 255.0 then
+          Color.R := Round(Rgb.R);
+        if Rgb.G > 255.0 then
           Color.G := 255
         else
-        if RGB.G < 0.0 then
+        if Rgb.G < 0.0 then
           Color.G := 0
         else
-          Color.G := Round(RGB.G);
-        if RGB.B > 255.0 then
+          Color.G := Round(Rgb.G);
+        if Rgb.B > 255.0 then
           Color.B := 255
         else
-        if RGB.B < 0.0 then
+        if Rgb.B < 0.0 then
           Color.B := 0
         else
-          Color.B := Round(RGB.B);
+          Color.B := Round(Rgb.B);
         DestPixel^ := Color;
-        Inc({$IFDEF RTL230_UP}INT_PTR{$ELSE}Integer{$ENDIF RTL230_UP}(DestPixel), DestDelta);
+        Inc(PAnsiChar(DestPixel), DestDelta);
       end;
-      Inc(SourceLine, 1);
-      Inc(DestLine, 1);
+      Inc(PColorRGB(SourceLine));
+      Inc(PColorRGB(DestLine));
     end;
 
     // Free the memory allocated for vertical filter weights
     for I := 0 to DstHeight - 1 do
       FreeMem(Contrib^[I].P);
+{$IFDEF RANGECHECKS_ON}
+{$RANGECHECKS ON}
+{$ENDIF RANGECHECKS_ON}
 
     FreeMem(Contrib);
   finally

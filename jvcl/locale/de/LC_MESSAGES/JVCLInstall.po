@@ -1555,9 +1555,9 @@ msgstr "Herunterladen von"
 msgid "JCL %s or higher not installed"
 msgstr "JCL %s oder höher benötigt"
 
-#  http://jcl.sourceforge.net
+#  https://github.com/project-jedi/jcl
 #  Programmer's name for it: RsDownloadOrSelectJclDir
-#  http://jcl.sourceforge.net
+#  https://github.com/project-jedi/jcl
 #  Programmer's name for it: RsDownloadOrSelectJclDir
 #. Programmer's name for it: RsDownloadOrSelectJclDir
 #: InstallerConsts.pas:184

@@ -44,17 +44,17 @@
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_DebugInformation>0</DCC_DebugInformation>
-        <DCC_UnitSearchPath>..\..\lib\d23\win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_DcpOutput>..\..\lib\d23\win32</DCC_DcpOutput>
-        <DCC_DcuOutput>..\..\lib\d23\win32</DCC_DcuOutput>
+        <DCC_UnitSearchPath>..\..\lib\d23\win64;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcpOutput>..\..\lib\d23\win64</DCC_DcpOutput>
+        <DCC_DcuOutput>..\..\lib\d23\win64</DCC_DcuOutput>
         <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
         <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
-        <DCC_UnitSearchPath>..\..\lib\d23\win32\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_DcpOutput>..\..\lib\d23\win32\debug</DCC_DcpOutput>
-        <DCC_DcuOutput>..\..\lib\d23\win32\debug</DCC_DcuOutput>
+        <DCC_UnitSearchPath>..\..\lib\d23\win64\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcpOutput>..\..\lib\d23\win64\debug</DCC_DcpOutput>
+        <DCC_DcuOutput>..\..\lib\d23\win64\debug</DCC_DcuOutput>
         <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
     </PropertyGroup>
     <ItemGroup>
@@ -74,7 +74,6 @@
         <DCCReference Include="..\..\run\JvPainterQBForm.pas"/>
         <DCCReference Include="..\..\run\JvPaintFX.pas"/>
         <DCCReference Include="..\..\run\JvQuickPreviewForm.pas"/>
-        <DCCReference Include="..\..\run\JvResample.pas"/>
         <DCCReference Include="..\..\run\JvSAL.pas"/>
         <DCCReference Include="..\..\run\JvSALCore.pas"/>
         <DCCReference Include="..\..\run\JvSALHashList.pas"/>

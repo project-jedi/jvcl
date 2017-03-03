@@ -1890,7 +1890,7 @@ var
   Name: array [0..127] of Char;
   Len: DWORD;
 begin
-  Len := SizeOf(Name);
+  Len := Length(Name);
   GetUserName(Name, Len);
   Result := Name;
 end;

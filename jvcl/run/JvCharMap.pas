@@ -41,10 +41,10 @@ uses
   JvComponent, JvExControls, JvExGrids;
 
 type
-  TJvCharMapValidateEvent = procedure(Sender: TObject; AChar: WideChar;
-    var Valid: Boolean) of object;
-  TJvCharMapSelectedEvent = procedure(Sender: TObject;
-    AChar: WideChar) of object;
+  TJvCharMapValidateEvent = procedure(Sender: TObject; AChar: WideChar; var Valid: Boolean) of object;
+  TJvCharMapSelectedEvent = procedure(Sender: TObject; AChar: WideChar) of object;
+  TJvCharMapGetCustomText = procedure(Sender: TObject; AChar: WideChar; var ANewText: WideString) of object;
+
   TJvCharMapUnicodeFilter =
    (
     ufUndefined,
@@ -143,8 +143,13 @@ type
     ufMathematicalAlphanumericSymbols,
     ufCJKUnifiedIdeographsExtensionB,
     ufCJKCompatibilityIdeographsSupplement,
-    ufTags
+    ufTags,
+    ufCustomRange1 // User defined range 1
+    // ufCustomRange2 // User defined range 2
    );
+
+  TJvCharMapCustomRangeEvent = procedure(Sender: TObject; Filter: TJvCharMapUnicodeFilter;
+    var RangeStart, RangeEnd: Cardinal) of object;
 
   TJvCharMapRange = class(TPersistent)
   private
@@ -154,6 +159,7 @@ type
     FEndChar: Cardinal;
     FOnChange: TNotifyEvent;
     FFilter: TJvCharMapUnicodeFilter;
+    FOnCustomRangeEvent: TJvCharMapCustomRangeEvent;
     procedure SetFilter(const Value: TJvCharMapUnicodeFilter);
     procedure SetEndChar(const Value: Cardinal);
     procedure SetStartChar(const Value: Cardinal);
@@ -186,19 +192,29 @@ type
     FShadowSize: Integer;
     FOnSelectChar: TJvCharMapSelectedEvent;
     FHighlightInvalid: Boolean;
+    FShowASCIISymbols: Boolean;
+    FAutoHidePanel: Boolean;
+    FShowASCIISymbolsDescription: Boolean;
+    FOnCustomRangeEvent: TJvCharMapCustomRangeEvent;
+    FOnGetCustomText: TJvCharMapGetCustomText;
     procedure SetCharRange(const Value: TJvCharMapRange);
     procedure SetPanelVisible(Value: Boolean);
+    function GetPanelVisible: Boolean;
     function GetCharacter: WideChar;
     function GetColumns: Integer;
     procedure SetColumns(Value: Integer);
     procedure SetShowZoomPanel(Value: Boolean);
-    function GetPanelVisible: Boolean;
     procedure SetAutoSizeHeight(Value: Boolean);
     procedure SetAutoSizeWidth(Value: Boolean);
     procedure SetLocale(const Value: LCID);
     procedure SetShowShadow(Value: Boolean);
     procedure SetShadowSize(Value: Integer);
     procedure SetHighlightInvalid(Value: Boolean);
+    procedure SetShowASCIISymbols(const Value: Boolean);
+    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
+    procedure SetShowASCIISymbolsDescription(const Value: Boolean);
+    procedure DoOnCustomRangeEvent(Sender: TObject; Filter: TJvCharMapUnicodeFilter;
+      var RangeStart, RangeEnd: Cardinal);
   protected
     // The locale to use when looking up character info and translating codepages to Unicode.
     // Only effective on non-NT OS's (NT doesn't use codepages)
@@ -231,6 +247,18 @@ type
     property OnValidateChar: TJvCharMapValidateEvent read FOnValidateChar write FOnValidateChar;
     // Event that is called every time the selection has changed
     property OnSelectChar: TJvCharMapSelectedEvent read FOnSelectChar write FOnSelectChar;
+    // Determines if ASCII symbols are shown or not (for the range 0..31)
+    property ShowASCIISymbols: Boolean read FShowASCIISymbols write SetShowASCIISymbols default False;
+    // Determines if ASCII symbols description is showne or not (for the range 0..31)
+    // Makes only sens if ShowASCIISymbols is set to True
+    property ShowASCIISymbolsDescription: Boolean read FShowASCIISymbolsDescription write SetShowASCIISymbolsDescription default True;
+
+    // Determines if the CharPanel will be automatically hidden when the control loses focus
+    property AutoHidePanel: Boolean read FAutoHidePanel write FAutoHidePanel default True;
+    // Triggered when ufCustomRange1 filter is choosen to give the user a way to give its own range
+    property OnCustomRangeEvent: TJvCharMapCustomRangeEvent read FOnCustomRangeEvent write FOnCustomRangeEvent;
+    // Triggered when ufCustomRange1 filter is choosen and a Char needs to be displayed
+    property OnGetCustomText: TJvCharMapGetCustomText read FOnGetCustomText write FOnGetCustomText;
   protected
     procedure ShowCharPanel(ACol, ARow: Integer); virtual;
     procedure RecalcCells; virtual;
@@ -312,6 +340,11 @@ type
 
     property OnValidateChar;
     property OnSelectChar;
+    property ShowASCIISymbols;
+    property ShowASCIISymbolsDescription;
+    property AutoHidePanel;
+    property OnCustomRangeEvent;
+    property OnGetCustomText;
 
     property OnClick;
     property OnContextPopup;
@@ -354,6 +387,78 @@ uses
 const
   cShadowAlpha = 100;
 
+  cASCIISymbolsRange = 31;
+
+  cASCIISymbols: array[0..cASCIISymbolsRange] of string = (
+    'NUL', // Ctrl @, NULL
+    'SOH', // Ctrl A, Start of Header
+    'STX', // Ctrl B, Start of Text
+    'ETX', // Ctrl C, End of Text
+    'EOT', // Ctrl D, End of Transmission
+    'ENQ', // Ctrl E, Enquiry
+    'ACK', // Ctrl F, Acknowlodge
+    'BEL', // Ctrl G, Bell
+    'BS',  // Ctrl H, Backspace
+    'TAB', // Ctrl I, Horizontal Tab
+    'LF',  // Ctrl J, Linefeed
+    'VT',  // Ctrl K, Vertical Tab
+    'FF',  // Ctrl L, Form Feed
+    'CR',  // Ctrl M, Carridge Return
+    'SO',  // Ctrl N, Shift Out
+    'SI',  // Ctrl O, Shift in
+    'DLE', // Ctrl P, Delete
+    'DC1', // Ctrl Q, Device Control 1
+    'DC2', // Ctrl R, Device Control 2
+    'DC3', // Ctrl S, Device Control 3
+    'DC4', // Ctrl T, Device Control 4
+    'NAK', // Ctrl U, Negative Acknowledge
+    'SYN', // Ctrl V, Synchronise
+    'ETB', // Ctrl W, End Block ??
+    'CAN', // Ctrl X, Cancel
+    'EM',  // Ctrl Y, End Message
+    'SUB', // Ctrl Z, Sub
+    'ESC', // Ctrl [, Escape
+    'FS',  // Ctrl \, Form Separator
+    'GS',  // Ctrl ], Group Separator
+    'RS',  // Ctrl ^, Record Separator
+    'US');  // Ctrl _, Unit Separator
+
+
+  cASCIISymbolsDesc: array[0..cASCIISymbolsRange] of string =
+    ('Null',
+    'Start of Header',
+    'Start of Text',
+    'End of Text',
+    'End of Transmission',
+    'Enquiry',
+    'Acknowledge',
+    'Bell',
+    'Backspace',
+    'Horizontal Tab',
+    'Linefeed',
+    'Vertical Tab',
+    'Form Feed',
+    'Carriage Return',
+    'Shift Out',
+    'Shift in',
+    'Data Link Escape',
+    'Device Control 1 (XON resume)',
+    'Device Control 2',
+    'Device Control 3 (XOFF pause)',
+    'Device Control 4',
+    'Negative Acknowledge',
+    'Synchronous Idle',
+    'End Transmission Block',
+    'Cancel',
+    'End of Medium',
+    'Substitute',
+    'Escape',
+    'File Separator',
+    'Group Separator',
+    'Record Separator',
+    'Unit Separator'
+  );
+
 type
   TCanvasAccess = class(TCanvas);
 
@@ -379,6 +484,7 @@ type
     FWasVisible: Boolean;
     FShowShadow: Boolean;
     FShadowSize: Integer;
+    FInitSizeNeeded: Boolean;
     procedure SetCharacter(const Value: WideChar);
     procedure FormWindowProc(var Msg: TMessage);
     procedure HookWndProc;
@@ -386,6 +492,8 @@ type
     procedure UpdateShadow;
     procedure SetShowShadow(const Value: Boolean);
     procedure SetShadowSize(const Value: Integer);
+    function  IsASCIISymbol(AChar: WideChar): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+    function  IsCustomRange: Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
   protected
     procedure Paint; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -402,6 +510,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure InitSizeNeeded;
     property Character: WideChar read FCharacter write SetCharacter;
     property ShowShadow: Boolean read FShowShadow write SetShowShadow default True;
     property ShadowSize: Integer read FShadowSize write SetShadowSize;
@@ -488,10 +597,13 @@ begin
   //  DefaultDrawing := False;
   //  VirtualView := True;
 
+  FAutoHidePanel := True;
+  FShowASCIISymbolsDescription := True;
   FCharRange := TJvCharMapRange.Create;
   //  FCharRange.Filter := ufUndefined;
   //  FCharRange.SetRange($21, $FF);
   FCharRange.OnChange := DoRangeChange;
+  FCharRange.FOnCustomRangeEvent := DoOnCustomRangeEvent;
   FCharPanel := TCharZoomPanel.Create(Self);
   FCharPanel.Visible := False;
   FCharPanel.Parent := Self;
@@ -570,6 +682,13 @@ begin
   Result := True;
 end;
 
+procedure TJvCustomCharMap.DoOnCustomRangeEvent(Sender: TObject; Filter: TJvCharMapUnicodeFilter; var RangeStart,
+  RangeEnd: Cardinal);
+begin
+  if Assigned(FOnCustomRangeEvent) then
+    FOnCustomRangeEvent(Sender, Filter, RangeStart, RangeEnd);
+end;
+
 procedure TJvCustomCharMap.DoRangeChange(Sender: TObject);
 begin
   TCharZoomPanel(FCharPanel).FEndChar := CharRange.EndChar;
@@ -587,6 +706,7 @@ procedure TJvCustomCharMap.DrawCell(ACol, ARow: Integer; ARect: TRect;
 var
   AChar: WideChar;
   LineColor: TColor;
+  CharText: WideString;
 begin
   if FDrawing then
     Exit;
@@ -616,8 +736,19 @@ begin
       if not ShowZoomPanel and (AState * [gdSelected, gdFocused] <> []) then
         Canvas.Font.Color := clHighlightText;
       SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-      WideDrawText(Canvas, AChar, ARect,
-        DT_SINGLELINE or DT_CENTER or DT_VCENTER or DT_NOPREFIX);
+
+      // Exchange with the ASCII symbols if applies
+      if FShowASCIISymbols and (Cardinal(AChar) <= cASCIISymbolsRange) then
+        CharText := cASCIISymbols[Cardinal(AChar)]
+      else if (FCharRange.FFilter = ufCustomRange1) and Assigned(FOnGetCustomText) then
+      begin
+        CharText := AChar;
+        FOnGetCustomText(Self, AChar, CharText);
+      end
+      else
+        CharText := AChar;
+
+      WideDrawText(Canvas, CharText, ARect, DT_SINGLELINE or DT_CENTER or DT_VCENTER or DT_NOPREFIX);
     end
     else
     if HighlightInvalid then
@@ -683,11 +814,7 @@ end;
 
 function TJvCustomCharMap.GetPanelVisible: Boolean;
 begin
-  if (FCharPanel <> nil) and (Parent <> nil) and
-     not (csDesigning in ComponentState) then
-    Result := FCharPanel.Visible
-  else
-    Result := False;
+  Result := FCharPanel.Visible;
 end;
 
 function TJvCustomCharMap.IsValidChar(AChar: WideChar): Boolean;
@@ -832,6 +959,7 @@ var
 begin
   if not HandleAllocated then
     Exit;
+
   FixedCols := 0;
   FixedRows := 0;
   ACells := Ord(CharRange.EndChar) - Ord(CharRange.StartChar);
@@ -840,8 +968,12 @@ begin
   RowCount := ARows;
   DefaultRowHeight := Abs(Font.Height) + 12;
   DefaultColWidth := DefaultRowHeight - 5;
+  if FShowZoomPanel then
+    DefaultColWidth := DefaultColWidth + 24;
+
   if AutoSizeWidth or AutoSizeHeight then
     AdjustSize;
+
   if PanelVisible then
     ShowCharPanel(Col, Row);
 end;
@@ -943,8 +1075,32 @@ begin
   if FShadowSize <> Value then
   begin
     FShadowSize := Value;
-    if FCharPanel <> nil then
-      TCharZoomPanel(FCharPanel).ShadowSize := Value;
+    TCharZoomPanel(FCharPanel).ShadowSize := Value;
+  end;
+end;
+
+procedure TJvCustomCharMap.SetShowASCIISymbols(const Value: Boolean);
+begin
+  if Value <> FShowASCIISymbols then
+  begin
+    FShowASCIISymbols := Value;
+    Invalidate;
+    TCharZoomPanel(FCharPanel).InitSizeNeeded;
+    if TCharZoomPanel(FCharPanel).Visible then
+      TCharZoomPanel(FCharPanel).Invalidate;
+  end;
+end;
+
+procedure TJvCustomCharMap.SetShowASCIISymbolsDescription(const Value: Boolean);
+begin
+  if Value <> FShowASCIISymbolsDescription then
+  begin
+    FShowASCIISymbolsDescription := Value;
+    if FShowASCIISymbols and TCharZoomPanel(FCharPanel).Visible then
+    begin
+      TCharZoomPanel(FCharPanel).InitSizeNeeded;
+      TCharZoomPanel(FCharPanel).Invalidate;
+    end;
   end;
 end;
 
@@ -953,8 +1109,7 @@ begin
   if FShowShadow <> Value then
   begin
     FShowShadow := Value;
-    if FCharPanel <> nil then
-      TCharZoomPanel(FCharPanel).ShowShadow := Value;
+    TCharZoomPanel(FCharPanel).ShowShadow := Value;
   end;
 end;
 
@@ -1012,6 +1167,25 @@ begin
   end;
 end;
 
+procedure TJvCustomCharMap.WMKillFocus(var Msg: TWMKillFocus);
+var
+  AControl: TWinControl;
+begin
+  inherited;
+  if FAutoHidePanel then
+  begin
+    AControl := FindControl(Msg.FocusedWnd);
+
+    if AControl = nil then
+      PanelVisible := False
+    else
+    begin
+      if (AControl <> Self) and (AControl <> FCharPanel) then
+        PanelVisible := False;
+    end;
+  end;
+end;
+
 procedure TJvCustomCharMap.WMVScroll(var Msg: TWMVScroll);
 begin
   inherited;
@@ -1032,6 +1206,8 @@ end;
 constructor TCharZoomPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  InitSizeNeeded;
   ControlStyle := ControlStyle + [csNoDesignVisible, csOpaque];
   SetBounds(0, 0, 52, 48);
   FShadow := TShadowWindow.Create(AOwner);
@@ -1089,6 +1265,22 @@ begin
   end;
 end;
 
+procedure TCharZoomPanel.InitSizeNeeded;
+begin
+  FInitSizeNeeded := True;
+end;
+
+function TCharZoomPanel.IsASCIISymbol(AChar: WideChar): Boolean;
+begin
+  Result := TJvCustomCharMap(Parent).FShowASCIISymbols and (Cardinal(AChar) <= cASCIISymbolsRange);
+end;
+
+function TCharZoomPanel.IsCustomRange: Boolean;
+begin
+  Result := (TJvCustomCharMap(Parent).FCharRange.FFilter = ufCustomRange1)
+            and Assigned(TJvCustomCharMap(Parent).FOnGetCustomText);
+end;
+
 procedure TCharZoomPanel.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   // (rom) only accept without Shift, Alt or Ctrl down
@@ -1142,13 +1334,22 @@ begin
 end;
 
 procedure TCharZoomPanel.Paint;
+const
+  cSymbolDescrHeight = 14;
 var
   R: TRect;
   AChar: WideChar;
+  CharText: WideString;
 begin
   //  inherited Paint;
   Canvas.Font := Font;
-  Canvas.Font.Height := ClientHeight - 4;
+
+  AChar := Character;
+  if IsASCIISymbol(AChar) then
+    Canvas.Font.Height := ClientHeight - 18
+  else
+    Canvas.Font.Height := ClientHeight - 4;
+
   //  Canvas.Font.Style := [fsBold];
   Canvas.Brush.Color := Color;
   Canvas.Pen.Color := Font.Color;
@@ -1157,17 +1358,52 @@ begin
 
   //  R := Rect(0,0,Width,Height);
   SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-  AChar := Character;
+
   if TJvCustomCharMap(Parent).IsValidChar(AChar) then
-    WideDrawText(Canvas, AChar, R,
-      DT_SINGLELINE or DT_CENTER or DT_VCENTER or DT_NOPREFIX);
+  begin
+    if IsASCIISymbol(AChar) then
+    begin
+      CharText := cASCIISymbols[Cardinal(AChar)];
+      if TJvCustomCharMap(Parent).ShowASCIISymbolsDescription then
+        Dec(R.Bottom, cSymbolDescrHeight);
+      WideDrawText(Canvas, CharText, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER or DT_NOPREFIX);
+      if TJvCustomCharMap(Parent).ShowASCIISymbolsDescription then
+      begin
+        Inc(R.Bottom, cSymbolDescrHeight);
+        Canvas.Font.Height := cSymbolDescrHeight;
+        R.TopLeft := Point(R.Left, (R.Bottom - R.Top) - (cSymbolDescrHeight + 4));
+        CharText := cASCIISymbolsDesc[Cardinal(AChar)];
+      end;
+    end
+    else if IsCustomRange then
+    begin
+      CharText := AChar;
+      TJvCustomCharMap(Parent).FOnGetCustomText(Self, AChar, CharText);
+      // Monkey solution... Ideally we should calculate the right size of the text...
+      Canvas.Font.Height := Canvas.Font.Height - Length(CharText) * 4;
+    end
+    else
+      CharText := AChar;
+    WideDrawText(Canvas, CharText, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER or DT_NOPREFIX);
+  end;
 end;
 
 procedure TCharZoomPanel.SetCharacter(const Value: WideChar);
+var
+  Numerator: Integer;
 begin
-  if FCharacter <> Value then
+  if FInitSizeNeeded or (FCharacter <> Value) then
   begin
     FCharacter := Value;
+
+    if (TJvCustomCharMap(Parent).FShowASCIISymbolsDescription and IsASCIISymbol(FCharacter))
+              or IsCustomRange then
+      Numerator := 310
+    else
+      Numerator := 110;
+
+    Height := Abs(Font.Height) * 4;
+    Width := MulDiv(Height, Numerator, 100);
     Invalidate;
   end;
 end;
@@ -1304,6 +1540,8 @@ begin
 end;
 
 procedure TJvCharMapRange.SetFilter(const Value: TJvCharMapUnicodeFilter);
+var
+  RangeStart, RangeEnd: Cardinal;
 begin
   if FFilter <> Value then
   begin
@@ -1503,6 +1741,17 @@ begin
         SetRange($2F800, $2FA1F);
       ufTags:
         SetRange($E0000, $E007F);
+      ufCustomRange1: begin
+        RangeStart := StartChar;
+        RangeEnd := EndChar;
+
+        // Give the possibility to change the range
+        if Assigned(FOnCustomRangeEvent) then
+          FOnCustomRangeEvent(Self, Value, RangeStart, RangeEnd);
+
+        SetRange(RangeStart, RangeEnd);
+      end;
+
     else
       SetRange(StartChar, EndChar);
     end;

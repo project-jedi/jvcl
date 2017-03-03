@@ -73,10 +73,10 @@ object FormJvclIncConfig: TFormJvclIncConfig
       Top = 5
       Width = 116
       Height = 31
-      Cursor = crHandPoint
-      Hint = 'http://projectjedi.sourceforge.net'
-      Anchors = [akTop, akRight]
       AutoSize = True
+      Hint = 'http://www.delphi-jedi.org'
+      Cursor = crHandPoint
+      Anchors = [akTop, akRight]
     end
     object Label4: TLabel
       Left = 8

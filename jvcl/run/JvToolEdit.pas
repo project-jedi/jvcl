@@ -2249,23 +2249,21 @@ begin
   if csDestroying in ComponentState then
     { (rb) Implementation diffs; some return True other False }
     Exit;
-  if Enabled or (FDisabledColor = clNone) or (FDisabledColor = clDefault) or (FDisabledColor = clWindow) then
+  {$IFDEF COMPILER16_UP}
+  if StyleServices.Enabled and not StyleServices.IsSystemStyle then
+  begin
+    // Ignore FDisabledColor. The Style dictates the color
+    Result := inherited DoEraseBackground(Canvas, Param);
+  end
+  else
+  {$ENDIF COMPILER16_UP}
+  if Enabled then
     Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
-    {$IFDEF COMPILER16_UP}
-    if StyleServices.Enabled and not StyleServices.IsSystemStyle then
-    begin
-      // Ignore FDisabledColor. The Style dictates the color
-      Result := inherited DoEraseBackground(Canvas, Param);
-    end
-    else
-    {$ENDIF COMPILER16_UP}
-    begin
-      Canvas.Brush.Color := FDisabledColor;
-      Canvas.Brush.Style := bsSolid;
-      Canvas.FillRect(ClientRect);
-    end;
+    Canvas.Brush.Color := FDisabledColor;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(ClientRect);
   end;
 end;
 
@@ -4865,7 +4863,7 @@ end;
 
 procedure TJvFileDirEdit.WMDropFiles(var Msg: TWMDropFiles);
 var
-  AFileName: array [0..255] of Char;
+  AFileName: array [0..MAX_PATH] of Char;
   I, Num: Cardinal;
 begin
   Msg.Result := 0;
@@ -4876,7 +4874,7 @@ begin
       ClearFileList;
       for I := 0 to Num - 1 do
       begin
-        DragQueryFile(Msg.Drop, I, PChar(@AFileName[0]), Pred(SizeOf(AFileName)));
+        DragQueryFile(Msg.Drop, I, PChar(@AFileName[0]), Length(AFileName) - 1);
         ReceptFileDir(StrPas(AFileName));
         if not FMultipleDirs then
           Break;

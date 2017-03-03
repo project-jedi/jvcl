@@ -503,7 +503,7 @@ begin
   if (ASelectedRow >= 0) and (ASelectedRow < SelectedRowsCount(aActionComponent)) and
     Assigned(ds) and ds.Active then
   begin
-    ds.GotoBookmark(Pointer(TAccessCustomDBGrid(CustomDBGrid(aActionComponent)).SelectedRows[ASelectedRow]));
+    ds.GotoBookmark({$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(TAccessCustomDBGrid(CustomDBGrid(aActionComponent)).SelectedRows[ASelectedRow]));
     Result := True;
   end
   else

@@ -702,10 +702,6 @@ begin
     DoDrawCaption(Rect, Flags);
 end;
 
-
-//
-// TODO: check if code for VCL is applicable to CLX. If so, make change
-//
 procedure TJvCustomLabel.DrawAngleText(var Rect: TRect; Flags: Word; HasImage: Boolean;
   ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
 var
@@ -720,7 +716,7 @@ var
 begin
   Angle10 := Angle * 10;
   CalcRect := (Flags and DT_CALCRECT <> 0);
-  StrLCopy(@Text, PChar(GetLabelCaption), SizeOf(Text) - 1);
+  StrLCopy(@Text, PChar(GetLabelCaption), Length(Text) - 1);
   if CalcRect and ((Text[0] = #0) or ShowAccelChar and
     (Text[0] = '&') and (Text[1] = #0)) then
     StrCopy(Text, ' ');

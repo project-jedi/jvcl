@@ -100,6 +100,9 @@ type
     SaveToFile1: TMenuItem;
     SaveDialog1: TSaveDialog;
     OpenDialog1: TOpenDialog;
+    CheckBoxEnabled: TCheckBox;
+    lblExpandedImageIndex: TLabel;
+    cbExpandedImageIndex: TComboBox;
     procedure edNodeTextChange(Sender: TObject);
     procedure acNewItemExecute(Sender: TObject);
     procedure acNewSubItemExecute(Sender: TObject);
@@ -122,11 +125,17 @@ type
     procedure tvItemsDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure acLoadFromFileExecute(Sender: TObject);
     procedure acSaveToFileExecute(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FDragNode: TTreeNode;
     FTreeView: TCustomTreeView;
+    FNodeDisabledList: TList;
+    procedure RecreateTreeView(ATreeViewClass: TComponentClass);
+    function InternEdit(ATreeView: TCustomTreeView): Boolean;
+    procedure BuildNodeDisabledList;
+    procedure ApplyNodeDisabledList;
   public
-    class function Edit(TreeView: TCustomTreeView): Boolean;
+    class function Edit(ATreeView: TCustomTreeView): Boolean;
   end;
 
   TGroupBox = class(StdCtrls.TGroupBox)
@@ -139,23 +148,16 @@ type
     property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
   end;
 
-procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
-
 implementation
 
 uses
   ImgList,
-  JvPageListTreeView, JvPageLinkEditorForm, JvDsgnConsts;
+  JvPageListTreeView, JvPageLinkEditorForm, JvDsgnConsts, JclBase;
 
 {$R *.dfm}
 
 type
   THackTreeView = class(TCustomTreeView);
-
-procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
-begin
-  TfrmTreeViewItems.Edit(TreeView);
-end;
 
 //=== { TGroupBox } ==========================================================
 
@@ -172,6 +174,78 @@ begin
     Broadcast(Msg);
 end;
 
+//=== { TJvTreeItemsProperty } ===============================================
+
+procedure TJvTreeItemsProperty.Edit;
+begin
+  if TfrmTreeViewItems.Edit(TCustomTreeView(GetComponent(0))) then
+    Modified;
+end;
+
+function TJvTreeItemsProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paDialog];
+end;
+
+//=== { TJvTreeViewEditor } ==================================================
+
+procedure TJvTreeViewEditor.Edit;
+begin
+  ExecuteVerb(0);
+end;
+
+procedure TJvTreeViewEditor.ExecuteVerb(Index: Integer);
+begin
+  if Index = 0 then
+  begin
+    if TfrmTreeViewItems.Edit(TCustomTreeView(Component)) then
+      if Designer <> nil then
+        Designer.Modified;
+  end
+  else
+    inherited ExecuteVerb(Index);
+end;
+
+function TJvTreeViewEditor.GetVerb(Index: Integer): string;
+begin
+  if Index = 0 then
+    Result := RsItemsEditorEllipsis
+  else
+    Result := '';
+end;
+
+function TJvTreeViewEditor.GetVerbCount: Integer;
+begin
+  Result := 1;
+end;
+
+//=== { TJvPageTreeViewEditor } ==============================================
+
+procedure TJvPageTreeViewEditor.ExecuteVerb(Index: Integer);
+begin
+  if Index = 1 then
+  begin
+    if ShowPageLinkEditor(TJvCustomPageListTreeView(Component)) then
+      if Designer <> nil then
+        Designer.Modified;
+  end
+  else
+    inherited ExecuteVerb(Index);
+end;
+
+function TJvPageTreeViewEditor.GetVerb(Index: Integer): string;
+begin
+  if Index = 1 then
+    Result := RsLinksEditorEllipsis
+  else
+    Result := inherited GetVerb(Index);
+end;
+
+function TJvPageTreeViewEditor.GetVerbCount: Integer;
+begin
+  Result := 2;
+end;
+
 //=== { TfrmTreeViewItems } ==================================================
 
 procedure TfrmTreeViewItems.edNodeTextChange(Sender: TObject);
@@ -185,6 +259,17 @@ begin
       StrToIntDef(cbSelected.Text, tvItems.Selected.SelectedIndex);
     tvItems.Selected.StateIndex :=
       StrToIntDef(cbState.Text, tvItems.Selected.StateIndex);
+    {$IFDEF RTL200_UP} // Delphi 2009+
+    tvItems.Selected.ExpandedImageIndex :=
+      StrToIntDef(cbExpandedImageIndex.Text, tvItems.Selected.ExpandedImageIndex);
+    if FNodeDisabledList.IndexOf(tvItems.Selected) = -1 then
+    begin
+      if not CheckBoxEnabled.Checked then
+        FNodeDisabledList.Add(tvItems.Selected);
+    end
+    else if CheckBoxEnabled.Checked then
+      FNodeDisabledList.Remove(tvItems.Selected);
+    {$ENDIF RTL200_UP}
   end;
 end;
 
@@ -226,12 +311,13 @@ procedure TfrmTreeViewItems.tvItemsChange(Sender: TObject; Node: TTreeNode);
     Result := CB.Items.IndexOf(S);
     if Result < 0 then
     begin
-      Result := CB.Items.Add(S);
       SL := TStringList.Create;
       try
         SL.Assign(CB.Items);
+        SL.Add(S);
         SL.CustomSort(DoStringCompare);
-        CB.Items := SL;
+        CB.Items.Assign(SL);
+        Result := SL.IndexOf(S);
       finally
         SL.Free;
       end;
@@ -246,6 +332,10 @@ begin
     cbImage.ItemIndex := AddCB(cbImage, Node.ImageIndex);
     cbSelected.ItemIndex := AddCB(cbSelected, Node.SelectedIndex);
     cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
+    {$IFDEF RTL200_UP} // Delphi 2009+
+    cbExpandedImageIndex.ItemIndex := AddCB(cbExpandedImageIndex, Node.ExpandedImageIndex);
+    CheckBoxEnabled.Checked := FNodeDisabledList.IndexOf(Node) = -1;
+    {$ENDIF RTL200_UP}
     edNodeText.OnChange := edNodeTextChange;
   end;
   gbProperties.Enabled := tvItems.Selected <> nil;
@@ -272,6 +362,7 @@ begin
     N := tvItems.Selected.GetPrev;
     if N = nil then
       N := tvItems.Selected.GetNext;
+    FNodeDisabledList.Remove(tvItems.Selected);
     tvItems.Selected.Delete;
     edNodeText.Text := '';
     if N <> nil then
@@ -300,59 +391,148 @@ begin
   acNodeMoveDown.Enabled := bSel and ((nSel.getNextSibling <> nil) or (nSel.Parent <> nil));
 end;
 
-class function TfrmTreeViewItems.Edit(TreeView: TCustomTreeView): Boolean;
-const
-  cNegItem = '-1';
+procedure TfrmTreeViewItems.RecreateTreeView(ATreeViewClass: TComponentClass);
+var
+  R: TRect;
+begin
+  // Replace tvItems with the same treeview class so that Assign() calls copy all data
+  // Needed for JvPageListTreeView
+  R := tvItems.BoundsRect;
+  tvItems.Free;
+  tvItems := TTreeView(TComponentClass(ATreeViewClass).Create(Self) as TCustomTreeView);
+  tvItems.BoundsRect := R;
+  tvItems.Align := alLeft;
+  tvItems.Parent := Self;
+  tvItems.DragMode := dmAutomatic;
+  tvItems.HideSelection := False;
+  tvItems.Indent := 19;
+  tvItems.PopupMenu := PopupMenu1;
+  tvItems.ReadOnly := True;
+  tvItems.TabOrder := 1;
+  tvItems.OnChange := tvItemsChange;
+  tvItems.OnDragDrop := tvItemsDragDrop;
+  tvItems.OnDragOver := tvItemsDragOver;
+  tvItems.OnStartDrag := tvItemsStartDrag;
+
+  Splitter1.Left := tvItems.Left + tvItems.Width;
+end;
+
+class function TfrmTreeViewItems.Edit(ATreeView: TCustomTreeView): Boolean;
 var
   F: TfrmTreeViewItems;
-  IL: TCustomImageList;
-  I: Integer;
 begin
   // keep in mind that Self is class here not object
   F := Self.Create(Application);
   try
-    F.FTreeView := TreeView;
-    F.tvItems.Items.Assign(THackTreeView(TreeView).Items);
-    IL := THackTreeView(TreeView).Images;
-    if IL <> nil then
-    begin
-      F.cbImage.Style := csOwnerDrawFixed;
-      F.cbSelected.Style := csOwnerDrawFixed;
-      F.cbImage.ItemHeight := IL.Height;
-      F.cbSelected.ItemHeight := IL.Height;
-
-      F.cbImage.Items.Add(cNegItem);
-      F.cbSelected.Items.Add(cNegItem);
-      for I := 0 to IL.Count - 1 do
-      begin
-        F.cbImage.Items.Add(IntToStr(I));
-        F.cbSelected.Items.Add(IntToStr(I));
-      end;
-      F.cbImage.Tag := Integer(IL);
-      F.cbSelected.Tag := Integer(IL);
-    end;
-    IL := THackTreeView(TreeView).StateImages;
-    if IL <> nil then
-    begin
-      F.cbState.Style := csOwnerDrawFixed;
-      F.cbState.ItemHeight := IL.Height;
-      F.cbState.Items.Add(cNegItem);
-      for I := 0 to IL.Count - 1 do
-        F.cbState.Items.Add(IntToStr(I));
-      F.cbState.Tag := Integer(IL);
-    end;
-    F.cbSelected.ItemIndex := 0;
-    F.cbSelected.ItemIndex := 0;
-    F.cbState.ItemIndex := 0;
-    F.tvItems.FullExpand;
-    if F.tvItems.Items.Count > 0 then
-      F.tvItems.Items.GetFirstNode.MakeVisible;
-    Result := F.ShowModal = mrOk;
-    if Result then
-      THackTreeView(TreeView).Items.Assign(F.tvItems.Items);
+    Result := F.InternEdit(ATreeView);
   finally
     F.Free;
   end;
+end;
+
+function TfrmTreeViewItems.InternEdit(ATreeView: TCustomTreeView): Boolean;
+const
+  cNegItem = '-1';
+var
+  IL: TCustomImageList;
+  I: Integer;
+begin
+  FTreeView := ATreeView;
+  FNodeDisabledList := TList.Create;
+  try
+    RecreateTreeView(TComponentClass(FTreeView.ClassType));
+    tvItems.Items.Assign(THackTreeView(FTreeView).Items);
+
+    {$IFNDEF RTL200_UP} // Delphi 2009+
+    // Hide not supported controls
+    cbExpandedImageIndex.Visible := False;
+    lblExpandedImageIndex.Visible := False;
+    CheckBoxEnabled.Visible := False;
+    {$ENDIF ~RTL200_UP}
+
+    IL := THackTreeView(FTreeView).Images;
+    if IL <> nil then
+    begin
+      cbImage.Style := csOwnerDrawFixed;
+      cbSelected.Style := csOwnerDrawFixed;
+      cbImage.ItemHeight := IL.Height;
+      cbSelected.ItemHeight := IL.Height;
+      cbImage.Items.Add(cNegItem);
+      cbSelected.Items.Add(cNegItem);
+      for I := 0 to IL.Count - 1 do
+      begin
+        cbImage.Items.Add(IntToStr(I));
+        cbSelected.Items.Add(IntToStr(I));
+      end;
+      cbImage.Tag := SizeInt(IL);
+      cbSelected.Tag := SizeInt(IL);
+      {$IFDEF RTL200_UP} // Delphi 2009+
+      cbExpandedImageIndex.Style := csOwnerDrawFixed;
+      cbExpandedImageIndex.ItemHeight := IL.Height;
+      cbExpandedImageIndex.Tag := SizeInt(IL);
+      {$ENDIF RTL200_UP}
+    end;
+    IL := THackTreeView(FTreeView).StateImages;
+    if IL <> nil then
+    begin
+      cbState.Style := csOwnerDrawFixed;
+      cbState.ItemHeight := IL.Height;
+      cbState.Items.Add(cNegItem);
+      for I := 0 to IL.Count - 1 do
+        cbState.Items.Add(IntToStr(I));
+      cbState.Tag := SizeInt(IL);
+    end;
+    cbImage.ItemIndex := 0;
+    cbSelected.ItemIndex := 0;
+    cbState.ItemIndex := 0;
+    {$IFDEF RTL200_UP} // Delphi 2009+
+    cbExpandedImageIndex.ItemIndex := 0;
+    CheckBoxEnabled.Checked := True;
+    {$ENDIF RTL200_UP}
+    tvItems.FullExpand;
+    if tvItems.Items.Count > 0 then
+      tvItems.Items.GetFirstNode.MakeVisible;
+    Result := ShowModal = mrOk;
+    if Result then
+    begin
+      ApplyNodeDisabledList;
+      THackTreeView(FTreeView).Items.Assign(tvItems.Items);
+    end;
+  finally
+    FNodeDisabledList.Free;
+  end;
+end;
+
+procedure TfrmTreeViewItems.BuildNodeDisabledList;
+{$IFDEF RTL200_UP} // Delphi 2009+
+var
+  Node: TTreeNode;
+{$ENDIF RTL200_UP}
+begin
+  {$IFDEF RTL200_UP} // Delphi 2009+
+  Node := tvItems.Items.GetFirstNode;
+  while Node <> nil do
+  begin
+    if not Node.Enabled then
+    begin
+      FNodeDisabledList.Add(Node);
+      Node.Enabled := True;
+    end;
+    Node := Node.GetNext;
+  end;
+  {$ENDIF RTL200_UP}
+end;
+
+procedure TfrmTreeViewItems.ApplyNodeDisabledList;
+{$IFDEF RTL200_UP} // Delphi 2009+
+var
+  I: Integer;
+{$ENDIF RTL200_UP}
+begin
+  {$IFDEF RTL200_UP} // Delphi 2009+
+  for I := 0 to FNodeDisabledList.Count - 1 do
+    TTreeNode(FNodeDisabledList[I]).Enabled := False;
+  {$ENDIF RTL200_UP}
 end;
 
 procedure TfrmTreeViewItems.cbImageIndexDrawItem(Control: TWinControl;
@@ -401,48 +581,6 @@ begin
   DrawText(CB.Canvas.Handle, PChar(Format('%d', [DrawIndex])), -1, Rect,
     DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
 end;
-
-//=== { TJvTreeItemsProperty } ===============================================
-
-procedure TJvTreeItemsProperty.Edit;
-begin
-  TfrmTreeViewItems.Edit(TCustomTreeView(GetComponent(0)));
-end;
-
-function TJvTreeItemsProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paDialog];
-end;
-
-//=== { TJvTreeViewEditor } ==================================================
-
-procedure TJvTreeViewEditor.Edit;
-begin
-  ExecuteVerb(0);
-end;
-
-procedure TJvTreeViewEditor.ExecuteVerb(Index: Integer);
-begin
-  if Index = 0 then
-    ShowTreeNodeEditor(TCustomTreeView(Component))
-  else
-    inherited ExecuteVerb(Index);
-end;
-
-function TJvTreeViewEditor.GetVerb(Index: Integer): string;
-begin
-  if Index = 0 then
-    Result := RsItemsEditorEllipsis
-  else
-    Result := '';
-end;
-
-function TJvTreeViewEditor.GetVerbCount: Integer;
-begin
-  Result := 1;
-end;
-
-//=== { TfrmTreeViewItems } ==================================================
 
 procedure TfrmTreeViewItems.acNodeMoveUpExecute(Sender: TObject);
 begin
@@ -539,27 +677,11 @@ begin
     tvItems.SaveToFile(SaveDialog1.Filename);
 end;
 
-//=== { TJvPageTreeViewEditor } ==============================================
-
-procedure TJvPageTreeViewEditor.ExecuteVerb(Index: Integer);
+procedure TfrmTreeViewItems.FormShow(Sender: TObject);
 begin
-  if Index = 1 then
-    ShowPageLinkEditor(TJvCustomPageListTreeView(Component))
-  else
-    inherited ExecuteVerb(Index);
-end;
-
-function TJvPageTreeViewEditor.GetVerb(Index: Integer): string;
-begin
-  if Index = 1 then
-    Result := RsLinksEditorEllipsis
-  else
-    Result := inherited GetVerb(Index);
-end;
-
-function TJvPageTreeViewEditor.GetVerbCount: Integer;
-begin
-  Result := 2;
+  // Build the disabled list in OnShow because ShowModal will recreate the
+  // treeview control what makes the references in the list invalid.
+  BuildNodeDisabledList;
 end;
 
 end.

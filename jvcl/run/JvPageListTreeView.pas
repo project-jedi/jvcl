@@ -63,6 +63,8 @@ type
     procedure WriteData(Stream: TStream);
   protected
     procedure DefineProperties(Filer: TFiler); override;
+  public
+    procedure Assign(Source: TPersistent); override;
   end;
 
   // this is  a "fake" class so we have something to anchor the design-time editor with
@@ -452,9 +454,16 @@ end;
 
 function TJvCustomPageListTreeView.CanChange(Node: TTreeNode): Boolean;
 begin
-  Result := inherited CanChange(Node);
-  if Result and Assigned(Node) and Assigned(FPageList) then
-    Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
+  {$IFDEF RTL200_UP} // Delphi 2009+
+  if (Node <> nil) and not Node.Enabled then
+    Result := False
+  else
+  {$ENDIF RTL200_UP}
+  begin
+    Result := inherited CanChange(Node);
+    if Result and Assigned(Node) and Assigned(FPageList) then
+      Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
+  end;
 end;
 
 procedure TJvCustomPageListTreeView.Change(Node: TTreeNode);
@@ -594,6 +603,28 @@ begin
 end;
 
 //=== { TJvPageIndexNodes } ==================================================
+
+
+procedure TJvPageIndexNodes.Assign(Source: TPersistent);
+var
+  Node, DstNode: TJvPageIndexNode;
+begin
+  inherited Assign(Source);
+  // We need to copy the FPageIndex ourself because TTreeNodes.Assign
+  // doesn't use TTreeNode.Assign. It uses non-virtual streaming methods.
+  if Source is TJvPageIndexNodes then
+  begin
+    DstNode := GetFirstNode as TJvPageIndexNode;
+    Node := TJvPageIndexNodes(Source).GetFirstNode as TJvPageIndexNode;
+    while Node <> nil do
+    begin
+      DstNode.FPageIndex := Node.FPageIndex;
+
+      DstNode := DstNode.GetNext as TJvPageIndexNode;
+      Node := Node.GetNext as TJvPageIndexNode;
+    end;
+  end;
+end;
 
 procedure TJvPageIndexNodes.DefineProperties(Filer: TFiler);
 begin

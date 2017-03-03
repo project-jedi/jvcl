@@ -3,6 +3,8 @@
 *.local
 *.identcache
 __history
+__recovery
+*.stat
 
 # Delphi Compiler output files
 *.drc

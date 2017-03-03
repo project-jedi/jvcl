@@ -1309,8 +1309,8 @@ msgstr "&Ayuda"
 #~ msgid "JVCL %d.%d  Installation"
 #~ msgstr "Instalacion JVCL 3"
 
-#~ msgid "<c:blue>http://jvcl.sourceforge.net"
-#~ msgstr "<c:blue>http://jvcl.sourceforge.net"
+#~ msgid "<c:blue>https://github.com/project-jedi/jvcl"
+#~ msgstr "<c:blue>https://github.com/project-jedi/jvcl"
 
 #~ msgid "Compiling JCL dcp files..."
 #~ msgstr "Compilando archivos dcp de JCL..."
@@ -1385,8 +1385,8 @@ msgstr "&Ayuda"
 #~ msgid "dxgettext &support (not required)"
 #~ msgstr "&soporte dxgettext (no requerido)"
 
-#~ msgid "http://projectjedi.sourceforge.net"
-#~ msgstr "http://projectjedi.sourceforge.net"
+#~ msgid "http://www.delphi-jedi.org"
+#~ msgstr "http://www.delphi-jedi.org"
 
 #~ msgid "TJv"
 #~ msgstr "TJv"

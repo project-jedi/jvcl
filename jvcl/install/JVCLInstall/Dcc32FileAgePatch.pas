@@ -32,11 +32,15 @@ unit Dcc32FileAgePatch;
 interface
 
 uses
-  Windows;
+  Windows, SysUtils, DelphiData, CapExec, ShlObj;
 
 procedure Dcc32SpeedInjection(const ProcessInfo: TProcessInformation);
+function GetCompilerSpeedPackInjection(Target: TCompileTarget): TInjectionProc;
 
 implementation
+
+uses
+  PackageInformation;
 
 type
   PCFileAgeRec = ^TCFileAgeRec;
@@ -225,6 +229,209 @@ procedure Dcc32SpeedInjection(const ProcessInfo: TProcessInformation);
 begin
   if GetProcAddress(GetModuleHandle(kernel32), 'GetFileAttributesExA') <> nil then
     PatchDcc32FileAge(ProcessInfo.hProcess);
+end;
+
+
+var
+  _CreateRemoteThread: function(hProcess: THandle; lpThreadAttributes: Pointer;
+                                dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine;
+                                lpParameter: Pointer; dwCreationFlags: DWORD;
+                                var lpThreadId: DWORD): THandle; stdcall;
+
+{ <inject code> }
+
+type
+  {$IFDEF CONDITIONALEXPRESSIONS}
+    {$IF not  declared(SIZE_T)}
+  SIZE_T = DWORD;
+    {$IFEND}
+  {$ELSE}
+  SIZE_T = DWORD;
+  {$ENDIF CONDITIONALEXPRESSIONS}
+
+  PMem = ^TMem;
+  TMem = packed record
+    jmp: Word;
+    LoadLibaryAddr: Pointer;
+    GetModuleHandleAddr: Pointer;
+    DllName: PChar;
+  end;
+
+function LoadHookInjDll{(lParam: Pointer)}: Integer; stdcall;
+asm
+  jmp @@Start // 2 Bytes
+
+@@LoadLibraryAddr:
+  dd 0
+@@GetModuleHandleAddr:
+  dd 0
+@@DllName:
+  dd 0 // pointer to dll filename
+  db 0
+  nop
+  nop
+  nop
+  nop
+  nop
+
+@@Start: // must be a near jump from the function start
+  mov edx, [esp + 4] // lParam = @LoadHookInjDll
+
+  mov eax, OFFSET @@DllName
+  sub eax, OFFSET LoadHookInjDll
+  add eax, edx
+  push [eax]
+
+  mov eax, OFFSET @@LoadLibraryAddr
+  sub eax, OFFSET LoadHookInjDll
+  add eax, edx
+  call [eax]
+
+  // return LoadLibrary((char*)@@LoadLibraryAddr)
+  ret 4
+end;
+
+procedure InjectCodeEnd;
+begin
+end;
+
+{ </inject code> }
+
+function InjectHookDllProcess(hProcess: THandle; const DllName: string; Wait: Boolean): Boolean;
+var
+  hLoadThread: THandle;
+  Mem: Pointer;
+  DllNameMem: PChar;
+  Size, SizeP: Cardinal;
+  n: SIZE_T;
+  Buf: Pointer;
+  Id: Cardinal;
+  ThreadExitCode: Cardinal;
+  hKernel: THandle;
+begin
+  hKernel := GetModuleHandle(kernel32);
+  if not Assigned(_CreateRemoteThread) then
+    _CreateRemoteThread := GetProcAddress(hKernel, 'CreateRemoteThread');
+
+  Size := Cardinal(@InjectCodeEnd) - Cardinal(@LoadHookInjDll);
+  SizeP := Size + (4096 - (Size mod 4096));
+
+  ExitCode := 0;
+  Result := False;
+  if hProcess = 0 then
+    Exit;
+  DllNameMem := VirtualAllocEx(hProcess, nil, (Length(DllName) + 1) * SizeOf(Char), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+  if DllNameMem = nil then
+    Exit;
+  // write string with #0
+  WriteProcessMemory(hProcess, DllNameMem, PChar(DllName), (Length(DllName) + 1) * SizeOf(Char), n);
+
+  Mem := VirtualAllocEx(hProcess, nil, SizeP, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+  if Mem = nil then
+  begin
+    VirtualFreeEx(hProcess, DllNameMem, 0, MEM_RELEASE);
+    Exit;
+  end;
+  GetMem(Buf, Size);
+  try
+    if not ReadProcessMemory(GetCurrentProcess, @LoadHookInjDll, Buf, Size, n) then
+      Exit;
+    {$IFDEF UNICODE}
+    PMem(Buf)^.LoadLibaryAddr := GetProcAddress(hKernel, 'LoadLibraryW');
+    {$ELSE}
+    PMem(Buf)^.LoadLibaryAddr := GetProcAddress(hKernel, 'LoadLibraryA');
+    {$ENDIF UNICODE}
+    PMem(Buf)^.GetModuleHandleAddr := nil;
+    PMem(Buf)^.DllName := DllNameMem;
+
+    if not WriteProcessMemory(hProcess, Mem, Buf, Size, n) then
+      Exit;
+  finally
+    FreeMem(Buf);
+  end;
+
+  { Start remote thread and wait until the thread has terminated what is the
+    case when the DLL is fully initialized or failed to load. }
+  hLoadThread := _CreateRemoteThread(hProcess, nil, 0, Mem, Mem, 0, Id);
+  Result := hLoadThread <> 0;
+  if Result then
+  begin
+    if Wait then
+    begin
+      WaitForSingleObject(hLoadThread, INFINITE);
+      GetExitCodeThread(hLoadThread, ThreadExitCode);
+      CloseHandle(hLoadThread);
+      Result := ThreadExitCode <> 0;
+    end
+    else
+    begin
+      CloseHandle(hLoadThread);
+      Result := True;
+      Exit; // we can't release the memory
+    end;
+  end;
+
+  VirtualFreeEx(hProcess, Mem, 0, MEM_RELEASE);
+end;
+
+
+var
+  FastDCCHookDll: string; // We start DCCxx.EXE sequencially so it is save to use the global variable
+
+procedure FastDCCHookInjection(const ProcessInfo: TProcessInformation);
+begin
+  if (FastDCCHookDll <> '') and FileExists(FastDCCHookDll) then
+    InjectHookDllProcess(ProcessInfo.hProcess, FastDCCHookDll, True);
+end;
+
+function GetCompilerSpeedPackInjection(Target: TCompileTarget): TInjectionProc;
+const
+  {$IFNDEF DELPHI2007_UP}
+  CSIDL_COMMON_DOCUMENTS = $002e;
+  {$ENDIF ~DELPHI2007_UP}
+  ExpertsDirStudio = 'Embarcadero\Studio\%s\Experts'; // XE6+
+  ExpertsDirRADStudio = 'RAD Studio\%s\Experts';
+var
+  Buffer: array[0..MAX_PATH * 2] of Char;
+  ExpertsDir, DccHook, DccCompiler: string;
+begin
+  Result := nil;
+  if Target.Version >= 20 then // Delphi 2009+
+  begin
+    if not SHGetSpecialFolderPath(0, Buffer, CSIDL_COMMON_DOCUMENTS, False) then
+      Exit;
+
+    if Target.Version >= 20 then // XE6+
+      ExpertsDir := ExpertsDirStudio
+    else
+      ExpertsDir := ExpertsDirRADStudio;
+    ExpertsDir := Format(ExpertsDir, [Target.IDEVersionStr]);
+
+    FastDCCHookDll := ExcludeTrailingPathDelimiter(Buffer) + '\' + ExpertsDir;
+
+    if Target.Platform = ctpWin64 then
+    begin
+      FastDCCHookDll := FastDCCHookDll + '\fastdcc64Hook.dllx';
+      DccHook := ExtractFilePath(Target.Dcc32) + 'dcc64Hook.dllx';
+      DccCompiler := ExtractFilePath(Target.Dcc32) + 'dcc64compiler.exe';
+    end
+    else
+    begin
+      FastDCCHookDll := FastDCCHookDll + '\fastdcc32Hook.dllx';
+      DccHook := ExtractFilePath(Target.Dcc32) + 'dcc32Hook.dllx';
+      DccCompiler := ExtractFilePath(Target.Dcc32) + 'dcc32compiler.exe';
+    end;
+
+    if FileExists(FastDCCHookDll) then
+    begin
+      // If DCCxx.EXE was replaced by the CompilerSpeedPack's binary then we don't want to
+      // install the FastDCC Hook a second time.
+      if FileExists(DccHook) and FileExists(DccCompiler) then
+        Result := nil
+      else
+        Result := FastDCCHookInjection;
+    end;
+  end;
 end;
 
 end.

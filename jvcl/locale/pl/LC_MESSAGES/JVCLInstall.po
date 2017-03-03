@@ -1302,7 +1302,7 @@ msgstr "Pobież z"
 msgid "JCL %s or higher not installed"
 msgstr "Wymagane jest JCL 1.9 lub późniejsze"
 
-#  http://jcl.sourceforge.net
+#  https://github.com/project-jedi/jcl
 #  Programmer's name for it: RsDownloadOrSelectJclDir
 #. Programmer's name for it: RsDownloadOrSelectJclDir
 #: InstallerConsts.pas:184 
@@ -1494,8 +1494,8 @@ msgstr "Pomo&c"
 #~ msgstr "Instalacja  JVCL 3"
 
 #  FormMain..JvWizard..LblHomepage..Hint
-#~ msgid "<c:blue>http://jvcl.sourceforge.net"
-#~ msgstr "<c:blue>http://jvcl.sourceforge.net"
+#~ msgid "<c:blue>https://github.com/project-jedi/jvcl"
+#~ msgstr "<c:blue>https://github.com/project-jedi/jvcl"
 
 #  Programmer's name for it: RsCompilingJCL
 #~ msgid "Compiling JCL dcp files..."
@@ -1592,8 +1592,8 @@ msgstr "Pomo&c"
 #~ msgstr "&Obsługa dxgettext (nie wymagane)"
 
 #  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#~ msgid "http://projectjedi.sourceforge.net"
-#~ msgstr "http://projectjedi.sourceforge.net"
+#~ msgid "http://www.delphi-jedi.org"
+#~ msgstr "http://www.delphi-jedi.org"
 
 #  Programmer's name for it: RsComponentPalettePrefix
 #~ msgid "TJv"

@@ -146,8 +146,8 @@ begin
     begin
       Caption := Format(RsJvPatcherEditorComparingFilesd, [iCount div j]);
       Application.ProcessMessages;
-      res1 := Src.Read(buf1, sizeof(buf1)); // original file
-      res2 := Dest.Read(buf2, sizeof(buf2)); // patched file
+      res1 := Src.Read(buf1, SizeOf(buf1)); // original file
+      res2 := Dest.Read(buf2, SizeOf(buf2)); // patched file
       if res1 = res2 then
       begin
         for i := 0 to res1 - 1 do
@@ -203,7 +203,7 @@ begin
       //adding the rest of the file
       while Dest.Position < Dest.Size do
       begin
-        res2 := Dest.Read(buf2, sizeof(buf2));
+        res2 := Dest.Read(buf2, SizeOf(buf2));
         for i := 0 to res2 - 1 do
           FPatch.Add(Char(Crypt(buf2[i])));
       end;

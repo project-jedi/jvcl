@@ -73,27 +73,26 @@ type
   end;
 
 const
-  TargetDefines: array [0..17] of TTargetDefine =
-                (
-                  (TargetName: 'c6'; Define: 'VER140'),
-                  (TargetName: 'd6'; Define: 'VER140'),
-                  (TargetName: 'd7'; Define: 'VER150'),
-                  (TargetName: 'd9'; Define: 'VER170'),
-                  (TargetName: 'd10'; Define: 'VER180'),
-                  (TargetName: 'd11'; Define: 'VER180,VER185'),
-                  (TargetName: 'd12'; Define: 'VER200'),
-                  (TargetName: 'd14'; Define: 'VER210'),
-                  (TargetName: 'd15'; Define: 'VER220'),
-                  (TargetName: 'd16'; Define: 'VER230'),
-                  (TargetName: 'd17'; Define: 'VER240'),
-                  (TargetName: 'd18'; Define: 'VER250'),
-                  (TargetName: 'd19'; Define: 'VER260'),
-                  (TargetName: 'd20'; Define: 'VER270'),
-                  (TargetName: 'd21'; Define: 'VER280'),
-                  (TargetName: 'd22'; Define: 'VER290'),
-                  (TargetName: 'd23'; Define: 'VER300'),
-                  (TargetName: 'd24'; Define: 'VER310')
-				  );
+  TargetDefines: array [0..17] of TTargetDefine = (
+    (TargetName: 'c6'; Define: 'VER140'),
+    (TargetName: 'd6'; Define: 'VER140'),
+    (TargetName: 'd7'; Define: 'VER150'),
+    (TargetName: 'd9'; Define: 'VER170'),
+    (TargetName: 'd10'; Define: 'VER180'),
+    (TargetName: 'd11'; Define: 'VER180,VER185'),
+    (TargetName: 'd12'; Define: 'VER200'),
+    (TargetName: 'd14'; Define: 'VER210'),
+    (TargetName: 'd15'; Define: 'VER220'),
+    (TargetName: 'd16'; Define: 'VER230'),
+    (TargetName: 'd17'; Define: 'VER240'),
+    (TargetName: 'd18'; Define: 'VER250'),
+    (TargetName: 'd19'; Define: 'VER260'),
+    (TargetName: 'd20'; Define: 'VER270'),
+    (TargetName: 'd21'; Define: 'VER280'),
+    (TargetName: 'd22'; Define: 'VER290'),
+    (TargetName: 'd23'; Define: 'VER300'),
+    (TargetName: 'd24'; Define: 'VER310')
+  );
 
 { TTarget }
 

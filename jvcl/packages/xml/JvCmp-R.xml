@@ -35,7 +35,6 @@
     <File Name="..\..\run\JvLogClasses.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLogForm.pas" Targets="all" Formname="FoLog" Condition=""/>
     <File Name="..\..\run\JvMergeManager.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvControlComponent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpellChecker.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpellerForm.pas" Targets="all" Formname="JvSpellerForm" Condition=""/>
     <File Name="..\..\run\JvSpellIntf.pas" Targets="all" Formname="" Condition=""/>
@@ -60,7 +59,6 @@
     <File Name="..\..\..\help\JvLogClasses.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvLogForm.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvMergeManager.dtx" Targets="help" Formname="" Condition=""/>
-    <File Name="..\..\..\help\JvControlComponent.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvSpellChecker.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvSpellerForm.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvSpellIntf.dtx" Targets="help" Formname="" Condition=""/>

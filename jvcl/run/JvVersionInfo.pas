@@ -410,7 +410,7 @@ var
 begin
   if IsLibrary then
   begin
-    GetModuleFileName(HInstance, FileName, SizeOf(FileName) - 1);
+    GetModuleFileName(HInstance, FileName, Length(FileName) - 1);
     Result := FileName;
   end
   else

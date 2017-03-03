@@ -87,7 +87,7 @@ type
   TRecordStatus = (rsOriginal, rsUpdated, rsInserted, rsDeleted);
   TApplyRecordEvent = procedure(Dataset: TDataset; RecStatus: TRecordStatus; FoundApply: Boolean) of object;
   TMemBlobData = string;
-  TMemBlobArray = array[0..0] of TMemBlobData;
+  TMemBlobArray = array[0..MaxInt div SizeOf(TMemBlobData) - 1] of TMemBlobData;
   PMemBlobArray = ^TMemBlobArray;
   TJvMemoryRecord = class;
   TLoadMode = (lmCopy, lmAppend);
@@ -1837,7 +1837,7 @@ var
   var
     S: string;
   begin
-    if Field.DataType = ftString then
+    if Field.DataType in [ftString{$IFDEF UNICODE}, ftWideString{$ENDIF}] then
     begin
       if Value = Null then
         Result := Field.IsNull

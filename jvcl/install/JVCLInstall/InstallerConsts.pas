@@ -201,8 +201,8 @@ resourcestring
   RsCancelInstallation = 'Do you really want to cancel the installation?';
 
 const
-  RsJediHomepage = 'http://projectjedi.sourceforge.net'; // do not localize
-  RsJVCLHomepage = 'http://jvcl.sourceforge.net'; // do not localize
+  RsJediHomepage = 'http://www.delphi-jedi.org'; // do not localize
+  RsJVCLHomepage = 'https://github.com/project-jedi/jvcl'; // do not localize
 
 
 implementation

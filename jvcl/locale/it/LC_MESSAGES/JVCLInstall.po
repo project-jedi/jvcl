@@ -1215,7 +1215,7 @@ msgstr "Scaricale da"
 msgid "JCL %s or higher not installed"
 msgstr "Richieste JCL %s o superiori"
 
-#  http://jcl.sourceforge.net
+#  https://github.com/project-jedi/jcl
 #  Programmer's name for it: RsDownloadOrSelectJclDir
 #. Programmer's name for it: RsDownloadOrSelectJclDir
 #: InstallerConsts.pas:184 
@@ -1425,8 +1425,8 @@ msgstr "&Guida"
 #~ msgstr "Installazione JVCL 3"
 
 #  FormMain..JvWizard..LblHomepage..Hint
-#~ msgid "<c:blue>http://jvcl.sourceforge.net"
-#~ msgstr "<c:blue>http://jvcl.sourceforge.net"
+#~ msgid "<c:blue>https://github.com/project-jedi/jvcl"
+#~ msgstr "<c:blue>https://github.com/project-jedi/jvcl"
 
 #  Programmer's name for it: RsCompilingJCL
 #~ msgid "Compiling JCL dcp files..."

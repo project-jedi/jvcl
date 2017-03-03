@@ -1303,8 +1303,8 @@ msgstr "&Помощ"
 #~ msgid "JVCL %d.%d  Installation"
 #~ msgstr "JVCL 3  Инсталация"
 
-#~ msgid "<c:blue>http://jvcl.sourceforge.net"
-#~ msgstr "<c:blue>http://jvcl.sourceforge.net"
+#~ msgid "<c:blue>https://github.com/project-jedi/jvcl"
+#~ msgstr "<c:blue>https://github.com/project-jedi/jvcl"
 
 #~ msgid "Compiling JCL dcp files..."
 #~ msgstr "Компилира JCL dcp файлове..."
@@ -1346,8 +1346,8 @@ msgstr "&Помощ"
 #~ msgid "TJv"
 #~ msgstr "TJv"
 
-#~ msgid "http://projectjedi.sourceforge.net"
-#~ msgstr "http://projectjedi.sourceforge.net"
+#~ msgid "http://www.delphi-jedi.org"
+#~ msgstr "http://www.delphi-jedi.org"
 
 #~ msgid "LblCaption"
 #~ msgstr "LblCaption"
