@@ -43,8 +43,14 @@ uses
 
 type
   TJvAlphaBlendedForm = class(TForm)
+  private
+    FDropText: string;
+    procedure SetDropText(const Value: string);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
+    property DropText: string read FDropText write SetDropText;
+  public
+    procedure Paint; override;
   end;
 
   TJvDockDragDockObject = class(TObject)
@@ -68,12 +74,14 @@ type
     FEraseDockRect: TRect;
     FAlphaBlendedForm: TJvAlphaBlendedForm;
     FAlphaBlendedTab: TJvAlphaBlendedForm;
+    FDropText: string;
     procedure SetBrush(const Value: TBrush);
     procedure SetDropAlign(const Value: TAlign);
     procedure SetDropOnControl(const Value: TControl);
     function GetTargetControl: TWinControl;
     procedure SetTargetControl(const Value: TWinControl);
     function GetAlphaBlendedTab: TJvAlphaBlendedForm;
+    procedure SetDropText(const Value: string);
   protected
     property AlphaBlendedForm: TJvAlphaBlendedForm read FAlphaBlendedForm;
     property AlphaBlendedTab: TJvAlphaBlendedForm read GetAlphaBlendedTab;
@@ -118,6 +126,7 @@ type
     property Brush: TBrush read FBrush write SetBrush;
     property CtrlDown: Boolean read FCtrlDown write FCtrlDown;
     property TargetControl: TWinControl read GetTargetControl write SetTargetControl;
+    property DropText: string read FDropText write SetDropText;
 
     {DockClient: Opaque reference to TJvDockClient. Nil if none.}
     // property DockClient:TObject read FDockClient write FDockClient;
@@ -1704,6 +1713,34 @@ begin
   Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
 end;
 
+procedure TJvAlphaBlendedForm.Paint;
+var
+  DrawRect: TRect;
+  DrawFlags: Cardinal;
+begin
+  inherited;
+  if FDropText <> '' then begin
+    DrawRect := Rect(0, 0, Width, Height);
+    DrawFlags := DT_CENTER or DT_VCENTER;
+
+    // Calculate the needed rectangle
+    DrawText(Canvas.Handle, PChar(FDropText), -1, DrawRect, DrawFlags or DT_CALCRECT);
+
+    // Place the text in the middle of the window
+    DrawRect.Offset((Width - DrawRect.Width) div 2, (Height - DrawRect.Height) div 2);
+    DrawText(Canvas.Handle, PChar(FDropText), -1, DrawRect, DrawFlags);
+  end;
+end;
+
+procedure TJvAlphaBlendedForm.SetDropText(const Value: string);
+begin
+  if Value <> FDropText then begin
+    FDropText := Value;
+    Invalidate;
+  end;
+end;
+
+
 //=== { TJvDockDragDockObject } ==============================================
 
 constructor TJvDockDragDockObject.Create(AControl: TControl);
@@ -1958,7 +1995,7 @@ var
       if TargetControl is TJvDockPanel then
       begin
         { In this case, we're about to dock to a TJvDockPanel }
-          {DP := TargetControl as TJvDockPanel;
+          DP := TargetControl as TJvDockPanel;
           DS := DP.DockServer;
           DC := FindDockClient(FControl);
           if FControl is TForm then
@@ -1967,7 +2004,7 @@ var
             DF := nil;
           if Assigned(DC.OnCheckIsDockable) then begin
               DC.OnCheckIsDockable( DC, DF, DS, DP, DropFlag );
-          end;}
+          end;
       end
       else
       if TargetControl is TForm then
@@ -2067,6 +2104,13 @@ end;
 procedure TJvDockDragDockObject.SetDropOnControl(const Value: TControl);
 begin
   FDropOnControl := Value;
+end;
+
+procedure TJvDockDragDockObject.SetDropText(const Value: string);
+begin
+  FDropText := Value;
+  if FAlphaBlendedForm <> nil then
+    FAlphaBlendedForm.DropText := Value;
 end;
 
 procedure TJvDockDragDockObject.SetFrameWidth(const Value: Integer);
