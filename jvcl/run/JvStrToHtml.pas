@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvStrToHtml.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
-Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
+The Initial Developer of the Original Code is SÃ©bastien Buysse [sbuysse att buypin dott com]
+Portions created by SÃ©bastien Buysse are Copyright (C) 2001 SÃ©bastien Buysse.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
@@ -418,7 +418,7 @@ begin
       Continue;
     end
     else
-    if (Ch >= #128) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
+    if (Ch >= Chr(128)) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
     begin
       W := Word(Ch);
       {$IFNDEF UNICODE}
@@ -467,7 +467,7 @@ begin
         Continue;
       end
       else
-      if (Ch >= #128) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
+      if (Ch >= Chr(128)) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
       begin
         W := Word(Ch);
         {$IFNDEF UNICODE}
@@ -588,7 +588,7 @@ var
   I: Integer;
   W: Word;
 begin
-  if (Ch >= #128) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
+  if (Ch >= Chr(128)) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
   begin
     W := Word(Ch);
     {$IFNDEF UNICODE}
