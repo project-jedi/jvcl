@@ -3544,7 +3544,9 @@ function TJvTFGlanceViewer.GetDistinctAppt(Index: Integer): TJvTFAppt;
 var
   ApptList: TStringList;
 begin
+  {$IFNDEF COMPILER25_UP}
   Result := nil;
+  {$ENDIF ~COMPILER25_UP}
   ApptList := TStringList.Create;
   try
     GetDistinctAppts(ApptList);

@@ -65,7 +65,9 @@ var
   ConsumerContext: IJvDataConsumerContext;
   CtxItem: IJvDataItem;
 begin
+  {$IFNDEF COMPILER25_UP}
   Result := False;
+  {$ENDIF ~COMPILER25_UP}
   SelectForm := TfrmDataConsumerContextSelect.Create(Application);
   try
     SelectForm.Consumer := AConsumer;

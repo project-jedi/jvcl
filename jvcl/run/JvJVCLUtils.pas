@@ -5289,7 +5289,9 @@ var
   ColorCount: Integer;
   SourceBitmapFormat: TPixelFormat;
 begin
+  {$IFNDEF COMPILER25_UP}
   Result := nil;
+  {$ENDIF ~COMPILER25_UP}
   if Bitmap.Handle = 0 then
     InvalidBitmap;
   SourceBitmapFormat := GetBitmapPixelFormat(Bitmap);
