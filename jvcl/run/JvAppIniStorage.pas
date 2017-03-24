@@ -238,7 +238,7 @@ end;
 type
   TMemIniFileAccess = class(TCustomIniFile)
   {$IFDEF RTL310_UP} // 10.1 Berlin removed the access to private fields
-    {$IFDEF RTL320_UP}
+    {$IFDEF RTL330_UP}
       {$MESSAGE WARN 'Check that the new RTL still has FSections as the first member of TMemIniFile'}
     {$ENDIF RTL320_UP}
   private
