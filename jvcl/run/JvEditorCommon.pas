@@ -2506,6 +2506,7 @@ function TJvBracketHighlighting.CreateStringMap(const Text: string): TDynBoolArr
 var
   LenText: Integer;
   i, j, Idx, InStr: Integer;
+  Ch: Char;
 begin
   LenText := Length(Text);
   SetLength(Result, LenText);
@@ -2527,7 +2528,18 @@ begin
         Continue;
       end;
 
-      Idx := Pos(Text[i + 1], StringChars);
+      //Idx := Pos(Text[i + 1], StringChars); // causes Char->String conversion for every char in Text
+      Idx := 0;
+      Ch := Text[i + 1];
+      for j := 1 to Length(StringChars) do
+      begin
+        if Ch = StringChars[j] then
+        begin
+          Idx := j;
+          Break;
+        end;
+      end;
+
       if Idx > 0 then
       begin
         if InStr = Idx then
@@ -6040,12 +6052,15 @@ end;
 procedure TJvErrorHighlighting.PaintError(Canvas: TCanvas; Col, Line: Integer;
   const R: TRect; Len: Integer; const MyDi: TDynIntArray);
 var
-  I, Width, X: Integer;
+  I, Width, X, EndCol: Integer;
   Errors: TDynBoolArray;
 begin
   Errors := GetLineErrorMap(Line);
   X := R.Left;
-  for I := Col to Col + Len - 1 do
+  EndCol := Length(MyDi);
+  if Col + Len - 1 < EndCol then
+    EndCol := Col + Len - 1;
+  for I := Col to EndCol do
   begin
     Width := MyDi[I];
     if (I <= High(Errors)) and Errors[I] then
