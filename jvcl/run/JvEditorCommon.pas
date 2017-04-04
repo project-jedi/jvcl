@@ -6057,23 +6057,22 @@ var
 begin
   Errors := GetLineErrorMap(Line);
   X := R.Left;
-  EndCol := Length(MyDi);
+  EndCol := Length(MyDi) - 1;
   if Col + Len - 1 < EndCol then
     EndCol := Col + Len - 1;
+  if EndCol >= Length(Errors) then
+    EndCol := Length(Errors) - 1;
   for I := Col to EndCol do
   begin
     Width := MyDi[I];
-    if (I <= High(Errors)) and Errors[I] then
+    if Errors[I] then
     begin
-      with Canvas do
-      begin
-        Pen.Color := clRed;
-        MoveTo(X, R.Bottom - 1);
-        LineTo(X + Width div 4, R.Bottom - 4);
-        LineTo(X + Width div 4 * 2, R.Bottom - 1);
-        LineTo(X + Width div 4 * 3, R.Bottom - 4);
-        LineTo(X + Width, R.Bottom - 1);
-      end;
+      Canvas.Pen.Color := clRed;
+      Canvas.MoveTo(X, R.Bottom - 1);
+      Canvas.LineTo(X + Width div 4, R.Bottom - 4);
+      Canvas.LineTo(X + Width div 4 * 2, R.Bottom - 1);
+      Canvas.LineTo(X + Width div 4 * 3, R.Bottom - 4);
+      Canvas.LineTo(X + Width, R.Bottom - 1);
     end;
     Inc(X, Width);
   end;
