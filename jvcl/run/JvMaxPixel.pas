@@ -132,7 +132,6 @@ begin
 
   with TControlCanvas.Create do
     try
-      Result := False;
       Control := FParent;
       if FUseControlFont then
         Font.Assign(ParentFont)

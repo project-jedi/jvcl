@@ -1603,8 +1603,9 @@ begin
       SetAutoIncFields(PJvMemBuffer(ActiveBuffer));
     if FRecordPos >= FRecords.Count then
     begin
-      SetMemoryRecordData(PJvMemBuffer(ActiveBuffer), AddRecord.Index);
+      AddRecord;
       FRecordPos := FRecords.Count - 1;
+      SetMemoryRecordData(PJvMemBuffer(ActiveBuffer), FRecordPos);
     end
     else
     begin

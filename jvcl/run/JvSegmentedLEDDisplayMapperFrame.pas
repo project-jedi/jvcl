@@ -227,7 +227,9 @@ begin
       Mapper.SaveToFile(FileName);
       FMapperModified := False;
     except
+      {$IFNDEF COMPILER25_UP}
       Result := False;
+      {$ENDIF ~COMPILER25_UP}
       raise;
     end;
   finally

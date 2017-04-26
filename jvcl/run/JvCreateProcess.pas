@@ -1024,7 +1024,9 @@ var
   BytesWritten: Cardinal;
   BytesToWrite: Cardinal;
 begin
+  {$IFNDEF COMPILER25_UP}
   Result := True;
+  {$ENDIF ~COMPILER25_UP}
 
   FWriteLock.Acquire;
   try

@@ -262,7 +262,7 @@ begin
 //      (Owner as TJvProgressComponent).FOnShow(Self);
     except
       on E: Exception do
-        (Owner as TJvProgressComponent).FException := AcquireExceptionObject;
+        (Owner as TJvProgressComponent).FException := AcquireExceptionObject{$IFDEF RTL320_UP} as Exception{$ENDIF RTL320_UP};
     end;
   finally
     ModalResult := mrOk;

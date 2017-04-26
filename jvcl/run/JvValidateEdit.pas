@@ -684,6 +684,7 @@ begin
   else
     Result := StrToInt64Def(FEditText, 0);
   end;
+  Result := IntRangeValue(Result);
 end;
 
 procedure TJvCustomValidateEdit.SetAsInteger(NewValue: Int64);
@@ -715,6 +716,7 @@ begin
   else
     Result := StrToCurrDef(FEditText, 0);
   end;
+  Result := CurrRangeValue(Result);
 end;
 
 procedure TJvCustomValidateEdit.SetAsCurrency(NewValue: Currency);
@@ -760,6 +762,7 @@ begin
   else
     Result := JvSafeStrToFloatDef(FEditText, 0);
   end;
+  Result := FloatRangeValue(Result);
 end;
 
 procedure TJvCustomValidateEdit.SetAsFloat(NewValue: Double);
@@ -803,14 +806,14 @@ begin
         // would not catch the negative part, hence the need to use a function
         // that knows how to do the conversion.
         VarCyFromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(FEditText), LOCALE_USER_DEFAULT, 0, Cur);
-        Result := Cur;
+        Result := CurrRangeValue(Cur);
       end;
     dfFloat, dfFloatGeneral, dfDecimal, dfPercent, dfScientific, dfFloatFixed:
-      Result := JvSafeStrToFloatDef(FEditText, 0);
+      Result := FloatRangeValue(JvSafeStrToFloatDef(FEditText, 0));
     dfInteger, dfYear:
-      Result := StrToIntDef(FEditText, 0);
+      Result := IntRangeValue(StrToIntDef(FEditText, 0));
     dfHex:
-      Result := StrToIntDef('$' + FEditText, 0);
+      Result := IntRangeValue(StrToIntDef('$' + FEditText, 0));
     else
     begin
       DisplayedText := inherited Text;

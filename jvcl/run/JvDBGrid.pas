@@ -1333,7 +1333,7 @@ procedure TJvDBGrid.GotoSelection(Index: Longint);
 begin
   if MultiSelect and DataLink.Active and (Index < SelectedRows.Count) and
     (Index >= 0) then
-    DataLink.DataSet.GotoBookmark(Pointer(SelectedRows[Index]));
+    DataLink.DataSet.GotoBookmark({$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(SelectedRows[Index]));
 end;
 
 procedure TJvDBGrid.LayoutChanged;
@@ -2618,10 +2618,10 @@ begin
                     DisableControls;
                     try
                       lNewSelected := Bookmark;
-                      lCompare := CompareBookmarks(Pointer(lNewSelected), Pointer(lLastSelected));
+                      lCompare := CompareBookmarks({$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(lNewSelected), {$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(lLastSelected));
                       if lCompare > 0 then
                       begin
-                        GotoBookmark(Pointer(lLastSelected));
+                        GotoBookmark({$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(lLastSelected));
                         Next;
                         while not Eof and not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
                         begin
@@ -2632,7 +2632,7 @@ begin
                       else
                       if lCompare < 0 then
                       begin
-                        GotoBookmark(Pointer(lLastSelected));
+                        GotoBookmark({$IFNDEF RTL200_UP}Pointer{$ENDIF ~RTL200_UP}(lLastSelected));
                         Prior;
                         while not Bof and not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
                         begin
