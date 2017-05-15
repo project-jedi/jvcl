@@ -50,7 +50,7 @@ uses
   JvAppRegistryStorage, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
   JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox, JvExStdCtrls,
-  JvExExtCtrls, JvAppXMLStorage, JvCipher, JvComponentBase, JvExtComponent;
+  JvExExtCtrls, JvAppXMLStorage, JvCipher, JvComponentBase, JvExtComponent, JvThreadDialog, JvThread;
 
 type
 
@@ -133,6 +133,14 @@ type
     Button20: TButton;
     NativeCheckBox: TCheckBox;
     Button21: TButton;
+    JvSimpleThread: TJvThread;
+    JvGroupBox4: TJvGroupBox;
+    JvPanel5: TJvPanel;
+    Button22: TButton;
+    Button23: TButton;
+    JvAnimatedThread: TJvThread;
+    JvThreadAnimateDialog1: TJvThreadAnimateDialog;
+    JvThreadSimpleDialog1: TJvThreadSimpleDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -161,7 +169,12 @@ type
     procedure Button19Click(Sender: TObject);
     procedure Button20Click(Sender: TObject);
     procedure Button21Click(Sender: TObject);
+    procedure Button22Click(Sender: TObject);
+    procedure Button23Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
+    procedure JvAnimatedThreadExecute(Sender: TObject; Params: Pointer);
+    procedure JvSimpleThreadExecute(Sender: TObject; Params: Pointer);
+    procedure StaticText6Click(Sender: TObject);
   private
     procedure ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
     function DefaultStorage: TJvCustomAppStorage;
@@ -1737,6 +1750,16 @@ begin
   end;
 end;
 
+procedure TJvParameterListDemoMainFrm.Button22Click(Sender: TObject);
+begin
+  JvSimpleThread.Execute(Self);
+end;
+
+procedure TJvParameterListDemoMainFrm.Button23Click(Sender: TObject);
+begin
+  JvAnimatedThread.Execute(Self);
+end;
+
 procedure TJvParameterListDemoMainFrm.Button9Click(Sender: TObject);
 begin
   JVDSADialogs.MessageDlg('Simple confirmation box, standard title, VCL buttons and image. Multi Lines'#13#10+
@@ -1749,6 +1772,22 @@ begin
   'Line8'#13#10+
   'Line9'#13#10,
     mtConfirmation, [mbYes, mbNo], 0);
+end;
+
+procedure TJvParameterListDemoMainFrm.JvAnimatedThreadExecute(Sender: TObject;
+    Params: Pointer);
+begin
+  repeat
+    Sleep(100);
+  until JvAnimatedThread.Terminated;
+end;
+
+procedure TJvParameterListDemoMainFrm.JvSimpleThreadExecute(Sender: TObject;
+    Params: Pointer);
+begin
+  repeat
+    Sleep(100);
+  until JvSimpleThread.Terminated;
 end;
 
 {$IFDEF INCLUDE_DEVEXP_CX}
@@ -1774,6 +1813,12 @@ begin
       end;
     end;
 end;
+
+procedure TJvParameterListDemoMainFrm.StaticText6Click(Sender: TObject);
+begin
+
+end;
+
 {$ENDIF INCLUDE_DEVEXP_CX}
 
 
