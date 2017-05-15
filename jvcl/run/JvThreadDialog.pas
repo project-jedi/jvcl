@@ -507,10 +507,32 @@ begin
 end;
 
 procedure TJvThreadSimpleDialogForm.SetControlHeightWidth;
+var
+  h: Integer;
 begin
   inherited SetControlHeightWidth;
   if Assigned(FProgressbarPanel) then
     FProgressbarPanel.Width := FTimeTextPanel.Width;
+  h := 0;
+  if Assigned(FInfoTextPanel) and FInfoTextPanel.Visible then
+  begin
+    FInfoTextPanel.Top := h;
+    H := H + FInfoTextPanel.Height;
+  end;
+  if Assigned(FProgressbarPanel) and FProgressbarPanel.Visible then
+  begin
+    FProgressbarPanel.Top := h;
+    H := H + FProgressbarPanel.Height;
+  end;
+  if Assigned(FTimeTextPanel) and FTimeTextPanel.Visible then
+  begin
+    FTimeTextPanel.Top := h;
+    H := H + FTimeTextPanel.Height;
+  end;
+  if Assigned(FCancelButtonPanel) and FCancelButtonPanel.Visible then
+  begin
+    FCancelButtonPanel.Top := h;
+  end;
 end;
 
 procedure TJvThreadSimpleDialogForm.SetDialogOptions(Value:
@@ -622,12 +644,7 @@ begin
     H := H + FTimeTextPanel.Height;
   end;
   if Assigned(FCancelButtonPanel) and FCancelButtonPanel.Visible then
-  begin
     FCancelButtonPanel.Top := h;
-
-    // No need to assign, this is not used later on
-    //H := H + FCancelButtonPanel.Height;
-  end;
 end;
 
 procedure TJvThreadAnimateDialogForm.SetDialogOptions(Value:
