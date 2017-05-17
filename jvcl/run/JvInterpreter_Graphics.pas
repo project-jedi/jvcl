@@ -53,7 +53,7 @@ implementation
 
 uses
   Classes,
-   JvInterpreter_Windows,
+   JvInterpreter_Types,
   Windows, Graphics;
 
 { TFont }

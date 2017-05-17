@@ -53,7 +53,7 @@ implementation
 
 uses
   Windows, Classes, Grids,
-  JvInterpreter_Windows;
+  JvInterpreter_Types;
 
 { EInvalidGridOperation }
 

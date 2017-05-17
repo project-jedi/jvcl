@@ -53,7 +53,7 @@ implementation
 
 uses
   Windows, Classes, Controls, StdCtrls,
-  JvInterpreter_Windows;
+  JvInterpreter_Types;
 
 { TGroupBox }
 

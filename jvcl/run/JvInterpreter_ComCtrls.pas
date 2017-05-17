@@ -53,7 +53,7 @@ implementation
 
 uses
   Windows, Classes, Controls, Graphics, ComCtrls,
-  JvInterpreter_Windows;
+  JvInterpreter_Types;
 
 { TTabControl }
 
