@@ -870,7 +870,7 @@ begin
   Value := O2V(TMemoryStream.Create);
 end;
 
-{ TJvStringStream  }
+{ TStringStream }
 
 { constructor Create(AString: string) }
 
@@ -1289,8 +1289,8 @@ begin
     { TMemoryStream }
     AddClass(cClasses, TMemoryStream, 'TMemoryStream');
     AddGet(TMemoryStream, 'Create', TMemoryStream_Create, 0, [varEmpty], varEmpty);
-    { TJvStringStream  }
-    AddClass(cClasses, TStringStream, 'TStringStream ');
+    { TStringStream }
+    AddClass(cClasses, TStringStream, 'TStringStream');
     AddGet(TStringStream, 'Create', TStringStream_Create, 1, [varEmpty], varEmpty);
     AddGet(TStringStream, 'Read', TStringStream_Read, 2, [varByRef, varEmpty], varEmpty);
     AddGet(TStringStream, 'ReadString', TStringStream_ReadString, 1, [varEmpty], varEmpty);
