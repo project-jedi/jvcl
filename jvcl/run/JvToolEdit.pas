@@ -1157,9 +1157,9 @@ uses
   UxTheme,
   {$ENDIF HAS_UNIT_UXTHEME}
   {$ENDIF JVCLThemesEnabled}
-  {$IFDEF HAS_UNIT_VCL_THEMES} // VCL-Styles support
+  {$IFDEF COMPILER16_UP} // VCL-Styles support
   Vcl.Themes,
-  {$ENDIF HAS_UNIT_VCL_THEMES}
+  {$ENDIF COMPILER16_UP}
   JclSysInfo, JclFileUtils, JclStrings,
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JclSysUtils;
