@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvCryptDesign" Design="-1">
+  <Description>JVCL Encryption and Compression</Description>
+  <GUID>{4EED06C1-B111-4EA3-815B-8530F67D8659}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A0E0000</ImageBase>
+  <Requires>
+    <Package Name="JvCrypt-R" Targets="all" Condition=""/>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvCryptReg.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

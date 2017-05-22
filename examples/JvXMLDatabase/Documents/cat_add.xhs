@@ -1,0 +1,5 @@
+<%
+  Request("INSERT INTO categories.xml(CatId, CatName) VALUES(NULL, '$name')");
+  Redirect("categories.xhs");
+%>
+

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{9BFB5221-5288-4756-A733-F2859A051C9C}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects ActiveProject="JvCore100.bpl">
+      <Projects Name="JvCore100.bpl">d10\JvCore.bdsproj</Projects>
+      <Projects Name="JvCoreDesign100.bpl">d10\JvCoreDesign.bdsproj</Projects>
+      <Projects Name="JvSystem100.bpl">d10\JvSystem.bdsproj</Projects>
+      <Projects Name="JvSystemDesign100.bpl">d10\JvSystemDesign.bdsproj</Projects>
+      <Projects Name="JvStdCtrls100.bpl">d10\JvStdCtrls.bdsproj</Projects>
+      <Projects Name="JvStdCtrlsDesign100.bpl">d10\JvStdCtrlsDesign.bdsproj</Projects>
+      <Projects Name="JvControls100.bpl">d10\JvControls.bdsproj</Projects>
+      <Projects Name="JvControlsDesign100.bpl">d10\JvControlsDesign.bdsproj</Projects>
+      <Projects Name="JvCmp100.bpl">d10\JvCmp.bdsproj</Projects>
+      <Projects Name="JvCmpDesign100.bpl">d10\JvCmpDesign.bdsproj</Projects>
+      <Projects Name="JvCustom100.bpl">d10\JvCustom.bdsproj</Projects>
+      <Projects Name="JvCustomDesign100.bpl">d10\JvCustomDesign.bdsproj</Projects>
+      <Projects Name="JvDlgs100.bpl">d10\JvDlgs.bdsproj</Projects>
+      <Projects Name="JvDlgsDesign100.bpl">d10\JvDlgsDesign.bdsproj</Projects>
+      <Projects Name="JvCrypt100.bpl">d10\JvCrypt.bdsproj</Projects>
+      <Projects Name="JvCryptDesign100.bpl">d10\JvCryptDesign.bdsproj</Projects>
+      <Projects Name="JvMM100.bpl">d10\JvMM.bdsproj</Projects>
+      <Projects Name="JvMMDesign100.bpl">d10\JvMMDesign.bdsproj</Projects>
+      <Projects Name="JvNet100.bpl">d10\JvNet.bdsproj</Projects>
+      <Projects Name="JvNetDesign100.bpl">d10\JvNetDesign.bdsproj</Projects>
+      <Projects Name="JvAppFrm100.bpl">d10\JvAppFrm.bdsproj</Projects>
+      <Projects Name="JvAppFrmDesign100.bpl">d10\JvAppFrmDesign.bdsproj</Projects>
+      <Projects Name="JvDB100.bpl">d10\JvDB.bdsproj</Projects>
+      <Projects Name="JvDBDesign100.bpl">d10\JvDBDesign.bdsproj</Projects>
+      <Projects Name="JvBDE100.bpl">d10\JvBDE.bdsproj</Projects>
+      <Projects Name="JvBDEDesign100.bpl">d10\JvBDEDesign.bdsproj</Projects>
+      <Projects Name="JvPascalInterpreter100.bpl">d10\JvPascalInterpreter.bdsproj</Projects>
+      <Projects Name="JvPascalInterpreterDesign100.bpl">d10\JvPascalInterpreterDesign.bdsproj</Projects>
+      <Projects Name="JvBands100.bpl">d10\JvBands.bdsproj</Projects>
+      <Projects Name="JvBandsDesign100.bpl">d10\JvBandsDesign.bdsproj</Projects>
+      <Projects Name="JvPluginSystem100.bpl">d10\JvPluginSystem.bdsproj</Projects>
+      <Projects Name="JvPluginSystemDesign100.bpl">d10\JvPluginSystemDesign.bdsproj</Projects>
+      <Projects Name="JvJans100.bpl">d10\JvJans.bdsproj</Projects>
+      <Projects Name="JvJansDesign100.bpl">d10\JvJansDesign.bdsproj</Projects>
+      <Projects Name="JvGlobus100.bpl">d10\JvGlobus.bdsproj</Projects>
+      <Projects Name="JvGlobusDesign100.bpl">d10\JvGlobusDesign.bdsproj</Projects>
+      <Projects Name="JvPrintPreview100.bpl">d10\JvPrintPreview.bdsproj</Projects>
+      <Projects Name="JvPrintPreviewDesign100.bpl">d10\JvPrintPreviewDesign.bdsproj</Projects>
+      <Projects Name="JvPageComps100.bpl">d10\JvPageComps.bdsproj</Projects>
+      <Projects Name="JvPageCompsDesign100.bpl">d10\JvPageCompsDesign.bdsproj</Projects>
+      <Projects Name="JvWizards100.bpl">d10\JvWizards.bdsproj</Projects>
+      <Projects Name="JvWizardsDesign100.bpl">d10\JvWizardsDesign.bdsproj</Projects>
+      <Projects Name="JvTimeFramework100.bpl">d10\JvTimeFramework.bdsproj</Projects>
+      <Projects Name="JvTimeFrameworkDesign100.bpl">d10\JvTimeFrameworkDesign.bdsproj</Projects>
+      <Projects Name="JvHMI100.bpl">d10\JvHMI.bdsproj</Projects>
+      <Projects Name="JvHMIDesign100.bpl">d10\JvHMIDesign.bdsproj</Projects>
+      <Projects Name="JvManagedThreads100.bpl">d10\JvManagedThreads.bdsproj</Projects>
+      <Projects Name="JvManagedThreadsDesign100.bpl">d10\JvManagedThreadsDesign.bdsproj</Projects>
+      <Projects Name="JvXPCtrls100.bpl">d10\JvXPCtrls.bdsproj</Projects>
+      <Projects Name="JvXPCtrlsDesign100.bpl">d10\JvXPCtrlsDesign.bdsproj</Projects>
+      <Projects Name="JvDocking100.bpl">d10\JvDocking.bdsproj</Projects>
+      <Projects Name="JvDockingDesign100.bpl">d10\JvDockingDesign.bdsproj</Projects>
+      <Projects Name="JvDotNetCtrls100.bpl">d10\JvDotNetCtrls.bdsproj</Projects>
+      <Projects Name="JvDotNetCtrlsDesign100.bpl">d10\JvDotNetCtrlsDesign.bdsproj</Projects>
+      <Projects Name="JvRuntimeDesign100.bpl">d10\JvRuntimeDesign.bdsproj</Projects>
+      <Projects Name="JvRuntimeDesignDesign100.bpl">d10\JvRuntimeDesignDesign.bdsproj</Projects>
+      <Projects Name="Targets">JvCore100.bpl JvCoreDesign100.bpl JvSystem100.bpl JvSystemDesign100.bpl JvStdCtrls100.bpl JvStdCtrlsDesign100.bpl JvControls100.bpl JvControlsDesign100.bpl JvCmp100.bpl JvCmpDesign100.bpl JvCustom100.bpl JvCustomDesign100.bpl JvDlgs100.bpl JvDlgsDesign100.bpl JvCrypt100.bpl JvCryptDesign100.bpl JvMM100.bpl JvMMDesign100.bpl JvNet100.bpl JvNetDesign100.bpl JvAppFrm100.bpl JvAppFrmDesign100.bpl JvDB100.bpl JvDBDesign100.bpl JvBDE100.bpl JvBDEDesign100.bpl JvPascalInterpreter100.bpl JvPascalInterpreterDesign100.bpl JvBands100.bpl JvBandsDesign100.bpl JvPluginSystem100.bpl JvPluginSystemDesign100.bpl JvJans100.bpl JvJansDesign100.bpl JvGlobus100.bpl JvGlobusDesign100.bpl JvPrintPreview100.bpl JvPrintPreviewDesign100.bpl JvPageComps100.bpl JvPageCompsDesign100.bpl JvWizards100.bpl JvWizardsDesign100.bpl JvTimeFramework100.bpl JvTimeFrameworkDesign100.bpl JvHMI100.bpl JvHMIDesign100.bpl JvManagedThreads100.bpl JvManagedThreadsDesign100.bpl JvXPCtrls100.bpl JvXPCtrlsDesign100.bpl JvDocking100.bpl JvDockingDesign100.bpl JvDotNetCtrls100.bpl JvDotNetCtrlsDesign100.bpl JvRuntimeDesign100.bpl JvRuntimeDesignDesign100.bpl</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>

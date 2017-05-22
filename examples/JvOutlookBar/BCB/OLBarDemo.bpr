@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="..\..\..\bin\OLBarDemo.exe"/>
+    <OBJFILES value="..\..\..\dcu\OLBarDemo.obj ..\..\..\dcu\OLBarMaonFormU.obj"/>
+    <RESFILES value=""/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) OLBarMaonFormU.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="JVSYSTEMC5R.lib JVSTDCTRLSC5R.lib JVCUSTOMC5R.lib VCLDB50.lib VCLX50.lib 
+      JCLVCLC50.lib JCLC50.lib JVCOREC5R.lib Vcl50.lib"/>
+    <SPARELIBS value="Vcl50.lib JVCOREC5R.lib JCLC50.lib JCLVCLC50.lib VCLX50.lib VCLDB50.lib 
+      JVCUSTOMC5R.lib JVSTDCTRLSC5R.lib JVSYSTEMC5R.lib"/>
+    <PACKAGES value="Vcl50.bpi Vclx50.bpi bcbsmp50.bpi Vcldb50.bpi vclado50.bpi ibsmp50.bpi 
+      VCLBDE50.bpi vcldbx50.bpi Qrpt50.bpi TeeUI50.bpi TeeDB50.bpi Tee50.bpi 
+      Dss50.bpi TeeQR50.bpi VCLIB50.bpi Vclmid50.bpi vclie50.bpi Inetdb50.bpi 
+      Inet50.bpi NMFast50.bpi webmid50.bpi bcbie50.bpi dclocx50.bpi 
+      bcb2kaxserver50.bpi JCLC50.bpi JVAPPFRMC5R.bpi JVCOREC5R.bpi JCLVCLC50.bpi 
+      JVSYSTEMC5R.bpi JVCTRLSC5R.bpi JVSTDCTRLSC5R.bpi JVBANDSC5R.bpi 
+      JVBDEC5R.bpi JVDLGSC5R.bpi JVDBC5R.bpi JVCMPC5R.bpi JVCRYPTC5R.bpi 
+      JVCUSTOMC5R.bpi JVDOCKINGC5R.bpi JVDOTNETCTRLSC5R.bpi JVEDIC5R.bpi 
+      JVGLOBUSC5R.bpi JVHMIC5R.bpi JVINTERPRETERC5R.bpi JVJANSC5R.bpi 
+      JVMANAGEDTHREADSC5R.bpi JVMMC5R.bpi JVNETC5R.bpi JVPAGECOMPSC5R.bpi 
+      JVPLUGINC5R.bpi JVPRINTPREVIEWC5R.bpi JVRUNTIMEDESIGNC5R.bpi 
+      JVTIMEFRAMEWORKC5R.bpi JVVALIDATORSC5R.bpi JVWIZARDC5R.bpi JVXPCTRLSC5R.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="OLBarDemo.cpp"/>
+    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)"/>
+    <LIBPATH value="..\..\..\..\JCL\lib\c6;..\..\..\lib\c6;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)"/>
+    <WARNINGS value="-w-par"/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I$(INCLUDEPATH) -src_suffix cpp 
+      -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+      -tW -tWM"/>
+    <PFLAGS value="-N2..\..\..\dcu -N0..\..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-I..\..\..\dcu -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1033
+CodePage=1252
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)
+
+[HistoryLists\hlLibraryPath]
+Count=3
+Item0=..\..\..\..\..\tests tiburon\svn\jvcl\lib\C5;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH);..\..\..\resources;..\..\..\lib\C5
+Item1=..\..\..\..\..\tests tiburon\svn\jvcl\lib\C5;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH);..\..\..\resources
+Item2=D:\MESDOC~1\prog\jcl\jcl\lib\c5;..\..\..\..\..\tests tiburon\svn\jvcl\lib\C5;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\..\dcu
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=..\..\..\bin\
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

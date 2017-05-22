@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvMMDesign" Design="-1">
+  <Description>JVCL Multimedia and Image Components</Description>
+  <GUID>{C1AE6119-BCF7-466D-A392-739C2DF6A51F}</GUID>
+  <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4D2F0000</ImageBase>
+  <Requires>
+    <Package Name="JvMM-R" Targets="all" Condition=""/>
+    <Package Name="JvCmp-R" Targets="all" Condition=""/>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvControls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvPictureEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvVirtualKeyEditorForm.pas" Targets="all_win32" Formname="frmJvVirtualKeyEditor" Condition=""/>
+    <File Name="..\..\design\JvAnimatedEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvAVICaptureEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDirectoryListForm.pas" Targets="all_win32" Formname="JvDirectoryListDialog" Condition=""/>
+    <File Name="..\..\design\JvIconListForm.pas" Targets="all_win32" Formname="IconListDialog" Condition=""/>
+    <File Name="..\..\design\JvID3v2DefineForm.pas" Targets="all_win32" Formname="JvID3DefineDlg" Condition=""/>
+    <File Name="..\..\design\JvID3v2EditorForm.pas" Targets="all_win32" Formname="JvID3FramesEditor" Condition=""/>
+    <File Name="..\..\design\JvImagePreviewForm.pas" Targets="all_win32" Formname="ImageForm" Condition=""/>
+    <File Name="..\..\design\JvMMReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPictureEditForm.pas" Targets="all_win32" Formname="PictureEditDialog" Condition=""/>
+    <File Name="..\..\design\JvFullColorSpacesEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFullColorEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFullColorListForm.pas" Targets="all_win32" Formname="JvFullColorListFrm" Condition=""/>
+  </Contains>
+</Package>

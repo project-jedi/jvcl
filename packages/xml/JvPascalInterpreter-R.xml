@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvPascalInterpreter" Design="0">
+  <Description>JVCL Interpreter Components Runtime Package</Description>
+  <GUID>{402000FB-ED18-476D-9D5A-AE398F019FD6}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>49740000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvCustom-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="bdertl" Targets="BDE" Condition=""/>
+    <Package Name="qrpt" Targets="DB" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="qr4rund2006" Targets="D10" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="inet" Targets="DB" Condition="INTERNET_COMPONENTS"/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvInterpreterParser.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_all.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Buttons.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Classes.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_ComCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Contnrs.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Controls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Db.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_DbCtrls.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_DbGrids.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_DBTables.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Dialogs.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_ExtCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Forms.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Graphics.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Grids.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_httpapp.pas" Targets="DB,help" Formname="" Condition="INTERNET_COMPONENTS"/>
+    <File Name="..\..\run\JvInterpreter_JvEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_JvInterpreter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_JvUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Menus.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Quickrpt.pas" Targets="DB,help" Formname="" Condition="JVCL_UseQuickReport"/>
+    <File Name="..\..\run\JvInterpreter_StdCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_System.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_SysUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Types.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Windows.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreterConst.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreterFm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreterParser.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_all.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Buttons.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Classes.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_ComCtrls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Contnrs.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Controls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Db.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_DbCtrls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_DbGrids.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_DBTables.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Dialogs.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_ExtCtrls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Forms.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Graphics.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Grids.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_httpapp.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_JvEditor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_JvInterpreter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_JvUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Menus.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Quickrpt.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_StdCtrls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_System.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_SysUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Types.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_Windows.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreterConst.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreterFm.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

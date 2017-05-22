@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvDBDesign" Design="-1">
+  <Description>JVCL Database Components</Description>
+  <GUID>{08932657-9DD1-4AA2-9926-F32E388E39EA}</GUID>
+  <C6PFlags>-LUdcldb -LUDesignIde -LUJcl -LUJclVcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A180000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvDlgs-R" Targets="all" Condition=""/>
+    <Package Name="JvDB-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvControls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="dcldb" Targets="DB" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="dclstd" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvSelectDataSetForm.pas" Targets="DB_win32" Formname="JvSelectDataSetForm" Condition=""/>
+    <File Name="..\..\design\JvCsvDataEditor.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCsvDataForm.pas" Targets="DB_win32" Formname="JvCsvDefStrDialog" Condition=""/>
+    <File Name="..\..\design\JvDBActnResForm.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBMemDatasetEditor.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBReg.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBEditors.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridExportEditors.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridEditors.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridControlsEditorForm.pas" Targets="DB_win32" Formname="frmJvDBGridControlsEditor" Condition=""/>
+  </Contains>
+</Package>

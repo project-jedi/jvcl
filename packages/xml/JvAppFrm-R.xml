@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvAppFrm" Design="0">
+  <Description>JVCL Application and Form Components Runtime Package</Description>
+  <GUID>{E00CE13F-DE42-43C5-AEC9-57C655403758}</GUID>
+  <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>49020000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvControls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvGradientCaption.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAnimTitle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppAnimatedIcon.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppEvent.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppHotKey.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormAnimatedIcon.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormAnimation.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormAutoSize.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormMagnet.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormTransparent.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormWallpaper.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvEmbeddedForms.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGradientCaption.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAnimTitle.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAppAnimatedIcon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAppEvent.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAppHotKey.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormAnimatedIcon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormAnimation.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormAutoSize.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormMagnet.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormTransparent.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormWallpaper.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvEmbeddedForms.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

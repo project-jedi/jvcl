@@ -1,0 +1,26 @@
+To:
+news://amis.grizzlydev.com/nzn.fr.delphi
+Developpez.com (delphi@redaction-developpez.com)
+
+
+Sujet: 
+ANN: JVCL 3.46 est disponible
+Corps:
+L'équipe JVCL est fière d'annoncer la sortie de la version stable de la bibliothèque de composants JVCL version 3.46.
+
+La JVCL est une bibliothèque comprenant environ 600 composants visuels et non-visuels pour Delphi 6, 7, 2006, 2007, 2009, 2010, XE, XE2 et XE3; C++Builder 6, 2006, 2007, 2009, 2010, XE, XE2 et XE3. La JVCL est distribué sous licence Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html), est entièrement gratuite pour toute utilisation (open source, shareware ou commerciale) et inclus le code source de tous les composants.
+
+Cette version apporte de nombreux correctifs et le support de la dernière version de Delphi et C++ Builder, XE3.
+
+Cette version est disponible en quatre distributions :
+- Installation complète + dernière JCL
+- Installation complète sans JCL
+- Source et exemples
+- Source uniquement
+
+La version actuelle est JVCL 3.46.
+
+
+
+L'équipe JVCL
+http://jvcl.sourceforge.net

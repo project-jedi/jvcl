@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvBDEDesign" Design="-1">
+  <Description>JVCL BDE Components</Description>
+  <GUID>{13EB6F0F-0B65-4D2B-8DCB-B45F992EC6A9}</GUID>
+  <C6PFlags>-LUDesignIde -LUdcldb -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A040000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvBDE-R" Targets="all" Condition=""/>
+    <Package Name="JvDBDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvDlgs-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvDB-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="dcldb" Targets="DB" Condition=""/>
+    <Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="bdertl" Targets="DB" Condition=""/>
+    <Package Name="dclstd" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvBDESecurityEditor.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEEditors.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEMemTableEditor.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEReg.pas" Targets="BDE,help" Formname="" Condition=""/>
+  </Contains>
+</Package>

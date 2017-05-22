@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svncleaner root="../..">
+  <setting path="../.." mask="" recurse="yes" dironly="yes">
+
+    <!-- general properties for directories -->
+    <property name="bugtraq:logregex">
+      <value>[Mm]antis #?(\d+)(,? ?#?(\d+))+</value>
+      <value>(\d+)</value>
+    </property>
+    <property name="bugtraq:message">
+      <value>(Mantis #%BUGID%)</value>
+    </property>
+    <property name="bugtraq:url">
+      <value>http://issuetracker.delphi-jedi.org/view.php?id=%BUGID%</value>
+    </property>
+    <property name="tsvn:projectlanguage">
+      <value>0x0409</value>
+    </property>
+    <property name="tsvn:logminsize">
+      <value>5</value>
+    </property>
+
+    <!-- general properties based on extensions -->
+    <setting path="" mask="*.pas *.PAS *.cpp *.CPP *.h *.H *.hpp *.HPP *.dpr *.DPR *.dpk *.DPK *.inc *.INC *.mak *.fpc *.pl *.cs *.tpl *.pad" recurse="yes" dironly="no">
+      <property name="svn:keywords">
+        <value>URL HeadURL Author LastChangedBy Date LastChangedDate Rev Revision LastChangedRevision Id</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.pas *.PAS *.cpp *.hpp *.HPP *.inc *.INC *.h *.dpr *.DPR *.dpk *.bpr *.bpk *.bpf *.gmk *.bmk *.def *.conf *.sh *.txt *.TXT *.bat *.xml *.htm *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dof *.DOF *.kof *.rc *.RC *.dfm *.DFM *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.INI *.fpc *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.dic *.macros *.tmpl *.als *.hhk *.hhp *.hhc *.FAQ *.po *.pal *.dat *.csv *.htt *.tpl *.bkf *.jsf *.sql *.SQL *.xhs *.mps *.pad *.identifers *.templates *.reg *.gpi *.SUP *.desk *.lng *.sef *.itm *.php" recurse="yes"  dironly="no">
+      <property name="svn:eol-style">
+        <value>native</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.zip *.res *.RES *.Res *.dcr *.exe *.dll *.obj *.tlb *.edi *.resources *.chm *.chw *.dls *.e32 *.psp *.uc *.mdb *.R32 *.VAL *.db *.PX *.MB *.XG* *.YG* *.xls *.add *.ai *.adt *.adi *.am *.GDB *.tm *.doc" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>application/octet-stream</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.jpg *.JPG *.jpeg *.JPEG" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>image/jpeg</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.ico *.ICO" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>image/x-icon</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.bmp *.BMP" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>image/bmp</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.png *.PNG" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>image/png</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.gif *.GIF" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>image/gif</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.cur *.CUR *.ani *.ANI" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>image/cursor</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.txt *.TXT" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>text/plain</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.tar.gz" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>application/x-compressed-tar</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.sh *.pl" recurse="yes" dironly="no">
+      <property name="svn:executable">
+        <value>*</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.htm *.HTM *.html *.HTML" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>text/html</value>
+      </property>
+    </setting>
+    <setting path="" mask="*.xml *.XML" recurse="yes" dironly="no">
+      <property name="svn:mime-type">
+        <value>text/xml</value>
+      </property>
+    </setting>
+
+    <!-- specific properties based on directories -->
+
+    <setting path="archive/examples/JvMultiHTTPGrabber" mask="" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.~*</value>
+        <value>*.dpp</value>
+        <value>*.cfg</value>
+        <value>*.dof</value>
+        <value>*.dcu</value>
+        <value>*.drc</value>
+        <value>*.ini</value>
+        <value>*.map</value>
+      </property>
+    </setting>
+
+    <setting path="bin" mask="" recurse="yes" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.exe</value>
+        <value>*.dll</value>
+        <value>*.tds</value>
+        <value>*.ini</value>
+        <value>*.map</value>
+      </property>
+    </setting>
+
+    <setting path="common" mask="" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.dcu</value>
+        <value>*.ddp</value>
+        <value>*.~*</value>
+        <value>*.hpp</value>
+        <value>__history</value>
+      </property>
+      <property name="svn:externals">
+        <value>jedi https://projectjedi.svn.sourceforge.net:443/svnroot/projectjedi/trunk/shared/include</value>
+      </property>
+    </setting>
+
+    <setting path="dcu" mask="" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.dcu</value>
+      </property>
+    </setting>
+
+    <setting path="design" mask="" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.dcu</value>
+        <value>*.ddp</value>
+        <value>*.~*</value>
+        <value>*.hpp</value>
+        <value>__history</value>
+      </property>
+    </setting>
+
+    <setting path="devtools" mask="*" recurse="yes" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.cfg</value>
+        <value>*.ddp</value>
+        <value>*.drc</value>
+        <value>*.dsk</value>
+        <value>*.exe</value>
+        <value>*.dll</value>
+        <value>*.dcu</value>
+        <value>*.~*</value>
+        <value>*.hpp</value>
+        <value>*.local</value>
+        <value>*.identcache</value>
+        <value>__history</value>
+      </property>
+    </setting>
+
+    <setting path="examples" mask="*" recurse="yes" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.cfg</value>
+        <value>*.ddp</value>
+        <value>*.drc</value>
+        <value>*.dcu</value>
+        <value>*.obj</value>
+        <value>*.dsk</value>
+        <value>*.exe</value>
+        <value>*.~*</value>
+        <value>*.hpp</value>
+        <value>*.local</value>
+        <value>*.identcache</value>
+        <value>__history</value>
+      </property>
+    </setting>
+
+    <setting path="include" mask="*" recurse="yes" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.hpp</value>
+      </property>
+    </setting>
+
+    <setting path="lib" mask="*" recurse="yes" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.dcpil</value>
+        <value>*.dcuil</value>
+        <value>*.ddp</value>
+        <value>*.bpl</value>
+        <value>*.dcp</value>
+        <value>*.dfm</value>
+        <value>*.xfm</value>
+        <value>*.lib</value>
+        <value>*.bpi</value>
+        <value>*.obj</value>
+        <value>*.dcu</value>
+        <value>*.hpp</value>
+        <value>include</value>
+      </property>
+    </setting>
+
+    <setting path="locale" mask="*LC_MESSAGES" recurse="yes" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.mo</value>
+        <value>*.poedit</value>
+      </property>
+    </setting>
+
+    <setting path="packages" mask="c? c?per d? d?per d?? d??per" recurse="yes" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.cfg</value>
+        <value>*.ddp</value>
+        <value>*.drc</value>
+        <value>*.dsk</value>
+        <value>*.exe</value>
+        <value>*.~*</value>
+        <value>*.hpp</value>
+        <value>*.local</value>
+        <value>*.identcache</value>
+        <value>__history</value>
+      </property>
+    </setting>
+
+    <setting path="packages" mask="help" recurse="yes" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.doxdb</value>
+        <value>__history</value>
+      </property>
+    </setting>
+
+    <setting path="run" mask="" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.dcu</value>
+        <value>*.ddp</value>
+        <value>*.~*</value>
+        <value>*.hpp</value>
+        <value>__history</value>
+        <value>*.xml</value>
+        <value>*.bak</value>
+      </property>
+    </setting>
+
+    <setting path="install/JVCLInstall" mask="" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.cfg</value>
+        <value>*.drc</value>
+        <value>*.~*</value>
+        <value>*.hpp</value>
+        <value>__history</value>
+      </property>
+    </setting>
+
+    <setting path="install/ISS" mask="" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>Output</value>
+        <value>setupbuild</value>
+      </property>
+    </setting>
+
+  </setting>
+</svncleaner>

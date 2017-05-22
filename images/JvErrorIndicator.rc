@@ -1,0 +1,4 @@
+LANGUAGE 0, 0
+; needs X prefix or the MAINICON stops working
+XJVERRORINDICATORICON ICON "JvResErrorIndicator.ico"
+JVERRORINDICATOR BITMAP "JvResErrorIndicator.bmp"

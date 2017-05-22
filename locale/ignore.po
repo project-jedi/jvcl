@@ -1,0 +1,1051 @@
+#  Ignore list. Remove those that you do want to have translated.
+
+msgid "*"
+msgstr ""
+
+msgid " "
+msgstr ""
+
+msgid "..."
+msgstr ""
+
+msgid ">"
+msgstr ""
+
+msgid ">>"
+msgstr ""
+
+msgid "<"
+msgstr ""
+
+msgid "<<"
+msgstr ""
+
+msgid "Panel2"
+msgstr ""
+
+msgid "ToolBar1"
+msgstr ""
+
+msgid "ExceptionDialog"
+msgstr ""
+
+msgid "TextLabel"
+msgstr ""
+
+msgid "ToolButton1"
+msgstr ""
+
+msgid "ToolButton2"
+msgstr ""
+
+msgid "ToolButton4"
+msgstr ""
+
+msgid "ToolButton5"
+msgstr ""
+
+msgid "ToolButton8"
+msgstr ""
+
+msgid "3 5"
+msgstr ""
+
+msgid "OutModIn2"
+msgstr ""
+
+msgid "Mod3"
+msgstr ""
+
+msgid "Xor3"
+msgstr ""
+
+msgid "XOr3Mod"
+msgstr ""
+
+msgid "TJv7SegmentedLEDDigit"
+msgstr ""
+
+msgid "-"
+msgstr ""
+
+msgid "*.bmp"
+msgstr ""
+
+msgid "Int64"
+msgstr ""
+
+msgid "RASAPI32.DLL"
+msgstr ""
+
+msgid "\">"
+msgstr ""
+
+msgid "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+msgstr ""
+
+msgid "WINAMP1"
+msgstr ""
+
+msgid "ToolButton7"
+msgstr ""
+
+msgid "ToolButton6"
+msgstr ""
+
+msgid "FontComboBox1"
+msgstr ""
+
+msgid "ColorComboBox1"
+msgstr ""
+
+msgid "Edit1"
+msgstr ""
+
+msgid "Action1"
+msgstr ""
+
+msgid "cur"
+msgstr ""
+
+msgid "Show_On_Startup"
+msgstr ""
+
+msgid "JvID3DefineDlg"
+msgstr ""
+
+msgid "E:\\...\\dev\\JVCL3\\design"
+msgstr ""
+
+msgid "ToolButton3"
+msgstr ""
+
+msgid "tbDivider2"
+msgstr ""
+
+msgid "1st"
+msgstr ""
+
+msgid "2nd"
+msgstr ""
+
+msgid "3rd"
+msgstr ""
+
+msgid "4th"
+msgstr ""
+
+msgid "tbDivider1"
+msgstr ""
+
+msgid "MS Sans Serif"
+msgstr ""
+
+msgid "JV_HANDCUR"
+msgstr ""
+
+msgid "JV_DRAGCUR"
+msgstr ""
+
+msgid "http://shop.biblio-globus.ru/cpr/SiteBuilder/"
+msgstr ""
+
+msgid "tbFirst"
+msgstr ""
+
+msgid "tbNext"
+msgstr ""
+
+msgid "tbPrinterSetup"
+msgstr ""
+
+msgid "tbPrintRange"
+msgstr ""
+
+msgid "tbPrint"
+msgstr ""
+
+msgid "tbLoad"
+msgstr ""
+
+msgid "tbSave"
+msgstr ""
+
+msgid "tbExportExcel"
+msgstr ""
+
+msgid "Biblio-Globus"
+msgstr ""
+
+msgid "Arial"
+msgstr ""
+
+msgid "Verdana"
+msgstr ""
+
+msgid "Courier New"
+msgstr ""
+
+msgid "qrp"
+msgstr ""
+
+msgid "lblpages"
+msgstr ""
+
+msgid "LblCaption"
+msgstr ""
+
+msgid "LblTarget"
+msgstr ""
+
+msgid "LblInfo"
+msgstr ""
+
+msgid "LblOpenFile"
+msgstr ""
+
+msgid "LblFilename"
+msgstr ""
+
+msgid "LblComment"
+msgstr ""
+
+msgid "http://projectjedi.sourceforge.net"
+msgstr ""
+
+msgid "TJv"
+msgstr ""
+
+msgid "LblErrorReason"
+msgstr ""
+
+msgid "Pascal"
+msgstr ""
+
+msgid "CBuilder"
+msgstr ""
+
+msgid "Sql"
+msgstr ""
+
+msgid "Python"
+msgstr ""
+
+msgid "Java"
+msgstr ""
+
+msgid "VB"
+msgstr ""
+
+msgid "Html"
+msgstr ""
+
+msgid "Perl"
+msgstr ""
+
+msgid "Ini"
+msgstr ""
+
+msgid "Coco/R"
+msgstr ""
+
+msgid "FB"
+msgstr ""
+
+msgid "PHP"
+msgstr ""
+
+msgid "C#"
+msgstr ""
+
+msgid "NQC"
+msgstr ""
+
+msgid "MS Shell Dlg 2"
+msgstr ""
+
+msgid "Version: 1.00"
+msgstr ""
+
+msgid "http://jvcl.sourceforge.net "
+msgstr ""
+
+msgid "http://groups.yahoo.com/group/JEDI-VCL"
+msgstr ""
+
+msgid "news://forums.talkto.net/jedi.vcl"
+msgstr ""
+
+msgid "JEDI-VCL"
+msgstr ""
+
+msgid "Tahoma"
+msgstr ""
+
+msgid "Windows 2000 "
+msgstr ""
+
+msgid "100.000 KB"
+msgstr ""
+
+msgid " http://delphi-jedi.org "
+msgstr ""
+
+msgid "rot cx"
+msgstr ""
+
+msgid "rot cy"
+msgstr ""
+
+msgid "turb"
+msgstr ""
+
+msgid "QuickBack"
+msgstr ""
+
+msgid "Prod"
+msgstr ""
+
+msgid "Sum"
+msgstr ""
+
+msgid "Sub"
+msgstr ""
+
+msgid "Xor"
+msgstr ""
+
+msgid "And"
+msgstr ""
+
+msgid "OutAnd"
+msgstr ""
+
+msgid "InAnd"
+msgstr ""
+
+msgid "OutXor"
+msgstr ""
+
+msgid "InXor"
+msgstr ""
+
+msgid "OutMod"
+msgstr ""
+
+msgid "InMod"
+msgstr ""
+
+msgid "ProdXor"
+msgstr ""
+
+msgid "SumXor"
+msgstr ""
+
+msgid "SubXor"
+msgstr ""
+
+msgid "ProdAnd"
+msgstr ""
+
+msgid "SumAnd"
+msgstr ""
+
+msgid "SubAnd"
+msgstr ""
+
+msgid "OutRed"
+msgstr ""
+
+msgid "InRed"
+msgstr ""
+
+msgid "OutGreen"
+msgstr ""
+
+msgid "InGreen"
+msgstr ""
+
+msgid "Outblue"
+msgstr ""
+
+msgid "InBlue"
+msgstr ""
+
+msgid "InModOut"
+msgstr ""
+
+msgid "OutModIn"
+msgstr ""
+
+msgid "ModMod"
+msgstr ""
+
+msgid "ModModXor"
+msgstr ""
+
+msgid "ModModSub"
+msgstr ""
+
+msgid "ModModAdd"
+msgstr ""
+
+msgid "ModModAnd"
+msgstr ""
+
+msgid "ModModOr"
+msgstr ""
+
+msgid "SubXorSum"
+msgstr ""
+
+msgid "SubProdSum"
+msgstr ""
+
+msgid "ProdProdSum"
+msgstr ""
+
+msgid "DrawXor"
+msgstr ""
+
+msgid "ani"
+msgstr ""
+
+msgid "KERNEL\\CPUUsage"
+msgstr ""
+
+msgid "PerfStats\\StartStat"
+msgstr ""
+
+msgid "PerfStats\\StopStat"
+msgstr ""
+
+msgid "PerfStats\\StatData"
+msgstr ""
+
+msgid "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\"
+msgstr ""
+
+msgid "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\\"
+msgstr ""
+
+msgid "DSA_State"
+msgstr ""
+
+msgid ""
+"%s%s:\n"
+"%s%s"
+msgstr ""
+
+msgid "%s%s"
+msgstr ""
+
+msgid " (%s)"
+msgstr ""
+
+msgid "%s=%s%s"
+msgstr ""
+
+msgid "%s (%s)"
+msgstr ""
+
+msgid "Unassigned"
+msgstr ""
+
+msgid "Null"
+msgstr ""
+
+msgid "Any"
+msgstr ""
+
+msgid "EmptyParam"
+msgstr ""
+
+msgid "IInterface %s"
+msgstr ""
+
+msgid "IInterface $%x"
+msgstr ""
+
+msgid "IDispatch %s"
+msgstr ""
+
+msgid "IDispatch $%x"
+msgstr ""
+
+msgid "pcx"
+msgstr ""
+
+msgid "<HTML>"
+msgstr ""
+
+msgid "<BODY>"
+msgstr ""
+
+msgid "<BR>"
+msgstr ""
+
+msgid "</BODY>"
+msgstr ""
+
+msgid "</HTML>"
+msgstr ""
+
+msgid "<TITLE>%s</TITLE>"
+msgstr ""
+
+msgid "</FONT>"
+msgstr ""
+
+msgid "<FONT COLOR=#"
+msgstr ""
+
+msgid " SIZE="
+msgstr ""
+
+msgid " FACE=\""
+msgstr ""
+
+msgid "</B>"
+msgstr ""
+
+msgid "<B>"
+msgstr ""
+
+msgid "</I>"
+msgstr ""
+
+msgid "<I>"
+msgstr ""
+
+msgid "</STRIKE>"
+msgstr ""
+
+msgid "<STRIKE>"
+msgstr ""
+
+msgid "</U>"
+msgstr ""
+
+msgid "<U>"
+msgstr ""
+
+msgid "</P>"
+msgstr ""
+
+msgid "<P ALIGN=\"LEFT\">"
+msgstr ""
+
+msgid "<P ALIGN=\"RIGHT\">"
+msgstr ""
+
+msgid "<P ALIGN=\"CENTER\">"
+msgstr ""
+
+msgid "<LI>"
+msgstr ""
+
+msgid "</LI>"
+msgstr ""
+
+msgid "Software\\JEDI-VCL\\TipsStartup"
+msgstr ""
+
+msgid "frmJvDataConsumerItemSelect"
+msgstr ""
+
+msgid "frmJvDataContextManager"
+msgstr ""
+
+msgid "frmDataProviderDesigner"
+msgstr ""
+
+msgid "JvgLabelTest"
+msgstr ""
+
+msgid "TB"
+msgstr ""
+
+msgid "glLogicsEditor"
+msgstr ""
+
+msgid "tbStop"
+msgstr ""
+
+msgid "glMresEdit"
+msgstr ""
+
+msgid "FE_OLE"
+msgstr ""
+
+msgid "glr"
+msgstr ""
+
+msgid "P_Main"
+msgstr ""
+
+msgid "RX.ImagePreview\\"
+msgstr ""
+
+msgid "RX.ImageEditor\\"
+msgstr ""
+
+msgid "tbrWizardPages"
+msgstr ""
+
+msgid "Version 1.60"
+msgstr ""
+
+msgid "lblCopyRight"
+msgstr ""
+
+msgid "JvWizardAboutDialog"
+msgstr ""
+
+msgid "actDeletePages"
+msgstr ""
+
+msgid "ROOT"
+msgstr ""
+
+msgid "JvHLEdPropDlg.ini"
+msgstr ""
+
+msgid "Wingdings"
+msgstr ""
+
+msgid "fPrintPreview"
+msgstr ""
+
+msgid "tbPrior"
+msgstr ""
+
+msgid "DateFormat"
+msgstr ""
+
+msgid "TimeFormat"
+msgstr ""
+
+msgid "MarginTop"
+msgstr ""
+
+msgid "MarginHeader"
+msgstr ""
+
+msgid "MarginLeft"
+msgstr ""
+
+msgid "MarginRight"
+msgstr ""
+
+msgid "MarginBottom"
+msgstr ""
+
+msgid "PaddingLeft"
+msgstr ""
+
+msgid "HeaderSize"
+msgstr ""
+
+msgid "FooterSize"
+msgstr ""
+
+msgid "FoLog"
+msgstr ""
+
+msgid "csv"
+msgstr ""
+
+msgid "LblContext"
+msgstr ""
+
+msgid "TxtSpell"
+msgstr ""
+
+msgid "txt"
+msgstr ""
+
+msgid "1.0.0.0"
+msgstr ""
+
+msgid "zhouyibo"
+msgstr ""
+
+msgid "http://jvcl.sourceforge.net"
+msgstr ""
+
+msgid "jvcl@jvcl.sf.net"
+msgstr ""
+
+msgid "@"
+msgstr ""
+
+msgid "JvJCLUtils.MakeYear4Digit: Pivot < 0"
+msgstr ""
+
+msgid "*.pcx;*.tga;"
+msgstr ""
+
+msgid "frmJvColorProviderDesigner"
+msgstr ""
+
+msgid "CSVFieldDef="
+msgstr ""
+
+msgid "*.bmp;*.ico;*.wmf"
+msgstr ""
+
+msgid "DecreaseBox.Checked"
+msgstr ""
+
+msgid "TXT"
+msgstr ""
+
+msgid "%d - %s"
+msgstr ""
+
+msgid "*.csv"
+msgstr ""
+
+msgid "??"
+msgstr ""
+
+msgid "MPEG 1.0"
+msgstr ""
+
+msgid "MPEG 2.0"
+msgstr ""
+
+msgid "MPEG 2.5"
+msgstr ""
+
+msgid "Layer 1"
+msgstr ""
+
+msgid "Layer 2"
+msgstr ""
+
+msgid "Layer 3"
+msgstr ""
+
+msgid "CCIT J.17"
+msgstr ""
+
+msgid " (VBR)"
+msgstr ""
+
+msgid "AutoHide"
+msgstr ""
+
+msgid "HeaderText"
+msgstr ""
+
+msgid "FooterText"
+msgstr ""
+
+msgid "Helvetica"
+msgstr ""
+
+msgid "adobe-helvetica"
+msgstr ""
+
+msgid "Jv Docking"
+msgstr ""
+
+msgid "JVCL Dock Server Component"
+msgstr ""
+
+msgid "JVCL Dock Client Component"
+msgstr ""
+
+msgid "JVCL Dock Style Component"
+msgstr ""
+
+msgid "GetMode???"
+msgstr ""
+
+msgid "2.0.1"
+msgstr ""
+
+msgid "PanelGraphics"
+msgstr ""
+
+msgid "LabelComAxis0"
+msgstr ""
+
+msgid "LabelComAxis1"
+msgstr ""
+
+msgid "LabelComAxis2"
+msgstr ""
+
+msgid "CheckBoxCom0"
+msgstr ""
+
+msgid "CheckBoxCom1"
+msgstr ""
+
+msgid "CheckBoxCom2"
+msgstr ""
+
+msgid "LabelAxis0"
+msgstr "Label"
+
+msgid "LabelAxis1"
+msgstr "Label"
+
+msgid "LabelAxis2"
+msgstr "Label"
+
+msgid "CheckBoxRed0"
+msgstr ""
+
+msgid "(%s %d)"
+msgstr ""
+
+#. JvFullColorCircleFrm..PanelAxisSettings..CheckBoxRed1..Caption
+#: JvFullColorCircleForm.dfm:418
+msgid "CheckBoxRed1"
+msgstr ""
+
+msgid "CheckBoxRed2"
+msgstr ""
+
+msgid "CheckBoxGreen0"
+msgstr ""
+
+msgid "CheckBoxGreen1"
+msgstr ""
+
+msgid "CheckBoxGreen2"
+msgstr ""
+
+msgid "CheckBoxBlue0"
+msgstr ""
+
+msgid "CheckBoxBlue1"
+msgstr ""
+
+msgid "CheckBoxBlue2"
+msgstr ""
+
+#    --- This is because of UIB resources. Must discuss the issue with UIB's author.
+msgid "Vrai"
+msgstr ""
+
+msgid "Faux"
+msgstr ""
+
+msgid "Impossible de charger la DLL: %s."
+msgstr ""
+
+msgid "Transtypage incorrect."
+msgstr ""
+
+msgid "Erreur innatendue."
+msgstr ""
+
+msgid "Le champ \"%s\" n'existe pas."
+msgstr ""
+
+msgid "Le Parametre \"%s\" n'existe pas."
+msgstr ""
+
+msgid "Indice de liste hors limites (%d)"
+msgstr ""
+
+msgid "La taille du nom est trop grande (%s)"
+msgstr ""
+
+msgid "L'exception %s, n'existe pas."
+msgstr ""
+
+msgid "Impossible de se connecter au serveur."
+msgstr ""
+
+msgid "Ano"
+msgstr ""
+
+msgid "Ne"
+msgstr ""
+
+msgid "Parametr \"%s\" neexistuje."
+msgstr ""
+
+msgid "Index je mimo rozsah (%d)"
+msgstr ""
+
+msgid "Exception: %d already registered"
+msgstr ""
+
+msgid "Wahr"
+msgstr ""
+
+msgid "Falsch"
+msgstr ""
+
+msgid "Kann Bibliothek %s nicht laden."
+msgstr ""
+
+msgid "Datenbank-Handle bereits zugewiesen. Bitte erst Verbindung zur Datenbank trennen."
+msgstr ""
+
+msgid "Transaktion nicht zugewiesen."
+msgstr ""
+
+msgid "Datenbank nicht zugewiesen."
+msgstr ""
+
+msgid "Fehler bei Typumwandlung."
+msgstr ""
+
+msgid "Unerwarteter Fehler."
+msgstr ""
+
+msgid "Feld Nummer %d nicht gefunden."
+msgstr ""
+
+msgid "Feld \"%s\" nicht gefunden."
+msgstr ""
+
+msgid "Parameter \"%s\" nicht gefunden."
+msgstr ""
+
+msgid "Blob-Feld Nummer: %d nicht gefunden."
+msgstr ""
+
+msgid "Die Eigenschaft FetchBlob muss gesetzt sein um diese Methode zu nutzen."
+msgstr ""
+
+msgid "Name ist zu lang (%s)."
+msgstr ""
+
+msgid "Die Abfrage muss erst vorbereitet werden."
+msgstr ""
+
+msgid "Die Transaktion muss explizit gestartet werden."
+msgstr ""
+
+msgid "Ausnahme \"%s\" nicht gefunden."
+msgstr ""
+
+msgid "Ausnahme %d bereits registriert."
+msgstr ""
+
+msgid "Die Transaktion muss explizit beendet werden."
+msgstr ""
+
+msgid "Generator %s nicht gefunden."
+msgstr ""
+
+msgid "Feld nicht gefunden."
+msgstr ""
+
+msgid "Tabelle \"%s\" nicht gefunden."
+msgstr ""
+
+msgid "Prozedur %s nicht gefunden."
+msgstr ""
+
+msgid "Verbindung zum Server kann nicht aufgebaut werden."
+msgstr ""
+
+msgid "Klasse nicht gefunden."
+msgstr ""
+
+msgid "Datentypfehler."
+msgstr ""
+
+msgid "Si"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Imposible cargar la DLL: %s."
+msgstr ""
+
+msgid "Error inesperado."
+msgstr ""
+
+msgid "Campo \"%s\" no encontrado."
+msgstr ""
+
+msgid "Parametro \"%s\" no  encontrado."
+msgstr ""
+
+msgid "Nombre demasiado largo (%s)"
+msgstr ""
+
+msgid "El query debe prepararse primero."
+msgstr ""
+
+msgid "El query debe ser abierto primero."
+msgstr ""
+
+msgid "La transaccisn debe ser iniciada explmcitamente."
+msgstr ""
+
+msgid "Excepcion con nombre %s, no fue encontrada."
+msgstr ""
+
+msgid "Excepcion: %d ya esta registrada."
+msgstr ""
+
+msgid "La transaccisn debe ser cerrada explmcitamente."
+msgstr ""
+
+msgid "Imposible conectar con el servidor."
+msgstr ""
+
+msgid "Clase no encontrada."
+msgstr ""
+
+msgid "Error de tipo de dato."
+msgstr ""
+
+msgid "@Jcldebug@InsertDebugDataIntoExecutableFile$qqrpct1rit3"
+msgstr ""
+
+msgid "<c:blue>http://jvcl.sourceforge.net"
+msgstr ""
+
+msgid "CommCtrlAsInvoker.manifest"
+msgstr ""
+
+msgid ".temp"
+msgstr ""
+
+msgid "TJvCustomAppStorage.Synchronize:"
+msgstr ""
+
+msgid "http://homepages.codegear.com/jedi/jcl/"
+msgstr ""
+
+msgid "http://homepages.codegear.com/jedi/jvcl/"
+msgstr ""
+
+msgid "http://jcl.delphi-jedi.org"
+msgstr ""
+
+msgid "http://jvcl.delphi-jedi.org"
+msgstr ""
+
+msgid "http://jcl.delphi-jedi.org/"
+msgstr ""
+
+msgid "http://jvcl.delphi-jedi.org/"
+msgstr ""
+
+msgid "TJvCustomPropertyStore.StoreProperties:"
+msgstr ""
+
+msgid "TJvCustomPropertyStore.LoadProperties:"
+msgstr ""
+
+msgid "TJvCustomPropertyStore.LoadStoreProperties:"
+msgstr ""
+
+msgid "output.txt"
+msgstr ""
+

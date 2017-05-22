@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvCrypt" Design="0">
+  <Description>JVCL Encryption and Compression Runtime Package</Description>
+  <GUID>{B20B4140-780B-4ABF-B260-6BDF60F83EB3}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4B500000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvZlibMultiple.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCabFile.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCipher.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGenetic.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSerialMaker.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvZlibMultiple.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCabFile.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCipher.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGenetic.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSerialMaker.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

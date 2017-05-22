@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="..\..\..\bin\RunDLL32Demo.exe"/>
+    <OBJFILES value="..\..\..\dcu\RunDLL32Demo.obj ..\..\..\dcu\RunDll32MainFormU.obj 
+      ..\..\..\dcu\InfoFrm.obj"/>
+    <RESFILES value="RunDLL32Demo.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) RunDll32MainFormU.dfm InfoFrm.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="RunDLL32Demo.cpp"/>
+    <INCLUDEPATH value="..\..\..\..\..\..;$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)"/>
+    <LIBPATH value="..\..\..\..\..\..;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\..\..\..\..\.. -I$(BCB)\include -I$(BCB)\include\vcl -I$(INCLUDEPATH) 
+      -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+      -tW -tWM"/>
+    <PFLAGS value="-N2..\..\..\dcu -N0..\..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-I..\..\..\dcu -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="RunDLL32Demo.res" FORMNAME="" UNITNAME="RunDLL32Demo.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="RunDLL32Demo.cpp" FORMNAME="" UNITNAME="RunDLL32Demo" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="RunDll32MainFormU.cpp" FORMNAME="RunDll32MainForm" UNITNAME="RunDll32MainFormU" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="InfoFrm.cpp" FORMNAME="frmInfo" UNITNAME="InfoFrm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+  </IDEOPTIONS>
+</PROJECT>

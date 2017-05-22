@@ -1,0 +1,7 @@
+LANGUAGE 0, 0
+JvXPCustomWinXPBarCOLLAPSE0 BITMAP "XPBarCollapse0.bmp"
+JvXPCustomWinXPBarCOLLAPSE1 BITMAP "XPBarCollapse1.bmp"
+JvXPCustomWinXPBarCOLLAPSE2 BITMAP "XPBarCollapse2.bmp"
+JvXPCustomWinXPBarEXPAND0   BITMAP "XPBarExpand0.bmp"
+JvXPCustomWinXPBarEXPAND1   BITMAP "XPBarExpand1.bmp"
+JvXPCustomWinXPBarEXPAND2   BITMAP "XPBarExpand2.bmp"

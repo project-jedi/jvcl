@@ -1,0 +1,4 @@
+[Directories]
+OutputDir=..\bin
+UnitOutputDir=..\dcu
+RunParams=..\..\packages\xml\*.xml separate.xml fixed.xml ./jvcl/**/

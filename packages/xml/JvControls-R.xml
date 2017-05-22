@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvControls" Design="0">
+  <Description>JVCL Visual Controls Runtime Package</Description>
+  <GUID>{FA36E6EE-9969-480E-B60D-09412CA9B183}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4B000000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
+    <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvActionsEngine.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvControlActions.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvControlActionsEngine.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvControlActionsEngineStringGrid.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvControlActionsEngineTreeView.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCharMap.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvClock.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvColorBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvColorButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvColorForm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvComboListBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvComponentPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvContentScroller.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDice.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDriveCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFooter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGroupHeader.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHint.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHtControls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImageDrawThread.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInstallLabel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvItemsPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvListComb.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMovableBevel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPageScroller.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPlaylist.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRegistryTreeview.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRollOut.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScrollMax.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScrollPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScrollText.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpacer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpeedbar.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpeedbarSetupForm.pas" Targets="all" Formname="JvSpeedbarSetupWindow" Condition=""/>
+    <File Name="..\..\run\JvSplit.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSplitter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSwitch.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSyncSplitter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTransparentButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUninstallControls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWinampLabel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvZoom.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvArrowButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvaScrollText.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBehaviorLabel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvButtons.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCaptionButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCaptionPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOfficeColorButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOfficeColorPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOfficeColorForm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvNetscapeSplitter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRuler.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvVersionControlActions.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvVersionControlActionsEngine.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvVersionControlActionsEngineFileListBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvActionsEngine.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvControlActions.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvControlActionsEngine.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvControlActionsEngineStringGrid.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvControlActionsEngineTreeView.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCharMap.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvClock.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvColorBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvColorButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvColorForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvComboListBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvComponentPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvContentScroller.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDice.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDriveCtrls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFooter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGroupHeader.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHint.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHtControls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImageDrawThread.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInstallLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvItemsPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvListComb.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMovableBevel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPageScroller.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPlaylist.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRegistryTreeview.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRollOut.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScrollMax.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScrollPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScrollText.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpacer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpeedbar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpeedbarSetupForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSplit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSplitter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSwitch.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSyncSplitter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTransparentButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvUninstallControls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWinampLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvZoom.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvArrowButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvaScrollText.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBehaviorLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvButtons.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCaptionButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCaptionPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOfficeColorButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOfficeColorPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOfficeColorForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvNetscapeSplitter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRuler.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvVersionControlActions.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvVersionControlActionsEngine.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvVersionControlActionsEngineFileListBox.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

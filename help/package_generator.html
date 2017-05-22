@@ -1,0 +1,1747 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>JEDI Package Generator</title>
+  <link rel="STYLESHEET" type="text/css" href="styles/default.css">
+</head>
+<body>
+<h1>JEDI Package Generator</h1>
+<hr style="width: 100%; height: 2px;"><br>
+<h2>Summary</h2>
+<a href="#Introduction">Introduction<br>
+</a><a href="#About_the_package_generator">About the package generator<br>
+</a><a href="#Package_XML_Source_Files_Format">Package XML source files
+format<br>
+</a><a href="#XML_Configuration_File_Format">XML Configuration file
+format<br>
+</a><a href="#Template_Files_Format">Template Files format<br>
+</a><a href="#Include_File_parsing">Include File parsing<br>
+</a><a href="#Detailed_Generation_process">Detailed generation process</a><br>
+<a href="#Conditions_parsing">Conditions parsing</a><br>
+<a href="#Detailed_Generation_process"></a><a
+ href="#Command_line_reference">Command line reference<br>
+</a><a href="#Notes_to_developers">Notes to developers<br>
+</a><br>
+<h2><a name="Introduction"></a>Introduction</h2>
+In an effort to make the generation of component packages for the
+JVCL easier, a package generator has been created. Even if it is
+extensively
+used by the JVCL team, it has been designed to be as generic as
+possible and as such may seem a bit complex at first. You will find in
+this file the documentation you need to understand how to take
+advantage of this tool.
+<p><br>
+The package generator comes in two different version: Graphical User
+Interface (pgEdit.exe) and Command Line (pg.exe). They both work from
+the same set of XML configuration files, pgEdit having the advantage to
+allow you to safely edit the source XML files. Here is the flow diagram:<br>
+<br>
+</p>
+<div style="text-align: center;"><img
+ style="width: 533px; height: 454px;" alt="Package Generator Flow"
+ src="images/pg-flow.png"><br>
+</div>
+<br>
+Each file has its own role:<br>
+<br>
+<table style="text-align: left; width: 100%;" border="0" cellpadding="2"
+ cellspacing="0">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;"><a
+ href="#Package_XML_Source_Files_Format">Package XML
+Source Files</a><br>
+      </td>
+      <td style="vertical-align: top;">Each package XML source file
+indicates which files are to be included in the package, which other
+packages this package depends on and various compilation options such
+as PFLAGS (Pascal Flags) for C++ Builder. All inclusions and
+dependencies can be conditionally altered by a compilation directive.<br>
+A runtime package should have a '-R' suffix, while a design time
+package should have a '-D' suffix. Hence, JvCore-R.xml is a runtime
+package source file while JvCore-D.xml is a design time package source
+file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><a
+ href="#XML_Configuration_File_Format">XML Configuration File</a><br>
+      </td>
+      <td style="vertical-align: top;">This file contains the
+declaration of models that the package generator will use to generate
+the files. Each model declares targets (one version of Delphi, C++
+Builder or Kylix), the format of the filenames to output, the location
+of
+package files and optionally an include file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><a href="#Template_Files_Format">Template
+Files</a><br>
+      </td>
+      <td style="vertical-align: top;">These files are skeletons for
+the final output files. They contain special markers that will get
+replaced by values taken from the XML configuration file and the
+Package Source XML files to generate the final output files.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><a href="#Include_File_parsing">Include
+File</a><br>
+      </td>
+      <td style="vertical-align: top;">It is possible to specify
+conditions for inclusion of packages and source files in packages. The
+conditions are read from the include file given to the package
+generator. Because the syntax of these conditions can be quite complex,
+the packages must be regenerated whenever the given include file has
+changed so that packages are synchronised with it. If you don't
+regenerate the packages, you may have errors when compiling the
+packages. <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Existing Output Files<br>
+      </td>
+      <td style="vertical-align: top;">If the files to be generated
+already exist, they will be used to determine if any change was done to
+them since the last time they were generated. If unchanged, the output
+files
+will be left untouched.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2><a name="About_the_package_generator"></a>About the package
+generator<br>
+</h2>
+The package generator is released by the JEDI VCL group under the
+Mozilla Public License 1.1 and was originally written by <a
+ href="mailto:obones@altern.org">Olivier Sannier</a>. It has since
+benefitted from the contributions of various people in order to make it
+as generic as possible. Should you have any questions regarding this
+program, please feel free to contact the original author or the JVCL
+team.<br>
+<br>
+<h2><a name="Package_XML_Source_Files_Format"></a>Package XML Source
+Files Format</h2>
+Here is a basic XML source file (Extracted from JvCore-R.xml):<br>
+<br>
+<table
+ style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellpadding="2" cellspacing="0">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><code>&lt;?xml
+version="1.0" encoding="iso-8859-1"?&gt;<br>
+&lt;Package Name="JvCore" Design="0"&gt;<br>
+&nbsp; &lt;Description&gt;JVCL Core Runtime Package&lt;/Description&gt;<br>
+&nbsp; &lt;CLXDescription&gt;JVCLX Core Runtime
+Package&lt;/Description&gt;<br>
+&nbsp; &lt;GUID&gt;{CCA5391F-35F6-43D1-AB48-187085D1EF5B}&lt;/GUID&gt;<br>
+&nbsp; &lt;C5PFlags&gt;-LUCJcl50&lt;/C5PFlags&gt;<br>
+&nbsp; &lt;C6PFlags&gt;-LUCJcl&lt;/C6PFlags&gt;<br>
+&nbsp; &lt;C5Libs/&gt;<br>
+&nbsp; &lt;C6Libs/&gt;<br>
+&nbsp; &lt;Requires&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;Package Name="ThemeManager6"
+Targets="D6,D6p,C6,C6p"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Condition="JVCLThemesEnabled"/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;Package
+Name="CJCL"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Targets="C6,C6p" &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;
+Condition=""/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;Package
+Name="vclx"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Targets="D6,D6p,D7,D7p,C6,C6p,K2,K3" Condition=""/&gt;<br>
+&nbsp; &lt;/Requires&gt;<br>
+&nbsp; &lt;Contains&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;File
+Name="..\..\common\JvConsts.pas"&nbsp;&nbsp;&nbsp;&nbsp;
+Targets="all" Formname="" &nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Condition=""/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;File Name="..\..\run\JvColorProvider.pas"
+Targets="all"
+Formname=""&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Condition=""/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;File
+Name="..\..\run\JvComponent.pas"&nbsp;&nbsp;&nbsp;&nbsp;
+Targets="all"
+Formname=""&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Condition=""/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;File Name="..\..\run\JvJVCLAboutForm.pas"
+Targets="all" Formname="JvJVCLAboutForm" Condition=""/&gt;<br>
+&nbsp; &lt;/Contains&gt;<br>
+&lt;/Package&gt;<br>
+      </code></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+When reading the files, the package generator doesn't check for the
+existence of the nodes and properties in the XML file. It assumes they
+exist and if they don't you will most likely end up with an Access
+Violation exception.
+This is why we recommend that you use pgEdit.exe to edit the files,
+which
+will ensure that the format of the xml files is correct. Here is a
+description of each node and its usage:<br>
+<br>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Node<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Parent
+Node<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top; white-space: nowrap;">none (root
+node)<br>
+      </td>
+      <td style="vertical-align: top;">This is the root node. Its only
+properties are Name and Design. Name is obviously the name of the
+package while Design is 1 when the package is a designtime package, 0
+when it is a run time package. The root node doesn't have to be called
+package, but it MUST have those two properties.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Description<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This is the description of the
+package as it will be displayed in the IDE.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">ClxDescription<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This is the description of the
+package as it will be displayed in the IDE, when the package is
+generated for a CLX target.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">GUID<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">Delphi 2005 requires a GUID to
+be present in bdsproj files. This is the value that will be used as
+replacement for the %GUID% marker, allowing you to put such a GUID in a
+file if required. This is read as a string value, no verification is
+made to ensure that the value actually is a valid GUID.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">C5PFlags<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">The package files for C++
+Builder 5 contain a special node to allow for passing extra arguments
+to
+the pascal compiler. This node indicates the value to use for the
+PFLAGS node in C++ Builder 5 packages. In the example above, we added
+-LUCJcl50 to indicate to link the file CJcl50.dcp into the package.
+Options are separated by spaces and if followed by a string in
+parenthesis, the string is considered to be a condition. If the
+condition doesn't exist when the file is generated, the option is
+removed. For instance, if you type -LUCJcl50(USEJVCL) then if USEJVCL
+is not defined in the include file, -LUCJcl50 will be removed from the
+final PFLAGS value. This final value will be the replacement for
+%C5PFLAGS% in
+template files.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">C6PFlags<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This node has the same
+meaning as C5PFlags but for C++ Builder 6, hence being the replacement
+for %C6PFLAGS%<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">C10PFlags<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This node has the same
+meaning as C6PFlags but for C++ Builder 10, hence being the replacement
+for %C10PFLAGS%. If the node is absent, the value of C6PFlags is used.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">C5Libs<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">In some rare occasions, it may
+be necessary to indicate some extra libraries to the C++ linker. This
+happened for instance with the Network related packages in the JVCL as
+they required wininet.lib. The value here should be a space separated
+list of library files and will be the replacement for %C5LIBS%<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">C6Libs<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This node has the same meaning
+as C5Libs but will be the replacement for %C6LIBS%<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">C10Libs<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This node has the same meaning
+as C6Libs but will be the replacement for %C10LIBS%. If the node is
+absent, the value of C6Libs is used.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">ImageBase<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">A string that will be the
+replacement for %IMAGE_BASE%. It's recommended use is to set the base
+of the image in a compiler directive. This node is not compulsory, an
+empty string being used by default.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">VersionMajorNumber<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">A string that will be the
+replacement for %VERSION_MAJOR_NUMBER%. It's
+recommended use is to store the major version number. <br>
+This node is not compulsory, an empty string being used as a default.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">VersionMinorNumber<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">A string that will be the
+replacement for %VERSION_MINOR_NUMBER%. It's
+recommended use is to store the minor version number. <br>
+This node is not compulsory, an empty string being used as a default.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">ReleaseNumber<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">A string that will be the
+replacement for %RELEASE_NUMBER%. It's
+recommended use is to store the release number. <br>
+This node is not compulsory, an empty string being used as a default.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">BuildNumber<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">A string that will be the
+replacement for %BUILD_NUMBER%. It's
+recommended use is to store the build number. <br>
+This node is not compulsory, an empty string being used as a default.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Requires<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This node is only the parent of
+all the 'package' nodes, indicating the packages required
+by
+the current package.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Contains<br>
+      </td>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">This node is only the parent of
+all the 'file' nodes, indicating the files contained in the
+current package. </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Package<br>
+      </td>
+      <td style="vertical-align: top;">Requires<br>
+      </td>
+      <td style="vertical-align: top;">Each package node in a Require
+node indicates a package that the current package requires in order to
+be
+compiled. It must have the following three attributes:<br>
+      <table style="text-align: left; width: 100%;" border="0"
+ cellpadding="2" cellspacing="0">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">Name<br>
+            </td>
+            <td style="vertical-align: top;">The name of the package
+that is being required. No extension should be given here. If the name
+starts with the prefix for the current model, it will be
+modified according to the format in the model. For instance,
+if Name is 'JvCore-R', prefix is 'Jv', format is '%p%e%v%t' and the
+current target is C++ Builder 6, the name will be replaced by
+JvCoreC6R. Please see the detailed description of the generation
+process for further information.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Targets<br>
+            </td>
+            <td style="vertical-align: top;">The targets for which the
+package is required.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Condition<br>
+            </td>
+            <td style="vertical-align: top;">The condition under which
+the package is required. If empty, no condition is necessary to
+require the package in the current one. Please see the '<a
+ href="#Conditions_parsing">Conditions parsing</a>' section for details
+about the available operators.<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">File<br>
+      </td>
+      <td style="vertical-align: top;">Contains<br>
+      </td>
+      <td style="vertical-align: top;">Each File node in a Contains
+node indicates a file to include in the package. It must
+have the following four attributes:<br>
+      <table style="text-align: left; width: 100%;" border="0"
+ cellpadding="2" cellspacing="0">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">Name<br>
+            </td>
+            <td style="vertical-align: top;">The name of the file to
+include. The extension must be included.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Targets<br>
+            </td>
+            <td style="vertical-align: top;">The targets for which the
+file is to be included.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Formname<br>
+            </td>
+            <td style="vertical-align: top;">The name of the form (dfm)
+associated with the pas file, if any. It is not the type name, but the
+name of the form that must be indicated here. For instance, if the form
+is of type TForm1 then the value must be Form1. Moreover, if the dfm
+file describes a Frame or a Data Module, the name must be followed by a
+colon, a space and TFrame or TDataModule (as in 'myFrame: TFrame').<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Condition<br>
+            </td>
+            <td style="vertical-align: top;">The condition under which
+the file is to be included. If empty, no
+condition is necessary to include the file. Please see the '<a
+ href="#Conditions_parsing">Conditions parsing</a>' section for details
+about the available operators.</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2><a name="XML_Configuration_File_Format"></a>XML Configuration File
+Format</h2>
+Here is a basic XML Configuration file, derived from the full
+pgEdit.xml distributed with the JVCL:<br>
+<br>
+<table
+ style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellpadding="2" cellspacing="0">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><code>&lt;?xml
+version="1.0" encoding="iso-8859-1"?&gt;<br>
+&lt;Configuration&gt;<br>
+&nbsp; &lt;pgEdit&gt;<br>
+&nbsp;&nbsp;&nbsp;
+&lt;odlAddFiles_InitialDir&gt;..\..\run&lt;/odlAddFiles_InitialDir&gt;<br>
+&nbsp;&nbsp;&nbsp;
+&lt;cmbModel_ItemIndex&gt;0&lt;/cmbModel_ItemIndex&gt;<br>
+&nbsp; &lt;/pgEdit&gt;<br>
+&nbsp; &lt;models&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;model name="JVCL" prefix="Jv"
+ClxPrefix="JvQ" format="%p%n%e%v%t" <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+packages="..\..\packages" incfile="..\..\common\jvcl.inc"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;targets&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;target name="d7"
+pname="d7p" pdir="d7per" defines="COMPILER7_UP"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/targets&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;aliases&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;alias name="Delphi"
+value="d7,d7p"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/aliases&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ClxReplacements&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;replacement
+original="\run\Jv" replacement="\qrun\JvQ"/&gt;<br>
+      </code><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/ClxReplacements&gt;<br>
+      </code><code>&nbsp;&nbsp;&nbsp; &lt;/model&gt;<br>
+&nbsp; &lt;/models&gt;<br>
+&lt;/Configuration&gt;</code><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Contrary to the package XML source files, the validity of this file is
+checked when read and an explanatory message will be displayed if
+the file is corrupted. However, only the basic structure is checked and
+you may end up with an Acces Violation exception anyway. To get a
+meaningful file, you need to indicate the correct
+values according to the following table:<br>
+<br>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Node<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Parent
+Node<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Configuration<br>
+      </td>
+      <td style="vertical-align: top; white-space: nowrap;">node (root
+node)<br>
+      </td>
+      <td style="vertical-align: top;">This is the root node of the XML
+file. It doesn't have to have any attributes and may be named
+differently, but doing so would mean that pgEdit.exe needs to be
+changed to
+cope with the modification. pg.exe doesn't care.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">pgEdit<br>
+      </td>
+      <td style="vertical-align: top;">Configuration<br>
+      </td>
+      <td style="vertical-align: top;">This node contains all the
+subnodes required by pgEdit to save its state when closed down. The
+state includes the values of various component fields, the size of the
+form,
+its position etc.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">models<br>
+      </td>
+      <td style="vertical-align: top;">Configuration<br>
+      </td>
+      <td style="vertical-align: top;">This node holds the model nodes,
+those nodes being the actual configuration described in this file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">model<br>
+      </td>
+      <td style="vertical-align: top;">models<br>
+      </td>
+      <td style="vertical-align: top;">Each model node defines a
+generation model that can be used by the package generator. The first
+five
+attributes are compulsory and serve the following purpose:<br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="0">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">name<br>
+            </td>
+            <td style="vertical-align: top;">The name of the model.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">prefix<br>
+            </td>
+            <td style="vertical-align: top;">The prefix indicates the
+first characters of package names that are to be modified when
+encountered in a required package node for a package to generate.
+Please see the detailled description of the <a
+ href="#Detailed_Generation_process">generation process</a> for further
+information.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">format<br>
+            </td>
+            <td style="vertical-align: top;">The format of the string
+that will replace 'template' in a template filename. It will also
+replace a package name that matches the prefix while being processed in
+the '<a href="#Template_Files_Format">Requires section</a>' state.
+Please see
+the detailed description of the <a href="#Detailed_Generation_process">generation
+process</a> for further information. Some special markers will get
+replaced:<br>
+            <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="0">
+              <tbody>
+                <tr>
+                  <td style="vertical-align: top;">%e<br>
+                  </td>
+                  <td style="vertical-align: top;">A single character
+indicating the environment. See below for more details.<br>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: top;">%n<br>
+                  </td>
+                  <td style="vertical-align: top;">The package name
+without suffix. In the example above, it would be "Core".</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: top;">%p</td>
+                  <td style="vertical-align: top;">A fixed prefix. In
+the
+example above it would be "Jv".<br>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: top;">%t<br>
+                  </td>
+                  <td style="vertical-align: top;">The type of package.
+Simply the character after the dash. "R" for run-time packages, "D" for
+design time packages. </td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: top;">%v</td>
+                  <td style="vertical-align: top;">The target version.
+See below for more details<br>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">packages<br>
+            </td>
+            <td style="vertical-align: top;">The location of the
+packages. This is considered as a root, meaning that the Package XML
+source files will be searched in the xml subdirectory. The
+directories used to output the files for each target will have to
+exist in this pseudo root directory.</td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">incfile</td>
+            <td style="vertical-align: top;">The name of the include
+file to parse. This only has an impact for C++ Builder targets.</td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">NoLibSuffixFormat<br>
+            </td>
+            <td style="vertical-align: top;">Delphi and C++ Builder
+prior to version 6 do not support the LibSuffix
+concept. If you want to emulate it with your packages, you may want to
+use this attribute. If it is defined, its value will be used for all
+versions prior to 6. The same replacement rules applies to it. If it is
+not defined, it defaults to the value of the format attribute.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">NoLibSuffixPrefix<br>
+            </td>
+            <td style="vertical-align: top;">As with format and
+NoLibSuffixFormat, If this attribute is defined it will be used with
+versions prior to 6. If it is not defined, the value of Prefix is used.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">ClxFormat<br>
+            </td>
+            <td style="vertical-align: top;">In some instances, it may
+be interesting to have a different format string for the names of
+packages that are used when creating CLX applications. Define this
+attribute to use a different format when a CLX target is being used.
+Please see below for the definition of a CLX target. If this attribute
+is not defined, the value of Format will be used<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">ClxPrefix<br>
+            </td>
+            <td style="vertical-align: top;">As with Format and
+ClxFormat, you may want to have a different prefix for CLX targets (For
+instance, the JVCL uses 'JvQ' instead of 'Jv'). Define this attribute
+if you want to use that feature, its value being the one of Prefix if
+it is not defined.<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">targets<br>
+      </td>
+      <td style="vertical-align: top;">model<br>
+      </td>
+      <td style="vertical-align: top;">This node holds the target
+nodes, one node for each target your suite can support.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">aliases<br>
+      </td>
+      <td style="vertical-align: top;">model<br>
+      </td>
+      <td style="vertical-align: top;">This node holds the alias nodes,
+one node for each target alias you want to provide. In the example
+above, using "Delphi" in a target node in a package XML source file is
+equivalent to using "d7,d7p". The aliases are not resolved recursively
+and are not case sensitive. You don't have to define the 'all' alias,
+as it will be derived from the list of targets.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">ClxReplacements<br>
+      </td>
+      <td style="vertical-align: top;">model<br>
+      </td>
+      <td style="vertical-align: top;">This node, if it exists, holds
+the replacement nodes, one node per filename replacement. These
+replacements will only occur on the filename of the contained files for
+a package, and only when the target being generated is marked as CLX.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">target<br>
+      </td>
+      <td style="vertical-align: top;">targets<br>
+      </td>
+      <td style="vertical-align: top;">Each target node must have at
+least the name attribute. All other attributes are optionnal:<br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="0">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">name<br>
+            </td>
+            <td style="vertical-align: top;">The name of the target.
+Required.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">dir<br>
+            </td>
+            <td style="vertical-align: top;">The directory where to
+generate the packages. Defaults to 'name'. It must exists in the
+packages
+directory before starting the generation of packages. If not, errors
+will occur and the error messages may not be self-explanatory.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">pname<br>
+            </td>
+            <td style="vertical-align: top;">The name of the associated
+Personal target. A personal target is the target that will be used to
+force
+the generation of a different package for a version of the target that
+do not support some common features (database generally). Leave empty
+or do
+not define if there are no reason to use this feature. For instance,
+Delphi Personal Editions doesn't support databases. With the example
+above you could use the d7 target alone when specifying a file that is
+to be included for Delphi 7 and not Delphi 7 Personal Edition. Use
+'d7,d7p' when including a file that is supported by all versions of
+Delphi 7.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">pdir<br>
+            </td>
+            <td style="vertical-align: top;">The directory for the
+associated personal target. Defaults to pname<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">env<br>
+            </td>
+            <td style="vertical-align: top;">A character to identify
+the development environment. Defaults to the first character of 'name'.
+Expected values are "D" for Delphi, "C" for C++ Builder and "K" for
+Kylix.
+Any other value will most likely lead to errors while generating the
+packages.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">ver<br>
+            </td>
+            <td style="vertical-align: top;">A character to identify
+the version of the environment. Defaults to the substring of digits
+starting from the second character of
+'name'. That is, if the target is d7 or d7clx, then the default value
+will be 7. If you don't want this to happen, explicitly specify a value
+for this property.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">defines<br>
+            </td>
+            <td style="vertical-align: top;">A comma separated string
+to indicate which Conditional Compilation symbols are defined as the
+result of using this target so that your include file can enclose some
+$DEFINE in $IFDEF that relate to the compiler being used. For instance,
+in the JVCL we have the JVCLThemesEnabled compilation directive. It
+can be turned on manually, but if the target compiler is version 7 or
+later, it is always turned on as the theme support is included in
+Delphi 7. Hence in the include file, we have this:<br>
+            <code><br>
+            </code>
+            <table
+ style="text-align: left; background-color: rgb(204, 204, 204); width: 100%;"
+ border="0" cellpadding="2" cellspacing="0">
+              <tbody>
+                <tr>
+                  <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><code>{$IFDEF
+COMPILER7_UP}<br>
+&nbsp; {$DEFINE JVCLThemesEnabled}<br>
+{$ENDIF}<br>
+                  </code></td>
+                </tr>
+              </tbody>
+            </table>
+            <code></code><br>
+Now, when a file is included with the JVCLThemesEnabled condition, it
+will only be included if the COMPILER7_UP condition is also available.
+But this
+is only the case when compiling because it is derived from the version
+number of the compiler. However, you can specifically indicate that a
+given target will define a condition using this attribute, hence
+mimicking what happens during compilation. Please refer to the <a
+ href="#Include_File_parsing">Include File parsing</a> section for more
+information on the handling of the include file.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">PathSep<br>
+            </td>
+            <td style="vertical-align: top;">Indicates which character
+is to be used as a path separator for the target. If not specified,
+this value defaults to "\". You are most likely to setup this value for
+Linux targets, where it should be set to "/"<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">IsCLX<br>
+            </td>
+            <td style="vertical-align: top;">If set to 1 (True), this
+indicates that the target is a CLX target and the ClxPrefix and
+ClxFormat values will be used when generating the packages. See above
+for more details.<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">alias<br>
+      </td>
+      <td style="vertical-align: top;">aliases<br>
+      </td>
+      <td style="vertical-align: top;">Each alias node must have those
+two attributes:<br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="0">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">name<br>
+            </td>
+            <td style="vertical-align: top;">The name of the alias.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">value<br>
+            </td>
+            <td style="vertical-align: top;">A comma separated list
+of targets this alias will expand to. No recursion is done when
+resolving the aliases. If you defined any Personal targets, do not
+forget
+to include them in the value for your alias.<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">replacement<br>
+      </td>
+      <td style="vertical-align: top;">ClxReplacements<br>
+      </td>
+      <td style="vertical-align: top;"> Each replacement node must have
+those two attributes:<br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="0">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">original<br>
+            </td>
+            <td style="vertical-align: top;">The orignal string to be
+replaced.<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">replacement</td>
+            <td style="vertical-align: top;">The value to use as a
+replacement of the original string<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2><a name="Template_Files_Format"></a>Template Files Format</h2>
+The template files are either binary or text files. To determine if a
+file is binary, the first 50 bytes are read from it and if more than 10
+percent of them are not ASCII readable characters, the file is
+considered to be binary. An ASCII readable character is one from the
+[#9, #10, #13, #32..#127] set (Delphi Notation). The results of this
+analysis are cached to ensure that this doesn't impact on the speed of
+generation.<br>
+<br>
+If a template file is binary, then no special treatment is applied to
+it, it is simply copied over to the output file.<br>
+If a template file is text, then it is read line by line according to
+this state diagram:<br>
+<br>
+<div style="text-align: center;"><img
+ style="width: 530px; height: 394px;" alt="Template state diagram"
+ src="images/pg-template-state.png"><br>
+</div>
+<br>
+In each state, special markers can be found on the line being read.
+Markers are case sensitive and unless indicated otherwise, can be found
+anywhere on the line
+and can appear more than once.<br>
+<br>
+<table
+ style="width: 90%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="1" cellpadding="2" cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center;">State<br>
+      </td>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center;">Marker<br>
+      </td>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="18"
+ style="vertical-align: top; white-space: nowrap;">Standard Line<br>
+      </td>
+      <td style="vertical-align: top; white-space: nowrap;">&lt;%%%
+START REQUIRES %%%&gt;<br>
+      </td>
+      <td style="vertical-align: top;">Must be alone on the line. Goes
+to the 'Requires Section' state.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">&lt;%%%
+START FILES %%%&gt;</td>
+      <td style="vertical-align: top;">Must be alone on the line. Goes
+to the 'Files Section' state.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">&lt;%%%
+START FORMS %%%&gt;</td>
+      <td style="vertical-align: top;">Must be alone on the line. Goes
+to the 'Forms Section' state.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">&lt;%%%
+START LIBS %%%&gt;</td>
+      <td style="vertical-align: top;">Must be alone on the line. Goes
+to the 'Libs Section' state.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%NAME%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the name of the
+output file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%XMLNAME%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the name of the
+package XML source file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%GUID%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+GUID node in the package XML source file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%DESCRIPTION%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the description of
+the package. If the target for which the generation occurs is marked as
+being CLX, the CLX description is used here.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%C5PFLAGS%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+c5pflags node in the package XML source file, after it has been
+processed for conditions.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%C6PFLAGS%</td>
+      <td style="vertical-align: top;">Replaced by the value from the
+c6pflags node in the package XML source file, after it has been
+processed for conditions.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%IMAGE_BASE%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+ImageBase node in the package XML source file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%VERSION_MAJOR_NUMBER%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+VersionMajorNumber node in the package XML source file.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%VERSION_MINOR_NUMBER%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+VersionMinorNumber node in the package XML source file.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%RELEASE_NUMBER%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+ReleaseNumber node in the package XML source file.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%BUILD_NUMBER%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the value from the
+BuildNumber node in the package XML source file.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%TYPE%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by 'DESIGN' or 'RUN'
+depending on the type of the package.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%type%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by 'd' or 'r' according
+to the type of the package.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">%DATETIME%<br>
+      </td>
+      <td style="vertical-align: top;">Replaced by the current date and
+time adjusted to UTC, formatted according to the string 'dd-mm-yyyy
+hh:nn:ss' and followed by ' UTC'.<br>
+You should only use this marker once in the entire template for the
+difference detection mechanism to work correctly. Please see the
+detailed description of the <a href="#Detailed_Generation_process">generation
+process</a> for more details.<br>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="2"
+ style="vertical-align: top; white-space: nowrap;">Requires
+section<br>
+      <br>
+      </td>
+      <td style="vertical-align: top; white-space: nowrap;">%NAME%<br>
+      </td>
+      <td style="vertical-align: top;">The name of the package being
+required, taken from the package node in the package XML source
+file. As explained before, the name may be modified according to the
+format for the current model and the current target.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">&lt;%%% END
+REQUIRES %%%&gt;<br>
+      </td>
+      <td style="vertical-align: top;">Must be alone on the line.
+Returns to the 'Standard Line' state.<br>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="7" style="vertical-align: top;">Files
+section<br>
+Forms section<br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      </td>
+      <td style="vertical-align: top;">%FILENAME% </td>
+      <td style="vertical-align: top;">The name of the source file as
+taken from the 'file' node in the package XML source file. If the
+target for which the generation occurs is marked as CLX, then the CLX
+replacements will occur on this value, as well as on all the others
+applicable in this state.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%UNITNAME%<br>
+      </td>
+      <td style="vertical-align: top;">The name of the source file
+without any path information and without the extension.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%Unitname%<br>
+      </td>
+      <td style="vertical-align: top;">Same as %UNITNAME% but the
+replacement is all in lower case except for the first letter which is
+converted to upper case.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%FORMNAME%<br>
+      </td>
+      <td style="vertical-align: top;">The name of the form, if any.
+Taken from the formname attribute of the 'file' node in the package XML
+source file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%FORMTYPE%<br>
+      </td>
+      <td style="vertical-align: top;">The type of the form, if any.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%FORMNAMEANDTYPE%<br>
+      </td>
+      <td style="vertical-align: top;">The name and the type of the
+form put together. If no type was specified in the formname attribute,
+then this is equivalent to %FORMNAME%.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%FORMPATHNAME%<br>
+      </td>
+      <td style="vertical-align: top;">The name of the dfm file
+containing the definition of the form.&nbsp; No extension is added, it
+is simply the filename with the extension removed.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Files section<br>
+      </td>
+      <td style="vertical-align: top;">&lt;%%% END FILES %%%&gt;<br>
+      </td>
+      <td style="vertical-align: top;">Must be alone on the line.
+Returns to the 'Standard Line' state. </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Forms section<br>
+      </td>
+      <td style="vertical-align: top;">&lt;%%% END FORMS %%%&gt;<br>
+      </td>
+      <td style="vertical-align: top;">Must be alone on the line.
+Returns to the 'Standard Line' state. </td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="3" style="vertical-align: top;">Libs
+section<br>
+      <br>
+      <br>
+      </td>
+      <td style="vertical-align: top;">%FILENAME%<br>
+      </td>
+      <td style="vertical-align: top;">The filename of the library file.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">%UNITNAME%<br>
+      </td>
+      <td style="vertical-align: top;">The filename of the library
+file, without any path information or extension.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">&lt;%%% END LIBS %%%&gt;<br>
+      </td>
+      <td style="vertical-align: top;">Must be alone on the line.
+Returns to the 'Standard Line' state. </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Lines that result in a transition are not included in the output file.
+Any line read in the 'Standard Line' state is written in the output
+file after marker replacement has been done. Lines read in the
+'Section' states will be repeated according to this table:<br>
+<br>
+<table
+ style="width: 90%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="1" cellpadding="2" cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center; white-space: nowrap;">Repeating
+section<br>
+      </td>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Requires<br>
+      </td>
+      <td style="vertical-align: top;">The lines read while in this
+state will be replaced for every package required by the one being
+generated. That is, for every 'package' node found in the package XML
+source file. The markers will be replaced before output is written.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Libs<br>
+      </td>
+      <td style="vertical-align: top;">The lines read while in this
+state will be replaced for every library to be included in the package
+being generated. That is, for every name in the space delimited value
+of
+the 'C5Libs' or 'C6Libs' node in the package XML source file. The node
+used depends on the target for which the generation takes place. If the
+target environment is not C and/or its version is not 5 or 6, the
+generator will most likely trigger an Access Violation exception.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Files<br>
+      </td>
+      <td style="vertical-align: top;">The lines read while in this
+state will be replaced for every file to be included in the package
+being generated. That is, for every 'file' node found in the package
+XML
+source file. The markers will be replaced before output is written.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Forms<br>
+      </td>
+      <td style="vertical-align: top;">This section follows the same
+repeat conditions as the Files section, except that a 'file' node will
+only be used if its 'formname' attribute is not empty.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2><a name="Include_File_parsing"></a>Include File parsing</h2>
+Delphi package files are source files and as such accept conditional
+compilation directives. These are used in the JVCL to include files
+depending on settings in the jvcl.inc file. These includes use of
+DxGettext, use of the GIF file format, use of the ThemeManager and many
+others.
+<p><br>
+C++ Builder package files, however, are XML files and do not support
+conditional compilation directives. The only way to reproduce the
+behaviour supported by Delphi is to regenerate the packages every time
+the
+include file is modified. This is because the package generator
+analyses the include file (if told to do so by the model) and outputs a
+conditioned line if the condition is defined in the include file.</p>
+<p><br>
+Before the generation process takes place, the include file is parsed
+to determine which conditions are defined. A list of 'defines' is
+created from the file, and each 'define' has a list of 'ifdefs'
+associated with it. This list indicates which other conditions must or
+must not be defined for this one to be defined. Let's consider this
+simple file:<br>
+<br>
+</p>
+<table
+ style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellpadding="2" cellspacing="0">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><code>{$DEFINE
+DIRECT_DEFINE}<br>
+      <br>
+{$IFDEF TEST}<br>
+&nbsp; {$DEFINE INSIDE_TEST}<br>
+{$ELSE}<br>
+&nbsp; {$DEFINE INSIDE_NOT_TEST}<br>
+{$ENDIF}<br>
+      <br>
+{$IFNDEF SOME_STUFF}<br>
+&nbsp; {$DEFINE OTHER}<br>
+{$ENDIF}<br>
+      </code></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+After the file has been processed, the following will be true:<br>
+<ul>
+  <li>DIRECT_DEFINE is defined</li>
+  <li>INSIDE_TEST is defined if TEST is defined</li>
+  <li>INSIDE_NOT_TEST is defined if TEST is not defined</li>
+  <li>OTHER is defined if SOME_STUFF is not defined<br>
+  </li>
+</ul>
+When a node in the package XML source file indicates a condition,
+the list of 'defines' is read to determine if the node must be
+considered or not. If the target doesn't indicate any additional
+'define' then only DIRECT_DEFINE and INSIDE_NOT_TEST are defined. But
+if the target indicates that TEST is defined, then only DIRECT_DEFINE
+and INSIDE_TEST are defined. The same goes for SOME_STUFF: If the
+target defines it then OTHER will be defined. When a 'define' depends
+on other 'defines' the list is read recursively but only up to the line
+where the define was found. This ensure a behaviour similar to what the
+compiler does. A define provided by a target is considered to exist
+even before the first line of the file.<br>
+There is no limit to the number of tests that
+can be done before the definition of a symbol (except for available
+memory) .<br>
+<br>
+<h2><a name="Detailed_Generation_process"></a>Detailed Generation
+process</h2>
+This detailed description will not be narrative, but rather
+algorithmic. You should not have to know any particular programming
+language to understand it, simple logic should be enough.<br>
+<br>
+Read the xml configuration file<br>
+Load the model to use<br>
+Load the include file indicated by the model, if any.<br>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">For</span>
+all asked targets <span style="font-weight: bold;">do</span><br>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">For</span>
+all 'template.*' files in the target's subdirectory of the packages
+root directory ('..\..\packages' in the <a
+ href="file:///C:/Perso/Prog/JVCL%20from%20CVS/dev/JVCL3/help/package_generator.html#XML_Configuration_File_Format">example</a>
+above)<sup>1.</sup> <span style="font-weight: bold;">do</span><br>
+<span style="font-weight: bold;"></span></div>
+<div style="margin-left: 40px;">
+<div style="margin-left: 40px;"><span style="font-weight: bold;">For</span>
+all '*.xml' files in the 'xml' subdirectory of the packages root
+directory<sup>2.</sup> <span style="font-weight: bold;">do</span><br>
+<span style="font-weight: bold;"></span>
+<div style="margin-left: 40px;"><span style="font-weight: bold;"></span><span
+ style="font-weight: bold;"></span>Determine the output filename by
+applying the format read in the model and using the extension of the
+template file<sup>3.</sup>.<br>
+</div>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">If</span>
+the template is binary<sup>4.</sup> and is different<sup>5.</sup> from
+the exisiting
+output file <span style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Copy the binary file to the output file<br>
+</div>
+<span style="font-weight: bold;">else<br>
+</span>
+<div style="margin-left: 40px;">Create an output file in memory<br>
+</div>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">For</span>
+every line in the template file <span style="font-weight: bold;">do</span><br>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">If</span>
+the line starts a 'Requires' section <span style="font-weight: bold;">then<br>
+</span>
+<div style="margin-left: 40px;">Read lines until the end marker is found<br>
+<span style="font-weight: bold;">For</span> all required packages <span
+ style="font-weight: bold;">do</span><br>
+<div style="margin-left: 40px;">Do the required replacements in the
+read lines<br>
+<span style="font-weight: bold;">If</span> there is no condition or the
+condition(s) evaluate to True <span style="font-weight: bold;">then</span><br>
+</div>
+<div style="margin-left: 80px;">Copy the modified lines read in the
+memory output file <br>
+</div>
+</div>
+<span style="font-weight: bold;">else if</span> the line starts a
+'Files' section <span style="font-weight: bold;">then<br>
+</span>
+<div style="margin-left: 40px;">Read lines until the end marker is found<br>
+<span style="font-weight: bold;">For</span> all required packages <span
+ style="font-weight: bold;">do</span><br>
+</div>
+<div style="margin-left: 80px;">Do the required replacements in the
+read lines<br>
+</div>
+<div style="margin-left: 80px;"><span style="font-weight: bold;">If</span>
+there is no condition or the condition(s) evaluate to True <span
+ style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Copy the modified lines read in the
+memory output file<br>
+</div>
+</div>
+<span style="font-weight: bold;">else if</span> the line starts a
+'Forms' section <span style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Read lines until the end marker is found<br>
+<span style="font-weight: bold;">For</span> all required packages <span
+ style="font-weight: bold;">do</span><br>
+</div>
+<div style="margin-left: 80px;">Do the required replacements in the
+read lines<br>
+</div>
+<div style="margin-left: 80px;"><span style="font-weight: bold;">If</span>
+there is no condition or the condition(s) evaluate to True <span
+ style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Copy the modified lines read in the
+memory output file<br>
+</div>
+</div>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;"></span><span
+ style="font-weight: bold;">else if</span> the line starts a 'Libs'
+section <span style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Read lines until the end marker is found<br>
+<span style="font-weight: bold;">For</span> all required packages <span
+ style="font-weight: bold;">do</span><br>
+</div>
+<div style="margin-left: 80px;">Do the required replacements in the
+read lines<br>
+</div>
+<div style="margin-left: 40px;">
+<div style="margin-left: 40px;">Copy the modified lines read in the
+memory output file<br>
+</div>
+</div>
+<div style="margin-left: 80px;"></div>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">else</span><br>
+<div style="margin-left: 40px;">Do the appropriate replacements in the
+line<br>
+Copy the modified line in the memory output file<br>
+</div>
+</div>
+<span style="font-weight: bold;">If</span> the memory output file is
+different<sup>6.</sup> from the existing output file <span
+ style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Write the memory output file into the
+output file on disk<sup>7.</sup><br>
+</div>
+<span style="font-weight: bold;">If</span> a difference was detected
+between the current target and the associated perso target<sup>8.</sup>
+<span style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;"><span style="font-weight: bold;">If</span>
+the perso directory contains a template named the same as the current
+template <span style="font-weight: bold;">then</span><br>
+<div style="margin-left: 40px;">Use that template<br>
+</div>
+Generate the output file for the perso target<sup>9.</sup><br>
+</div>
+<div style="margin-left: 40px;">
+<div style="margin-left: 40px;"><br>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+Notes:<br>
+<sup>1.</sup> If the current target directory name is 'c6' then this
+means '..\..\packages\c6\template.*'<br>
+<sup>2.</sup> Using the example above, this would be
+'..\..\packages\xml\*.xml'<br>
+<sup>3.</sup> If 'template.bpk' was used with the example configuration
+file, a target called 'c6' and the file JvCore-R.xml, this would expand
+to JvCoreC6R.bpk<br>
+<sup>4.</sup> A file is said to be binary if more than 10% of its 50
+first bytes are not in this ensemble (Delphi notation): [#9, #13, #10,
+#32..#127]. The results of that test are cached to increase the speed
+of the generation process.<br>
+<sup>5.</sup> The difference is determined by performing a byte per
+byte comparison.<br>
+<sup>6.</sup> The difference is determined by doing a line by line
+comparison. The last %DATETIME% marker in the file will be ignored,
+thus allowing a file that is only different by the date time tag to be
+treated
+as unmodified.<br>
+<sup>7.</sup> If no file was found to be included in the
+generated package for the current target, no file will be written.
+Please note that if the package only requires other packages but
+doesn't contain any file, it won't be output as a package is only
+meaningful if it contains files.<br>
+<sup>8.</sup> This is determined while processing 'package' and 'file'
+nodes. If a file or package is used by a target and not by its
+associated
+personal target (or vice-versa), then the two 'flavors' of the package
+being generated are different.<br>
+<sup>9.</sup> The output file will be placed in the directory set for
+the personal target. This is done by repeating all steps from the line
+where note 4 is. As the target name is a personal target, it has no
+associated personal target and the test for a difference between
+'flavours' is unnecessary. <br>
+<br>
+<h2><a name="Conditions_parsing"></a>Conditions parsing</h2>
+A simple parser is used to read the conditions applied to the various
+items of the package XML source files. Here are its specifications:<br>
+<br>
+<div style="margin-left: 40px;">Syntax:<br>
+</div>
+<div style="margin-left: 80px;">
+<table style="text-align: left; width: 100%;" border="0" cellpadding="0"
+ cellspacing="0">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; width: 1px;">&lt;b-exp&gt;</td>
+      <td style="vertical-align: top;">::= &lt;b-term&gt; ( [ "|" |
+"||" | "^" ] &lt;b-term&gt; )*</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px;">&lt;b-term&gt;<br>
+      </td>
+      <td style="vertical-align: top;">::= &lt;b-notfactor&gt; ( [
+"&amp;" | "&amp;&amp;" ] &lt;b-notfactor&gt; )*</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px;">&lt;b-notfactor&gt;</td>
+      <td style="vertical-align: top;">::= &lt;b-factor&gt; | "!"
+&lt;b-factor&gt;</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px;">&lt;b-factor&gt;</td>
+      <td style="vertical-align: top;">::= "(" &lt;b-exp&gt; ")" |
+&lt;ident&gt;</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<br>
+<div style="margin-left: 40px;">Symbols:<br>
+<div style="margin-left: 40px;">
+<table style="text-align: left; width: 100%;" border="0" cellpadding="0"
+ cellspacing="0">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; width: 1px; white-space: nowrap;">!<br>
+      </td>
+      <td style="vertical-align: top;">not<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px; white-space: nowrap;">&amp;,
+&amp;&amp;<br>
+      </td>
+      <td style="vertical-align: top;">and<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px; white-space: nowrap;">|,
+||<br>
+      </td>
+      <td style="vertical-align: top;">or<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 1px; white-space: nowrap;">^<br>
+      </td>
+      <td style="vertical-align: top;">xor<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+</div>
+</div>
+<div style="margin-left: 40px;">Examples:<br>
+</div>
+<div style="margin-left: 80px;">
+<table style="text-align: left; width: 90%;" border="0" cellpadding="0"
+ cellspacing="0">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><code>!A
+&amp;&amp; (B || C) || (D &amp;&amp; E) &amp;&amp; F || G || H<br>
+      <br>
+QREPORT4 &amp; JvclUseQuickReport<br>
+      </code></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<br>
+<h2><a name="Command_line_reference"></a>Command line reference</h2>
+pg.exe is the command line version of the package generator. It has
+been designed to be used from batch files and the JVLC installer. Here
+are the options it accepts:<br>
+<table
+ style="width: 80%; margin-left: auto; margin-right: auto; text-align: left;"
+ border="0" cellpadding="4" cellspacing="0">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">-h<br>
+      </td>
+      <td style="vertical-align: top;">Displays a help message,
+reminder of the available options, then exits.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-m=MODEL<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the model to use. The
+model must exist in the configuration file.<br>
+Defaults to 'JVCL'.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-x=CONFIGFILE<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the location of the
+xml configuration file. <br>
+Defaults to 'pg.xml'. If 'pg.xml' does not exists, defaults to
+'pgEdit.xml'. This has been done to allow for the usage of one xml file
+shared by both pg.exe and pgedit.exe.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-t=TARGETS<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the targets to build
+as a list of comma separated target names. You should not indicate any
+personal targets here.<br>
+Defaults to 'all'.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-p=PATH<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the root path for the
+packages.<br>
+Defaults to the value defined in the model to use.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-r=PREFIX<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the prefix for the
+packages.<br>
+Defaults to the value defined in the model to use.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-f=FORMAT<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the format of the name
+of packages.<br>
+Defaults to the value defined in the model to use.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">-i=INCLUDEFILE<br>
+      </td>
+      <td style="vertical-align: top;">Indicates the name of the
+include file to parse.<br>
+Defaults to the value defined in the model to use.</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h2><a name="Notes_to_developers"></a>Notes to developers</h2>
+Even if the package generator is considered to be fairly complete at
+the
+time of writing, it may need some further refinements. If you want to
+suggest an improvement and provide the code for it, please be sure to
+have read this documentation entirely and to keep in mind that the
+package generator must be generic so that it can be used by other
+groups. If you want to fix a bug that occurs with the JVCL, please
+think about a generic way to fix it, rather than hard-coding strings.
+<p><br>
+In any case, please feel free to contact the JVCL team.<br>
+<br>
+</p>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="..\..\..\bin\Project1_CB.exe"/>
+    <OBJFILES value="..\..\..\dcu\Project1_CB.obj ..\..\..\dcu\Unit1.obj ..\..\..\dcu\Unit2.obj"/>
+    <RESFILES value="Project1_CB.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) Unit1.dfm Unit2.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="Project1_CB.cpp"/>
+    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\..\Source"/>
+    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\dcu"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I..\..\Source -src_suffix cpp 
+      -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=e:\PROGRA~1\borland\CBUILD~2\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 
+      -b- -k -y -v -vi- -c -tW -tWM"/>
+    <PFLAGS value="-N2..\..\..\dcu -N0..\..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-I..\..\..\dcu -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+    <FILE FILENAME="Project1_CB.cpp" FORMNAME="" UNITNAME="Project1_CB" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="Project1_CB.res" FORMNAME="" UNITNAME="Project1_CB" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="Unit1.pas" FORMNAME="Form1" UNITNAME="Unit1" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="Unit2.pas" FORMNAME="Form2" UNITNAME="Unit2" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS/>
+  <IDEOPTIONS>[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=2052
+CodePage=936
+
+</IDEOPTIONS>
+</PROJECT>

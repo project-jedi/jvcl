@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvRuntimeDesign" Design="0">
+  <Description>JVCL Runtime Design Components Runtime Package</Description>
+  <GUID>{019D8720-DBA1-49DD-A7AC-69BB6C65AF84}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4B380000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="dbrtl" Targets="DB" Condition="!DelphiPersonalEdition"/>
+    <Package Name="vcldb" Targets="DB" Condition="!DelphiPersonalEdition"/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvInspDB.pas" Targets="DB,help" Formname="" Condition="!DelphiPersonalEdition"/>
+    <File Name="..\..\run\JvInspector.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineJVCLInspector.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInspExtraEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDesignClip.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDesignSurface.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDesignUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDesignImp.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPropertyStoreEditor.pas" Targets="all" Formname="JvPropertyStoreEditorForm" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInspDB.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInspector.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDynControlEngineJVCLInspector.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInspExtraEditors.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDesignClip.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDesignSurface.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDesignUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDesignImp.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPropertyStoreEditor.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

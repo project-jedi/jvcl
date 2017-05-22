@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvMM" Design="0">
+  <Description>JVCL Multimedia and Image Components Runtime Package</Description>
+  <GUID>{934525BD-4F63-48DA-AA9E-027E6E6BC560}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>49900000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvControls-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvAVICapture.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBmpAnimator.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGIF.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGIFCtrl.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGradient.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGradientHeaderPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvIconList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvId3v1.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvId3v2.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvID3v2Base.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvId3v2Types.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImageRotate.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImageTransform.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImageSquare.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPcx.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPicClip.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSlider.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpecialImage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpecialProgress.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSplashWindow.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvStarfield.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvVirtualKeySelectionFrame.pas" Targets="all" Formname="JvVirtualKeySelectionFrame: TFrame" Condition=""/>
+    <File Name="..\..\run\JvWaitingGradient.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWaitingProgress.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWavePlayer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAni.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCursor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAnimate.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAnimatedImage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvColorTrackbar.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFullColorSpaces.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFullColorCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFullColorDialogs.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFullColorRotate.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFullColorForm.pas" Targets="all" Formname="JvFullColorFrm" Condition=""/>
+    <File Name="..\..\run\JvFullColorCircleForm.pas" Targets="all" Formname="JvFullColorCircleFrm" Condition=""/>
+    <File Name="..\..\run\VFW.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAVICapture.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBmpAnimator.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGIF.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGIFCtrl.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGradient.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGradientHeaderPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvIconList.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvId3v1.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvId3v2.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvID3v2Base.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvId3v2Types.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImageRotate.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImageTransform.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImageSquare.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPcx.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPicClip.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSlider.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpecialImage.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpecialProgress.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSplashWindow.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvStarfield.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvVirtualKeySelectionFrame.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWaitingGradient.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWaitingProgress.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWavePlayer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAni.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCursor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAnimate.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAnimatedImage.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvColorTrackbar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFullColorSpaces.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFullColorCtrls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFullColorDialogs.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFullColorRotate.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFullColorForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFullColorCircleForm.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

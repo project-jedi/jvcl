@@ -1,0 +1,54 @@
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This file is maintained by Doc-O-Matic, do not edit manually.
+
+[*Control*]
+MasterFile=..\..\..\help\JVCLTemplate.dox
+
+[Configurations\CHM\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvWizardscontents.html
+IndexFile=JvWizardsidx.html
+
+[Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvWizardscontents.html
+IndexFile=JvWizardsidx.html
+
+[Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\HTMLHelp]
+Help2Collection=JvWizards_COL_MASTER.HxC
+Help2ID=JvWizards
+HTMLHelp2Filename=..\..\help\JvWizards.HxS
+
+[Configurations\HLP\{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Basic]
+HLPFilename=..\..\help\JvWizards.hlp
+
+[Configurations\HTML\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvWizardscontents.html
+IndexFile=JvWizardsidx.html
+
+[Project Database Files]
+Count=4
+File0=JvCore.doxdb
+File1=Jcl.doxdb
+File2=JEDI.doxdb
+File3=vcl.doxdb
+
+[Source Files]
+Count=11
+File0=..\..\run\JvWizardCommon.pas
+File1=..\..\run\JvWizardRouteMapNodes.pas
+File2=..\..\run\JvWizardRouteMapSteps.pas
+File3=..\..\run\JvWizardRouteMapList.pas
+File4=..\..\run\JvWizard.pas
+File5=..\..\..\help\Common.dtx
+File6=..\..\..\help\JvWizardCommon.dtx
+File7=..\..\..\help\JvWizardRouteMapNodes.dtx
+File8=..\..\..\help\JvWizardRouteMapSteps.dtx
+File9=..\..\..\help\JvWizardRouteMapList.dtx
+File10=..\..\..\help\JvWizard.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2012 Project JEDI
+Summary=Documentation of the JVCL Wizard Runtime Package
+Title=JVCL Wizard Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

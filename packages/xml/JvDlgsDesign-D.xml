@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvDlgsDesign" Design="-1">
+  <Description>JVCL Dialog Components</Description>
+  <GUID>{E8C27CA0-25DE-4D94-B6DF-42592413F205}</GUID>
+  <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A1C0000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvCustom-R" Targets="all" Condition=""/>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvDlgs-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvTipOfDayEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvAppletEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCustomFileMessageDialogEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDesktopAlertEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvProgressComponentEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFindReplaceEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDlgsReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDialogActnResForm.pas" Targets="all_win32" Formname="JvDialogActions: TDataModule" Condition=""/>
+  </Contains>
+</Package>

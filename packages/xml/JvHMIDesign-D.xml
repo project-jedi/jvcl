@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvHMIDesign" Design="-1">
+  <Description>JVCL HMI Controls</Description>
+  <GUID>{4ECD29BC-EBB0-4601-B1B2-3F9CA4614E96}</GUID>
+  <C6PFlags>-LUDesignIde -LUJcl -LUJclVcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A2E0000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvHMI-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvSegmentedLEDDisplayMappingForm.pas" Targets="all_win32" Formname="frmJvSLDMappingEditor" Condition=""/>
+    <File Name="..\..\design\JvHMIReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvSegmentedLEDDisplayEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

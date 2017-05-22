@@ -1,0 +1,1 @@
+This folder contains the output files for the Data plugin example so that they don't conflict with the other plugin demos

@@ -1,0 +1,10 @@
+LANGUAGE 0, 0
+JvXPCheckboxCHECKBOX           BITMAP "XPCoreCheckBox.bmp"
+JvXPCheckboxCHECKBOXGRAY       BITMAP "XPCoreCheckBoxGray.bmp"
+JvXPCustomToolButtonARROWLEFT  BITMAP "XPCoreArrowLeft.bmp"
+JvXPCustomToolButtonARROWRIGHT BITMAP "XPCoreArrowRight.bmp"
+JvXPCustomToolButtonCLOSE      BITMAP "XPCoreClose.bmp"
+JvXPCustomToolButtonPOPUP      BITMAP "XPCorePopup.bmp"
+JvXPCustomToolButtonMAXIMIZE   BITMAP "XPCoreMaximize.bmp"
+JvXPCustomToolButtonMINIMIZE   BITMAP "XPCoreMinimize.bmp"
+JvXPCustomToolButtonRESTORE    BITMAP "XPCoreRestore.bmp"

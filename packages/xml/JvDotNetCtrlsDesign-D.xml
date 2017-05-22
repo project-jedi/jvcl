@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvDotNetCtrlsDesign" Design="-1">
+  <Description>JVCL DotNet Controls</Description>
+  <GUID>{F7FFBA61-6088-4CE8-B542-EC81959A4DC5}</GUID>
+  <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A220000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvDotNetCtrls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvDotNetCtrlsReg.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

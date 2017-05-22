@@ -1,0 +1,1624 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Release Notes for JEDI VCL</title>
+  <link href="help/styles/default.css" type="text/css" rel="STYLESHEET">
+</head>
+<body>
+<h1>Release Notes for JEDI VCL</h1>
+<p>
+</p>
+<hr>
+<h2>Other release notes included in this distribution</h2>
+<p>&nbsp;</p>
+<ul>
+  <li><a href="help/install.htm">Install</a>. Contains information on
+how to install JVCL. </li>
+  <li>
+    <p align="left"><a href="help/license.htm">License</a>. Contains
+information on the JVCL usage and distribution
+license. </p>
+  </li>
+  <li><a href="help/migrating.htm">Migrating</a>. Contains information
+on how to migrate your
+applications from previous versions of JVCL and/or previous versions
+of&nbsp;components that has been added&nbsp;in this&nbsp;release of
+JVCL.</li>
+  <li><a href="help/BCB%20Compatibility%20Guide.html">BCB Compatibility
+Guide</a>. Describes how to install JVCL in C++Builder.</li>
+  <li><a href="help/JvExVCL.html">JvExVCL description</a>. Describes
+how to use the JvExVCL (layer for VCL and VisuaLCLX) in your own code.</li>
+  <li><a href="help/Build%20Status.html">Build status</a>. Contains
+information on the current build status of the JVCL for supported
+Delphi and
+BCB versions.</li>
+  <li><a href="help/localization.html">Localization</a>. Contains
+information on how to enable localization support in JVCL.</li>
+</ul>
+<h3>&nbsp;</h3>
+<h2>Changes in this version</h2>
+<p>&nbsp;</p>
+<h4>New folder structure</h4>
+<p>The files in JVCL is arranged according to a new folder
+structure.&nbsp;Previous versions of JVCL put all source files into one
+folder and all packages into another. The number of units in JVCL has
+forced us to divide this further in the current version. The current
+folder structure looks like this:</p>
+<p><b>&lt;JVCL&gt;</b></p>
+<p>&nbsp; <b>&lt;root&gt;</b> - contains important documents, like
+this readme&nbsp;</p>
+<p>&nbsp; <b>\archive</b> - old components (not installed) for those
+cases where you
+are unable to migrate to a newer version or replacement&nbsp;</p>
+<p>&nbsp; <b>\bin</b> - output folder for binaries (from \examples)</p>
+<p>&nbsp; <b>\common</b> - contains common units, like API
+translations, INC files and the like</p>
+<p>&nbsp; <b>\converter</b> - DAT files for JVCLConvert (in
+\devtools\JVCLConvert)</p>
+<p>&nbsp; <b>\dcu</b> - output folder for dcu files (from \examples)</p>
+<p>&nbsp; <b>\design</b> - contains units only used at design-time</p>
+<p>&nbsp; <b>\devtools</b> - contains the sources for various useful
+tools</p>
+<p>&nbsp; <b>\Dict</b> - dictionary files for TJvSpellChecker</p>
+<p>&nbsp; <b>\examples</b> - all available demos</p>
+<p>&nbsp; <b>\help</b> - contains the help file(s) and additional
+documentation</p>
+<p>&nbsp; <b>\images</b> - original images and rc files for the
+palette icons</p>
+<p>&nbsp; <b>\Includes</b> - C/C++ include files for UIB</p>
+<p>&nbsp; <b>\install</b> - source scripts and utilities for the
+installer</p>
+<p>&nbsp; <b>\lib</b></p>
+<p>&nbsp;&nbsp;&nbsp; <b>\c5</b> - dcu and obj output for BCB5 packages</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\c6</b> - dcu and obj output for BCB6 packages</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d5</b> - dcu output for Delphi 5 packages</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d6</b> - dcu output for Delphi 6 packages</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d7</b> - dcu output for Delphi 7 packages</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d9</b> - dcu output for Delphi 2005 packages</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d10</b> - dcu output for Delphi/C++Builder 2006 packages</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d11</b> - dcu output for RAD Studio 2007 packages</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d12</b> - dcu output for RAD Studio 2009 packages</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d14</b> - dcu output for RAD Studio 2010 packages</p>
+<p>&nbsp; <b>\locale</b> - contains the DxGettext template and some
+ready to use translations</p>
+<p>&nbsp; <b>\packages</b></p>
+<p>&nbsp;&nbsp;&nbsp; <b>\bin</b> - bootstrapping tools</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\c5</b> - packages for C++Builder 5</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\c6</b> - packages for C++Builder 6</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\c6per</b> - modified packages for C++Builder 6 Personal Edition</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d5</b> - packages for Delphi 5</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d5std</b> - modified packages for Delphi 5 Standard</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d6</b> - packages for Delphi 6</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d6per</b> - modified packages for Delphi 6 Personal Edition</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d7</b> - packages for Delphi 7</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d7per</b> - modified packages for Delphi 7 Personal Edition<br>
+<p>&nbsp;&nbsp;&nbsp; <b>\d9</b> - packages for Delphi 2005</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d9per</b> - modified packages for Delphi 2005 Personal Edition<br>
+<p>&nbsp;&nbsp;&nbsp; <b>\d10</b> - packages for Delphi/C++Builder 2006</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d11</b> - packages for RAD Studio 2007</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d12</b> - packages for RAD Studio 2009</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\d14</b> - packages for RAD Studio 2010</p>
+</p>
+<p>&nbsp;&nbsp;&nbsp; <b>\xml</b> - Source xml files for the packages.
+All the packages are generated from these files.</p>
+<p>&nbsp; <b>\Resources</b> - contains res, dcr and other resource
+files used at either run or design time</p>
+<p>&nbsp; <b>\run</b> - contains units used at run-time</p>
+<p>&nbsp;</p>
+<p>Depending on which distribution of JVCL you download, some folders
+and files
+might not be created on your system.</p>
+<p>&nbsp;</p>
+<h4><a name="Theming"></a>Theming</h4>
+<p>Several visual JVCL controls supports XP theming (more will likely
+be added subsequently). Theming is automatically activated for users of
+Delphi 7 (and above) and you don't need to do anything special in this
+case. For earlier versions of Delphi (5 and 6), you need to download
+Mike Lischke's ThemeManager package and configure the JVCL theming
+support manually. To activate JVCL theming, proceed as follows:</p>
+<ul>
+  <li>Download ThemeManager from <a
+ href="http://www.delphi-gems.com/ThemeManager.php">
+http://www.delphi-gems.com/ThemeManager.php</a>.</li>
+  <li>Open ThemeManager?.dpk (where "?" is the Delphi version) and
+change the compile options to "Explicit rebuild".</li>
+  <li>(Re)build and install the ThemeManager package.</li>
+  <li>For manual installation: Open jvcl.inc with a text editor and
+remove the dot in {.$DEFINE
+JVCLThemesEnabled}. </li>
+  <li>(Re)build the jvcl packages.</li>
+</ul>
+<p><br>
+If you want theming support in C++ Builder 5 and 6, you will need to
+manually create the appropriate DCP file for the installation to
+succeed instead of the steps two and three in the above list. Here are
+the steps for BCB5, thanks to Carmelo Viavattene :<br>
+</p>
+<ul>
+  <li>In the ThemeManager directory, copy ThemeManagerD5.dpk to
+ThemeManagerC5.dpk and ThemeManagerD5D.dpk to ThemeManagerC5D.dpk</li>
+  <li>Do the same with the .res files<br>
+  </li>
+  <li>With a text editor, open ThemeManagerC5.dpk and do the following
+replacements:</li>
+  <ul>
+    <li><span style="font-style: italic;">package ThemeManagerD5;</span>
+by <span style="font-style: italic;">package ThemeManagerC5;</span></li>
+    <li><span style="font-style: italic;">{$IMPLICITBUILD ON} </span>by
+      <span style="font-style: italic;">{$IMPLICITBUILD OFF}</span></li>
+  </ul>
+  <li>With a text editor, open ThemeManagerC5D.dpk and do the following
+replacements:</li>
+  <ul>
+    <li><span style="font-style: italic;">package ThemeManagerD5D;</span>
+by <span style="font-style: italic;">package ThemeManagerC5D;</span></li>
+    <li><span style="font-style: italic;">requires ThemeManagerD5 </span>by
+      <span style="font-style: italic;">requires ThemeManagerC5</span><br>
+    </li>
+    <li><span style="font-style: italic;">{$IMPLICITBUILD ON} </span>by
+      <span style="font-style: italic;">{$IMPLICITBUILD OFF}</span></li>
+  </ul>
+  <li>Open a command prompt and go in the folder where the newly
+created packages (dpk files) are located</li>
+  <li>Run these commands, replacing $(ROOT) by the root folder of your
+BCB5 installation (c:\program files\CBuilder5 by default):</li>
+  <ul>
+    <li>$(ROOT)\bin\dcc32 ThemeManagerC5.dpk</li>
+    <li>$(ROOT)\bin\dcc32 ThemeManagerC5D.dpk</li>
+  </ul>
+  <li>Copy the two newly created files to $(ROOT)\projects\bpl</li>
+  <li>Copy the eight newly created OBJ files from
+$(ROOT)\projects\intermed to $(ROOT)\projects\lib</li>
+  <li>Now in the ThemeManager source directory, edit TmSchema.hpp and
+do the following replacement:</li>
+  <ul>
+    <li><span style="font-style: italic;">#include "tmschema.h" </span>by
+      <span style="font-style: italic;">#include
+"..\cbuilder\tmschema.h"</span></li>
+  </ul>
+</ul>
+<p>
+</p>
+<ul>
+  <li>Also edit UxTheme.hpp and do the following replacement:<br>
+  </li>
+</ul>
+<ul>
+  <ul>
+    <li><span style="font-style: italic;">#include "uxtheme.h"</span>
+by <span style="font-style: italic;">#include "..\cbuilder\uxtheme.h"</span></li>
+  </ul>
+</ul>
+<p><br>
+Theming should now be activated for those JVCL controls that
+supports it. Note that you still need to be running on Windows XP with
+a manifest file for your project to see any theming.<br>
+<br>
+</p>
+<h4>Localization</h4>
+All strings that get displayed to the user are stored in resource
+strings. If you want the JVCL to display those strings in other
+languages, you should use DxGettext as this is the only localization
+method supported by the JVCL group. You must turn on the use of
+DxGettext in jvcl.inc and recompile the JVCL packages for the support
+to
+be complete. Please refer to the <a href="help/localization.html">localization</a>
+documentation for more details on this topic.<br>
+<br>
+<h4>CLX support</h4>
+<p>CLX support was dropped in Version 3.33</p>
+<p>&nbsp;</p>
+<h4>Available distributions</h4>
+<p>The JVCL is&nbsp;available in three different distributions. These
+are:</p>
+<ul dir="ltr">
+  <li><strong>Minimum&nbsp;</strong>- only contains the files needed to
+install the components </li>
+  <li><strong>Medium </strong>- same as Minimum but also includes the
+demo folders </li>
+  <li><strong>Full </strong>- contains everything in the CVS
+repository as well as the latest release of JCL</li>
+</ul>
+<p dir="ltr">&nbsp;</p>
+<p dir="ltr">Each of the "stand-alone" packages are also available as
+separate distributions (see USEJVCL below for a list of stand-alone
+packages).
+In case we get enough requests, we might also provide each package as a
+separate
+distribution.</p>
+<p dir="ltr">&nbsp;</p>
+<h4>New package layout</h4>
+<p>Previous versions of JVCL had one run-time and one design-time
+package for each version of supported compilers (i.e one pair for
+Delphi 5, another pair for Delphi 6 etc). The current&nbsp;JVCL,
+however, is split into a larger set of smaller packages, where each
+package&nbsp;contains logically related components. Each run-time
+package also has a matching design-time package with the registration
+code and any design-time editors required by the run-time package. The
+following packages are currently available:</p>
+<p>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr>
+      <th>Package</th>
+      <th>Description</th>
+      <th>Contains</th>
+      <th>Required JVCL packages (packages in parenthesisses are
+required by the design-time package)</th>
+    </tr>
+    <tr>
+      <td>JvCore</td>
+      <td>Contains the core units used by a large part of the JVCL</td>
+      <td>
+      <p>Core support units</p>
+      <p>TJvJVCLAboutComponent</p>
+      <p>TJvContextProvider</p>
+      <p>TJvColorProvider</p>
+      <p>TJvAppIniStore</p>
+      <p>TJvAppRegistryStore</p>
+      <p>TJvLookupAutoComplete</p>
+      </td>
+      <td>none</td>
+    </tr>
+    <tr>
+      <td>JvSystem</td>
+      <td>System related components</td>
+      <td>
+      <p>TJvSHFileOperation</p>
+      <p>TJvChangeNotify</p>
+      <p>TJvDragDrop</p>
+      <p>TJvDropTarget</p>
+      <p>TJvHidDeviceController</p>
+      <p>TJvNTEventLog</p>
+      <p>TJvScreenSaver</p>
+      <p>TJvDeviceChanged</p>
+      <p>TJvJoystick</p>
+      <p>TJvSoundControl</p>
+      <p>TJvKeyboardStates</p>
+      <p>TJvDirectories</p>
+      <p>TJvSystemColors</p>
+      <p>TJvAppDdeCmd</p>
+      <p>TJvPerfStat95</p>
+      <p>TJvSimpleXML</p>
+      <p>TJvXMLDatabase</p>
+      <p>TJvRas32</p>
+      <p>TJvCommStatus</p>
+      <p>TJvFormStorage</p>
+      <p>TJvSearchFiles</p>
+      <p>TJvMRUList</p>
+      <p>TJvMRUManager</p>
+      <p>TJvShellHook</p>
+      <p>TJvWindowHook</p>
+      <p>TJvTimer</p>
+      <p>TJvThread</p>
+      <p>TJvThreadTimer</p>
+      <p>TJvTimerList</p>
+      <p>TJvAppInstances</p>
+      </td>
+      <td>JvCore</td>
+    </tr>
+    <tr>
+      <td>JvStdCtrls</td>
+      <td>"Standard" or enhanced standard controls</td>
+      <td>
+      <p>TJvMainMenu</p>
+      <p>TJvPopupMenu</p>
+      <p>TJvSystemPopup</p>
+      <p>TJvCalculator</p>
+      <p>TJvBrowseForFolderDialog</p>
+      <p>TJvBitBtn</p>
+      <p>TJvImgBtn</p>
+      <p>TJvCheckBox</p>
+      <p>TJvRadioButton</p>
+      <p>TJvRadioGroup</p>
+      <p>TJvUpDown</p>
+      <p>TJvDomainUpDown</p>
+      <p>TJvControlPanelButton</p>
+      <p>TJvStartMenuButton</p>
+      <p>TJvRecentMenuButton</p>
+      <p>TJvFavoritesButton</p>
+      <p>TJvEdit</p>
+      <p>TJvMemo</p>
+      <p>TJvRichEdit</p>
+      <p>TJvCheckedMaskEdit</p>
+      <p>TJvMaskEdit</p>
+      <p>TJvHotKey</p>
+      <p>TJvCalcEdit</p>
+      <p>TJvComboEdit</p>
+      <p>TJvFilenameEdit</p>
+      <p>TJvDirectoryEdit</p>
+      <p>TJvDateEdit</p>
+      <p>TJvSpinEdit</p>
+      <p>TJvIPAddress</p>
+      <p>TJvImage</p>
+      <p>TJvPageControl</p>
+      <p>TJvProgressBar</p>
+      <p>TJvGradientProgressBar</p>
+      <p>TJvStatusBar</p>
+      <p>TJvTabControl</p>
+      <p>TJvToolBar<sup> 3.</sup></p>
+      <p>TJvControlBar</p>
+      <p>TJvCoolBar</p>
+      <p>TJvGroupBox</p>
+      <p>TJvHeaderControl</p>
+      <p>TJvPanel</p>
+      <p>TJvBevel</p>
+      <p>TJvLabel</p>
+      <p>TJvStaticText</p>
+      <p>TJvComboBox</p>
+      <p>TJvListBox</p>
+      <p>TJvCheckListBox</p>
+      <p>TJvTreeView</p>
+      <p>TJvListView</p>
+      <p>TJvCheckTreeView</p>
+      <p>TJvColorComboBox</p>
+      <p>TJvFontComboBox</p>
+      <p>TJvDateTimePicker</p>
+      <p>TJvMonthCalendar</p>
+      <p>TJvDrawGrid</p>
+      <p>TJvStringGrid</p>
+      <p>TJvScrollBox</p>
+      <p>TJvTrackBar</p>
+      <p>TJvxSlider</p>
+      <p>TJvImageList</p>
+      </td>
+      <td>JvCore, JvSystem</td>
+    </tr>
+    <tr>
+      <td>JvCtrls</td>
+      <td>Visual controls</td>
+      <td>
+      <p>TJvTransparentButton</p>
+      <p>TJvTransparentButton2</p>
+      <p>TJvArrowButton</p>
+      <p>TJvCaptionButton</p>
+      <p>TJvColorButton</p>
+      <p>TJvHTButton</p>
+      <p>TJvTransLED</p>
+      <p>TJvSpacer</p>
+      <p>TJvSwitch</p>
+      <p>TJvSpeedBar</p>
+      <p>TJvCaptionPanel</p>
+      <p>TJvItemsPanel</p>
+      <p>TJvMovableBevel</p>
+      <p>TJvRollOut</p>
+      <p>TJvFooter</p>
+      <p>TJvGroupHeader</p>
+      <p>TJvComponentPanel</p>
+      <p>TJvBehaviorLabel</p>
+      <p>TJvInstallLabel</p>
+      <p>TJvHTLabel</p>
+      <p>TJvWinampLabel</p>
+      <p>TJvImageComboBox</p>
+      <p>TJvImageListBox</p>
+      <p>TJvHTListBox</p>
+      <p>TJvHTComboBox</p>
+      <p>TJvUninstallComboBox</p>
+      <p>TJvUninstallListBox</p>
+      <p>TJvDriveCombo</p>
+      <p>TJvDriveList</p>
+      <p>TJvFileListBox</p>
+      <p>TJvDirectoryListBox</p>
+      <p>TJvRegistryTreeView</p>
+      <p>TJvPlaylist</p>
+      <p>TJvScrollMax</p>
+      <p>TJvaScrollText</p>
+      <p>TJvContentScroller</p>
+      <p>TJvPageScroller</p>
+      <p>TJvScrollingWindow</p>
+      <p>TJvScrollText</p>
+      <p>TJvSplitter</p>
+      <p>TJvxSplitter</p>
+      <p>TJvSyncSplitter</p>
+      <p>TJvClock</p>
+      <p>TJvZoom</p>
+      <p>TJvDice</p>
+      <p>TJvHint</p>
+      </td>
+      <td>JvCore, JvStdCtrls</td>
+    </tr>
+    <tr>
+      <td>JvCmp</td>
+      <td>Non-visual components</td>
+      <td>
+      <p>TJvAlarms</p>
+      <p>TJvConverter</p>
+      <p>TJvDataEmbedded</p>
+      <p>TJvCreateProcess</p>
+      <p>TJvEnterAsTab</p>
+      <p>TJvMergeManager</p>
+      <p>TJvPageManager</p>
+      <p>TJvPatchFile</p>
+      <p>TJvProfiler</p>
+      <p>TJvStrHolder</p>
+      <p>TJvTimeLimit</p>
+      <p>TJvWinHelp</p>
+      <p>TJvTranslator</p>
+      <p>TJvPrint</p>
+      <p>TJvEasterEgg</p>
+      </td>
+      <td>JvCore, JvSystem (JvStdCtrls)</td>
+    </tr>
+    <tr>
+      <td>JvCustom</td>
+      <td>Custom controls and "advanced" components</td>
+      <td>
+      <p>TJvValidateEdit</p>
+      <p>TJvTrayIcon</p>
+      <p>TJvScheduledEvents</p>
+      <p>TJvBalloonHint</p>
+      <p>TJvEditor</p>
+      <p>TJvHLEditor</p>
+      <p>TJvHLEdPropDlg</p>
+      <p>TJvGammaPanel</p>
+      <p>TJvOutlookBar</p>
+      <p>TJvLookout</p>
+      <p>TJvExpress</p>
+      <p>TJvLookOutButton </p>
+      <p>TJvExpressButton</p>
+      <p>TJvRadioControl</p>
+      <p>TJvLinkLabel</p>
+      <p>TJvInspector</p>
+      <p>TJvInspectorBorlandPainter</p>
+      <p>TJvInspectorDotNETPainter</p>
+      <p>TJvThumbImage</p>
+      <p>TJvTimeLine</p>
+      <p>TJvTMTimeLine</p>
+      </td>
+      <td>JvCore, JvCtrls, JvSystem, </td>
+    </tr>
+    <tr>
+      <td>JvDlgs</td>
+      <td>Dialog components</td>
+      <td>
+      <p>TJvSelectDirectory</p>
+      <p>TJvOpenDialog</p>
+      <p>TJvSaveDialog</p>
+      <p>TJvTipOfDay</p>
+      <p>TJvFindReplace</p>
+      <p>TJvDSADialog</p>
+      <p>TJvPageSetupDialog</p>
+      <p>TJvPageSetupTitledDialog</p>
+      <p>TJvConnectNetwork</p>
+      <p>TJvDisconnectNetwork</p>
+      <p>TJvAddPrinterDialog</p>
+      <p>TJvFindFilesDialog</p>
+      <p>TJvFormatDriveDialog</p>
+      <p>TJvColorDialog</p>
+      <p>TJvOrganizeFavoritesDialog</p>
+      <p>TJvComputerNameDialog</p>
+      <p>TJvAppletDialog</p>
+      <p>TJvChangeIconDialog</p>
+      <p>TJvShellAboutDialog</p>
+      <p>TJvRunDialog</p>
+      <p>TJvObjectPropertiesDialog</p>
+      <p>TJvNewLinkDialog</p>
+      <p>TJvAddHardwareDialog</p>
+      <p>TJvOpenWithDialog</p>
+      <p>TJvDiskFullDialog</p>
+      <p>TJvExitWindowsDialog</p>
+      <p>TJvOutOfMemoryDialog</p>
+      <p>TJvObjectPickerDialog</p>
+      <p>TJvDualListDialog</p>
+      <p>TJvImageDlg</p>
+      <p>TJvLoginDialog</p>
+      <p>TJvProgressDialog</p>
+      <p>TJvProgressComponent</p>
+      <p>TJvDiskPrompt</p>
+      <p>TJvCopyError</p>
+      <p>TJvDeleteError</p>
+      <p>TJvRenameError</p>
+      </td>
+      <td>JvCore, JvSystem, JvStdCtrls</td>
+    </tr>
+    <tr>
+      <td>JvCrypt</td>
+      <td>Encryption and Compression components</td>
+      <td>
+      <p>TJvCabFile</p>
+      <p>TJvZLibMultiple</p>
+      <p>TJvGenetic</p>
+      <p>TJvCaesarCipher</p>
+      <p>TJvXorCipher</p>
+      <p>TJvVignereCipher</p>
+      <p>TJvSerialMaker</p>
+      </td>
+      <td>JvCore</td>
+    </tr>
+    <tr>
+      <td>JvMM</td>
+      <td>Multimedia and graphic components</td>
+      <td>
+      <p>TJvAnimate</p>
+      <p>TJvAnimatedImage</p>
+      <p>TJvBmpAnimator</p>
+      <p>TJvGIFAnimator</p>
+      <p>TJvGradient</p>
+      <p>TJvGradientHeaderPanel</p>
+      <p>TJvIconList</p>
+      <p>TJvID3v1 and&nbsp;TJvID3v2</p>
+      <p>TJvImageRotate</p>
+      <p>TJvImageTransform</p>
+      <p>TJvImageWindow</p>
+      <p>TJvImageSquare</p>
+      <p>TJvPicClip</p>
+      <p>TJvSlider</p>
+      <p>TJvSpecialImage</p>
+      <p>TJvSpecialProgress</p>
+      <p>TJvStarfield</p>
+      <p>TJvWaitingGradient</p>
+      <p>TJvWaitingProgress</p>
+      <p>TJvWavePlayer</p>
+      </td>
+      <td>JvCore, JvCmp, JvCtrls, JvSystem</td>
+    </tr>
+    <tr>
+      <td>JvHMI</td>
+      <td>HMI Components</td>
+      <td> TJvLED
+      <p>TJvSegmentedLEDDisplay</p>
+      <p>TJvDialButton</p>
+      </td>
+      <td>JvCore</td>
+    </tr>
+    <tr>
+      <td>JvNet</td>
+      <td>Network and Internet technology components</td>
+      <td>
+      <p>TJvFtpGrabber</p>
+      <p>TJvHttpGrabber</p>
+      <p>TJvMultiHttpGrabber</p>
+      <p>TJvMail</p>
+      <p>TJvHtmlParser</p>
+      <p>TJvStrToHtml</p>
+      <p>TJvStringListToHtml</p>
+      <p>TJvFormToHtml</p>
+      <p>TJvRichEditToHtml</p>
+      <p>TJvRgbToHtml</p>
+      </td>
+      <td>JvCore, (JvStdCtrls)</td>
+    </tr>
+    <tr>
+      <td>JvAppFrm</td>
+      <td>Application and Form related components</td>
+      <td>
+      <p>TJvAppEvents</p>
+      <p>TJvAppAnimatedIcon</p>
+      <p>TJvFormAnimatedIcon</p>
+      <p>TJvApplicationHotKey</p>
+      <p>TJvTransparentForm</p>
+      <p>TJvFormAnimation</p>
+      <p>TJvFormWallpaper</p>
+      <p>TJvFormMagnet</p>
+      <p>TJvFormAutoSize</p>
+      <p>TJvGradientCaption</p>
+      </td>
+      <td>JvCore, JvSystem, JvStdCtrls, (JvCmp, JvMM, JvCtrls)</td>
+    </tr>
+    <tr>
+      <td>JvDB <sup>5.</sup><br>
+      </td>
+      <td>Generic DB access and DB controls</td>
+      <td>
+      <p>TJvCsvDataset</p>
+      <p>TJvMemoryData</p>
+      <p>TJvDBDatePickerEdit</p>
+      <p>TJvDBProgressBar</p>
+      <p>TJvDBRichEdit</p>
+      <p>TJvDBSpinEdit</p>
+      <p>TJvDBLookupList</p>
+      <p>TJvDBLookupCombo</p>
+      <p>TJvDBLookupEdit</p>
+      <p>TJvDBRadioPanel</p>
+      <p>TJvDBCombobox</p>
+      <p>TJvDBTreeview</p>
+      <p>TJvDBTreeviewCombo</p>
+      <p>TJvDBLookupTreview</p>
+      <p>TJvDBGrid</p>
+      <p>TJvDBComboEdit</p>
+      <p>TJvDBDateEdit</p>
+      <p>TJvDBCalcEdit</p>
+      <p>TJvDBStatusLabel</p>
+      <p>TJvHTDBLabel</p>
+      <p>TJvDBCheckBox</p>
+      </td>
+      <td>JvCore, JvStdCtrls,</td>
+    </tr>
+    <tr>
+      <td>JvBDE <sup>5.</sup><br>
+      </td>
+      <td>BDE specific components and controls</td>
+      <td>
+      <p>TJvDBFilter</p>
+      <p>TJvDBIndexCombo</p>
+      <p>TJvDatabaseItems</p>
+      <p>TJvTableItems</p>
+      <p>TJvDBMove</p>
+      <p>TJvDBProgress</p>
+      <p>TJvQBEQuery</p>
+      <p>TJvDBSecurity</p>
+      <p>TJvBDEMemoryTable</p>
+      <p>TJvQuery</p>
+      <p>TJvBDESQLScript</p>
+      </td>
+      <td>JvCore, JvDB, JvDlgs</td>
+    </tr>
+    <tr>
+      <td>JvInterpreter</td>
+      <td>Components and units related to JvInterpreter</td>
+      <td>
+      <p>TJvInterpreter</p>
+      <p>TJvInterpreterFm</p>
+      </td>
+      <td>JvCore, JvCtrls, JvCustom</td>
+    </tr>
+    <tr>
+      <td>JvBands</td>
+      <td>Units for band object development</td>
+      <td>Band object wizard</td>
+      <td>JvCore</td>
+    </tr>
+    <tr>
+      <td>JvPlugin</td>
+      <td>JvPlugin related components</td>
+      <td>
+      <p>TJvPlugin</p>
+      <p>TJvPluginManager</p>
+      <p>Plugin wizard</p>
+      </td>
+      <td>JvCore</td>
+    </tr>
+    <tr>
+      <td>JvJans</td>
+      <td>Jans Delphi Components</td>
+      <td>
+      <p>TJvMarkupLabel</p>
+      <p>TJvMarkupViewer</p>
+      <p>TJvSAL</p>
+      <p>TJvSticker</p>
+      <p>TJvSALCore</p>
+      <p>TJvSALMath</p>
+      <p>TJvYearGrid</p>
+      <p>TJvAirBrush</p>
+      <p>TJvTracker</p>
+      <p>TJvGridFilter</p>
+      <p>TJvGridPrinter</p>
+      <p>TJvJanTreeview</p>
+      <p>TJvPaintFX</p>
+      <p>TJvDrawImage</p>
+      <p>TJvArrayButton</p>
+      <p>TJvForthScript</p>
+      <p>TJvTurtle</p>
+      <p>TJvBitmapButton</p>
+      <p>TJvSpeller</p>
+      <p>TJvShapedButton</p>
+      <p>TJvSimScope</p>
+      <p>TJvSimIndicator</p>
+      <p>TJvSimPID</p>
+      <p>TJvSimPIDLinker</p>
+      <p>TJvSimConnector</p>
+      <p>TJvLogic</p>
+      <p>TJvSimButton</p>
+      <p>TJvSimLight</p>
+      <p>TJvSimLogicBox</p>
+      <p>TJvSimReverse</p>
+      <p>TJvCSVBase</p>
+      <p>TJvCSVEdit</p>
+      <p>TJvCSVComboBox</p>
+      <p>TJvCSVCheckBox</p>
+      <p>TJvCSVNavigator</p>
+      </td>
+      <td>JvCore</td>
+    </tr>
+    <tr>
+      <td>JvGlobus</td>
+      <td>Globus Delphi Components</td>
+      <td>
+      <p>TJvgExportDBETable <sup>5.</sup><br>
+      </p>
+      <p>TJvgDBNAvigator</p>
+      <p>TJvgPrintCrossTable</p>
+      <p>TJvgDBGrid <sup>5.</sup><br>
+      </p>
+      <p>TJvgVertDBSGrid <sup>5.</sup><br>
+      </p>
+      <p>TJvgSysInfo</p>
+      <p>TJvgMaskEdit</p>
+      <p>TJvgBevel</p>
+      <p>TJvgBitBtn</p>
+      <p>TJvgGraphicButton</p>
+      <p>TJvgGraph</p>
+      <p>TJvgTreeView</p>
+      <p>TJvgCheckTreeView</p>
+      <p>TJvgSplitter</p>
+      <p>TJvgShadow</p>
+      <p>TJvgShade</p>
+      <p>TJvgButton</p>
+      <p>TJvgImageGroup</p>
+      <p>TJvgProgress</p>
+      <p>TJvgTransparentMemo</p>
+      <p>TJvgWinMask</p>
+      <p>TJvgGroupBox</p>
+      <p>TJvgBitmapImage</p>
+      <p>TJvgListBox</p>
+      <p>TJvgCheckListBox</p>
+      <p>TJvgAskListBox</p>
+      <p>TJvgScrollBox</p>
+      <p>TJvgStringGrid</p>
+      <p>TJvgSpeedButton</p>
+      <p>TJvgWizardHeader</p>
+      <p>TJvgCaption</p>
+      <p>TJvgGridHeaderControl</p>
+      <p>TJvgCheckBox</p>
+      <p>TJvgRuler</p>
+      <p>TJvgPageControl</p>
+      <p>TJvgTabControl</p>
+      <p>TJvgMailSlotServer</p>
+      <p>TJvgMailSlotClient</p>
+      <p>TJvgLabel</p>
+      <p>TJvgFlyingText</p>
+      <p>TJvgDigits</p>
+      <p>TJvgStaticText</p>
+      <p>TJvgHoleShape</p>
+      <p>TJvgExportExcel</p>
+      <p>TJvgExportHTML</p>
+      <p>TJvgHelpPanel</p>
+      <p>TJvgExportXML</p>
+      <p>TJvgXMLSerializer</p>
+      <p>TJvgLanguageLoader</p>
+      <p>TJvgExceptionHandler</p>
+      <p>TJvgJumpingComponent</p>
+      <p>TJvgStringContainer</p>
+      <p>TJvgSysRequirements</p>
+      <p>TJvg3DColors</p>
+      <p>TJvgHint</p>
+      <p>TJvginspectorGrid</p>
+      <p>TJvgReport</p>
+      <p>TJvgReportParamsEditor</p>
+      <p>TJvgLogicProducer</p>
+      <p>TJvgSmallFontsDefence</p>
+      <p>TJvgMultipleResources</p>
+      <p>TJvgSingleInstance</p>
+      <p>TJvgFixFont</p>
+      <p>TJvgComponentDescription</p>
+      <p>TJvgQRLabel <sup>5.</sup><br>
+      </p>
+      <p>TJvgQRDBText <sup>5.</sup><br>
+      </p>
+      <p>TJvgMyQRPreview <sup>5.</sup><br>
+      </p>
+      </td>
+      <td>JvCore, JvSystem, JvStdCtrls, (JvCtrls, JvCustom, JvDlgs,
+JvMM)</td>
+    </tr>
+    <tr>
+      <td>JvPrintPreview</td>
+      <td>Print Preview Components</td>
+      <td>
+      <p>TJvPreviewControl</p>
+      <p>TJvPreviewRenderRichEdit</p>
+      <p>TJvPreviewRenderStrings</p>
+      <p>TJvPreviewRenderGraphics</p>
+      <p>TJvPreviewRenderControl</p>
+      <p>TJvPreviewPrinter</p>
+      </td>
+      <td>JvCore</td>
+    </tr>
+    <tr>
+      <td>JvPageComps</td>
+      <td>Page style components</td>
+      <td>
+      <p>TJvPageList</p>
+      <p>TJvPageListTreeView</p>
+      <p>TJvSettingsTreeView</p>
+      </td>
+      <td>JvCore</td>
+    </tr>
+    <tr>
+      <td>JvValidators</td>
+      <td>Validator and Error Indicator components</td>
+      <td>
+      <p>TJvValidators</p>
+      <p>TJvValidationSummary</p>
+      <p>TJvErrorIndicator</p>
+      </td>
+      <td>JvCore</td>
+    </tr>
+    <tr>
+      <td>JvUIB</td>
+      <td>UIB (Unified Interbase) Components</td>
+      <td>
+      <p>TJvUIBDatabase</p>
+      <p>TJvUIBTransaction</p>
+      <p>TJvUIBQuery</p>
+      <p>TJvUIBBackup</p>
+      <p>TJvUIBRestore</p>
+      </td>
+      <td>JvCore <sup>4.</sup><br>
+      </td>
+    </tr>
+    <tr>
+      <td>JvWizard</td>
+      <td>Wizard component and RouteMaps formerly known as "K Wizard"</td>
+      <td>
+      <p>TJvWizard</p>
+      <p>TJvWizardRouteMapNodes</p>
+      <p>TJvWizardRouteMapSteps</p>
+      </td>
+      <td>JvCore <sup>4.</sup></td>
+    </tr>
+    <tr>
+      <td>JvTimeFramework</td>
+      <td>Set of PIM components formerly known as UIL Time Framework 2.0</td>
+      <td> TJvTFAlarm
+      <p>TJvTFScheduleManager</p>
+      <p>TJvTFGlanceTextViewer</p>
+      <p>TJvTFMonths</p>
+      <p>TJvTFWeeks</p>
+      <p>TJvTFDays</p>
+      <p>TJvTFUniversalPrinter</p>
+      <p>TJvTFDaysPrinter</p>
+      </td>
+      <td>JvCore <sup>4.</sup><br>
+      </td>
+    </tr>
+    <tr>
+      <td>JvManagedThreads</td>
+      <td>Thread components (for version 6 and newer only)<br>
+      </td>
+      <td>TJvMtManager
+      <p>TJvMtThread</p>
+      <p>TJvMtThreadToVCL</p>
+      <p>TJvMtVCLToThread</p>
+      <p>TJvMtThreadToThread</p>
+      <p>TJvMtSection</p>
+      <p>TJvMtCountingSection</p>
+      <p>TJvMtMonitorSection </p>
+      </td>
+      <td>JvCore</td>
+    </tr>
+    <tr>
+      <td>JvDotNetCtrls</td>
+      <td>DotNet style components (Do not require the .Net framework to
+be installed)<br>
+      </td>
+      <td> TJvDotNetCheckListBox
+      <p>TJvDotNetEdit</p>
+      <p>TJvDotNetHotKey</p>
+      <p>TJvDotNetListBox</p>
+      <p>TJvDotNetListView</p>
+      <p>TJvDotNetMaskEdit</p>
+      <p>TJvDotNetMemo</p>
+      <p>TJvDotNetRichEdit</p>
+      <p>TJvDotNetScrollBox</p>
+      <p>TJvDotNetTreeView</p>
+      <p>TJvDotNetDBEdit <sup>5.</sup><br>
+      </p>
+      <p>TJvDotNetDBListBox <sup>5.</sup><br>
+      </p>
+      <p>TJvDotNetDBLookupListBox&nbsp;<sup>5.</sup><br>
+      </p>
+      <p>TJvDotNetDBMemo <sup>5.</sup><br>
+      </p>
+      <p>TJvDotNetDBRichEdit <sup>5.</sup><br>
+      </p>
+      </td>
+      <td><br>
+      </td>
+    </tr>
+    <tr>
+      <td>JvDocking</td>
+      <td>Docking components</td>
+      <td> TJvDockServer
+      <p>TJvDockClient</p>
+      <p>TJvDockDelphiStyle</p>
+      <p>TJvDockVCStyle</p>
+      <p>TJvDockVIDStyle</p>
+      <p>TJvDockVSNetStyle </p>
+      </td>
+      <td>JvCore <sup>4.</sup></td>
+    </tr>
+    <tr>
+      <td>JvXPCtrls</td>
+      <td>XP/Office XP style controls (Do not require to run on XP to
+display correct look)<br>
+      </td>
+      <td> TJvXPStyleManager
+      <p>TJvXPBar</p>
+      <p>TJvXPContainer</p>
+      <p>TJvXPButton</p>
+      <p>TJvXPToolButton</p>
+      <p>TJvXPCheckBox</p>
+      <p>TJvXPProgressBar</p>
+      </td>
+      <td><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+1. Not available in C++ Builder 6<br>
+2. Not available in C++ Builder 5<br>
+3. Limited functionality in Delphi 5<br>
+4. If USEJVCL is defined (it is by default). If you change the
+definition of USEJVCL, you MUST regenerate the packages using the
+PackageGenerator available in $(JVCL)\devtools. The installer will do
+that for you.<br>
+5. Not available in Standard and Personal versions.<br>
+<br>
+</p>
+<h4>New components added</h4>
+<p>&nbsp;</p>
+<p>The following new components and libraries has been added since JVCL
+2.10:</p>
+<ul>
+  <li>The Globus Library </li>
+  <li>Jans Delphi Components </li>
+  <li>The UIB Interbase/Firebird Database Components </li>
+  <li>Print Preview components </li>
+  <li>Validator components </li>
+  <li>K Wizard component and RouteMaps</li>
+  <li>UIL Time Framework 2.0</li>
+  <li>Managed Threads Components</li>
+  <li>TJvErrorIndicator</li>
+  <li>TJvXMLDatabase</li>
+  <li>TJvMouseGesture</li>
+  <li>TJvAVICapture</li>
+  <li>TJvBlinkingLED</li>
+  <li>TJvAppInstances (controls how often an application can be startet</li>
+  <li>TJvImageList (can handle resources and external images)</li>
+  <li>TJvColorProvider</li>
+  <li>TJvSegmentedLED</li>
+  <li>TJvComboListBox</li>
+  <li>TJvSpellChecker</li>
+  <li>DockPresident components</li>
+  <li>Delphi eXperience Controls II</li>
+  <li>Delphi eXperience DotNet Controls II</li>
+  <li>UltimVCL<br>
+  </li>
+  <li>TJvLookupAutoComplete (extends edit fields with autocomplete
+functionality)</li>
+  <li>TJvDebugHandler (creates log files on exceptions with call stack)</li>
+</ul>
+<p>&nbsp;</p>
+<h4>Components deprecated, renamed, removed or changed </h4>
+<p>Below follows a list of components that have been removed, renamed
+or are deprecated
+since JVCL 2.10 (i.e they will most likely disappear in the near
+future).</p>
+<h5>Removed Components</h5>
+<blockquote>
+  <p>TJvBreatheSkin, TJvCommandEdit, TJvCoupler, TJvCPUUsage,
+TJvHighLighter, TJvMemoryInfos, TJvMousePositionner, TJvNagScreen,
+TJvPerforated, TJvPopupMemo, TJvAutoSave, TJvRegAuto, TJvCurrencyEdit,
+TJvxCurrencyEdit, TJvFloatEdit, TJvFloatEdit2, TJvButton </p>
+</blockquote>
+<h5>Renamed Components</h5>
+<blockquote>
+  <p>The following units and classes have been renamed in this version:</p>
+</blockquote>
+<p>&nbsp;</p>
+<table>
+  <tbody>
+    <tr>
+      <th>Previous</th>
+      <th>New</th>
+    </tr>
+    <tr>
+      <td>JvTMTL</td>
+      <td>JvTMTimeLine</td>
+    </tr>
+    <tr>
+      <td>JvAutoSizeCompo</td>
+      <td>JvFormAutoSize</td>
+    </tr>
+    <tr>
+      <td>JvGrdCpt</td>
+      <td>JvGradientCaption</td>
+    </tr>
+    <tr>
+      <td>JvPlacemnt</td>
+      <td>JvFormPlacement</td>
+    </tr>
+    <tr>
+      <td>JvVerInf</td>
+      <td>JvVersionInfo</td>
+    </tr>
+    <tr>
+      <td>JvUCB</td>
+      <td>JvUninstallCtrls</td>
+    </tr>
+    <tr>
+      <td>JvTimerLst</td>
+      <td>JvTimerList</td>
+    </tr>
+    <tr>
+      <td>JvSysComp</td>
+      <td>JvCreateProcess</td>
+    </tr>
+    <tr>
+      <td>JvObjStr</td>
+      <td>JvObjectStrings</td>
+    </tr>
+    <tr>
+      <td>JvMrgMngr</td>
+      <td>JvMergeManager</td>
+    </tr>
+    <tr>
+      <td>JvMouseTimerU</td>
+      <td>JvMouseTimer</td>
+    </tr>
+    <tr>
+      <td>JvFDualList</td>
+      <td>JvDualListForm</td>
+    </tr>
+    <tr>
+      <td>JvExcptDlg</td>
+      <td>JvExceptionForm</td>
+    </tr>
+    <tr>
+      <td>JvDBSecur</td>
+      <td>JvDBSecurity</td>
+    </tr>
+    <tr>
+      <td>JvDBRichEd</td>
+      <td>JvDBRichEdit</td>
+    </tr>
+    <tr>
+      <td>JvDBPrgrss</td>
+      <td>JvDBProgress</td>
+    </tr>
+    <tr>
+      <td>JvDBExcpt</td>
+      <td>JvDBExceptionForm</td>
+    </tr>
+    <tr>
+      <td>JvColorBtn</td>
+      <td>JvColorButton</td>
+    </tr>
+    <tr>
+      <td>JvCntScr</td>
+      <td>JvContentScroller</td>
+    </tr>
+    <tr>
+      <td>JvCmdEdit</td>
+      <td>JvCommandEdit</td>
+    </tr>
+    <tr>
+      <td>JvChPswDlg</td>
+      <td>JvCheckPasswordForm</td>
+    </tr>
+    <tr>
+      <td>JvOLBar</td>
+      <td>JvOutlookBar</td>
+    </tr>
+    <tr>
+      <td>JvSbSetup</td>
+      <td>JvSpeedbarSetupForm</td>
+    </tr>
+    <tr>
+      <td>JvRegTV</td>
+      <td>JvRegistryTreeview</td>
+    </tr>
+    <tr>
+      <td>JvPrgrss</td>
+      <td>JvProgressUtils</td>
+    </tr>
+    <tr>
+      <td>JvPluginMan</td>
+      <td>JvPluginManager</td>
+    </tr>
+    <tr>
+      <td>JvQbnddlg</td>
+      <td>JvQueryParamsForm</td>
+    </tr>
+    <tr>
+      <td>JvRadioCtl</td>
+      <td>JvRadioControl</td>
+    </tr>
+    <tr>
+      <td>JvRecentMenuBtn</td>
+      <td>JvRecentMenuButton</td>
+    </tr>
+    <tr>
+      <td>JvRemLog</td>
+      <td>JvRemoteLogin</td>
+    </tr>
+    <tr>
+      <td>JvSHFileOp</td>
+      <td>JvSHFileOperation</td>
+    </tr>
+    <tr>
+      <td>JvSplshWnd</td>
+      <td>JvSplashWindow</td>
+    </tr>
+    <tr>
+      <td>JvSQLS</td>
+      <td>JvSQLScript</td>
+    </tr>
+    <tr>
+      <td>JvStartMenuBtn</td>
+      <td>JvStartMenuButton</td>
+    </tr>
+    <tr>
+      <td>JvStrHlder</td>
+      <td>JvStringHolder</td>
+    </tr>
+    <tr>
+      <td>JvRichEd</td>
+      <td>JvRichEdit</td>
+    </tr>
+    <tr>
+      <td>JvControlPanel</td>
+      <td>JvControlPanelButton</td>
+    </tr>
+    <tr>
+      <td>JvClipMon</td>
+      <td>JvClipboardMonitor</td>
+    </tr>
+    <tr>
+      <td>JvClipView</td>
+      <td>JvClipboardViewer</td>
+    </tr>
+    <tr>
+      <td>JvDataConv</td>
+      <td>JvConverter</td>
+    </tr>
+    <tr>
+      <td>JvPageMngr</td>
+      <td>JvPageManager</td>
+    </tr>
+    <tr>
+      <td>JvBmpAnim</td>
+      <td>JvBmpAnimator</td>
+    </tr>
+    <tr>
+      <td>JvClipIcon</td>
+      <td>JvIconClipboardUtils</td>
+    </tr>
+    <tr>
+      <td>JvArrowBtn</td>
+      <td>JvArrowButton</td>
+    </tr>
+    <tr>
+      <td>JvMemDS</td>
+      <td>JvMemoryDataset</td>
+    </tr>
+    <tr>
+      <td>JvMagnet</td>
+      <td>JvFormMagnet</td>
+    </tr>
+    <tr>
+      <td>JvDlg</td>
+      <td>JvProgressForm</td>
+    </tr>
+    <tr>
+      <td>JvCurrEdit</td>
+      <td>JvBaseEdits</td>
+    </tr>
+    <tr>
+      <td>JvDBComb</td>
+      <td>JvDBCombobox</td>
+    </tr>
+    <tr>
+      <td>JvDBCtrl</td>
+      <td>JvDBControls</td>
+    </tr>
+    <tr>
+      <td>JvHLEdPropDlg</td>
+      <td>JvHLEditorPropertyForm</td>
+    </tr>
+    <tr>
+      <td>JvIcoList</td>
+      <td>JvIconList</td>
+    </tr>
+    <tr>
+      <td>JvPropAutoSave</td>
+      <td>JvAutoSave</td>
+    </tr>
+    <tr>
+      <td>JvTransBtn</td>
+      <td>JvTransparentButton</td>
+    </tr>
+    <tr>
+      <td>JvxLogin</td>
+      <td>JvLoginForm</td>
+    </tr>
+    <tr>
+      <td>JvxLoginDlg</td>
+      <td>JvDBLoginDialog</td>
+    </tr>
+    <tr>
+      <td>JvProps</td>
+      <td>JvPropsStorage</td>
+    </tr>
+    <tr>
+      <td>JvxAnimate</td>
+      <td>JvAnimatedImage</td>
+    </tr>
+    <tr>
+      <td>JvMRUList</td>
+      <td>JvMRUManager</td>
+    </tr>
+    <tr>
+      <td>JvMRU</td>
+      <td>JvMRUList</td>
+    </tr>
+    <tr>
+      <td>JvObjPickerComp</td>
+      <td>JvObjectPickerDialog</td>
+    </tr>
+    <tr>
+      <td>TJvControlPanel</td>
+      <td>TJvControlPanelButton</td>
+    </tr>
+    <tr>
+      <td>TJvStartMenuBtn</td>
+      <td>TJvStartMenuButton</td>
+    </tr>
+    <tr>
+      <td>TJvRecentMenuBtn</td>
+      <td>TJvRecentMenuButton</td>
+    </tr>
+    <tr>
+      <td>JvAppletProperty</td>
+      <td>JvAppletEditor</td>
+    </tr>
+    <tr>
+      <td>JvBehaviorLabelProperty</td>
+      <td>JvBehaviorLabelEditor</td>
+    </tr>
+    <tr>
+      <td>JvChNtfyProperty</td>
+      <td>JvChangeNotifyEditor</td>
+    </tr>
+    <tr>
+      <td>JvTimLstEd</td>
+      <td>JvTimerListForm</td>
+    </tr>
+    <tr>
+      <td>JvTipOfDayProp</td>
+      <td>JvTipOfDayEditor</td>
+    </tr>
+    <tr>
+      <td>JvStrLEdit</td>
+      <td>JvStringsForm</td>
+    </tr>
+    <tr>
+      <td>JvSelDSFrm</td>
+      <td>JvSelectDataSetForm</td>
+    </tr>
+    <tr>
+      <td>JvPresrDsn</td>
+      <td>JvFormPropertiesForm</td>
+    </tr>
+    <tr>
+      <td>JvPluginParams</td>
+      <td>JvPluginParamsForm</td>
+    </tr>
+    <tr>
+      <td>JvPictEdit</td>
+      <td>JvPictureEditForm</td>
+    </tr>
+    <tr>
+      <td>JvPgMngrEd</td>
+      <td>JvPageManagerForm</td>
+    </tr>
+    <tr>
+      <td>JvOutEdit</td>
+      <td>JvLookoutEditor</td>
+    </tr>
+    <tr>
+      <td>JvOLBEditor</td>
+      <td>JvOutlookBarForm</td>
+    </tr>
+    <tr>
+      <td>JvMinMaxEd</td>
+      <td>JvMinMaxForm</td>
+    </tr>
+    <tr>
+      <td>JvJVCLAboutProperty</td>
+      <td>JvJVCLAboutEditor</td>
+    </tr>
+    <tr>
+      <td>JvImagPrvw</td>
+      <td>JvImagePreviewForm</td>
+    </tr>
+    <tr>
+      <td>JvID3v2Define</td>
+      <td>JvID3v2DefineForm</td>
+    </tr>
+    <tr>
+      <td>JvIcoLEdit</td>
+      <td>JvIconListForm</td>
+    </tr>
+    <tr>
+      <td>JvHTHintEditor</td>
+      <td>JvHTHintForm</td>
+    </tr>
+    <tr>
+      <td>JvGradEdit</td>
+      <td>JvGradientCaptionForm</td>
+    </tr>
+    <tr>
+      <td>JvDirFrm</td>
+      <td>JvDirectoryListForm</td>
+    </tr>
+    <tr>
+      <td>JvSbEdit</td>
+      <td>JvSpeedbarForm</td>
+    </tr>
+    <tr>
+      <td>JvTimeLineEdit</td>
+      <td>JvTimeLineEditor</td>
+    </tr>
+    <tr>
+      <td>JvCheckItm</td>
+      <td>JvCheckedItemsForm</td>
+    </tr>
+    <tr>
+      <td>JvaDsgn</td>
+      <td>JvDesignerUtils</td>
+    </tr>
+    <tr>
+      <td>JvDateTimeDlg</td>
+      <td>JvDateTimeForm</td>
+    </tr>
+    <tr>
+      <td>JvCsvDataDsgn</td>
+      <td>JvCsvDataEditor</td>
+    </tr>
+    <tr>
+      <td>JvCsvDataDefStrDsgn</td>
+      <td>JvCsvDataForm</td>
+    </tr>
+    <tr>
+      <td>JvErrProvider</td>
+      <td>JvErrorIndicator</td>
+    </tr>
+    <tr>
+      <td>JvRadioControl</td>
+      <td>JvDialButton</td>
+    </tr>
+  </tbody>
+</table>
+<h5>Deprecated Components</h5>
+<blockquote>
+  <p>TJvControlPanelButton, TJvStartMenuButton, TJvFavoritesButton,
+TJvRecentMenuButton</p>
+</blockquote>
+<h5>Changed Components</h5>
+<blockquote>
+  <p>TJvComputerInfo has been changed from TComponent to TObject. This
+change was
+done to promote safety since there was a risk that the streaming of
+published
+properties could modify important registry values on the end-users
+computer. To
+continue using TJvComputerInfo, open the form where it is located and
+click the
+"Ignore All" button when Delphi/BCB reports that TJvComputerInfo
+cannot be found. Add a private variable of type TJvComputerInfo (with
+the same
+name as the former TJvComputerInfo component) to the form and create
+the class
+dynamically. You should now be able to use the class without any
+adverse
+side-effects. For more details, see the comments at the top of
+JvComputerInfo.pas.</p>
+  <p>&nbsp;</p>
+</blockquote>
+<h4>Naming convention changed</h4>
+<p>&nbsp;</p>
+<p>To keep JVCL consistent, we have adopted a new naming standard. The
+naming&nbsp;standard in JVCL&nbsp;affects both classes, types and unit
+names. The following section explains the new naming convention
+enforced in JVCL:</p>
+<blockquote dir="ltr" style="margin-right: 0px;">
+  <p>&nbsp;</p>
+</blockquote>
+<p><strong>General</strong></p>
+<blockquote dir="ltr" style="margin-right: 0px;">
+  <ul>
+    <li>All files have a "Jv" prefix (capital "J", lower case "v") and
+we use "Camel Casing" for the file name
+(JvLikeThisForExample.pas).&nbsp; </li>
+    <li>All files have an extension in all lower case letters. </li>
+    <li>All units are named using the full name of the contained
+component/control without the leading "T". If the unit contains several
+classes/components, it is either named after the component that will be
+installed, the most "significant" component or uses a name that
+describes the components in the unit as well as possible. For example,
+a unit
+with several database components could be named "JvDBControls.pas"
+whereas a unit containing a TJvEditor control would be named
+"JvEditor.pas". </li>
+    <li>All image file names are in ALL UPPER CASE (TJVALARM.BMP)</li>
+    <li>All include file names are in ALL LOWER CASE (jvcl.inc)</li>
+  </ul>
+  <p>&nbsp;</p>
+</blockquote>
+<p><strong>Using the word "Form" in filenames</strong></p>
+<blockquote dir="ltr" style="margin-right: 0px;">
+  <p>All forms (units with DFM's) are suffixed with the word "Form"
+regardless of whether they contain a dialog or a form (i.e
+JvDualListForm.pas). The word "Form" can also be used as a prefix if
+the component in the unit is acting upon a form without being one
+itself (i.e JvFormMagnet.pas) </p>
+  <p>&nbsp;</p>
+</blockquote>
+<p><strong>Using the word "Dialog" in filenames</strong></p>
+<blockquote dir="ltr" style="margin-right: 0px;">
+  <p>The word "Dialog" in a unit name signifies that the unit contains
+a component that has no UI at designtime but shows a form or dialog at
+run time (i.e JvObjectPickerDialog.pas). At the moment, "Dlg" and
+"Dlgs" are accepted but their use is discouraged. </p>
+  <p>&nbsp;</p>
+</blockquote>
+<p><strong>Using the words "Const" and "Consts" in filenames</strong></p>
+<blockquote dir="ltr" style="margin-right: 0px;">
+  <p>The words "Const" and "Consts" are only used in units that
+contains just type, resourcestring and const declarations and no code
+(i.e JvConsts.pas). </p>
+  <p><strong></strong>&nbsp;</p>
+</blockquote>
+<p><strong>Using the words "Util" and "Utils" in filenames</strong></p>
+<blockquote dir="ltr" style="margin-right: 0px;">
+  <p>The word "Util" and "Utils" are only used in units that contains
+support routines and classes of more general use (i.e JvJVCLUtils.pas).
+Classes in util type units should never be installable. </p>
+  <p>&nbsp;</p>
+</blockquote>
+<p><strong>Design time editors</strong></p>
+<blockquote>
+  <p>Units containing designtime editors should have the same base name
+as the component they are primarily used to edit and an "Editor" or
+"Editors" suffix, i.e a property editor unit for the TJvBehaviorLabel
+should be called either "JvBehaviorLabelEditor" or
+"JvBehaviorLabelEditors". </p>
+  <p>&nbsp; </p>
+  <p>The base name for the unit is controlled by the name of the
+component the editor(s) were meant for: if all editors are for the same
+component, we use the same rule as for a single editor (the plural
+form), if the unit contains generic editors, we name the unit either
+according to the editors "family" ("JvDBEditors" contains design
+editors for DB related components) or according to it's general data
+type (i.e "JvDateEditors" contains editors used to edit date related
+properties). </p>
+  <p>&nbsp; </p>
+  <p>It doesn't matter (name wise) if a unit contains property,
+component or any other types of editor. They are all named the same
+way. If a design editor is implemented in the same unit as a form, the
+unit is named with a "Form" suffix (see rule above for using the word
+"Form" in filenames). The reasoning behind this is simple: if a split
+of the unit is to be done in the future (which is likely), it is the
+design editor that will be moved to a new unit, not the form. The new
+unit for the editor will then get an appropriate name with a "Editor"
+suffix but the name of the form will not change. </p>
+  <p>&nbsp; </p>
+  <p>Adding design editors to form units is discouraged. We try to keep
+editors in their own unit, preferably one editor per unit. Editor units
+should not contain their own Register procedure. The Register procedure
+should only be present in specific "Reg" files for a package (see
+below). This minimizes confusion and clutter and maximizes reuse, loose
+coupling and simplifies maintenance and future restructuring. </p>
+  <p><strong></strong>&nbsp;</p>
+</blockquote>
+<p><strong>Registration units</strong></p>
+<blockquote dir="ltr" style="margin-right: 0px;">
+  <p>Each design package have it's own registration unit with a
+Register procedure. The unit is named with the same base name as the
+package but with a "Reg" suffix (i.e the reg file for the "JvCore"
+design package is named "JvCoreReg.pas"). The reg file only contains
+registrations for the components and design editors. Design editors and
+other support code is not added to the reg file unless absolutely
+necessary. </p>
+  <p>&nbsp; </p>
+  <p>A matching dcr file is also included in the \resources folder. The
+dcr file always have the same base name as the reg file but with a dcr
+file extension (i.e the palette icons for components registered in
+JvCoreReg.pas is in \resources\JvCoreReg.dcr). </p>
+  <p>&nbsp;</p>
+</blockquote>
+<p><strong>Palette images color coding</strong></p>
+<blockquote dir="ltr" style="margin-right: 0px;">
+  <p>All component icons have a common background and an upper case
+yellow "J" in a rectangle in the bottom right corner of the image. The
+background color of the&nbsp;rectangle identifies the type of component
+the icon represent. Currently, we use the following color codes:</p>
+  <p><strong>Blue </strong>- Visual components</p>
+  <p><strong>Green</strong> - Non-visual components</p>
+  <p><strong>Purple</strong> - Database components (visual and
+non-visual)</p>
+  <p><strong>Maroon - </strong>data provider components (implements
+one or more of the IJvDataProvider interfaces)</p>
+  <p><strong>Navy</strong> - data consumers (data provider aware
+components)</p>
+  <p>&nbsp;</p>
+</blockquote>
+<h2>Getting involved in JVCL development</h2>
+<p>&nbsp;</p>
+<p>If you want to help out making JVCL better or bigger or just plain
+cooler, there are several ways in which you can help out.&nbsp; Here
+are some of the things we need your help on:</p>
+<p>&nbsp;</p>
+<ul>
+  <li>Donate components and other source code </li>
+  <li>Donate time writing help </li>
+  <li>Donate time writing demos </li>
+  <li>Donate time fixing bugs</li>
+</ul>
+<p>&nbsp;</p>
+<h4>Donate components and other source code</h4>
+<p>&nbsp;</p>
+<p>JVCL accepts donations from developers as long as the components
+fulfill the requirements set up by the JEDI and JVCL teams. To read
+more about these requirements, visit the page <a
+ href="http://jvcl.sourceforge.net/donate.htm">http://jvcl.sourceforge.net/donate.htm</a></p>
+<p>&nbsp;</p>
+<h4>Donate time writing help</h4>
+<p>&nbsp;</p>
+<p>You can also donate your time by writing help for the components
+already in JVCL. We currently use Doc-o-Matic to create the finished
+help files but the actual help sources are plain text files in a simple
+to understand format. We can provide you with auto-generated templates
+with all classes, properties, types etc already inserted. The "only"
+thing left to do is fill in the actual help text for the help items. If
+you are interested in writing help, contact us. </p>
+<h4>&nbsp;</h4>
+<h4>Donate time writing demos</h4>
+<p>&nbsp;</p>
+<p>One of the best ways of getting to know a new component is to see
+the source code of a demo using it and although we have a lot of demos
+in JVCL, we still need more and some of the existing demos needs to be
+"beefed up". Many developers create test apps to try out a new
+component before putting it to use in their real projects so if you
+have such a demo or is interested in making more full blown demos for
+JVCL, contact us.</p>
+<h4>&nbsp;</h4>
+<h4>Donate time fixing bugs</h4>
+<p>&nbsp;</p>
+<p>If you want to help fix bugs in JVCL, go to Mantis and check the bug
+reports there. You can post replies as well as fixes directly in the
+bug report. One of the JVCL developers will pick up the report/fix and
+update the CVS repository if the fix is satisfactory. If you report and
+fix a lot of bugs, you might even get developer access to CVS so you
+can update the JVCL files directly.</p>
+<h3>&nbsp;</h3>
+<h2><a name="contact"></a>Getting in touch with JVCL developers and
+other users</h2>
+<p>&nbsp;</p>
+<p>You can get in touch with the JVCL team and/or other JVCL users in
+one of the following manners:</p>
+<ul>
+  <li>Homepage. Our homepage is located at <a
+ href="http://jvcl.sourceforge.net">http://jvcl.sourceforge.net</a> </li>
+  <li dir="ltr">
+    <p dir="ltr">Newsgroups. You can access the JVCL newsgroups at <a
+ href="news://news.delphi-jedi.org/jedi.jvcl">
+news://news.delphi-jedi.org/jedi.jvcl</a> (preferred). Another way to access
+the newsgroups is to use the web gateway <a href="http://newsportal.delphi-jedi.org">
+http://newsportal.delphi-jedi.org</a>. Thanks to Marco Cant&uacute;
+(author of the "Mastering Delphi" books), you can also
+access the newsgroups from the Web at <a
+ href="http://delphi.newswhat.com/geoxml/forumlistgroups?area=JEDI">
+http://delphi.newswhat.com/geoxml/forumlistgroups?area=JEDI</a>. </p>
+  </li>
+  <li>Mail lists. There are still some mail lists on Yahoo to discuss
+JVCL but these are gradually being closed down, so please do not use
+these. If you can't access the newsgroups, you can post messages to the
+mail lists on sourceforge. Go to <a href="http://sf.net/projects/jvcl">http://sf.net/projects/jvcl</a>
+and click the "Lists" link to get to the soureforge mail lists
+(deprecated). </li>
+  <li>Bug reporting. To report bugs, suggest improvement or new
+features or donate a component, go to Mantis (our on-line bug tracker)
+and post/reply to the reports there. You'll find Mantis at <a
+ href="http://projectjedi.sourceforge.net/mantis">
+http://projectjedi.sourceforge.net/mantis</a>. Please make sure your
+problem hasn't already been reported and fixed before posting a new bug
+report!</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>

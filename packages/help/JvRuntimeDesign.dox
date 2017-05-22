@@ -1,0 +1,63 @@
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This file is maintained by Doc-O-Matic, do not edit manually.
+
+[*Control*]
+MasterFile=..\..\..\help\JVCLTemplate.dox
+
+[Configurations\CHM\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvRuntimeDesigncontents.html
+IndexFile=JvRuntimeDesignidx.html
+
+[Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvRuntimeDesigncontents.html
+IndexFile=JvRuntimeDesignidx.html
+
+[Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\HTMLHelp]
+Help2Collection=JvRuntimeDesign_COL_MASTER.HxC
+Help2ID=JvRuntimeDesign
+HTMLHelp2Filename=..\..\help\JvRuntimeDesign.HxS
+
+[Configurations\HLP\{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Basic]
+HLPFilename=..\..\help\JvRuntimeDesign.hlp
+
+[Configurations\HTML\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvRuntimeDesigncontents.html
+IndexFile=JvRuntimeDesignidx.html
+
+[Project Database Files]
+Count=5
+File0=JvCore.doxdb
+File1=JvStdCtrls.doxdb
+File2=Jcl.doxdb
+File3=JEDI.doxdb
+File4=vcl.doxdb
+
+[Source Files]
+Count=19
+File0=..\..\run\JvInspDB.pas
+File1=..\..\run\JvInspector.pas
+File2=..\..\run\JvDynControlEngineJVCLInspector.pas
+File3=..\..\run\JvInspExtraEditors.pas
+File4=..\..\run\JvDesignClip.pas
+File5=..\..\run\JvDesignSurface.pas
+File6=..\..\run\JvDesignUtils.pas
+File7=..\..\run\JvDesignImp.pas
+File8=..\..\run\JvPropertyStoreEditor.pas
+File9=..\..\..\help\Common.dtx
+File10=..\..\..\help\JvInspDB.dtx
+File11=..\..\..\help\JvInspector.dtx
+File12=..\..\..\help\JvDynControlEngineJVCLInspector.dtx
+File13=..\..\..\help\JvInspExtraEditors.dtx
+File14=..\..\..\help\JvDesignClip.dtx
+File15=..\..\..\help\JvDesignSurface.dtx
+File16=..\..\..\help\JvDesignUtils.dtx
+File17=..\..\..\help\JvDesignImp.dtx
+File18=..\..\..\help\JvPropertyStoreEditor.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2012 Project JEDI
+Summary=Documentation of the JVCL Runtime Design Components Runtime Package
+Title=JVCL Runtime Design Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

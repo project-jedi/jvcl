@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvManagedThreads" Design="0">
+  <Description>JVCL Managed Threads Runtime Package</Description>
+  <GUID>{B20F7784-CED8-4792-9E5F-A304AC4711F4}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>498C0000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvMTComponents.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMTConsts.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMTData.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMTSync.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMTSyncMon.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMTThreading.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTComponents.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTConsts.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTData.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTSync.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTSyncMon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTThreading.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

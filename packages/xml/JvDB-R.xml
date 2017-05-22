@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvDB" Design="0">
+  <Description>JVCL Database Components Runtime Package</Description>
+  <GUID>{E63D1285-7625-4EFA-9DD7-632D72CF633C}</GUID>
+  <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4B200000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvDlgs-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvControls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="adortl" Targets="DB" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
+    <Package Name="SMExportC6" Targets="c6" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD6" Targets="d6" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD7" Targets="d7" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD2005" Targets="d9" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD2006" Targets="d10" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD2007" Targets="d11" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD2009r" Targets="d12" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD2010r" Targets="d14" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportXEr" Targets="d15" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportXE2r" Targets="d16" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMImportC6" Targets="c6" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD6" Targets="d6" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD7" Targets="d7" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD2005" Targets="d9" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD2006" Targets="d10" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD2007" Targets="d11" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD2009r" Targets="d12" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD2010r" Targets="d14" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportXEr" Targets="d15" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportXE2r" Targets="d16" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="DOA41C6" Targets="c6" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D6" Targets="d6" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D7" Targets="d7" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D2005" Targets="d9" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D2006" Targets="d10" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D2006" Targets="d11" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D2009" Targets="d12" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="DOA41D2010" Targets="d14" Condition="USE_3RDPARTY_DOA"/>
+    <Package Name="ODAC60" Targets="d6,c6" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC70" Targets="d7" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC90" Targets="d9" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC100" Targets="d10" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC105" Targets="d11" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC120" Targets="d12" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC140" Targets="d14" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC150" Targets="d15" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC160" Targets="d16" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL60" Targets="d6,c6" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL70" Targets="d7" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL90" Targets="d9" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL100" Targets="d10" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL105" Targets="d11" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL120" Targets="d12" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL140" Targets="d14" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL150" Targets="d15" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL160" Targets="d16" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="UNIDAC70" Targets="d7" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDAC90" Targets="d9" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDAC100" Targets="d10" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDAC105" Targets="d11" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDAC120" Targets="d12" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDAC140" Targets="d14" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDAC150" Targets="d15" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDAC160" Targets="d16" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL70" Targets="d7" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL90" Targets="d9" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL100" Targets="d10" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL105" Targets="d11" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL120" Targets="d12" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL140" Targets="d14" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL150" Targets="d15" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL160" Targets="d16" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
+    <Package Name="cxEditorsVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
+    <Package Name="cxDataVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxGridVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
+    <Package Name="cxEditorsVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
+    <Package Name="cxDataVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxGridVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
+    <Package Name="cxEditorsVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
+    <Package Name="cxDataVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxGridVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
+    <Package Name="cxEditorsD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
+    <Package Name="cxDataD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxGridD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
+    <Package Name="cxTreeListD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxPivotGridD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
+    <Package Name="cxEditorsD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
+    <Package Name="cxDataD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxGridD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
+    <Package Name="cxTreeListD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxPivotGridD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
+    <Package Name="cxEditorsD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
+    <Package Name="cxDataD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxGridD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
+    <Package Name="cxTreeListD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxPivotGridD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
+    <Package Name="cxEditorsD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
+    <Package Name="cxDataD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxGridD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
+    <Package Name="cxTreeListD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxPivotGridD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
+    <Package Name="cxEditorsD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
+    <Package Name="cxDataD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxGridD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
+    <Package Name="cxTreeListD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxPivotGridD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
+    <Package Name="cxEditorsD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
+    <Package Name="cxDataD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxGridD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
+    <Package Name="cxTreeListD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxPivotGridD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
+    <Package Name="cxEditorsd16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
+    <Package Name="cxDatad16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxGridd16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
+    <Package Name="cxTreeListd16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxPivotGridd16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
+    <Package Name="cxEditorsVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
+    <Package Name="cxDataVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxGridVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
+    <Package Name="cxEditorsVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
+    <Package Name="cxDataVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxGridVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
+    <Package Name="cxEditorsVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
+    <Package Name="cxDataVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxGridVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
+    <Package Name="cxEditorsRS9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
+    <Package Name="cxDataRS9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxGridRS9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
+    <Package Name="cxTreeListRS9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxPivotGridRS9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
+    <Package Name="cxEditorsRS10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
+    <Package Name="cxDataRS10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxGridRS10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
+    <Package Name="cxTreeListRS10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxPivotGridRS10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
+    <Package Name="cxEditorsRS11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
+    <Package Name="cxDataRS11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxGridRS11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
+    <Package Name="cxTreeListRS11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxPivotGridRS11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
+    <Package Name="cxEditorsRS12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
+    <Package Name="cxDataRS12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxGridRS12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
+    <Package Name="cxTreeListRS12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxPivotGridRS12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
+    <Package Name="cxEditorsRS14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
+    <Package Name="cxDataRS14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxGridRS14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
+    <Package Name="cxTreeListRS14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxPivotGridRS14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
+    <Package Name="cxEditorsRS15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
+    <Package Name="cxDataRS15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxGridRS15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
+    <Package Name="cxTreeListRS15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxPivotGridRS15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
+    <Package Name="cxEditorsRS16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
+    <Package Name="cxDataRS16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxGridRS16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
+    <Package Name="cxTreeListRS16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxPivotGridRS16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMemoryDataset.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExprParser.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCsvData.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCsvParse.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBActions.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBActionsEngine.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBActionsEngineDatasetCSVDataset.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBActionsEngineDatasetDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
+    <File Name="..\..\run\JvDBActionsEngineDatasetDevart.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || USE_3RDPARTY_DEVART_UNIDAC || HELP"/>
+    <File Name="..\..\run\JvDBCombobox.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBControls.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBDatePickerEdit.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBDateTimePicker.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBLookup.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBLookupComboEdit.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBaseDBThreadedDataset.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBaseDBDialog.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBaseDBPasswordDialog.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBaseDBLogonDialog.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBLogonDialogDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
+    <File Name="..\..\run\JvDBLogonDialogBaseDevart.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || USE_3RDPARTY_DEVART_UNIDAC || HELP"/>
+    <File Name="..\..\run\JvDBLogonDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || HELP"/>
+    <File Name="..\..\run\JvDBLogonDialogUniDac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_UNIDAC || HELP"/>
+    <File Name="..\..\run\JvDBLookupTreeView.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBPasswordDialogDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
+    <File Name="..\..\run\JvDBPasswordDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || HELP"/>
+    <File Name="..\..\run\JvDBProgressBar.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBQueryParamsForm.pas" Targets="DB,help" Formname="JvQueryParamsDialog" Condition=""/>
+    <File Name="..\..\run\JvDBRadioPanel.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBRemoteLogin.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBRichEdit.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBSpinEdit.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBTreeView.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBUtils.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBGrid.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBGridExport.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBGridSelectColumnForm.pas" Targets="DB,help" Formname="frmSelectColumn" Condition=""/>
+    <File Name="..\..\run\JvDBUltimGrid.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBGridFooter.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineDBTools.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExDBGrids.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBHTLabel.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBSearchEdit.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBSearchComboBox.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppDBStorage.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBFindEdit.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBImage.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDataSource.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineDB.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineDBIntf.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineVCLDB.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineJVCLDB.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOracleDataset.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
+    <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || HELP"/>
+    <File Name="..\..\run\JvUniDacQuery.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_UNIDAC || HELP"/>
+    <File Name="..\..\run\JvDBCheckBox.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBFilterExpr.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvADOQuery.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAppStoragePropertyEngineDB.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMemoryDataset.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvExprParser.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCsvData.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCsvParse.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBActions.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBActionsEngine.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBActionsEngineDatasetCSVDataset.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBActionsEngineDatasetDoa.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBActionsEngineDatasetOdac.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBCombobox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBControls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBDatePickerEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBDateTimePicker.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBLookup.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBLookupComboEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBaseDBThreadedDataset.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBaseDBDialog.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBaseDBPasswordDialog.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBaseDBLogonDialog.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBLogonDialogDoa.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBLogonDialogOdac.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBLookupTreeView.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBPasswordDialogDoa.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBPasswordDialogOdac.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBProgressBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBQueryParamsForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBRadioPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBRemoteLogin.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBRichEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBSpinEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBTreeView.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBGrid.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBGridExport.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBGridSelectColumnForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBUltimGrid.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBGridFooter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDynControlEngineDBTools.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvExDBGrids.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBHTLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBSearchEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBSearchComboBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAppDBStorage.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBFindEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBImage.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDataSource.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDynControlEngineDB.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDynControlEngineDBIntf.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDynControlEngineVCLDB.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDynControlEngineJVCLDB.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOracleDataset.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOdacSmartQuery.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBCheckBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBFilterExpr.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

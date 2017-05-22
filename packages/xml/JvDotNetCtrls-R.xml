@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvDotNetCtrls" Design="0">
+  <Description>JVCL DotNet Controls Runtime Package</Description>
+  <GUID>{FEA976CC-DA02-4817-AA17-5B1CD552B39C}</GUID>
+  <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4D010000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvDB-R" Targets="DB" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvDotNetControls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBDotNetControls.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDotNetUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDotNetControls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBDotNetControls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDotNetUtils.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

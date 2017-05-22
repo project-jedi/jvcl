@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvCmp" Design="0">
+  <Description>JVCL Non-Visual Components Runtime Package</Description>
+  <GUID>{D967C259-8727-4B1D-8824-FC792F5A9F89}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4B400000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvMouseGesture.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPageManager.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPatchFile.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPrint.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvProfilerForm.pas" Targets="all" Formname="ProfReport" Condition=""/>
+    <File Name="..\..\run\JvStringHolder.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTimeLimit.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTranslator.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWinHelp.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAlarms.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvConverter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCreateProcess.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDataEmbedded.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvEasterEgg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvEnterTab.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLogFile.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLogClasses.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLogForm.pas" Targets="all" Formname="FoLog" Condition=""/>
+    <File Name="..\..\run\JvMergeManager.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvControlComponent.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpellChecker.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpellerForm.pas" Targets="all" Formname="JvSpellerForm" Condition=""/>
+    <File Name="..\..\run\JvSpellIntf.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMouseGesture.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPageManager.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPatchFile.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPrint.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvProfilerForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvStringHolder.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTimeLimit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTranslator.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWinHelp.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAlarms.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvConverter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCreateProcess.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDataEmbedded.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvEasterEgg.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvEnterTab.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLogFile.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLogClasses.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLogForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMergeManager.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvControlComponent.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpellChecker.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpellerForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpellIntf.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

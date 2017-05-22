@@ -1,0 +1,361 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Migrating your applications from previous versions of JEDI VCL</title>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+</head>
+<body>
+<h1>Migrating your applications from previous versions of JEDI VCL</h1>
+<h2> </h2>
+<hr>
+<h2> Introduction</h2>
+<p>Since the previous release JVCL has undergone some major changes.
+Old components have been bug fixed, enhanced, merged and&nbsp;removed,
+new components and libraries have been added, units have been renamed
+and the previous monolithic package has been split into several smaller
+packages. The folder structure has also changed: Source files have been
+rearranged into design and run folders, packages have been moved into
+separate folders based on the supported compiler version. </p>
+<p>&nbsp; </p>
+<p>Taken together, moving your applications from JVCL 2.10 to the
+current version can seem to be quite a daunting task and many things
+can go wrong if migration tasks aren't performed in the right order
+using the right tools. This document is a help in making this migration
+as easy as possible.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Please note that although the document refers to "Delphi" in several
+places, the instructions applies equally to other versions of Borland
+GUI's (like C++Builder and Kylix) unless the text specifically says
+otherwise.</p>
+<p>&nbsp;</p>
+<h2>General migration issues</h2>
+<p>&nbsp;</p>
+<p>Before you start moving your application to the latest JVCL, you
+must make sure that you can go back if something goes wrong. To
+accomplish this, you must perform the following steps:</p>
+<ul>
+  <li>Make sure you save all DFM files in text format. This simplifies
+manual editing (for example with Notepad) of them in case you can't
+load them into Delphi. The command line program <b>&lt;Delphi&gt;\bin\convert.exe</b>,
+supplied with all version of Delphi, allows quick, mass conversion of
+DFMs. Run convert at a command prompt to see usage instructions. </li>
+  <li>Make a complete backup of your current JVCL and JCL installations
+and store in a safe place </li>
+  <li>Make a complete backup of your application(s) and store in a safe
+place</li>
+</ul>
+<p>&nbsp;</p>
+<p>You also need to make sure that Delphi doesn't use use the old JVCL
+sources and/or binaries once you've started the migration. To make sure
+that none of the old files are used by Delphi, you should</p>
+<ul>
+  <li>Start Delphi, go to "Install Packages", select any JCL and JVCL
+packages in the list and click the remove button </li>
+  <li>Go to Environment Options and remove any paths to JCL and JVCL
+from the Library, Search, Debug&nbsp;and Browse path lists </li>
+  <li>Close Delphi. Delete all JCL and JVCL folders from your computer.
+Delete all JCL and JVCL dcu, dcp, bpl and other related files from your
+computer</li>
+</ul>
+<p>&nbsp;</p>
+<p>Your computer should now be "JVCL free" and you are ready to start
+migrating.</p>
+<p>&nbsp;</p>
+<h3>Step one - installation</h3>
+<p>&nbsp; </p>
+<p>Before you can start using the new JVCL, you need to install it.
+Follow the instructions in install.htm to install JCL/JVCL. Add any
+required paths to the Environment Options in Delphi. Since it is
+impossible to know what JVCL packages you will actually need in your
+development, we recommend that you start by installing all of them. You
+can go back later and remove or deactivate those that you don't use. </p>
+<p>&nbsp; </p>
+<p>Make sure that you can use the JVCL components by creating a new
+empty project, drop a few JVCL components on the form and try to run
+it. If the application builds and runs without errors, you are ready to
+start using JVCL.</p>
+<p>&nbsp;</p>
+<h3>Step two - search and replace</h3>
+<p>&nbsp;</p>
+<p>After successfully installing JVCL, you need to go through your
+application sources outside Delphi and replace any occurrences of old
+unit, class and type names with the new names. You can do this manually
+by referencing the list of renames in readme.htm and changelog.txt but
+it is a lot simpler to use the JVCL Convert program and the provided
+conversion data file.</p>
+<p>&nbsp;</p>
+<div class="InfoField"> JVCL Convert is a tool that can search a set of
+selected files and replace occurrences of one text with another by
+reading the entries in a conversion file. A conversion file contains
+pairs of old/new values.
+<p>&nbsp;</p>
+<p>The source to JVCL convert is in the &lt;<b>JVCL&gt;\devtools\JVCLConvert</b>,
+a precompiled exe is in &lt;<b>JVCL&gt;\devtools\bin</b> and all
+available dat files are in &lt;<b>JVCL&gt;\converter</b>.</p>
+</div>
+<p>&nbsp;</p>
+<p>A conversion file named JVCL3.dat is provided with the download of
+JVCL. Run the JVCLConvert program with the JVCL3.dat file on your
+application source files. You can know try to open your project in
+Delphi. If it opens and compiles without problem, you are finished and
+can start using JVCL 3.</p>
+<p>&nbsp;</p>
+<h3>Step three - replace removed components</h3>
+<p>&nbsp;</p>
+<p>In some cases, the simple replacement of unit, class and type names
+isn't sufficient to make your application run. For example, if you use
+a component that has been removed or replaced by&nbsp; another
+component, properties will most likely be named differently or the
+components design might be so different that the old properties aren't
+even usable with the new component. You could even be forced to recode
+the logic in your application to match the workings of the new
+component. Some suggestions for dealing with common problems are given <a
+ href="#ManualRep">below</a>.</p>
+<p>&nbsp;</p>
+<p>The only way to sort these problems out is to compare the old
+components design with the new one and make decision based on that. In
+rare cases, you can't replace the old component with a new one and need
+to keep the old one in use. We never delete components once they have
+been added to JVCL. Instead, all old components are available in the
+\archive folder (this folder is only included in the full install). To
+use, you will need to manually add the component unit(s) to a package
+of your choice and you will most likely also have to write a Register
+procedure to install it in Delphi. </p>
+<p>&nbsp;</p>
+<h3>Step four - future proof your application</h3>
+<p>&nbsp;</p>
+<p>Although we don't anticipate that we will ever do such a complete
+overhaul of the JVCL again, you still need to future proof your
+applications so the next version of JVCL doesn't catch you by surprise.
+Since almost all the duplicate components in JVCL have been merged,
+there are not many that we think will change. But you should still
+consider the following:</p>
+<p>&nbsp;</p>
+<ul>
+  <li>If there is more than one component with the same basic name, you
+can expect one of them to disappear in the future. For example, there
+is a TJvTrayIcon and a TJvxTrayIcon component. One of them will most
+likely disappear. To try to determine which one remain, compare their
+feature sets and their functionality. The most feature rich and best
+working component is probably be the one that will be kept. When two
+components are merged and they have similar base names, the name best
+matching JVCL naming standards will be used for the new component. For
+example, in the example above a merged tray icon component would be
+named TJvTrayIcon (and it's unit would be named JvTrayIcon.pas) even if
+the main part of the implementation was taken from the original
+TJvxTrayIcon/JvxTrayIcon.pas. </li>
+  <li>Components in the deprecated list in readme.htm will probably not
+be part of the next JVCL release. </li>
+  <li>Very simple components and some JCL duplicate functions might not
+be part of the next release. Currently, there is no list of functions
+that might be moved to JCL or replaced by JCL equivalents. </li>
+  <li>Donated component libraries will not likely be split up or merged
+with the "main" JVCL library. So if you are using a component from the
+Jans library, you can expect it to be available in the future even if
+that component is an exact duplicate of another component in JVCL. The
+same holds true the other way around: even if a component in JVCL is an
+exact duplicate of a component in a separate library, it will most
+likely not be removed. Currently, we have six libraries with components
+that we consider as separate entities. The JvUIB components, Jans
+components, the JvWizard components, the
+ManagedThreads components and the JvTimeFramework components. The
+Globus library is a separate case in JVCL 3.5 and is being merged into
+the JVCL. Please read on for details.<br>
+  </li>
+</ul>
+<p>&nbsp;</p>
+<h2>Migrating from pre-JVCL donated libraries</h2>
+<p>&nbsp;</p>
+<p>As well as providing a JVCLConvert file to update JVCL 2.10 code,
+the JVCL distribution includes converter files for the various donated
+libraries that have been adopted into JVCL. These are found in the
+converter folder as shown:</p>
+<p>&nbsp;</p>
+<table
+ style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="1" cellpadding="1" cellspacing="1" width="58%">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center; width: 30%;">Pre-JVCL
+library</td>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center; width: 35%;">JVCL
+Convert file</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">RALib </td>
+      <td style="vertical-align: top; width: 35%;">converter\RALib.dat </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">Globus Lib</td>
+      <td style="vertical-align: top; width: 35%;">converter\Globus.dat</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">Jans</td>
+      <td style="vertical-align: top; width: 35%;">converter\Jans.dat</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">KWizard</td>
+      <td style="vertical-align: top; width: 35%;">converter\KWizard2JVCL.dat</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">UTF (Unified Time
+Framework)</td>
+      <td style="vertical-align: top; width: 35%;">converter\UTFToJVCL.dat</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">dxPack II </td>
+      <td style="vertical-align: top; width: 35%;">converter\dxPackToJVCL.dat</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">dxDotNetPack II</td>
+      <td style="vertical-align: top; width: 35%;">converter\dxDotNetToJVCL.dat</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">DockPresident 1.03</td>
+      <td style="vertical-align: top; width: 35%;">converter\DockPresidentToJVCL.dat</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">RxLib</td>
+      <td style="vertical-align: top; width: 35%;">See note below</td>
+    </tr>
+  </tbody>
+</table>
+<p>&nbsp;</p>
+<h3>Migrating from&nbsp;RxLib to JVCL</h3>
+<h3>&nbsp;</h3>
+<p>The converter\RxLib.dat and converter\RxToJVCLApp.dat files converts
+between RxLib and JVCL2.10 and the resulting names might not be
+compatible with the latest release. To fix this, first convert using
+RxToJVCLApp.dat and then run again using converter\JVCL3.dat. </p>
+<p>&nbsp;</p>
+<h3>Migrating from Globus to JVCL 3.5<br>
+</h3>
+<h3>&nbsp;</h3>
+<p>The converter\Globus.dat file converts
+between Globus and JVCL 3.00 initial release. However, as the Globus
+components are being merged into the JVCL, the names and properties
+change in a way that makes it almost impossible to use the converter.
+Thus, please refer to the following <a href="migrating_globus.html">document</a>
+where you will find a list of equivalent components and properties.<br>
+<br>
+</p>
+<p>&nbsp;</p>
+<h2><a name="ManualRep"></a>Manual component replacement</h2>
+<p>&nbsp;</p>
+<p>Here are some obsolete or changed components from JVCL 2.10 that are
+not converted automatically or not fully converted by JVCLConvert, and
+must be dealt with
+manually. The suggested basic techniques are intended to get you going
+quickly, but you must check that they make sense in your own
+circumstances. It is also <i>very</i> incomplete.</p>
+<p>&nbsp;</p>
+<p>Note that the following suggestions assume that, as suggested above,
+you have converted all your DFM form files into text, so that they can
+be edited with an ordinary text editor. You may find it easier to
+change the DFMs outside the Delphi IDE using Notepad or your choice of
+editor, only switching back to Delphi to check that the form file loads.</p>
+<p>&nbsp;</p>
+<h3>TJvIntegerEdit</h3>
+<p>Search and replace TJvIntegerEdit with TJvValidateEdit in PAS and
+DFM files, and delete JvTypedEdit from the Uses clause in the PAS.
+Since TJvValidateEdit defaults to integer edits, this usually suffices.</p>
+<p>&nbsp;</p>
+<p>Beware if the Value property of TJvIntegerEdit is read in by
+TJvFormStorage. This fails (does nothing) silently. You can use the
+Text property instead, but this leads to incompatibility with existing
+INI files or Regsitry keys. A rather horrible workaround is to use the
+Text property and implement an OnTranslatePropertyName to map the Text
+property to the Value property. Note that this is being worked on and a
+fix will be provided shortly.<br>
+</p>
+<p>&nbsp;</p>
+<h3>TJvFloatEdit2</h3>
+<p>Search and replace TJvFloatEdit with TJvValidateEdit in PAS and
+DFM files, and delete JvTypedEdit from the Uses clause in the PAS.
+Then set the DisplayFormat property to dfFloat. If you have set the
+MaxDecimals property, then rename it to DecimalPlaces and set
+TrimDecimals to True.</p>
+<p><br>
+</p>
+<h3>TJvImageSquare</h3>
+<p>In DFM files, replace the BackColor property by Color and ImageList
+by Images.</p>
+<p><br>
+</p>
+<h3>TJvxCurrencyEdit</h3>
+<p>Usually used as an Integer edit, therefore again replaced by
+TJvValidateEdit. Search/Replace TJVxCurrencyEdit to TJvValidateEdit in
+PAS and DFM files, then delete the DisplayFormat property of
+TJVxCurrencyEdit controls in the DFM (if you don't, Delphi may throw an
+AV attempting to load the form).</p>
+<p>&nbsp;</p>
+<p>This should allow you to load the form in the IDE - now check it
+still does what you want. You should also set the DisplayFormat
+property to dfCurrency.<br>
+</p>
+<p>&nbsp;</p>
+<h3>TJvFormStorage</h3>
+<p>TJvFormStorage's functionality has been split across multiple
+components in JVCL. When you try to load a form with an old component,
+Delphi may well complain about properties that no longer exist, such as
+IniFilename and IniSection.</p>
+<p>&nbsp;</p>
+<p>If you used TJvFormStorage to store settings in an INI file, drop an
+TJvAppIniFileStorage on the form (from the JvPersistence tab), and set
+the AppStorage property of your FormStorage to point to it.</p>
+<p>&nbsp;</p>
+<p> TJvAppIniFileStorage.FileName property replaces the old
+IniFilename. If you supply a full path for the file
+TJvAppIniFileStorage.Location should be set to flCustom to get the
+component to use your path.<br>
+If TJvAppIniFileStorage.Location is left at its default value flExeFile
+then the file will be written in the .EXE's launch directory.</p>
+<p>&nbsp;</p>
+<p>TJvFormStorage.AppStoragePath replaces the old IniSection property.
+Don't be fazed by the way it appends a backslash when you do it
+interactively. This doesn't appear in the Section title. If the section
+name is not significant, or is blank, leave it to default - it will use
+the Form name, just like a blank IniSection of old.</p>
+<p>&nbsp;</p>
+<p>If you used a FormStorage to use the Registry, instead drop a
+TJvAppRegistryStorage onto the form instead. You may also decide to use
+the XML component.<br>
+</p>
+<p>&nbsp;</p>
+<h3>TJvTimerEvent</h3>
+<p>Loading a JVCL 2.10 form containing a TJvTimerList into the Delphi
+IDE, you will get an error that<br>
+'TJvTimerEvent cannot be found'.</p>
+<p>This is caused by a change in TJvTimerList's DFM format. The
+simplest way to explain is with an example:</p>
+<p><b>Old Format:</b></p>
+<pre>  object tlMain: TJvTimerList<br>    Left = 376<br>    Top = 181<br>    object teFormVisible: TJvTimerEvent<br>      Cycled = False<br>      Enabled = False<br>      Interval = 1<br>      OnTimer = teFormVisibleTimer<br>    end<br>    object teDefaultRefresh: TJvTimerEvent<br>      OnTimer = teDefaultRefreshTimer<br>    end<br>    object teDelayedGridUpdate: TJvTimerEvent<br>      Enabled = False<br>      Interval = 0<br>      OnTimer = teDelayedGridUpdateTimer<br>    end<br>    object teDelayedCellEdit: TJvTimerEvent<br>      Enabled = False<br>      Interval = 0<br>      OnTimer = teDelayedCellEditTimer<br>    end<br>  end<br></pre>
+<b>New Format: </b>
+<pre>  object tlMain: TJvTimerList<br>    Events = &lt;<br>      item<br>        Name = 'teFormVisible'<br>        Cycled = False<br>        Enabled = False<br>        Interval = 1<br>        OnTimer = teFormVisibleTimer<br>      end<br>      item<br>        Name = 'teDefaultRefresh'<br>        OnTimer = teDefaultRefreshTimer<br>      end<br>      item<br>        Name = 'teDelayedGridUpdate'<br>        Enabled = False<br>        Interval = 0<br>        OnTimer = teDelayedGridUpdateTimer<br>      end<br>      item<br>        Name = 'teDelayedCellEdit'<br>        Enabled = False<br>        Interval = 0<br>        OnTimer = teDelayedCellEditTimer<br>      end&gt;<br>    Left = 376<br>    Top = 181<br>  end<br></pre>
+<p>The simplest solution is just to edit the text from one format to
+the other.</p>
+<p>&nbsp;</p>
+<p>Note that you also have to edit any code in the PAS file that refers
+to the TTimerEvent directly. For example you have to change this code</p>
+<pre> teDelayedCellEdit.Enabled := False;<br></pre>
+<p>to this</p>
+<pre> tlMain.Events.ItemByName('teDelayedCellEdit').Enabled := False;<br></pre>
+<p>&nbsp;<br>
+</p>
+<h3>TJvTransparentButton2</h3>
+<p>TJvTransparentButton2 will have been replaced automatically by
+TJvTransparentButton by the converter. However, the Image related
+properties will not and as such you have to take manual steps.
+ActiveImage is replaced by Images.ActiveImage and so on for the others.
+As the converter uses a simple "old"/"new" replacement scheme, it was
+not possible to put those replacements in as some other components also
+use a property called ActiveImage (or other) that must not be replaced.
+Hence the need to replace the properties manually, or if you do a
+global search an replace, you have to check that only the
+TJvTransparentButton instances have been modified.</p>
+<p>
+</p>
+</body>
+</html>

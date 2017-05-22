@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvRuntimeDesignDesign" Design="-1">
+  <Description>JVCL Runtime Design Components</Description>
+  <GUID>{5E54CB04-C43A-4F05-853C-07A61538111C}</GUID>
+  <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A3C0000</ImageBase>
+  <Requires>
+    <Package Name="JvRuntimeDesign-R" Targets="all" Condition=""/>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvRuntimeDesignReg.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

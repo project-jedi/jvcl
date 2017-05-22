@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="..\Bin\AdvancePro_CB6.exe"/>
+    <OBJFILES value="..\Bin\AdvancePro_CB6.obj ..\Bin\Main.obj ..\Bin\Unit1.obj 
+      ..\Bin\Unit2.obj ..\Bin\Unit3.obj ..\Bin\Unit4.obj"/>
+    <RESFILES value="AdvancePro_CB6.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) Main.dfm Unit1.dfm Unit2.dfm Unit3.dfm Unit4.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="AdvancePro_CB6.cpp"/>
+    <INCLUDEPATH value="..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl;..\..\..\..\common;$(INCLUDE)"/>
+    <LIBPATH value="..\..\..\..\run;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESOURCES)"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\..\..\..\run -I$(BCB)\include -I$(BCB)\include\vcl 
+      -I..\..\..\..\common -I$(INCLUDE) -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+      -tW -tWM"/>
+    <PFLAGS value="-N2..\Bin -N0..\Bin -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-I..\Bin -D&quot;&quot; -aa -Tpe -x -Gn -v -L..\..\..\..\run"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+    <FILE FILENAME="AdvancePro_CB6.res" FORMNAME="" UNITNAME="AdvancePro_CB6.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="AdvancePro_CB6.cpp" FORMNAME="" UNITNAME="AdvancePro_CB6" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="Main.cpp" FORMNAME="MainForm" UNITNAME="Main" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="Unit1.cpp" FORMNAME="Form1" UNITNAME="Unit1" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="Unit2.cpp" FORMNAME="Form2" UNITNAME="Unit2" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="Unit3.cpp" FORMNAME="Form3" UNITNAME="Unit3" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+    <FILE FILENAME="Unit4.cpp" FORMNAME="Form4" UNITNAME="Unit4" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS/>
+  <IDEOPTIONS>[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=2052
+CodePage=936
+
+</IDEOPTIONS>
+</PROJECT>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvBandsDesign" Design="-1">
+  <Description>JVCL Band Objects</Description>
+  <GUID>{154C9AB7-1DCE-406A-9DCB-AB5352D4DF1F}</GUID>
+  <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A020000</ImageBase>
+  <Requires>
+    <Package Name="JvBands-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvBandsReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBandObjectDLLWizard.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBandObjectDLLWizardForm.pas" Targets="all_win32" Formname="zWizardForm" Condition=""/>
+  </Contains>
+</Package>

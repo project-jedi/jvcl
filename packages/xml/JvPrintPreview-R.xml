@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvPrintPreview" Design="0">
+  <Description>JVCL Print Preview Components Runtime Package</Description>
+  <GUID>{08661E45-2C90-4301-A95E-77C50EE00CAF}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>49A40000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvPrvwRender.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPrvwDoc.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPrvwRender.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPrvwDoc.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

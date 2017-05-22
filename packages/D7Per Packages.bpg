@@ -1,0 +1,197 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = JvCore70.bpl JvCoreDesign70.bpl                     \
+  JvSystem70.bpl JvSystemDesign70.bpl                 \
+  JvStdCtrls70.bpl JvStdCtrlsDesign70.bpl             \
+  JvControls70.bpl JvControlsDesign70.bpl             \
+  JvCmp70.bpl JvCmpDesign70.bpl                       \
+  JvCustom70.bpl JvCustomDesign70.bpl                 \
+  JvDlgs70.bpl JvDlgsDesign70.bpl                     \
+  JvCrypt70.bpl JvCryptDesign70.bpl                   \
+  JvMM70.bpl JvMMDesign70.bpl                         \
+  JvNet70.bpl JvNetDesign70.bpl                       \
+  JvAppFrm70.bpl JvAppFrmDesign70.bpl                 \
+  JvPascalInterpreter70.bpl JvPascalInterpreterDesign70.bpl \
+  JvBands70.bpl JvBandsDesign70.bpl                   \
+  JvPluginSystem70.bpl JvPluginSystemDesign70.bpl     \
+  JvJans70.bpl JvJansDesign70.bpl                     \
+  JvGlobus70.bpl JvGlobusDesign70.bpl                 \
+  JvPrintPreview70.bpl JvPrintPreviewDesign70.bpl     \
+  JvPageComps70.bpl JvPageCompsDesign70.bpl           \
+  JvWizards70.bpl JvWizardsDesign70.bpl               \
+  JvTimeFramework70.bpl JvTimeFrameworkDesign70.bpl   \
+  JvHMI70.bpl JvHMIDesign70.bpl                       \
+  JvManagedThreads70.bpl JvManagedThreadsDesign70.bpl \
+  JvXPCtrls70.bpl JvXPCtrlsDesign70.bpl               \
+  JvDocking70.bpl JvDockingDesign70.bpl               \
+  JvDotNetCtrls70.bpl JvDotNetCtrlsDesign70.bpl       \
+  JvRuntimeDesign70.bpl JvRuntimeDesignDesign70.bpl
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+JvCoreDesign70.bpl: d7\JvCoreDesign.dpk
+  $(DCC)
+
+JvCore70.bpl: d7per\JvCore.dpk
+  $(DCC)
+
+JvAppFrm70.bpl: d7\JvAppFrm.dpk
+  $(DCC)
+
+JvCmp70.bpl: d7\JvCmp.dpk
+  $(DCC)
+
+JvCrypt70.bpl: d7\JvCrypt.dpk
+  $(DCC)
+
+JvControls70.bpl: d7\JvControls.dpk
+  $(DCC)
+
+JvCustom70.bpl: d7\JvCustom.dpk
+  $(DCC)
+
+JvDlgs70.bpl: d7\JvDlgs.dpk
+  $(DCC)
+
+JvPascalInterpreter70.bpl: d7per\JvPascalInterpreter.dpk
+  $(DCC)
+
+JvPascalInterpreterDesign70.bpl: d7per\JvPascalInterpreterDesign.dpk
+  $(DCC)
+
+JvMM70.bpl: d7\JvMM.dpk
+  $(DCC)
+
+JvNet70.bpl: d7\JvNet.dpk
+  $(DCC)
+
+JvStdCtrls70.bpl: d7\JvStdCtrls.dpk
+  $(DCC)
+
+JvSystem70.bpl: d7\JvSystem.dpk
+  $(DCC)
+
+JvSystemDesign70.bpl: d7\JvSystemDesign.dpk
+  $(DCC)
+
+JvAppFrmDesign70.bpl: d7\JvAppFrmDesign.dpk
+  $(DCC)
+
+JvStdCtrlsDesign70.bpl: d7\JvStdCtrlsDesign.dpk
+  $(DCC)
+
+JvNetDesign70.bpl: d7\JvNetDesign.dpk
+  $(DCC)
+
+JvMMDesign70.bpl: d7\JvMMDesign.dpk
+  $(DCC)
+
+JvDlgsDesign70.bpl: d7\JvDlgsDesign.dpk
+  $(DCC)
+
+JvCustomDesign70.bpl: d7\JvCustomDesign.dpk
+  $(DCC)
+
+JvControlsDesign70.bpl: d7\JvControlsDesign.dpk
+  $(DCC)
+
+JvCryptDesign70.bpl: d7\JvCryptDesign.dpk
+  $(DCC)
+
+JvCmpDesign70.bpl: d7\JvCmpDesign.dpk
+  $(DCC)
+
+JvBandsDesign70.bpl: d7\JvBandsDesign.dpk
+  $(DCC)
+
+JvPluginSystemDesign70.bpl: d7\JvPluginSystemDesign.dpk
+  $(DCC)
+
+JvPluginSystem70.bpl: d7\JvPluginSystem.dpk
+  $(DCC)
+
+JvBands70.bpl: d7\JvBands.dpk
+  $(DCC)
+
+JvJansDesign70.bpl: d7\JvJansDesign.dpk
+  $(DCC)
+
+JvJans70.bpl: d7\JvJans.dpk
+  $(DCC)
+
+JvGlobusDesign70.bpl: d7per\JvGlobusDesign.dpk
+  $(DCC)
+
+JvGlobus70.bpl: d7per\JvGlobus.dpk
+  $(DCC)
+
+JvPrintPreviewDesign70.bpl: d7\JvPrintPreviewDesign.dpk
+  $(DCC)
+
+JvPageComps70.bpl: d7\JvPageComps.dpk
+  $(DCC)
+
+JvPageCompsDesign70.bpl: d7\JvPageCompsDesign.dpk
+  $(DCC)
+
+JvPrintPreview70.bpl: d7\JvPrintPreview.dpk
+  $(DCC)
+
+JvWizards70.bpl: d7\JvWizards.dpk
+  $(DCC)
+
+JvWizardsDesign70.bpl: d7\JvWizardsDesign.dpk
+  $(DCC)
+
+JvTimeFramework70.bpl: d7\JvTimeFramework.dpk
+  $(DCC)
+
+JvTimeFrameworkDesign70.bpl: d7\JvTimeFrameworkDesign.dpk
+  $(DCC)
+
+JvHMI70.bpl: d7\JvHMI.dpk
+  $(DCC)
+
+JvHMIDesign70.bpl: d7\JvHMIDesign.dpk
+  $(DCC)
+
+JvManagedThreads70.bpl: d7\JvManagedThreads.dpk
+  $(DCC)
+
+JvManagedThreadsDesign70.bpl: d7\JvManagedThreadsDesign.dpk
+  $(DCC)
+
+JvXPCtrls70.bpl: d7\JvXPCtrls.dpk
+  $(DCC)
+
+JvXPCtrlsDesign70.bpl: d7\JvXPCtrlsDesign.dpk
+  $(DCC)
+
+JvDocking70.bpl: d7\JvDocking.dpk
+  $(DCC)
+
+JvDockingDesign70.bpl: d7\JvDockingDesign.dpk
+  $(DCC)
+
+JvDotNetCtrls70.bpl: d7per\JvDotNetCtrls.dpk
+  $(DCC)
+
+JvDotNetCtrlsDesign70.bpl: d7\JvDotNetCtrlsDesign.dpk
+  $(DCC)
+
+JvRuntimeDesign70.bpl: d7per\JvRuntimeDesign.dpk
+  $(DCC)
+
+JvRuntimeDesignDesign70.bpl: d7\JvRuntimeDesignDesign.dpk
+  $(DCC)
+

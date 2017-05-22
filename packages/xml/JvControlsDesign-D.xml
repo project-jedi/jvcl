@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvControlsDesign" Design="-1">
+  <Description>JVCL Visual Controls</Description>
+  <GUID>{F0549080-9D89-4D9C-98E1-34930BCF1360}</GUID>
+  <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A100000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvControls-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="dclstd" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvControlActnResForm.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvHTHintForm.pas" Targets="all_win32" Formname="JvHintEditor" Condition=""/>
+    <File Name="..\..\design\JvScrollMaxEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvSpeedbarForm.pas" Targets="all_win32" Formname="JvSpeedbarEditor" Condition=""/>
+    <File Name="..\..\design\JvBehaviorLabelEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvControlsReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFooterEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvGroupHeaderEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTransparentButtonEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvRollOutEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

@@ -1,0 +1,871 @@
+Changelog for JVCL 3.X
+======================
+2010-01-06
+- Changed package names in order to use $LIBSUFFIX
+- Moved units from JvValidators.dpk into JvCore.dpk
+
+2009-06-10
+- Removed the USEJVCL define that was used to keep JvUIB, JvWizard and JvTimeFrameWork as separate packages
+
+2009-01-10
+- Enancements to the JvParameterList
+  EditParameter can now be combined to one label with BeforeParameterName and AfterParameterName
+  The RightSpace Property has been removed
+  Additional TJvParameterLabelArrangeMode = (lamBefore, lamAbove, lamGroupBox, lamNone);
+  WinControl Property is not Readonly and Public
+
+2008-11-02
+- Renamed TJvgMailSlots to TJvMailSlots and moved it from JvGlobus to the JvSystem package (ahuser)
+- Added property TJvNavPaneButton.WordWrap (ahuser)
+- Added JVCL Standard Edit Actions that support TCustomEdit and the JvEditor (ahuser)
+- TJvTreeView.SelectedCount now returns 1 (Selected<>nil) or 0 (Selected=nil) if MultiSelect=False, the former implementaion always returned -1 (ahuser)
+
+
+2008-06-29
+- Added Mantis #4383 (Make JvImgBtn control "emulate" hyperlink commands)
+2008-04-03
+- Changed the TJvCustomThreadDialog.OnPressCancel Event to procedure(CurrentThread : TJvThread) of object;
+  The new event gives more option to change the behaviour of the cancel button.
+  THE RESULT IS A SMALL INCOMPATIBILITY.
+2008-01-08
+- Added TJvAppStorage.StorageOptionUseOldItemNameFormat Property
+  This changes the format of list item names. The old format is <Item><Nr>. The new format is <Item>[<Nr>]
+  The main advantage is that the xml appstorage removes the [<Nr>] part and makes the xml much more xsd conform
+  The default value is true to be backward compatible
+- Enhancement of the TjvProgramVersionCheck component. The configuration file could now be defined as xml file also
+- Added new unit JvPropertyStoreEditor.pas
+  This unit gives you the option to edit the contents of a TJvCustomPropertyStore Component at runtime.
+  It supports cascading support of components, and also supports the TJvCustomPropertyListStore components. 
+  For Liststore components the editor has the abbility to create additional list entries at runtime.
+  This editor can for example be used to give the user an editor for program options based on TJvCustomPropertyStore.
+  You find an example how it could be used in examples\JvProgramVersionCheck
+  
+2007-08-18
+- Added donation TJvTimeEdit (by Niels v/d Spek)
+- Added OnGetSortFieldName event and wsWhere SortWith style (by Niels v/d Spek)
+- Added donation JvTabBarXPPainter by Valdir Stiebe Junior
+- Removed "Control: TWinControl" parameter from JvThemes.DrawThemedFrameControl
+- Added XP Theming to TJvTabBar's scroll buttons.
+- Fixed Mantis #4203, #4194, #4190 and #4181
+2007-08-17
+- Added UseXPThemes property to JvDBGrid/JvDBUltimGrid (theming support)
+- Fixed VCL TDBGrid.ColWidthsChanged bug in JvDBGrid
+2007-08-14
+- Added JvDynControlEngineDBToolscxVGrid.pas
+  The unit contains a class which can be assigned to a TJvDatabaseSingleRecordWindowAction to create the SingleRecord with a
+  DevExpress cxDBVerticalGrid.
+2007-07-29
+- Added new TJvControlActionEngine
+  The engine based actions give you the possibility to connect different controls to one action. For example the collapse
+  action. For each control which supports collapse there is an engine which implements the collapse. So you no longer need 
+  different actions for each control type.
+  There are a lot of control engines samples "JvControlActionEngine*.pas"
+  The TJvDatabaseActionEngine now based also on the TJvControlActionEngine. For all developers there are only minor changes to the
+  TJvDatabaseActionEngine, for the users there are no changes.
+
+
+2007-06-28
+- REMOVED VISUAL CLX support (QWindows.pas moved to jvcl3\archive)
+
+
+2007-06-01
+- Added additional events to TJvDataSource (OnDataSetScrolled, OnFieldChanged, OnActiveChanged, OnDataSetChanged, ...)
+2007-05-27
+- Added new TJvProgressBar features for Windows XP (Marquee) and Vista (SmoothReverse, State) // ahuser
+2007-05-16
+- New component TJvDBCheckBox introducing the OnChange/OnChanging events which only trigger on user interaction // ahuser
+2006-09-25
+- New Component TJvBaseDatasetThreadHandler to create Threaded Dataset Descendants of "any" TDataset-Component with
+  low efforts. Two sample implementations : TJvOracleDataset and TJvOdacSmartQuery.
+  There some smaller compatibility issues with TJvOracleDataset: some property names are renamed to be more generic.
+2006-09-03
+- TJvDBGrid.IsBooleanField is now called OnIsBooleanField as it is an even. Migration should be silent.   // obones
+2006-08-17
+- Fixed Bug in JvTabBar: ScrollButtons meight disappear // ahuser
+- Added Repeated Click to the JvTabBar's ScrollButtons // ahuser
+- Added MouseWheel support for JvTabBar // ahuser
+- Added Repeated Click to TNoFrameButton // ahuser
+- Added MouseWheel support for JvComponentPanel // ahuser
+- Fixed Scrollbutton bug in JvComponentPanel // ahuser
+2006-08-13
+- Added HintWindowClass property to the JvExVCL controls // ahuser
+2006-08-02
+- TJvgScrollBox has been deprecated and moved to archive, replaced by TJvScrollBox  // obones
+2006-07-31
+- TJvgBevel has been deprecated and moved to archive, replaced by TJvBevel  // obones
+- TJvgSplitter has been deprecated and moved to archive, replaced by TJvNetscapeSplitter  // obones
+- TJvgGraphicButton has been deprecated and moved to archive, replaced by TJvTransparentButton  // obones
+2006-07-23
+- New Database Components for Logon and Change Password included.
+  Support for database components "Direct Oracle Access Components" 
+  http://www.allroundautomations.com
+  Include the USE_3RDPARTY_DOA option in the installation to activate the component
+  and "Oracle Data Access Components" http://www.crlab.com". Include the USE_3RDPARTY_CORELAB_ODAC option in the installation to activate the component
+2006-06-08
+- Ctl3D and ParentCtl3D have been removed from the components, replaced by Flat and ParentFlat // obones
+  Measures have been taken to ensure that existing DFMs are read correctly.
+2006-05-16:
+- TJvgProcess moved to Archive because TJvCreateProcess is much better // (rom)
+- moved unused JvgRichEditUtils.pas to Archive. Any user can use it from there. // (rom)
+2006-04-23:
+- Introduced MaxSimultaneousGrabbers in JvUrlListGrabber, thus changing the Grabbers array behaviour to only contain the running grabbers. // obones
+2006-04-08:
+- Added TJvDBNavigator component to JvDBControls.pas that introduces a Transparent property // ahuser
+- Fixed JvDBGrid select columns dialog out of screen bug. // ahuser
+2006-04-04:
+- Added PositionOffset property to TJvGroupHeader // ahuser
+2006-02-28:
+- TJvDatabaseActionBaseEngine modified : Now based on TComponent and DataComponent Property added
+- Updated JVCL Installer with lots of internal changes and bugfixes // ahuser
+2006-01-11:
+- TJvOracleDataset added : This is a multithreaded implementation of TOracleDataset from "Direct Oracle Access Components" 
+  http://www.allroundautomations.com
+  Include the USE_3RDPARTY_DOA option in the installation to activate the component
+2006-01-08:
+- TJvSimpleXML will now not trim leading white space in front of text elements (Mantis 3377)
+  Use sxoTrimPrecedingTextWhitespace to get the old behaviour back. // obones
+2005-12-03:
+- TJvFormStorage.StoredProps can now be directly edited with the standard IDE strings editor & code editor by editing it from Object Inspector. The StoredProps Editor can still be invoked by double clicking on the TJvFormStorage component on the form. (Mantis #3150) // elahn
+2005-08-21:
+- JvInspector packages removed and integrated in the new JvRuntimeDesign package. See http://sourceforge.net/forum/forum.php?forum_id=490055 for details on procedure  // obones
+2005-07-02:
+- TJvOfficeColorPanel: Rename property CustomColors to ColorDlgCustomColors. // dejoy
+- TJvOfficeColorPanel: Rename property Options to ColorDialogOptions. // dejoy
+- TJvOfficeColorButtonProperties: Rename property DragCaption to FloatWindowCaption. // dejoy
+- TJvCustomOfficeColorButton: Rename property CustomColors to ColorDlgCustomColors. // dejoy
+- TJvCustomOfficeColorButton: Rename property Options to ColorDialogOptions. // dejoy
+- TJvCustomOfficeColorButton: Removed code of compatible to loading TJvColorButton. // dejoy
+- Renamed HotColor property to HotTrackOptions.Color. // dejoy
+2005-06-13:
+- Operator properties renamed to SetOperator and SQLOperator to avoid C++ confusion in JvXMLDatabase  // obones
+2005-06-10:
+- Issue 3000: a handle is now required to update the display of the TJvDatePickerEdit  // obones
+2005-05-13:
+- Merged TJvTransparentButton and TJvTransparentButton2 // ahuser
+- Renamed TJvTransparentButton.Offset to PressOffset // ahuser
+- Moved TJvTransparentButton.ActiveImage, GrayImage, DisabledImage, DownImage to new subcomponent Images // ahuser
+2005-05-09:
+- Added new published event OnAdvColorButtonClick to TJvOfficeColorButton and TJvOfficeColorPanel // ahuser
+2005-05-04:
+- Added published JvModernTabBarPainter.TabWidth property // ahuser
+2005-04-23:
+- Fixed Mantis: 2871: TJvCustomGraphicButton.Click calls inherited in the wrong order // ahuser
+  This fix changes the meaning on "button.Down" in the OnClick handler. "Down" is no more inverted.
+2005-03-30:
+- added new components TJvPoweredByJCL and TJvPoweredByJVCL // (rom)
+2005-03-13:
+- Added TJvTabBar.AllowTabMoving // ahuser
+- Changed default value of TJvTabBar.FlatScrollButtons to True // ahuser
+2005-03-10:
+- Renamed TJvSimpleXMLElem.Pointer property to NameSpace. This describes what it actually is // peter3
+- Added TJvSimpleXMLElem.FullName function: returns NameSpace:Name or just Name depending on whether NameSpace is defined or not // peter3
+2005-03-01:
+- TJvRichEdit: Renamed TJvCustomRichEdit.InsertBitmap to TJvCustomRichEdit.InsertGraphic; allows now to insert TGraphic objects, not just TBitmap objects. //remkobonte
+2005-02-01:
+- ThemeManager packages have changed their names and JvCore has been updated. 
+  Use latest versions from Mike's website.
+2005-01-30:
+- Added TJvProgramVersionCheck // JFudickar
+  This component gives you the possiblity to check for newer program versions of your application on different locations.
+  There is principle support for Local Network-, HTTP-, FTP- and Database-Locations. This release contains Local Network and 
+  HTTP components (using INDY or ICS)
+- Added Support for SMExport, SMImport and DevExpress cxGrid to the JvDatabase*Actions  
+2005-10-12:
+- Renamed JvImagesViewer.TJvImageItem to JvImagesViewer.TJvPictureItem (TJvImageItem also defined in JvListComb) // peter3
+2005-01-01:
+- Added JvDatabaseActionList and JvDatabase*Action // JFudickar
+  The new actions not only work with datasource components, also it's possible to connect them to a dbgrid or other components.
+  Additional engines for connections could be defined.
+  The actionlist has one Datacomponent property which is published to all attached JvDatabase*Actions
+2004-12-13:
+- Added donation TJvDebugHandler by Robert Meek // AHUser
+2004-12-11:
+- JvEditor now has BracketHighlighting which is extensible with Word-Pairs // AHUser
+- JvEditor's TLineAttrs structure has changed. A new field "Border: TColor" was added // AHUser
+2004-12-10:
+- Moved obsolute common/JvFinalize.pas to archive/  // AHUser
+2004-12-06:
+- TJvThread enhanced, now it's possible to show a dialog while the thread is executed. Two sample dialogs included // jfudickar
+2004-11-28:
+- JvFooter now uses JvImgBtn instead of JvBitBtn (JvBitBtn renders disabled hi-color glyphs badly) // peter3
+- JvMouseGesture changed to comply with JVCL coding rules. A JVCL Converter file has been added to the /converter folder to simplify updating old projects to use the new types and names. Event handlers still needs to be updated manually. // peter3
+2004-11-25:
+- The package generator has been updated to allow for GUID values (D2005 requirement) // obones
+- JVCL Installer and build.exe have been updated to allow Delphi 2005 installation/compilation // ahuser
+- bpg2mak.exe is compatible with Delphi 2005 .bdsgroup file format // ahuser
+2004-11-22:
+- TJvBalloonHint:
+  * Allow user to set hint font and color by assigning from Screen.HintFont and Application.HintColor when appropriate.
+  * Expand tab (#9) characters
+  * Try to avoid placing the window outside the screen bounds and if it does happen, make sure it is the bottom part of the window that isn't visible // peter3
+- TJvListView: 
+  * Several bugs with the load and save methods fixed
+  * Reimplemented some save/load methods using stringlists // peter3
+- TJvZoom:
+  * Added ZoomPercentage - opposite of ZoomLevel
+  * Added CrosshairPicture. Use instead of CrossHairColor/CrossHairSize. Still need to set CrossHair to true to use.
+  * Added ZoomInAt method: use with Enabled set to false to manually control the zoom area, use with Enabled set to true to move the cursor to the specified location
+  * published several missing propeties (Anchors, Align, Constraints, Enabled, Visible) // peter3
+2004-11-18:
+- JvRas32: A new RasAvailable property has been added and it no longer raises an exception when RAS is not available // peter3
+2004-11-17:
+- Changed JclZlibMultiple.pas to use the new JclCompression.pas // (rom)
+2004-11-07:
+- Added the Config Manager API conversion and updated the Setup API conversion.
+  Components updated to use the Ansi version of the Setup API functions. // (rom)
+2004-11-06:
+- The package generator now uses a condition parser to allow complex expressions to be used.
+  This has no impact on C++ Builder packages, but all Delphi packages were updated to reflect
+  the change: no more IFDEFs are present in the output generated by pg.  // obones
+2004-11-05:
+- Added the ability for TJvLogFile to save content automatically and limit size to a set value. 
+  All this is off by default  // obones
+2004-11-04:
+- Added packages and support files for Delphi2005 (D9) // peter3
+2004-11-01:
+- Support for drawing HTML text in a more generic fashion (support functions in JvJVCLUtils) // peter3
+- Previous HTML routines in JvHTControls now only calls equivalent in JvJVCLUtils // peter3
+- Added custom drawing to JvPrint and also a PrintHTML function // peter3
+2004-10-24
+- TJvCustomMenuItemPainter.DrawText renamed to DrawItemText to avoid problems in C++ Builder
+  (see JvMenus.pas for further details) // obones
+2004-09-15
+- Added FitCell property to JvDBGrid (Pete Stove and Fred) // obones
+- JvButton is no longer registered on the palette. Use JvImgBtn or JvBitbtn instead. This change happened a long time ago, but has not been documented. // peter3
+2004-09-14
+- JvFormStorage now has two new properties: StoredValuesPath and StoredPropsPath controling
+  the path prefix to add for StoredProps and StoredValues. These should not be left empty
+  if there is a risk to have duplicates names between StoredProps and StoredValues // obones
+- For some unknown reason, JvDBGridFooter MUST come after any other JvDBGrid related 
+  unit or dcc32 from BCB6 crashes  // obones
+2004-09-13
+- Introduced TJvDBGridFooter, the last part of the Ultim components donation // obones
+2004-09-05
+- Added FloatValue to TJvSimpleXML, defaults to 0.0 if Value is not a floating point number // obones
+2004-09-04
+- Added new component TJvMultiStringHolder and TJvLookupAutoComplete // ahuser
+2004-09-02
+- TJvCustomAppXMLStorage: Introduced the WhiteSpaceReplacement property that is used when a node
+  name contains a white space. Its default value is an empty string, thus forcing people to
+  set its value when they receive the exception telling them that an XML node name cannot
+  contain white space // obones
+2004-08-18
+- TJvAnimatedImage: Opaque renamed to Transparent and logic reversed // peter3
+2004-08-09
+- JvWStrUtils.pas moved to JCL as JclWideStrings.pas // (rom)
+- JvParameterList improvements // jfudickar
+2004-08-06
+- The JvUrlGrabbers now have a Port property and more events that can be triggered. // obones
+2004-08-01
+- JvAppStorage and JvFormPlacement enhanced for usage of IJvAppStorageHandler, 
+  now unpublished Form properties can be stored by JvFormPlacement  //jfudickar
+2004-07-27
+- run/JvZlibMultiple.pas: Added support for selective extraction and listing archive contents without 
+  writing any files to disk. Parameters added to OnDecompressingFile and OnDecompressedFile events. // WPOstma 
+2004-07-25
+- Started to tighten Shift check for all keyboard input. // (rom)
+- Mantis 1912: TJvSpinEdit now has a ShowButton property. // obones
+- Bug fix and Mantis 1912: TJvStandardMenuItemPainter now paints correctly its checkmarks if there are
+  no image lists set. // obones
+2004-07-24
+- JvOfficeColorPanel can now select its buttons with a right click. Set RightClickSelect to True if you want that, it
+  is False by default to keep the previous behaviour. If there is a popup menu the button will only be selected if
+  SelectIfPopup is True (it is False by Default). This is for Mantis #1904 and is based on the code given by cpall  // obones
+2004-07-22
+- Fixed: JvComCtrls.TJvTreeView tree nodes do not keep their checked state when set before the first WM_PAINT event // ahuser
+- Improved: JvComCtrls.TJvIPAddress now supports the TAB for each field. Property TabThroughFields controls this feature // ahuser
+- Class hierarchy changed: JvComCtrls.TJvIPAddress now inherits from TJvCustomControl instead of TJvWinControl // ahuser
+- Fixed: JvComCtrls.TJvIPAddress now changes the controls's background. // ahuser
+- Fixed: JvCtrls.TJvCustomImageButton has ignored Alignment. // ahuser
+2004-07-21
+- TJvDesktopAlert now has styles, use the StyleOptions property to define the parameters // obones
+- TJvDesktopAlert can now use the Grow From Center style // obones
+- Introduced TJvDesktopAlert.StyleOptions.StartSteps and EndSteps to control the number of
+  steps in the start and end animations // obones
+- TJvDesktopAlert.FadeInTime is replaced by TJvDesktopAlert.StyleOptions.StartInterval // obones
+- TJvDesktopAlert.FadeOutTime is replaced by TJvDesktopAlert.StyleOptions.EndInterval // obones
+- TJvDesktopAlert.WaitTime is replaced by TJvDesktopAlert.StyleOptions.DisplayDuration // obones
+- TJvDesktopAlert.AlphaBlendValue is removed, use TJvDesktopAlert.StyleOptions.CurrentStep // obones
+2004-07-13
+- TJvStrToHtml now always encodes known special characters as HTML named entities. 
+  It still understands numerical entities when decoding  // obones
+- TJvDateEdit now has a published Date property  // obones
+2004-06-26
+- Added Flat property to combo edits, replaces Ctl3D // remkobonte
+2004-06-13
+- TJvCipher is renamed to TJvCustomCipher as it is a base class  // obones
+- IsStored is introduced in TJvCustomCipher to control if Encoded and Key are stored // obones
+2004-06-12
+- Reimplemented Key, Encoded and Decoded in the ciphers // obones
+2004-06-11
+- Added Embedded Forms donation from "rossen" (in JvEmbeddedForms.pas and the JvAppFrm package) // peter3
+2004-06-02
+- VisualCLX support: use installer to install! // asn
+- Updated/fixed Kylix 3(PE) packages. // asn
+- cleaned ifdefs VCL/VisualCLX. // asn
+2004-05-27
+- reimplemented TJvXORCipher, TJvVigenereCipher and JvCaesarCipher from scratch in JvCipher.pas // (rom)
+- all components now have palette icons // (rom)
+- all palette icons checked and fixed // (rom)
+2004-05-24
+- Added new docking style, JvDockVIDVCStyle, from devedit // peter3
+2004-05-21
+- TJvZlibMultiple is now available for C++ Builder 5 and 6  // obones
+2004-05-19
+- Moved JvComputerInfo.pas, JvDeviceChanged.pas, JvDirectories.pas, JvKeyboardStates.pas, 
+  JvSystemColors.pas and JvFileInfo.pas to archive. They are replaced by JvComputerInfoEx.pas // ahuser
+2004-05-16
+- JvgPointEditor.pas moved from \run to \design // peter3
+2004-05-07
+- Added support for WeekNumbers in JvDateTimePicker // peter3
+- Added AutoHeaders property to NavPane (automatically displays a header in the page(s)) // peter3
+2004-05-05
+- Moved inspector components to their own package (JvInspector) // marcelb
+2004-04-28
+- Added JvBackground donation from Robert Rossmair to JvCore // peter3
+2004-04-09
+- Added OnCustomDraw event to TJvOutlookBar. Also added demo to show it off // peter3
+- Added TJvNavPaneToolPanel to the Nav Pane components // peter3
+- Added demo for JvDBImage
+- Added JvDBImage to JvDB. JvDBImage can handle *any* graphic file format in DB tables // peter3
+2004-04-08
+- Moved "HMI Controls" and "HMI Non-Visual" and "HMI Indicators" to "HIM Components" palettte // ahuser
+- Compatible to newest JCL // ahuser
+- All components compile and run under BCB 6 without any error or hint // ahuser
+2004-04-07
+- New JVCL installer // ahuser
+2004-04-05
+- Added EDI Component donation from Raymond Alexander. NB! Requires the latest JCL (don't forget to recompile DJVCL.dpk!) // peter3
+2004-04-04
+- Removed JvTabControl and moved TJvTabControl into JvComCtrls.pas // peter3
+- Added TabPainter property to JvPageControl and JvTabControl // peter3
+- Added TJvTabDefaultPainter and TJvTabOutlookPainter to JvComCtrls // peter3
+2004-04-02
+- Added style manager to NavPane components // peter3
+2004-04-01
+- Major rewrite of TJvYearGrid:  // obones
+   * Now inherits from TCustomGrid under v6 and upper
+   * Doesn't save nor reloads its state automatically anymore (too dangerous)
+   * GridYear property is renamed to Year
+   * Introduced Orientation, the grid can now be vertical
+   * Introduced AutoSize and AutoSize options for the grid to adapt to its contents
+   * Introduced FirstColWidth and FirstRowHeight
+   * Introduced YearFile to be used as default name with LoadYear and SaveYear
+   * Introduced CellMargins (if USEJVCL is defined)
+   * Introduced WeekendDays (not yet used in the display)
+   * Introduced Text Alignment for Month names, Day names, Days, and Year
+   * It should now be safe to use more than one grid year in the same project
+2004-03-31:
+- Added JvNavigationPane and related components // peter3
+2004-03-30
+- Removed JCL dependency from JvJCLUtils, JvJVCLUtils, JvWndProcHook, JvMenus // ahuser
+- Moved JvFormPlacement related code from JvJVCLUtils to JvFormPlacement // ahuser
+2004-03-27
+- Rewrite of TJvTrayIcon; Added OnContextPopup // remkobonte
+2004-03-26
+- New build system for the JVCL 3. See jvcl3\packages\bin // ahuser
+2004-03-23
+- Added JvDesktopAlert component + demo // peter3
+- Added TJvComputerInfoEx to JvSystem and also removed TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories, TJvFileInfo since they are incorporated in JvComputerInfoEx // peter3
+- Added JvDBFindEdit to JvDB and JvDotNetDBFindEdit to JvDotNetCtrls donated from yul // peter3
+- Added JvColorTrackBar from Stefano Pessina to JvMM // peter3
+- Updated JvMemoryDataset with new properties and events from Claudio F. Zwitkovits // peter3
+2004-03-20
+- JvFtpGrabber moved to Archive, replaced by TJvFtpUrlGrabber  // obones
+- JvHttpGrabber moved to Archive, replaced by TJvHttpUrlGrabber  // obones
+- JvMultiHttpGrabber moved to Archive, use TJvUrlListGrabber instead  // obones
+- JvLocalFileUrlGrabber introduced  // obones (from peter3)
+2004-03-19
+- The menu item painters are now autonomous components, compatibility is preserved // obones
+2004-03-16
+- JvToolEdit.pas: restored functionality of Glyph property // remkobonte
+2004-03-12
+- Many corrections for BCB5 support // obones
+2004-02-26
+- Added JvOfficeColorButton, JvOfficeColorPanel and JvNetscapeSplitter from dejoy // peter3
+- Added JvDBSearchEdit and JvDBSearchComboBox to JvDB package and demo to examples. Donated by Lionel Reynaud // peter3
+- Added JvAppDBStorage, a storage implementation that can save to a database // peter3
+- Added JvWizardRouteMapList, a route map that displays the pages as a list // peter3
+2004-02-20
+- BETA 1 released on sourceforge. CVS tagged with JVCL300BETA1 // peter3
+2004-02-10
+- Added Scaled = false to all \design, \run and \install dfm's that didn't have them. This should make the dialogs work better with large fonts. // peter3
+2004-02-03
+- Added Localization.html and updated documentation // obones
+- Moved all C++ Builder packages to their new place (c?) // obones
+- Updated templates and installer to cope with change in output directories for C++ Builder // obones
+- Cleaned up crappy code in TJvAviCapture // obones
+2004-01-30
+- added JvDBHTLabel donation from Maciej Kaczkowski // peter3
+- added AutoSizeColumns, AutoSizeColumnsIndex, MinColumnWidth and MaxColumnWidth to TJvDBGrid // peter3
+- added improved MultiSelect code from Lionel Reynaud // peter3
+2004-01-29
+- added AutoHint property to JvEdit // peter3
+- added tvAutoHideIcon to TJvTrayIcon.Options // peter3
+2004-01-26
+- split JvEditor into JvEditorCommon, JvEditor, JvUnicodeEditor // ahuser
+2004-01-20
+- changed makefile.mak in Images and created JvDBControls.rc and JvDBGrid.rc // (rom)
+- Internal reimplementations in JvBehaviorLabel.pas. Added TJvLabelNone behavior // (rom)
+2004-01-18
+- Ensured all files using TJvDBGrid use the JvDBGrid.pas file // obones
+- Renamed TJvAppXMLStorage to TJvAppXMLFileStorage for consistency // obones
+- Introduced TJvCustomAppMemoryFileStorage, ancestor of all file related storages // obones
+- Reverted FileName to its old type (TFileName) in all file related storages // obones
+2004-01-17:
+- Removed the LeftMargin property of TJvPopupMenu // obones
+- moved TJvPopupListBox to JvComponent and removed it from JvGrids and JvInspector // ahuser
+- changed all WM_SETFOCUS/WM_KILLFOCUS/CM_ENTER/CM_EXIT/CM_FOCUSCHANGED to JvExVCL
+  methods (except the USEJVCL'ed units) // ahuser
+- moved the JVCLAboutInfo to JvExVCL // ahuser
+2004-01-16:
+- renamed TCustomJvDBTreeView to TJvCustomDBTreeView // ahuser
+2004-01-15:
+- Extracted TJvDBGrid from JvDBControls into its own unit, JvDBGrid // peter3
+- Added JvDBGrid additions from Lionel Reynaud // peter3
+- Added JvDBGridExport (and demo) from Lionel Reynaud // peter3
+- Renamed JvDBCtrls.Res to JvDBControls.res and moved JvDBGrid resources to JvDBGrid.res // peter3
+- Fixed identifier issue in JvXPBar and JvThemeseEnabled error // peter3
+2004-01-14:
+- Added Colors subproperty to JvXPBar for previously unpublished colors // peter3
+2004-01-12:
+- Changed combo edits from using Glyph -> Images;ImageIndex,
+    Old properties can still be read from the stream  // remkobonte
+- Added Action property for combo edits // remkobonte
+2004-01-05:
+- Most components that used CM_MOUSEENTER/LEAVE have now a MouseEnter/Leave method // (ahuser)
+- Added JvExVCL units. (ahuser)
+2003-12-28:
+- removed now unused {$DEFINE HL_NOT_QUITE_C} from JVCL.INC // (rom)
+- removed now unused {$DEFINE USE_OLD_DBLISTS} from JVCL.INC // (rom)
+2003-12-27:
+- Renamed all OnMouseExit events to OnMouseLeave // (ahuser)
+2003-12-14:
+- New component TJvDropTarget (implements IDropTarget) in JvDragDrop.pas // (ahuser)
+2003-12-09:
+  JvMovableBevel.TJvScrollTextDirection -> renamed elements "2" changed to "To" // (rom)
+2003-12-07:
+- Modified TJvThumbView: To be consistent with the VCL behaviour, OnChange is now triggered after the change and an OnChanging event has been added. OnChanging is triggered before the actual change  // obones
+- Modified the package generator to use an XML configuration file. // obones
+- Added TJvAppXmlStore and all the required files for it. It is in the JvSystem package. // obones
+- Added JvCustomItemViewer, JvImagesViewer, JvImageListViewer and JvOwnerDrawViewer and demos // peter3
+2003-12-06:
+- Moved JvAnalogClock and JvClock to \archive. Renamed JvxClock/TJvxClock to JvClock/TJvClock. // peter3
+2003-12-01:
+- renamed TJvAVICapture.HWND to Handle // ahuser
+2003-11-19:
+- updated bcb6 packages in CVS to reflect the xml sources. // obones
+- updated the build status page for BCB6 (all ok). // obones
+2003-11-18:
+- improved JvTurtle, some small API changes (method Interpret) // (rom)
+- JvAnalogClock, changed all name suffixes Hr to proper Hour (dtx updated)
+- removed the really ugly NotImplemented from JvJVCLUtils.pas and replaced it with Exceptions.
+2003-11-16:
+- Updated the package generator // olivier
+- Finished creating the xml files for all packages. // olivier
+2003-11-15:
+- Changed the xml format for the packages generator so that it's easier to read. // olivier
+2003-11-13:
+- Created two projects for the package generator: on on command line, the other to edit // olivier
+2003-11-12:
+- Move TJvListBox from JvCtrls.pas to JvListBox.pas // marcelb
+- Added help dialog in the Package Generator. // olivier
+- Added Guess dialog for dfm files in the package generator // Olivier
+2003-11-10:
+- PackageGenerator thought to be complete. Testing starts // olivier
+2003-11-09:
+- Started creation of PackageGenerator, still some work to do // olivier
+2003-11-08:
+- Updated BCB packages to include MPL header and ensure the build goes ok in the IDE AND in the batch file // olivier
+- Updated installation and C++ Builder documentation // olivier
+- Finally fixed TJvUrlListGrabber. Please use demo for testing. // olivier
+- Moved JvCaret from JvSystem to JvCore for all builds to reflect Delphi 7 and BCB5 packages. //olivier
+- Updated TJvUrlListGrabber and the associated demo. Still the design time bug is not fixed. // olivier
+2003-11-07:
+- Fixed BCB build // olivier
+2003-11-05:
+- WidthOf and HeightOf renamed to RectWidth and RectHeight // peter3
+- Moved lots of procedures from JvJVCLUtils to JvJCLUtils. Basically, anything that doesn't rely on other JVCL units and doesn't use TComponent and above are now in JvJCLUtils. Graphic stuff has been left in JvJVCLUtils even if it doesn't use (J)VCL. // peter3
+- Replaced IsPointInRect with JvJCLUtils.PtInRectExclusive. // peter3
+- Replaced PointInRect with JvJCLUtils.PtInRectInclusive. // peter3
+2003-11-04: 
+- Updated BCB 5 packages to match the Delphi 7 packages. Some units were previously omitted from the BCB5 packages and JvCaret was still in the System package. It has been moved to the Core package.
+- Modified JvDlgsReg.pas for BCB5 compatability enclosing JvDialogActns in {$IFNDEF BCB5} in the uses clause and omitting the RegisterActions call for BCB5. This is necessary because BCB5 cannot build/link JvDialogActns. // lcc
+- Added functionality to JvRichEdit.pas to use the MS Text converters. // remkobonte
+- Added image for JvCharMap. Added JvCharMap to JvCtrls. Changes for D5. Updated demo. // peter3
+2003-11-03: Added JvCharMap - a control similar to the character map grid in the charmap.exe utility in Windows // peter3
+2003-11-02:
+- Added IFDEFS excluding Variants from the uses clause for BCB5 (only) in JvSALCore.pas and JvXmlTree.pas. These exclusions are required for proper compilation under BCB5.
+2003-11-02:
+- JvUrlListGrabber is now almost complete, it works if created dynamically // olivier
+- Merged TJvPanel with donated TArrangePanel // andreas
+2003-11-01:
+- Modified the batch files for BCB so that it can now build from the command line // olivier
+- Modified BCB6 and BCB5 packages to allow building from the command line // olivier
+- Modified all BCB packages to add $(PATH) in the LIBPATH node // olivier
+- Updated installation guide to better describe BCB behaviour // olivier
+2003-10-26:
+- Added {$IFNDEF BCB5}/{$ENDIF} around the Variants unit in the uses clause of
+  JvForth.pas, JvSALCore.pas and JVXmlTree.pas to avoid a BCB5 compile error.
+2003-10-20:
+- JvxCtrls split into several smaller unit: JvxCheckListBox (contains both TJvxCustomListBox and TJvxCheckListBox), JvSecretPanel, JvTextListBox and JvSpeedButton. // peter3
+- TJvCustomLabel moved from JvxCtrls to JvLabel // peter3
+2003-10-20:
+- JvHook.pas moved to archive // andreas
+2003-10-19:
+- Updated JvMenus and started documenting it //olivier
+- Updated the JvRichEdit demo // olivier
+- Removed some unit dependencies from JvJCLUtils and JvJVCLUtils // andreas
+2003-10-18:
+- Updated the BCB compatibility guide // olivier
+- Updated the installation guide for BCB // olivier
+2003-10-17:
+- JvStrToHtml.pas StringToHtml and HtmlToString had done the opposite // andreas
+2003-10-14:
+- Updated the BCB compatibility guide // olivier
+2003-10-13:
+- moved JvTransparentForm to /archive - duplicate of JvFormTransparent // peter3
+2003-10-11:
+- added BCB6 packages for JvManagedThreads // obones
+- implemented CheckSynchronize in JvManagedThreads for Delphi5 //ahuser
+- added D5 packages for JvManagedThreads // peter3
+2003-10-10:
+- moved types from JvConsts to JvTypes. JvConsts does no longer depend on VCL // andreas
+- merged JvComponent and JvTypes with the JVCLX ones. // andreas
+- added JvManagedThreads donation from Erwin Molendjik // peter3
+2003-10-09:
+- added TJvImageList component ("Images and Animations" palette) // andreas
+2003-10-08:
+- added TJvAppInstances component (JclAppInstances wrapper) // andreas
+2003-10-07: 
+- added new control, TJvComboListBox, that displays a combobox on the selected item. // peter3
+2003-10-06:
+- added JvClipbrd (from Olivier Sannier). Enhanced Clipbrd with delayed format rendering // peter3
+2003-10-04:
+- resourcestring extraction of the units under design // andreas
+- resourcestring extraction of the units under run // andreas
+2003-10-03:
+- New component TJvDBMaskEdit in JvDBControls.pas //W.Postma
+- DaysBetween implementation in JvJCLUtils was wrong. It returned the days between plus one day and was not able to handle "Younger-Older" // andreas
+2003-10-01:
+- added Delphi 6 Personal Edition packages
+2003-09-30
+- updated the installation guide for BCB specific steps // olivier
+2003-09-29
+- updated the BCB compatibility guide // olivier
+2003-09-28:
+- Added ButtonDown status properties to JvOutlookBar // andreas
+- Theme support for most components // andreas
+2003-09-26:
+- unicode UJvEditor moved to JvUnicodeEditor/JvUnicodeHLEditor, restored the ANSI JvEditor without MBCS support // andreas
+- Moved TJvgReportParamsEditor from /design/JvgReportParamsForm to /run/JvgReportParamsEditor //peter3
+2003-09-25:
+- fixed bug with Scrollbars in JvThemes // andreas
+- Updated JvCsvData, JvDBLookup, JvBalloonHint, JvTimeLine, JvOutlookBar, 
+  JvCaptionButton, JvSpin, JvCtrls, JvRichEdit, JvEditor, JvPickDate, JvxCtrls,
+  JvToolEdit to JvThemes // andreas
+- JvInstallLabel: ImageList renamed to Images, changed TImagelist to TCustomImagelist // peter3
+- JvListComb: Imagelist renamed to Images, changed TImagelist to TCustomImagelist // peter3
+- JvExtraInspEditors: Imagelist renamed to Images, changed TImagelist to TCustomImagelist // peter3
+- JvBmpAnimator: Imagelist renamed to Images, changed TImagelist to TCustomImagelist // peter3
+- JvImageWindow: renamed Imagelist to Images, changed TImagelist to TCustomImagelist // peter3
+- JvErrorProvider: renamed to JvErrorIndicator, Imagelist renamed to Images // peter3
+- Added JvThemes.pas unit for theme aware components // andreas
+2003-09-24:
+- Added updated Unicode JvEditor // andreas
+2003-09-23:
+- Added updates to JvHTControls from Maciej Kaczkowski // peter3
+- NB! BCB packages not updated!
+- Added JvDBLookupComboEdit donation from Michael Habbe // peter3
+- TJvSQLScript registered in JvDBReg.pas // peter3
+2003-09-20:
+- NB! JvCustomC?R packages not updated!
+- Added new JvUnicodeCanvas.pas to JvCustomD?R package  // peter3
+- NB! Andreas also provided a fixed JclUnicode.pas but this has yet to be updated in JCL // peter3
+- Added {$DEFINE HL_NOT_QUITE_C} (used by JvEditor) to JVCL.INC. Defined by default. // peter3
+- Updated JvInterpreter_JvEditor.pas to reflect changes in JvEditor // peter3
+- Added UseFixedPopup property to JvEditor // peter3
+- Changed GetPopupMenuEx to use a positive ("Update") instead of a negative ("NoUpdate") boolean. I never could get my head around double negatives <g> // peter3
+- Fixes for the HL_NOT_QUITE_C defines + the new hlHiglighter define in JvEditor // peter3
+- Changes to JvEditor from Andreas Hausladen:
+=============================================
+  JvEditor.pas
+    - The unicode editor with some minor bugfixes and further speed optimations
+    - The AnsiString editor no more exists.
+    - added WM_GETTEXT message handler
+  JvFixedEditPopup.pas
+    - added IFixedPopupIntf interface. For Delphi 5 the old SendMessage function is used
+    - speed optimations for the SendMessage method
+  JvHLEditor.pas
+    - adjusted for unicode JvEditor
+    - added TJvEditorHighlighter component for external highlighters
+  JvHLParser.pas
+    - added unicode version TJvHLParserW of the parser
+    - added unicode versions of the functions
+  JvJCLUtils.pas
+    - added unicode versions of some functions used by JvEditor
+    - added MoveWideChar and FillWideChar
+    - speed optimation for Spaces, AddSpaces, MakeStr
+  JvUnicodeCanvas.pas
+    - new unit that contains a TCanvas derived class TUnicodeCanvas that can be type casted from any TCanvas derived class. It supports TextRectW, TextOutW, TextExtentW, TextWidthW and TextHeigthW.
+  "- The AnsiString editor no more exists."
+    I have a backup with all bug fixes and speed optimations of the AnsiString JvEditor.
+    The unicode JvEditor has a "LinesANSI" property. This property is only for the object inspector.
+=============================================
+2003-09-20:
+- Added MeasureStyle property to JvComboBox // marcelb
+- Added AutoSize and WordWrap properties to JvCheckBox and JvRadioButton // peter3
+2003-09-18:
+- added new methods to TJvStringGrid: AutoSizeCol, InsertRow, InsertCol, RemoveRow, RemoveCol, HideRow, ShowRow, HideCol, ShowCol and Clear and a new FixedFont property // peter3
+2003-09-16:
+- moved JvgRegLibDelphi3, JvgRegLibDelphi and JvgRegLibCBB5 to /archive - not used // peter3
+- renamed JvgRegLibDelphi.pas to JvGlobusReg.pas to follow JVCL naming rules
+- replaced TProgress event type with TJvProgressEvent
+- renamed TJvPrintProgressEvent to TJvProgressEvent
+- reanmed TJvProgressEvent to TJvHTTPProgressEvent
+- renamed TOnSortMethod to TJvListViewColumnSortEvent and changed from function to procedure (event functions are bad...) // peter3
+- moved event type declarations from JvListView to JvTypes // peter3
+- Changed TJvCustomComboBox into a data consumer // marcelb
+2003-09-13:
+- Changed TJvCustomLabel into a data consumer //marcelb
+2003-09-12:
+- Generic storage backend component added //marcelb
+- TJvFormStorage and components using it adapted to use the storage backend //marcelb
+2003-09-02:
+- Recased classes, properties and methods. This shouldn't affect Delphi but BCB users might have to make amendments. // peter3
+- Added HotTrackFontOptions to controls that have a HotTrackFont property. Basically, HotTrackFontOptions determines how changes to a control's Font i spropagated to the HotTrackFont. // peter3
+2003-08-26:
+- Renamed JvRadioControl to JvDialButton // marcelb
+- Update JVCConvert.dat file for JvRadioControl, JvTransLED and JvBlinkingLED // marcelb
+2003-08-25:
+- Moved JvRadioControl from JvCustom package to JvHMI package // marcelb
+- Supplied palette icon for segmented LED display // marcelb
+2003-08-23:
+- Moved examples from jvcl/examples to dev/JVCL3/examples. Added Jv prefix to folders // peter3
+- Moved jvcl/devtools to dev/JVCL3/devtools // peter3
+- Moved JVCLConvert *.dat files to dev/JVCL3/converter // peter3
+- Moved jvcl/Convert to dev/JVCL3/devtools/JVCLConvert // peter3
+- Merged TJvTransLED and TJvBLinkingLED into TJv(Custom)LED // marcelb
+- Moved JvLED to JvHMI package // marcelb
+2003-08-22:
+- Added new HMI package // marcelb
+- Added rewritten LEDDisplay donation by Jay Dubal (JvHMI package) // marcelb
+2003-08-17:
+- Added Images, ImageList and Spacing to TJvCustomLabel // peter3
+- Moved code from TJvLabel to TJvCustomLabel // peter3
+
+2003-08-17:
+- Renamed/Moved duplicate identifiers:
+  * TDaysOfWeek -> moved to JvTypes
+  * JvxCtrls.TJvButtonGlyph -> JvxCtrls.TJvxButtonGlyph
+  * JvDBLookupTreeView.TJvDataSourceLink -> JvDBLookupTreeView.TJvLookupDataSourceLink
+  * JvgCommClasses.TJvgBevel -> JvgCommClasses.TJvgBevelOptions
+  * JvJVCLUtils.TJvGradient -> JvJVCLUtils.TJvGradientOptions
+  * TJvHTMLElement(Stack) -> moved to new unit JvMarkupCommon.pas
+  * JvListComb.TJvListItem -> JvListComb.TJvImageItem
+  * JvDBLookupTreeView.TJvPopupDataList -> JvDBLookupTreeView.TJvTreePopupDataList
+  * JvScreenCanvas.pas moved to \archive (not used)
+  * JvScrollMax.TJvScrollBar -> JvScrollMax.TJvPanelScrollBar
+  * JvLookout.TJvSpacer -> removed (not used)
+  * TJvTFVisibleScrollBars  -> moved to JvTFUtilspas
+  * JvDriveCtrls.TJvImageSize -> moved to JvTypes
+  * JvLookOut.TJvImageSize -> moved to JvTypes
+  * JvMenus.TJvImageSize -> renamed to JvMenus.TJvMenuImageSize
+  * JvRichEditToHtml.TJvParaAttributes -> renamed to TJvParaAttributesRec
+  * JvContentSCroller.TJvScrollDirection -> renamed to TJvContentScrollDirection
+  * JvMovableBevel.TJvScrollTextDirection -> renamed to TJvBevelScrollTextDirection
+  // peter3
+
+2003-08-01:
+- Added converted UTF components donated by UIB (now called JvTimeFramework) // peter3 
+
+2003-07-29:
+- Renamed properties and events in TJvImageSquare:
+    BackColor -> Color
+    OnEnter -> OnMouseEnter
+    OnExit -> OnMouseLeave
+  // peter3
+2003-07-28:
+- Removed JVCL components from (mainly) design-time forms to minimize inter-package dependencies. When writing 
+  property editors for components in the future, please try to keep the number of JVCL components used as low
+  as is absolutely possible (TODO: put this in the docs as well).
+  // peter3
+
+2003-07-25:
+- TJvThreadTimer
+  * rewritten by Ivo Bauer to enable resetting the thread and handle exceptions better // ivobauer
+  * renamed properties to be name compatible with TTimer: 
+      Delay -> Interval 
+      Active -> Enabled 
+  //peter3
+
+2003-07-12:
+- Added TJvBlinkingLED (derived from TJvTransLED) from Tomas Hensle // peter3
+
+2003-07-11:
+- Added updated JvPlugin units from Stefaan Lesage // peter3
+- Added JvConvert conversion file for KWizard // peter3
+- Added new palette images for RouteMaps // peter3
+- Added KWizard and associated RouteMap components (renamed to JVCL standard) donation from William Wue, Steven Forbes and Max Evans // peter3
+- Renamed TJvImageDlg to TJvImageDialog // peter3
+- Changed UIBJVCL to USEJVCL to accomodate KWizard. When defined, JvUIB and JvWizard are installed in "JVCL" mode, i.e using TJvComponent or similar as the base class for the main component thus enabling the JVCL About box // peter3 
+
+2003-06-29:
+- Added TJvAVICapture component from Olivier Sannier // peter3
+
+2003-06-26:
+- Removed JvAutoSave and JvRegAutoSave. From now on, use JvFormStorage instead. // peter3
+
+2003-06-23:
+- Readded old TJvGradientCaption as TJvGradientHeaderPanel. Unit renamed from JvGradientCaption.pas to JvGradientHeaderPanel.pas // peter3
+- Added JvDBGroupPanel.pas from Steve Paris // peter3
+- Removed unnecessary IFDEF's (WIN32, COMPILER3_UP, COMPILER4_UP etc) // peter3
+- Removed the JvJCLUtils.ResStr function since it was now a noop (returns input) // peter3
+
+2003-06-22:
+- Renamed TJvxGradienCaption to TJvGradientCaption. Renamed JvGrdcpt.pas to JvGradientCaption.pas // peter3
+- Added missing units.  // peter3
+- Copied needed images from old jvcl to new jvcl3 images folder // peter3
+- Moved obsolete or plain useless stuff to \archive // peter3
+- Moved unused, support units to \run\unused. These files could possibly go to JCL. We don't need them // peter3
+
+2003-06-21:
+- Renamed all BDE units to JvBDEXXX // peter3
+- Renamed all DB units to JvDBXXX // peter3
+- Removed DBTables and BDE from uses in JvCsvData  // peter3
+- Removed warnings in JvCsvData // peter3
+
+2003-06-20:
+- Merged all run-time util style units (JvAppUtils.pas,JvDateUtil.pas,JvFileUtil.pas,JvFunctions.pas,JvIconClipboardUtils.pas,JvRle.pas,JvStrUtil.pas,JvStrUtils.pas,JvUtils.pas,JvVCLUtils.pas) into JvJVCLUtils and JvJCLUtils (there's one for the interpreter as well, but that is untouched). Basically, anything that goes into JvJCLUtils is stuff that is "JCL compatible", i.e doesn't require Forms.pas or anything from JVCL. Everything else goes into JvJVCLUtils. The JvJCLUtils unit should then be easier to integrate into JCL and eventually be removed. // peter3
+- Merged all const type units (JvxDConst.pas, JvConst.pas, JvCtlConst.pas, JvDBConst.pas, JvxRConst.pas) into common\JvConsts and common\JvDBConsts (there's one for the interpreter as well, but that one is untouched). // peter3
+- Merged JvDBUtil into JvBDEUtils // peter3
+- Moved changelog.txt from \jvcl3\source to \jvcl3 (source will disappear eventually) // peter3
+
+2003-06-19:
+- Updated units with latest changes from official jvcl // peter3
+
+2003-06-18:
+- Renamed units:
+  JvTMTL -> JvTMTimeLine
+  JvAutoSizeCompo -> JvFormAutoSize
+  JvGrdCpt -> JvGradientCaption
+  JvPlacemnt -> JvFormPlacement
+  JvVerInf -> JvVersionInfo
+  JvUCB -> JvUninstallCtrls
+  JvTimerLst -> JvTimerList
+  JvSysComp -> JvCreateProcess
+  JvObjStr -> JvObjectStrings
+  JvMrgMngr -> JvMergeManager
+  JvMouseTimerU -> JvMouseTimer
+  JvFDualList -> JvDualListForm
+  JvExcptDlg -> JvExceptionForm
+  JvDBSecur -> JvDBSecurity
+  JvDBRichEd -> JvDBRichEdit
+  JvDBPrgrss -> JvDBProgress
+  JvDBExcpt -> JvDBExceptionForm
+  JvColorBtn -> JvColorButton
+  JvCntScr -> JvContentScroller
+  JvCmdEdit -> JvCommandEdit
+  JvChPswDlg -> JvCheckPasswordForm
+  JvOLBar -> JvOutlookBar
+  JvSbSetup -> JvSpeedbarSetupForm
+  JvRegTV -> JvRegistryTreeview
+  JvPrgrss -> JvProgressUtils
+  JvPluginMan -> JvPluginManager
+  JvQbnddlg -> JvQueryParamsForm
+  JvRadioCtl -> JvRadioControl
+  JvRecentMenuBtn -> JvRecentMenuButton
+  JvRemLog -> JvRemoteLogin
+  JvSHFileOp -> JvSHFileOperation
+  JvSplshWnd -> JvSplashWindow
+  JvSQLS -> JvSQLScript
+  JvStartMenuBtn -> JvStartMenuButton
+  JvStrHlder -> JvStringHolder
+  JvRichEd -> JvRichEdit
+  JvControlPanel -> JvControlPanelButton
+  JvClipMon -> JvClipboardMonitor
+  JvClipView -> JvClipboardViewer
+  JvDataConv -> JvConverter
+  JvPageMngr -> JvPageManager
+  JvBmpAnim -> JvBmpAnimator
+  JvClipIcon -> JvIconClipboardUtils
+  JvArrowBtn -> JvArrowButton
+  JvMemDS -> JvMemoryDataset
+  JvMagnet -> JvFormMagnet
+  JvDlg -> JvProgressForm
+  JvCurrEdit -> JvBaseEdits
+  JvDBComb -> JvDBCombobox
+  JvDBCtrl -> JvDBControls
+  JvHLEdPropDlg -> JvHLEditorPropertyForm
+  JvIcoList -> JvIconList
+  JvPropAutoSave -> JvAutoSave
+  JvTransBtn -> JvTransparentButton
+  JvxLogin -> JvLoginForm
+  JvxLoginDlg -> JvDBLoginDialog
+  JvProps -> JvPropsStorage
+  JvxAnimate -> JvAnimatedImage
+  JvMRUList -> JvMRUManager
+  JvMRU -> JvMRUList
+  JvObjPickerComp -> JvObjectPickerDialog
+  TJvControlPanel -> TJvControlPanelButton
+  TJvStartMenuBtn -> TJvStartMenuButton
+  TJvRecentMenuBtn -> TJvRecentMenuButton
+
+  JvAppletProperty -> JvAppletEditor
+  JvBehaviorLabelProperty -> JvBehaviorLabelEditor
+  JvChNtfyProperty -> JvChangeNotifyEditor
+  JvTimLstEd -> JvTimerListForm
+  JvTipOfDayProp -> JvTipOfDayEditor
+  JvStrLEdit -> JvStringsForm
+  JvSelDSFrm -> JvSelectDataSetForm
+  JvPresrDsn -> JvFormPropertiesForm
+  JvPluginParams -> JvPluginParamsForm
+  JvPictEdit -> JvPictureEditForm
+  JvPgMngrEd -> JvPageManagerForm
+  JvOutEdit -> JvLookoutEditor
+  JvOLBEditor -> JvOutlookBarForm
+  JvMinMaxEd -> JvMinMaxForm
+  JvJVCLAboutProperty -> JvJVCLAboutEditor
+  JvImagPrvw -> JvImagePreviewForm
+  JvID3v2Define -> JvID3v2DefineForm
+  JvIcoLEdit -> JvIconListForm
+  JvHTHintEditor -> JvHTHintForm
+  JvGradEdit -> JvGradientCaptionForm
+  JvDirFrm -> JvDirectoryListForm
+  JvSbEdit -> JvSpeedbarForm
+  JvTimeLineEdit -> JvTimeLineEditor
+  JvCheckItm -> JvCheckedItemsForm
+  JvaDsgn -> JvDesignerUtils
+  JvDateTimeDlg -> JvDateTimeForm
+  JvCsvDataDsgn > JvCsvDataEditor
+  JvCsvDataDefStrDsgn -> JvCsvDataForm
+  // peter3  
+
+    
+2003-06-17:
+- Changed folder structure:
+  * Each Delphi/BCB package collection has it's own subfolder in \packages
+  * Sources split into a \design folder and a \run folder. Some items are probably incorrectly located at the moment, but this will change as I build the packages
+  * All resources (.res and .dcr) are now located in \resources folder
+  * All INC and common files are now located in \common
+  // peter3
+2003-06-15:
+- Added a first set of d7 packages // peter3
+
+2003-06-12:
+- Created new dev subfolder on SF for the files (jvcl/dev/JVCL3) // peter3
+
+2003-03-23:
+- JvRollOut: Several properties have changed and been put into nested sub-properties.
+  To update current usage do the following:
+   * Color: change to Colors.Color
+   * ButtonColor: change to Colors.ButtonColor
+   * ButtonColTop: change to Colors.ButtonTop
+   * ButtonColBtm: change to Colors.ButtonBottom
+   * ColHiText: change to Colors.HotTrackText
+   * FrameColTop: change to Colors.FrameTop
+   * FrameColBtm: change to Colors.FrameBottom
+   * ImageExpanded: change to ImageOptions.IndexExpanded
+   * ImageCollapsed: change to ImageOptions.IndexCollapsed
+   * ImageList: change to ImageOptions.Images
+   * ImageOffset: change to ImageOptions.Offset // peter3

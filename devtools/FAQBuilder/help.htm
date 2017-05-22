@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>FAQ Builder Help</title>
+<link rel="stylesheet" type="text/css" href="styles/default.css">
+</head>
+<body>
+<h1>FAQ Builder Help</h1>
+
+<hr>
+<p>The FAQ Builder is a Windows application for easily creating FAQ style HTML 
+documents.</p>
+<p>&nbsp;</p>
+<h5>To use:</h5>
+<ul>
+  <li>Create a new (Ctrl+N) or open an existing (Ctrl+O) FAQ file.</li>
+  <li>To add an item, type some text into the &quot;Question&quot; edit field and press 
+  Ctrl+A to add it to the list. Note that you cannot add an item with an empty 
+  question.</li>
+  <li>To edit an existing item, select it in the &quot;Items&quot; list and change the 
+  question and/or answer in the edit fields. Move to another item to save the 
+  changes or press Ctrl+S.</li>
+  <li>To remove an item, select it in the list and press Ctrl+D.</li>
+  <li dir="ltr">
+  <p dir="ltr">To replace an item, select it in the list and type the new question 
+  text into the 
+  question field. Press Ctrl+R to replace the text of the question with the new 
+  text.</li>
+  <li>To move an item, select it in the list and either press Ctrl+Up or 
+  Ctrl+Down.</li>
+  <li>To create the HTML file, select &quot;Export to HTML&quot; from the menu, specify a 
+  filename and clik Save. After saving you have the opportunity to preview the 
+  resulting HTMl in your default browser.</li>
+</ul>
+<p>&nbsp;</p>
+<h5>Options dialog</h5>
+<p>Use the options dialog to change the default settings for the program and the 
+content of the HTML templates. The default template supports 
+expanding and collapsing the items in the FAQ using JavaScript. </p>
+<p>&nbsp;</p>
+<p>The program replaces certain special tags in the templates with their actual 
+value in the program when the HTML file is created. Supported tags are:</p>
+<p>&nbsp;</p>
+<div align="left">
+  <table border="0" cellpadding="2" cellspacing="2">
+    <tr>
+      <th>Tag</th>
+      <th>Usage</th>
+    </tr>
+    <tr>
+      <td>&lt;#TITLE&gt;</td>
+      <td>Replaced with the title. OPTIONAL.</td>
+    </tr>
+    <tr>
+      <td>&lt;#STYLESHEET&gt;</td>
+      <td>Replaced with the path and name of the style sheet to use. OPTIONAL.</td>
+    </tr>
+    <tr>
+      <td>&lt;#Q_IMAGE&gt;</td>
+      <td>Replaced with the path and filename of the question mark image. 
+      OPTIONAL.</td>
+    </tr>
+    <tr>
+      <td>&lt;#A_IMAGE&gt;</td>
+      <td>Replaced with the path and filename of the exclamation mark image. OPTIONAL.</td>
+      </tr>
+    <tr>
+      <td>&lt;#Q_ITEM&gt;</td>
+      <td>Replaced with the content of the current FAQ question. REQUIRED.</td>
+    </tr>
+    <tr>
+      <td>&lt;#Q_ITEM&gt;</td>
+      <td>Replaced with the content of the current FAQ answer. REQUIRED.</td>
+    </tr>
+    <tr>
+      <td>&lt;#FAQINDEX&gt;</td>
+      <td>Replaced with the ID of the current FAQ item. REQUIRED.</td>
+    </tr>
+  </table>
+</div>
+<p>&nbsp;</p>
+
+<p></p>
+<p></p>
+
+</body></html>

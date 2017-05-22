@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvGlobusDesign" Design="-1">
+  <Description>JVCL Globus Components</Description>
+  <GUID>{177EF676-53B7-41C5-8B88-62DEC3EDD002}</GUID>
+  <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A260000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvControls-R" Targets="all" Condition=""/>
+    <Package Name="JvGlobus-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="qrpt" Targets="DB" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="qr4rund2006" Targets="D10" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvgCompDescription.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvgComponentListEditorForm.pas" Targets="all_win32" Formname="JvgCompListEditor" Condition=""/>
+    <File Name="..\..\design\JvgLabelEditorForm.pas" Targets="all_win32" Formname="JvgLabelEditorDlg" Condition=""/>
+    <File Name="..\..\design\JvGlobusReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvgLogicItemEditorForm.pas" Targets="all_win32" Formname="JvgLogicItemEditor" Condition=""/>
+    <File Name="..\..\design\JvgLogicsEditorForm.pas" Targets="all_win32" Formname="JvgLogicsEditor" Condition=""/>
+    <File Name="..\..\design\JvgMultiResourceEditorForm.pas" Targets="all_win32" Formname="JvgMultipleResourceEdit" Condition=""/>
+    <File Name="..\..\design\JvgMultiResources.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvgPropertyCenter.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvgReportEditorForm.pas" Targets="all_win32" Formname="JvgReportEditorForm" Condition=""/>
+    <File Name="..\..\design\JvgReportParamEditorForm.pas" Targets="all_win32" Formname="ReportParamEditor" Condition=""/>
+    <File Name="..\..\design\JvgReportParamsForm.pas" Targets="all_win32" Formname="JvgReportParamsForm" Condition=""/>
+    <File Name="..\..\design\JvgRTFPreviewForm.pas" Targets="all_win32" Formname="fRTFPreview" Condition=""/>
+    <File Name="..\..\design\JvgShadowEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvgCompEditorTemplateForm.pas" Targets="all_win32" Formname="JvgCompEditorTemplate" Condition=""/>
+    <File Name="..\..\design\JvgAlignForm.pas" Targets="all_win32" Formname="AlignForm" Condition=""/>
+  </Contains>
+</Package>

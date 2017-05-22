@@ -1,0 +1,120 @@
+Dev folders for moving JVCL to 3.0
+
+NAMING CONVENTIONS:
+===================
+
+GENERAL
+-------
+All files must have a "Jv" prefix (capital "J", lower case "v") and you should use "Camel Casing" for the file name (LikeThisForExample.pas). All files should have an extension in all lower case letters. All units should be named using the full name of the contained component/control without the leading "T". If the unit contains several classes/components, either name it after the component that will be installed, most "significant" component or use a name that describes the components in the unit as well as possible. F ex a unit with several database components could be named "JvDBControls.pas" whereas a unit containing a TJvEditor control should be named "JvEditor.pas". Windows supports long filenames, so use them! The goal is to make finding a unit as simple and intuitive as possible based on the name of the component (and viceversa).
+
+
+FORMS
+-----
+All forms (units with DFM's) should be suffixed with the word "Form" regardless of if it's a dialog or a form. The word "Form" can also be used as a prefix if the component in the unit is acting upon a form without being one itself (i.e JvFormMagnet)
+
+
+DIALOG
+------
+The word "Dialog" in a unit name signifies that the unit contains a component that has no UI at designtime but shows a form or dialog at run time (like the TOpenDialog et al). At the moment, "Dlg" and "Dlgs" are accepted but their use is discouraged.
+
+CONST(S)
+-------
+The words "Const" and "Consts" are only used in units that contains just type, resourcestring and const declarations and no code.
+
+UTIL(S)
+-------
+The word "Util" and "Utils" are only used in units that contains support routines and classes of more general use. Classes in util type units should never be installable.
+
+
+DESIGNTIME EDITORS
+==================
+Units containing designtime editors should have the same base name as the component they are primarily used to edit and an "Editor" or "Editors" suffix, i.e a property editor unit for the TJvBehaviorLabel should be called either "JvBehaviorLabelEditor" or "JvBehaviorLabelEditors". 
+
+The base name for the unit is controlled by the name of the component the editor(s) were meant for: if all editors are for the same component, use the same rule as for a single editor (the plural form), if the unit contains generic editors, name the unit either according to the editors "family" ("JvDBEditors" contains design editors for DB related components), or according to it's general data type (i.e "JvDateEditors" contains editors used to edit date related properties). 
+
+It doesn't matter (name wise) if a unit contains property, component or any other types of editor. They should all be named the same way. 
+
+If a design editor is implemented in the same unit as a form, the unit should be named with a "Form" suffix. The reasoning behind this is simple: if a split of the unit is to be done in the future (which is likely), it is the design editor that will be moved to a new unit, not the form. The new unit for the editor will then get an appropriate name with a "Editor" suffix. The name of the form will not change. 
+
+Adding editors to forms is discouraged. 
+
+Try to keep editors in their own unit, preferably one editor per unit. Editor units can contain their own Register procedure but this is also discouraged. The Register procedure should optimally only be present in specific "Reg" files for a package. This minimizes confusion and clutter and maximizes reuse, loose coupling and simplifies maintenance and restructuring.
+
+REG FILES
+=========
+Each design package should have it's own registration unit with a Register procedure. The unit should be named with the same base name as the package but with a "Reg" suffix. The reg file should only contain the component and design editor registrations. Do not add design editors or other support code to the reg file unless absolutely necessary.
+
+
+TODO:
+====
+DONE - Split packages into several smaller packages
+  Naming convention:
+    Jv<name><compiler>(D|R).dpk/.bpk
+    where 
+    <name> - the descriptive name of the package, i.e "Core" for the core package
+    <compiler> - a short name for the compiler. The following names should be used: D5, D6, D7, C5, C6, K2 and K3
+    (D|R) - signifies if it's a design- (D) or run-time (R) package
+  Example:
+    JvCoreC5R.bpk - core run-time package for BCB 5
+    JvCoreD7D.dpk - core design-time package for Delphi 7
+
+  Probable packages (base name only):
+    JvCore - core units, support units
+    JvCmp - non-visual components
+    JvSystem - system related components
+    JvCtrls - visual controls
+    JvStdCtrls - enhanced standard controls
+    JvCustom - custom components
+    JvNet - network (modem WAN, LAN etc) related components
+    JvMM - multimedia and images
+    JvCrypt - encryption and compression
+    JvDlgs - dialog components
+    JvInterpreter - JvInterpreter components
+    JvAppFrm - Application and Form components
+    JvDB - non-db specific DB components
+    JvBDE - bde specific DB components
+    JvOther - deprecated, duplicated, leftover or non-conformant
+
+DONE - Put packages for each compiler version in it's own folder
+  Package folder names should be d5, d6, d7, bcb5, bcb6, k2 and k3
+DONE - Put sources for design and run-time in separate folders 
+DONE - Put resources (res and dcr files mainly) in a common folder. This folder is named \resources 
+DONE - Put INC and common files (like API translations) in a common folder. This folder is named \common. 
+* Merge/remove remaining duplicates
+DONE - Change palette layout 
+DONE - Create one DCR file for each design package 
+* Implement IFiller (Marcel?). NOTE: IFiller has been renamed to IData.
+* Implement XP theming (Remko?)
+DONE - Remove unnecessary IFDEF's (WIN32, COMPILER3, COMPILER4 etc). We don't support 16-bit and we don't support compilers before COMPILER5. 
+DONE - Merge utility units into one and put component specific routines into separate units. 
+* Split design units where editors and forms are in the same file (bad!)
+DONE - Rename all DB related units to "JvDB", all BDE related to "JvBDE" etc 
+* Missing/unregistered components: 
+  -  TJvSpinButton (JvSpin)
+  
+* Add remaining donations:
+
+DONE - Globus (Andrey Chudin) - already compliant 
+DONE - Jans (Jan Verhoeven) - already compliant 
+DONE - UIB (Henri Gourvest) - already compliant 
+
+DONE - Print Preview (peter3) - already compliant 
+DONE - Validators (peter3) - already compliant 
+DONE - Error Provider (peter3) - already compliant 
+DONE - TreeView w. Checkbox and RadioButton support (peter3) - already compliant 
+DONE - VS.NET style TreeView and JvPageList (peter3) - already compliant 
+DONE - LED control (marcelb)
+DONE - XML Database (sebastien) - already compliant 
+DONE - JvAviCAP (obones)
+  TreeViewCombo and DirPathCombo (mbeck)
+  ExpressionEdit (rbarre) (?)
+  GoogleSearcher (Basri Kanca)(?)
+  JvStructStorage (peter3) (?) - already compliant
+  ManagedThreads (Erwin Molendijk)(?) 
+  TDBRadioGroup based on TPanel (anonymous)
+- Make all icons have color coded "J" insert according to:
+  * blue - visual control
+  * green - non-visual
+  * red - provider
+  * black - consumer
+  * purple - db aware  

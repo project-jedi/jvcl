@@ -1,0 +1,1201 @@
+# Copyright (C) 2010 The JEDI Visual Component Library group
+# This file is distributed under the same license as the JVCL package.
+# JVCL Group <jvcl@sourceforge.net>, 2008.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: JVCL 3\n"
+"POT-Creation-Date: 2010-06-14 11:26\n"
+"PO-Revision-Date: 2009-05-25 17:20-0000\n"
+"Last-Translator: Franklin Haut <franklin.haut@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: dxgettext 1.2.1\n"
+
+#. FormCompile..Caption
+#. Programmer's name for it: RsCompiling
+#: FrmCompile.dfm:6 FrmCompile.pas:133 
+msgid "Compiling"
+msgstr "Compilando"
+
+#. FormCompile..PanelClient..LblProject..Caption
+#: FrmCompile.dfm:56 
+msgid "Project filename"
+msgstr "Arquivo de projeto"
+
+#. FormCompile..PanelClient..LblStatusCaption..Caption
+#: FrmCompile.dfm:64 
+msgid "Done:"
+msgstr "Concluído:"
+
+#. FormCompile..PanelClient..LblCurrentLineCaption..Caption
+#: FrmCompile.dfm:83 
+msgid "Current line:"
+msgstr "Linha atual:"
+
+#. FormCompile..PanelClient..LblTotalLinesCaption..Caption
+#: FrmCompile.dfm:98 
+msgid "Total lines:"
+msgstr "Total de linhas:"
+
+#. FormCompile..PanelClient..LblHintsCaption..Caption
+#: FrmCompile.dfm:125 
+msgid "Hints:"
+msgstr "Dicas:"
+
+#. FormCompile..PanelClient..LblWarningsCaption..Caption
+#: FrmCompile.dfm:140 
+msgid "Warnings:"
+msgstr "Advertências:"
+
+#. FormCompile..PanelClient..LblErrorsCaption..Caption
+#: FrmCompile.dfm:155 
+msgid "Errors:"
+msgstr "Erros:"
+
+#. FormCompile..PanelClient..LblProjectCaption..Caption
+#: FrmCompile.dfm:170 
+msgid "Project:"
+msgstr "Projeto:"
+
+#. FormCompile..PanelClient..LblStatus..Caption
+#. Programmer's name for it: RsThereAreErrors
+#: FrmCompile.dfm:177 FrmCompile.pas:137 
+msgid "There are errors."
+msgstr "Existem erros."
+
+#. FormCompile..BtnOk..Caption
+#: FrmCompile.dfm:205 
+msgid "OK"
+msgstr "OK"
+
+#. FormCompileMessages..Caption
+#: FrmCompileMessages.dfm:8 
+msgid "Compiler Messages"
+msgstr "Mensagens de compilação"
+
+#. FormCompileMessages..PanelTop..LabelHelp....Caption
+#: FrmCompileMessages.dfm:52 
+msgid "Many error messages appear because the JCL version and the JVCL version are not compatible. Please keep in mind that you need the correct JCL version."
+msgstr "Existem muitas mensagens de erro porque aparentemente as versões da JCL e da JVCL não estão compatíveis. Por favor tenha em mente que voce precisa da versão correta da JCL."
+
+#. FormCompileMessages..PopupMenu..Open1..Caption
+#: FrmCompileMessages.dfm:59 
+msgid "&Open"
+msgstr "&Abrir"
+
+#. FormCompileMessages..PopupMenu..MenuNotepad..Caption
+#: FrmCompileMessages.dfm:63 
+msgid "Open in &Notepad"
+msgstr "Abrir no bloco de notas"
+
+#. FormMain..Caption
+#: Main.dfm:6 
+msgid "JVCL 3  Installation"
+msgstr "Instalação JVCL 3"
+
+#. FormMain..LblHomepage..Caption
+#: Main.dfm:34 
+msgid "JEDI Visual Component Library Homepage"
+msgstr "Homepage da JEDI VCL"
+
+#. ExceptionDialog..OkBtn..Caption
+#. FormJvclIncConfig..BtnOk..Caption
+#: Debug/ExceptionDlg.dfm:43 Helpers/MainConfig.dfm:126 
+msgid "&OK"
+msgstr "&OK"
+
+#. ExceptionDialog..DetailsBtn..Hint
+#: Debug/ExceptionDlg.dfm:72 
+msgid "Show or hide additional information|"
+msgstr "Exibir ou ocultar informações adicionais|"
+
+#. ExceptionDialog..DetailsBtn..Caption
+#: Debug/ExceptionDlg.dfm:74 
+msgid "&Details"
+msgstr "&Detalhes"
+
+#. ExceptionDialog..TextLabel..Hint
+#: Debug/ExceptionDlg.dfm:84 
+msgid "Use Ctrl+C to copy the report to the clipboard"
+msgstr "Use Ctrl+C para copiar o relatório para área de transferência"
+
+#. FrameConfigPage..LblBCBGuide....Hint
+#: Frames/FrmConfigPage.dfm:16 
+msgid "Open the default web browser to show the C++Builder Installation Guide."
+msgstr "Abrir o navegador padrão de internet para exibir o guia de instalação no C++Builder"
+
+#. FrameConfigPage..LblBCBGuide..Caption
+#: Frames/FrmConfigPage.dfm:17 
+msgid "BCB installation guide"
+msgstr "Guia de instalação BCB"
+
+#. FrameConfigPage..LblEnvPathWarning....Caption
+#: Frames/FrmConfigPage.dfm:40 
+msgid "The BPL directory is not in the PATH environment variable. If you do not add the directory to the PATH environment variable, Delphi/BCB will not be able to find the runtime packages and shows you lots of error messages like: \"Cannot load package JvCoreD10R.bpl\""
+msgstr "A pasta BPK não está na variável de ambiente PATH. Se você não adicionar a pasta para a variável de ambiente PATH, Delphi/BCB não estará apto a localizar em tempo de execução os pacotes e irá mostrar várias mensagens de erro como : \"Não foi possível carregar o pacote JvCoreD10R.bpl\""
+
+#. FrameConfigPage..GroupBoxJvclInc..Caption
+#: Frames/FrmConfigPage.dfm:55 
+msgid " JVCL Options  "
+msgstr "Opções JVCL"
+
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxXPTheming....Hint
+#: Frames/FrmConfigPage.dfm:71 
+msgid ""
+"Activate this if you have Mike Lischke's Theme Manager\n"
+"(<c:navy>http://www.lischke-online.de<c:black>) installed and available and\n"
+"you are using <b>Delphi/BCB 6</b> or below. The ThemeManager\n"
+"package must be compiled as \"<b>never-build package</b>\".\n"
+"The ThemeManager package must be in the BPL directory.\n"
+"For more information see <b>readme.htm</b>\n"
+"\n"
+"If you activate the XP Theming all your installed\n"
+"Delphi/C++Builder versions must have the ThemeManager\n"
+"installed (not for Delphi 7)\n"
+"\n"
+"<b>For Delphi 7 this option is always enabled even if\n"
+"it is not enabled here.</b>"
+msgstr ""
+
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxXPTheming..Caption
+#: Frames/FrmConfigPage.dfm:72 
+msgid "&XP Theming (not for Delphi 7)"
+msgstr "Themas &XP (não para Delphi 7)"
+
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterGlobalDesignEditors....Hint
+#: Frames/FrmConfigPage.dfm:85 
+msgid ""
+"Enable this option if you want to register property and component\n"
+"editors included in JVCL (for non-JVCL components as well)."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterGlobalDesignEditors..Caption
+#: Frames/FrmConfigPage.dfm:86 
+msgid "&Register global design editors"
+msgstr ""
+
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport....Hint
+#: Frames/FrmConfigPage.dfm:102 
+msgid ""
+"Enable this option if you want to use the dxgettext\n"
+"(<c:navy>http://dxgettext.sourceforge.net<c:black>) translation tool.\n"
+"\n"
+"<c:red>The JVCL 3 ships it's own gnugettext.pas unit called\n"
+"JvGnugettext. This prevents package unit conflicts and\n"
+"problems with wrong versions."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxDxgettextSupport..Caption
+#: Frames/FrmConfigPage.dfm:103 
+msgid "dxgettext &support"
+msgstr "&suporte ao dxgettext "
+
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterJvGif....Hint
+#: Frames/FrmConfigPage.dfm:116 
+msgid ""
+"Enable this option if you want to register the GIF image\n"
+"Graphic Extensions for Open/Save dialogs."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxRegisterJvGif..Caption
+#: Frames/FrmConfigPage.dfm:117 
+msgid "Register Jv&Gif for .gif"
+msgstr "Registrar Jv&Gif para .gif"
+
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning....Hint
+#: Frames/FrmConfigPage.dfm:131 
+msgid ""
+"Enable this option if you want that every JVCL unit should support\n"
+"UnitVersioning.\n"
+"UnitVersioning allows you the obtain the revision, date and filename\n"
+"of each unit at runtime."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxJvclInc..CheckBoxUnitVersioning..Caption
+#: Frames/FrmConfigPage.dfm:132 
+msgid "Unit Versioning"
+msgstr "Unit Versioning"
+
+#. FrameConfigPage..GroupBoxInstallOptions..Caption
+#: Frames/FrmConfigPage.dfm:144 
+msgid " Installation options "
+msgstr "Opções da instalação"
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Hint
+#: Frames/FrmConfigPage.dfm:154 
+msgid ""
+"Activate this option if you are a JVCL developer.\n"
+"This adds the \\run, \\common, \\design, \\qrun,\n"
+"\\qcommon and \\qdesign directories to the library\n"
+"paths."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall..Caption
+#: Frames/FrmConfigPage.dfm:156 
+msgid "&JVCL Developer installation"
+msgstr "Instalação desenvolvedor &JVCL"
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes....Hint
+#: Frames/FrmConfigPage.dfm:169 
+msgid ""
+"Remove all JVCL components from the component palettes in\n"
+"order to reinstall in a proper order."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCleanPalettes..Caption
+#: Frames/FrmConfigPage.dfm:171 
+msgid "Clean JVCL component &palettes"
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild....Hint
+#: Frames/FrmConfigPage.dfm:185 
+msgid ""
+"Check this option if you want to build the packages instead\n"
+"of compiling the modified files.\n"
+"\n"
+"<c:red><b>WARNING for BCB users:</b>\n"
+"This could take up to 10 minutes."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxBuild..Caption
+#: Frames/FrmConfigPage.dfm:187 
+msgid "B&uild packages"
+msgstr "Construir pacotes"
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxIDERegister....Hint
+#: Frames/FrmConfigPage.dfm:200 
+msgid ""
+"Check this option if you want to register\n"
+"the designtime packages into the IDE."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxIDERegister..Caption
+#: Frames/FrmConfigPage.dfm:202 
+msgid "&IDE registration"
+msgstr "Registro da &IDE"
+
+#. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
+#: Frames/FrmConfigPage.dfm:219 
+msgid "BP&L Directory:"
+msgstr "Pasta BP&L:"
+
+#. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..LblCaption..Caption
+#: Frames/FrmConfigPage.dfm:245 
+msgid "&HPP Directory:"
+msgstr "Pasta &HPP:"
+
+#. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Hint
+#: Frames/FrmConfigPage.dfm:258 
+msgid ""
+"The HPP directory specifies where the generated .hpp files\n"
+"should go. If this field is empty the generated .hpp files are\n"
+"written to the directory where the pascal source file is."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Hint
+#: Frames/FrmConfigPage.dfm:274 
+msgid ""
+"Activate this option if the installer should generate\n"
+"detailed map-files for each package.The .map files\n"
+"are written only for newly compiled packages.\n"
+"\n"
+"Map files are used for debug purposes, e.g. JclDebug\n"
+"could use them."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles..Caption
+#: Frames/FrmConfigPage.dfm:276 
+msgid "Genera&te Map files"
+msgstr "Gerar arquivos Map"
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDebugUnits....Hint
+#: Frames/FrmConfigPage.dfm:290 
+msgid ""
+"Activate this option if you also want to compile debug units.\n"
+"JVCL Developer installations units do not need this because\n"
+"they are compiled with debug information included."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDebugUnits..Caption
+#: Frames/FrmConfigPage.dfm:292 
+msgid "Compile debug units"
+msgstr "Compilar units de debug"
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles....Hint
+#: Frames/FrmConfigPage.dfm:308 
+msgid ""
+"Activate this option if the installer should link detailled\n"
+"map information as a resource of the binary it is describing.\n"
+"\n"
+"The redistribution of the binary and Map file is\n"
+"simplified to the redistribution of the binary.\n"
+"\n"
+"JclDebug can use these information."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles..Caption
+#: Frames/FrmConfigPage.dfm:309 
+msgid "&Link Map files in binaries"
+msgstr "&Link Map files in binaries"
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles....Hint
+#: Frames/FrmConfigPage.dfm:323 
+msgid ""
+"Activate this option if the installer should delete\n"
+"detailed map-files after they are linked in the binary\n"
+"or the jdbg files were created."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles..Caption
+#: Frames/FrmConfigPage.dfm:324 
+msgid "&Delete after linking/compression"
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles....Hint
+#: Frames/FrmConfigPage.dfm:338 
+msgid ""
+"Activate this option if the installer should compress detailled\n"
+"map information to jdbg files.\n"
+"\n"
+"JclDebug can use these information."
+msgstr ""
+
+#. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles..Caption
+#: Frames/FrmConfigPage.dfm:339 
+msgid "Compress Map files to .jdbg"
+msgstr ""
+
+#. FrameConfigPage..CheckBoxVerbose....Hint
+#: Frames/FrmConfigPage.dfm:353 
+msgid ""
+"Activate this option if you want to see a more detailed compiler log on\n"
+"the installation progress page."
+msgstr ""
+
+#. FrameConfigPage..CheckBoxVerbose..Caption
+#: Frames/FrmConfigPage.dfm:354 
+msgid "&Verbose compiler output"
+msgstr "&Descrição detalhada de compilação"
+
+#. FrameConfigPage..CheckBoxIgnoreMakeErrors....Hint
+#: Frames/FrmConfigPage.dfm:367 
+msgid ""
+"Activate this option if the installer should not stop when an error occured while\n"
+"compiling the packages."
+msgstr ""
+
+#. FrameConfigPage..CheckBoxIgnoreMakeErrors..Caption
+#: Frames/FrmConfigPage.dfm:368 
+msgid "D&o not stop on errors"
+msgstr "Não parar nos erros"
+
+#. FrameConfigPage..BtnEditJvclInc..Hint
+#: Frames/FrmConfigPage.dfm:390 
+msgid "Edit all compile time conditions that are in the jvcl.inc file."
+msgstr ""
+
+#. FrameConfigPage..BtnEditJvclInc..Caption
+#. Programmer's name for it: RsEditJvclInc
+#: Frames/FrmConfigPage.dfm:391 InstallerConsts.pas:162 
+msgid "Edit jvcl%s%d.inc"
+msgstr "Editar jvcl%s%d.inc"
+
+#. FrameConfigPage..PanelBk..LblOptionsFor..Caption
+#: Frames/FrmConfigPage.dfm:409 
+msgid "&Options for:"
+msgstr "&Opções para r:"
+
+#. FrameConfigPage..CheckBoxAddBplDirToPath..Caption
+#: Frames/FrmConfigPage.dfm:418 
+msgid "Add BPL directory to PATH"
+msgstr ""
+
+#. FrameDirEditBrowse..EditDirectory..Hint
+#: Frames/FrmDirEditBrowse.dfm:29 
+msgid "Directory does not exist"
+msgstr "Pasta não existe"
+
+#. FrameDirEditBrowse..BtnDirBrowse..Hint
+#: Frames/FrmDirEditBrowse.dfm:42 
+msgid "Browse..."
+msgstr "Pesquisar..."
+
+#. FrameInstall..BtnDetails..Caption
+#: Frames/FrmInstall.dfm:83 
+msgid "&Details >>"
+msgstr "&Detalhes >>"
+
+#. FramePackageSelection..LblIDEs..Caption
+#: Frames/FrmPackageSelection.dfm:27 
+msgid "&Available IDEs"
+msgstr "&IDEs disponíveis"
+
+#. FramePackageSelection..LblFrameworks..Caption
+#: Frames/FrmPackageSelection.dfm:36 
+msgid "&Frameworks:"
+msgstr "&Frameworks:"
+
+#. FramePackageSelection..LblShowMode..Caption
+#: Frames/FrmPackageSelection.dfm:45 
+msgid "&Show packages:"
+msgstr "&Exibir pacotes:"
+
+#. FramePackageSelection..ComboBoxDisplayMode....Hint
+#: Frames/FrmPackageSelection.dfm:77 
+msgid ""
+"<b>Designtime:</b>\n"
+"     Show all designtime packages. Checking/Unchecking a\n"
+"     designtime package checks/unchecks the corresponding\n"
+"     runtime package. (Designtime/runtime packages are linked)\n"
+"\n"
+"<b>Runtime:</b>\n"
+"     Show all runtime package. Unchecking a runtime package\n"
+"     unchecks the corresponding designtime package due to\n"
+"     dependencies.\n"
+"\n"
+"<b>Both:</b>\n"
+"     Show all packages. Only packages that depend on others\n"
+"     are checked/unchecked if necessary."
+msgstr ""
+
+#. FramePackageSelection..ComboBoxDisplayMode....Items.Strings
+#: Frames/FrmPackageSelection.dfm:85 
+msgid "Designtime"
+msgstr "Desenvolvimento"
+
+#. FramePackageSelection..ComboBoxDisplayMode....Items.Strings
+#: Frames/FrmPackageSelection.dfm:86 
+msgid "Runtime"
+msgstr "Execução"
+
+#. FramePackageSelection..ComboBoxDisplayMode....Items.Strings
+#: Frames/FrmPackageSelection.dfm:87 
+msgid "Both"
+msgstr "Ambos"
+
+#. FramePackageSelection..ActionList..ActionInstallAll..Caption
+#: Frames/FrmPackageSelection.dfm:296 
+msgid "Install &all"
+msgstr "Instalar tudo"
+
+#. FramePackageSelection..ActionList..ActionInstallNone..Caption
+#: Frames/FrmPackageSelection.dfm:301 
+msgid "Install &none"
+msgstr "Instalar nenhum"
+
+#. FramePackageSelection..ActionList..ActionResetPackages..Caption
+#: Frames/FrmPackageSelection.dfm:306 
+msgid "&Reset all Packages"
+msgstr ""
+
+#. FramePackageSelection..ActionList..ActionResetPackages..Hint
+#: Frames/FrmPackageSelection.dfm:307 
+msgid "Reset the package selection to IDE default."
+msgstr ""
+
+#. FormJvclIncConfig..Caption
+#: Helpers/MainConfig.dfm:5 
+msgid "JVCL Configuration"
+msgstr "Configuração JVCL"
+
+#. FormJvclIncConfig..TitlePanel..Label4..Caption
+#: Helpers/MainConfig.dfm:86 
+msgid "Project JEDI   JVCL 3 Installer - jvcl.inc Editor"
+msgstr ""
+
+#. FormJvclIncConfig..BtnCancel..Caption
+#: Helpers/MainConfig.dfm:117 
+msgid "&Cancel"
+msgstr "&Cancelar"
+
+#. Programmer's name for it: RsPackagesAreUpToDate
+#: Compile.pas:178 
+msgid "Packages are up to date"
+msgstr ""
+
+#. Programmer's name for it: RsGeneratingTemplates
+#: Compile.pas:189 
+msgid "Generating templates..."
+msgstr "Gerando templates..."
+
+#. Programmer's name for it: RsGeneratingPackages
+#: Compile.pas:190 
+msgid "Generating packages..."
+msgstr "Gerando pacotes..."
+
+#. Programmer's name for it: RsGeneratingResources
+#: Compile.pas:191 
+msgid "Generating resources..."
+msgstr "Gerando resources..."
+
+#. Programmer's name for it: RsCompilingPackages
+#: Compile.pas:192 
+msgid "Compiling packages..."
+msgstr "Compilando pacotes..."
+
+#. Programmer's name for it: RsPostCompilationOperations
+#: Compile.pas:193 
+msgid "Post-compilation operations..."
+msgstr "Operações pós-compilações"
+
+#. Programmer's name for it: RsCopyingFiles
+#: Compile.pas:194 
+msgid "Copying files..."
+msgstr "Copiandos arquivos..."
+
+#. Programmer's name for it: RsCopyingFile
+#: Compile.pas:195 
+msgid "Copying %s"
+msgstr "Copiando %s"
+
+#. Programmer's name for it: RsFinished
+#: Compile.pas:196 
+msgid "Finished."
+msgstr "Finalizado"
+
+#. Programmer's name for it: RsAbortedByUser
+#: Compile.pas:198 
+msgid "Aborted by User"
+msgstr "Cancelado pelo usuário"
+
+#. Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
+#: Compile.pas:199 
+msgid "Error loading devtools\\bin\\pgEdit.xml"
+msgstr "Erro ao carregar devtools\\bin\\pgEdit.xml"
+
+#. Programmer's name for it: RsErrorGeneratingPackages
+#: Compile.pas:200 
+msgid "Error while generating packages for %s"
+msgstr ""
+
+#. Programmer's name for it: RsErrorGeneratingTemplates
+#: Compile.pas:201 
+msgid "Error while generating templates."
+msgstr ""
+
+#. Programmer's name for it: RsErrorCompilingResources
+#: Compile.pas:202 
+msgid "Error while compiling resources."
+msgstr ""
+
+#. Programmer's name for it: RsErrorGeneratingTemplatesForDir
+#: Compile.pas:203 
+msgid "Error generating templates for the %s directory."
+msgstr ""
+
+#. this must not be the doubt of the installer
+#. Programmer's name for it: RsErrorCompilingPackages
+#: Compile.pas:204 
+msgid "An error occured while compiling the packages."
+msgstr ""
+
+#. Programmer's name for it: RsErrorLinkingMapFiles
+#: Compile.pas:205 
+msgid "An error occured while linking the map files into binaries."
+msgstr ""
+
+#. Programmer's name for it: RsErrorDeletingMapFiles
+#: Compile.pas:206 
+msgid "An error occured while deleting the map files after the linking."
+msgstr ""
+
+#. Programmer's name for it: RsCommandNotFound
+#: Compile.pas:208 
+msgid ""
+"Command could not be executed.\n"
+"\n"
+"\n"
+"Cmdline: %s\n"
+"#0Start directory: %s"
+msgstr ""
+
+#. Programmer's name for it: RsPreparing
+#: FrmCompile.pas:132 
+msgid "Preparing..."
+msgstr "Preparando..."
+
+#. Programmer's name for it: RsLinking
+#: FrmCompile.pas:134 
+msgid "Linking"
+msgstr "Linking"
+
+#. Programmer's name for it: RsDone
+#: FrmCompile.pas:135 
+msgid "Done"
+msgstr "Efetuado"
+
+#. Programmer's name for it: RsCompileAborted
+#: FrmCompile.pas:136 
+msgid "Aborted."
+msgstr "Abortado"
+
+#. Programmer's name for it: RsThereAreWarnings
+#: FrmCompile.pas:138 
+msgid "There are warnings."
+msgstr "Existem advertências"
+
+#. Programmer's name for it: RsThereAreHints
+#: FrmCompile.pas:139 
+msgid "There are hints."
+msgstr "Existem dicas."
+
+#. Programmer's name for it: RsCompiled
+#: FrmCompile.pas:140 
+msgid "compiled."
+msgstr "compilado"
+
+#. JVCL3Install.pas
+#. Programmer's name for it: sJVCLMacroResourcesDir
+#: InstallerConsts.pas:53 
+msgid ""
+"The JEDI Visual Component Library (JVCL) consists of a huge collection (currently ca. 500)\n"
+"of visual and non-visual components which can be instantly reused in your Delphi, Kylix and\n"
+"C++ Builder projects.\n"
+"\n"
+"The library is built upon code donated from the Delphi community. It is reformatted to achieve\n"
+"a common look-and-feel, tested, documented and merged into the library. The library is grouped\n"
+"into several categories such as Enhanced Standard, Visual, Non-Visual, Data Aware and many,\n"
+"many more. The library is released to the public under the terms of the Mozilla Public License\n"
+"(MPL 1.1) and as such can be freely used in both freeware, shareware, open source and commercial\n"
+"projects.\n"
+"\n"
+"Source code files included in the JVCL have a header which explicitly states the license (as\n"
+"is required). However, unless noted otherwise, all files, including those without an MPL\n"
+"header, are subject to the MPL license."
+msgstr ""
+
+#. Programmer's name for it: RsInstallerName
+#. Programmer's name for it: RsInstallerTitle
+#: InstallerConsts.pas:55 InstallerConsts.pas:57 
+msgid "JVCL %d.%d Installation"
+msgstr ""
+
+#. Programmer's name for it: RsWelcomePageSubTitle
+#: InstallerConsts.pas:58 
+msgid "Welcome to the JVCL 3 installation application"
+msgstr "Bem vindo ao programa de instalação da JVCL 3"
+
+#. Programmer's name for it: RsNoDelphiBcbInstalled
+#: InstallerConsts.pas:59 
+msgid "No Delphi or C++Builder is installed. The installer terminates."
+msgstr ""
+
+#. Programmer's name for it: RsDelphiBcbRunning
+#: InstallerConsts.pas:60 
+msgid "Delphi or C++Builder is running. Terminate the IDE and restart the installer."
+msgstr ""
+
+#. Programmer's name for it: RsInstallMode
+#: InstallerConsts.pas:62 
+msgid "New installation / Upgrade from an older version|Allows the selection of packages that should be installed."
+msgstr ""
+
+#. Programmer's name for it: RsUpdateMode
+#: InstallerConsts.pas:63 
+msgid "Compile already installed packages / Update IDE|Does not allow the selection of packages."
+msgstr ""
+
+#. Programmer's name for it: RsUninstallMode
+#: InstallerConsts.pas:64 
+msgid "Uninstall JVCL|Uninstall all JVCL packages and unregister them from the Delphi/C++ Builder IDE."
+msgstr ""
+
+#. the button's width is set to 8+TextWidth+8
+#. Programmer's name for it: RsShowMPL
+#: InstallerConsts.pas:66 
+msgid "Show MPL 1.1"
+msgstr "Exibir MPL 1.1"
+
+#. PgUninstall.pas
+#. Programmer's name for it: RsUninstallPageTitle
+#: InstallerConsts.pas:78 
+msgid "Uninstalling JVCL 3"
+msgstr "Desinstalando JVCL 3"
+
+#. Programmer's name for it: RsUninstallPageSubTitle
+#: InstallerConsts.pas:79 
+msgid "Uninstalling the JVCL 3 from the selected Delphi and C++Builder versions"
+msgstr ""
+
+#. FrmDirEditBrowse.pas
+#. Programmer's name for it: RsSelectDir
+#: InstallerConsts.pas:83 
+msgid "Please select the directory below:"
+msgstr "Selecione a pasta a seguir :"
+
+#. Programmer's name for it: RsNoDirectoryButton
+#: InstallerConsts.pas:84 
+msgid "No directory"
+msgstr "Sem pasta"
+
+#. FrmInstall.pas
+#. Programmer's name for it: RsErrorOpeningFile
+#: InstallerConsts.pas:88 
+msgid "Error opening the file."
+msgstr "Erro ao abrir o arquivo."
+
+#. Programmer's name for it: RsInstallError
+#: InstallerConsts.pas:89 
+msgid "An error occured."
+msgstr "Ocorreu um erro."
+
+#. Programmer's name for it: RsComplete
+#. Programmer's name for it: RsComplete
+#: InstallerConsts.pas:90 JVCLData.pas:398 
+msgid "Complete."
+msgstr "Completo."
+
+#. Programmer's name for it: RsError
+#: InstallerConsts.pas:91 
+msgid "%s - Error"
+msgstr "%s - Erro"
+
+#. Programmer's name for it: RsCompiling
+#: InstallerConsts.pas:92 
+msgid "Compiling: %s"
+msgstr "Compilando: %s"
+
+#. FrmCompileMessages.pas
+#. Programmer's name for it: RsCompilerHint
+#: InstallerConsts.pas:96 
+msgid "Hint"
+msgstr "Dica"
+
+#. Programmer's name for it: RsCompilerWarning
+#: InstallerConsts.pas:97 
+msgid "Warning"
+msgstr "Advertência"
+
+#. Programmer's name for it: RsCompilerError
+#: InstallerConsts.pas:98 
+msgid "Error"
+msgstr "Erro"
+
+#. Programmer's name for it: RsCompilerFatal
+#: InstallerConsts.pas:99 
+msgid "Fatal"
+msgstr "Fatal"
+
+#. FrmPackageSelection.pas
+#. Programmer's name for it: RsSelectTargetIDE
+#: InstallerConsts.pas:103 
+msgid "Select an IDE"
+msgstr "Selecione uma IDE"
+
+#. Programmer's name for it: RsPkgInfoRequires
+#: InstallerConsts.pas:104 
+msgid "Requires:"
+msgstr "Requer:"
+
+#. Programmer's name for it: RsPkgInfoContains
+#: InstallerConsts.pas:105 
+msgid "Contains:"
+msgstr "Contem:"
+
+#. FrmUninstall.pas
+#. Programmer's name for it: RsDeletingFile
+#: InstallerConsts.pas:109 
+msgid "Deleting %s"
+msgstr "Apagando %s"
+
+#. PgInstall.pas
+#. Programmer's name for it: RsInstallPageTitle
+#: InstallerConsts.pas:113 
+msgid "Compiling packages"
+msgstr "Compilando pacotes"
+
+#. Programmer's name for it: RsInstallPageSubTitle
+#: InstallerConsts.pas:114 
+msgid "The selected packages are compiling for the selected Delphi and C++Builder versions"
+msgstr ""
+
+#. PgPackageSelection.pas
+#. Programmer's name for it: RsPackageSelectionPageTitle
+#: InstallerConsts.pas:118 
+msgid "Select packages"
+msgstr "Selecione os pacotes"
+
+#. Programmer's name for it: RsPackageSelectionPageSubTitle
+#: InstallerConsts.pas:119 
+msgid "Select all packages for the target IDEs which should be installed"
+msgstr ""
+
+#. PgSummary.pas
+#. Programmer's name for it: RsSummaryPageTitle
+#: InstallerConsts.pas:123 
+msgid "Summary"
+msgstr "Sumário"
+
+#. Programmer's name for it: RsSummaryPageSubTitleInstall
+#: InstallerConsts.pas:124 
+msgid "The following actions will be done through installation"
+msgstr ""
+
+#. Programmer's name for it: RsSummaryPageSubTitleUpdate
+#: InstallerConsts.pas:125 
+msgid "The following actions will be done through the update"
+msgstr ""
+
+#. Programmer's name for it: RsSummaryPageSubTitleUninstall
+#: InstallerConsts.pas:126 
+msgid "The following actions will be done through uninstallation"
+msgstr ""
+
+#. Programmer's name for it: RsInstallForTarget
+#: InstallerConsts.pas:128 
+msgid "Install JVCL 3 for"
+msgstr "Instalar JVCL 3 para"
+
+#. Programmer's name for it: RsInstallForFrameworks
+#: InstallerConsts.pas:129 
+msgid "Install for frameworks:"
+msgstr "Instalar para os frameworks:"
+
+#. Programmer's name for it: RsBplOutputDirectory
+#: InstallerConsts.pas:130 
+msgid "BPL output directory:"
+msgstr ""
+
+#. Programmer's name for it: RsDcpOutputDirectory
+#: InstallerConsts.pas:131 
+msgid "DCP output directory:"
+msgstr ""
+
+#. Programmer's name for it: RsLibOutputDirectory
+#: InstallerConsts.pas:132 
+msgid "LIB output directory:"
+msgstr ""
+
+#. Programmer's name for it: RsHppOutputDirectory
+#: InstallerConsts.pas:133 
+msgid "HPP output directory:"
+msgstr ""
+
+#. Programmer's name for it: RsBuildPackages
+#: InstallerConsts.pas:134 
+msgid "Build packages"
+msgstr "Build packages"
+
+#. Programmer's name for it: RsCompilePackages
+#: InstallerConsts.pas:135 
+msgid "Compile packages"
+msgstr "Compilar pacotes"
+
+#. Programmer's name for it: RsCleanComponentPalettes
+#: InstallerConsts.pas:136 
+msgid "Clean component palettes"
+msgstr ""
+
+#. Programmer's name for it: RsAddToBrowsePath
+#: InstallerConsts.pas:137 
+msgid "Add to browse path:"
+msgstr ""
+
+#. Programmer's name for it: RsAddToSearchPath
+#: InstallerConsts.pas:138 
+msgid "Add to search path:"
+msgstr ""
+
+#. Programmer's name for it: RsAddToLibraryPath
+#: InstallerConsts.pas:139 
+msgid "Add to library path:"
+msgstr ""
+
+#. Programmer's name for it: RsAddToIncludePath
+#: InstallerConsts.pas:140 
+msgid "Add to include path:"
+msgstr ""
+
+#. Programmer's name for it: RsUninstallFromTarget
+#: InstallerConsts.pas:142 
+msgid "Uninstall from"
+msgstr "Desinstalar de"
+
+#. Programmer's name for it: RsRemove
+#: InstallerConsts.pas:143 
+msgid "Remove"
+msgstr "Remover"
+
+#. Programmer's name for it: RsUnregister
+#: InstallerConsts.pas:144 
+msgid "Unregister"
+msgstr "Desregistrar"
+
+#. Programmer's name for it: RsJVCLPalettes
+#: InstallerConsts.pas:145 
+msgid "JVCL palettes"
+msgstr "Paletas JVCL"
+
+#. Programmer's name for it: RsJVCLDirsFromPathLists
+#: InstallerConsts.pas:146 
+msgid "JVCL directories from path lists"
+msgstr "JVCL diretórios da listas de caminho"
+
+#. Programmer's name for it: RsJVCLPackages
+#: InstallerConsts.pas:147 
+msgid "JVCL 3 packages"
+msgstr "Pacotes JVCL 3"
+
+#. Programmer's name for it: RsJVCLFiles
+#: InstallerConsts.pas:148 
+msgid "JVCL 3 files"
+msgstr "JVCL 3 files"
+
+#. PgConfig.pas
+#. Programmer's name for it: RsConfigPageTitle
+#: InstallerConsts.pas:152 
+msgid "Configuration"
+msgstr "Configuração"
+
+#. Programmer's name for it: RsConfigPageSubTitle
+#: InstallerConsts.pas:153 
+msgid "Choose the compilation options and global options for all targets"
+msgstr ""
+
+#. FrmConfigPage.pas
+#. Programmer's name for it: RsAllTargets
+#: InstallerConsts.pas:157 
+msgid "All versions"
+msgstr "Todas as versões"
+
+#. Programmer's name for it: RsCannotOpen
+#: InstallerConsts.pas:158 
+msgid "Cannot open %s"
+msgstr "Não foi possível abrir %s"
+
+#. Programmer's name for it: RsReadReadmeForXPThemingInfo
+#: InstallerConsts.pas:160 
+msgid ""
+"Please read the readme.htm for details about XP theming with Delphi/C++Builder 5 and 6.\n"
+"Do you want to open readme.htm ?"
+msgstr ""
+
+#. Programmer's name for it: RsErrorOpeningReadmeHTM
+#: InstallerConsts.pas:161 
+msgid "Cannot open file readme.htm"
+msgstr "Não foi possível abrir o arquivo readme.htm"
+
+#. Programmer's name for it: RsEditJvclIncAll
+#: InstallerConsts.pas:163 
+msgid "Edit jvcl.inc"
+msgstr "Editar jvcl.inc"
+
+#. Programmer's name for it: RsEditJvclIncAllError
+#: InstallerConsts.pas:164 
+msgid "Options can only be set for a single target, please select a target from the drop down list first."
+msgstr ""
+
+#. Programmer's name for it: RsJVCLConfigurationError
+#: InstallerConsts.pas:165 
+msgid "The jvcl.inc files are corrupted."
+msgstr "O arquivo jvcl.inc está corrompido."
+
+#. PgIDESelection.pas
+#. Programmer's name for it: RsSelectionPageTitle
+#: InstallerConsts.pas:174 
+msgid "Choose IDE targets"
+msgstr "Escolha a IDE"
+
+#. Programmer's name for it: RsSelectionPageSubTitleInstall
+#: InstallerConsts.pas:175 
+msgid "Select all target IDEs where the JVCL should be installed"
+msgstr ""
+
+#. Programmer's name for it: RsSelectionPageSubTitleUpdate
+#: InstallerConsts.pas:176 
+msgid "Select all target IDEs where the JVCL should be updated"
+msgstr ""
+
+#. Programmer's name for it: RsSelectionPageSubTitleUninstall
+#: InstallerConsts.pas:177 
+msgid "Select all target IDEs from which the JVCL should be uninstalled"
+msgstr ""
+
+#. Programmer's name for it: RsErrorInstallingJCL
+#: InstallerConsts.pas:179 
+msgid "Cannot start the JCL Installer."
+msgstr "Não foi possível iniciar o instalador JCL."
+
+#. Programmer's name for it: RsDelphiBCBUpdateRequired
+#: InstallerConsts.pas:180 
+msgid "Delphi/C++Builder update not installed"
+msgstr ""
+
+#. Programmer's name for it: RsDownloadUpdatesFrom
+#: InstallerConsts.pas:181 
+msgid "Download from"
+msgstr "Download de "
+
+#. Programmer's name for it: RsJCLVersionRequired
+#: InstallerConsts.pas:182 
+msgid "JCL %s or higher not installed"
+msgstr ""
+
+#. Programmer's name for it: RsDownloadOrSelectJclDir
+#: InstallerConsts.pas:184 
+msgid "Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|http://jcl.delphi-jedi.org/"
+msgstr ""
+
+#. Programmer's name for it: RsInstalledJVCLVersion
+#: InstallerConsts.pas:185 
+msgid "Installed JVCL version: %s"
+msgstr "Versão instalada da JVCL: %s"
+
+#. Programmer's name for it: RsInstallJCL
+#: InstallerConsts.pas:186 
+msgid "Install JCL"
+msgstr "Instalar JCL"
+
+#. RsJCLDirectoryCaption = '&JCL directory:';
+#. Programmer's name for it: RsDeleteJVCLFilesCaption
+#: InstallerConsts.pas:190 
+msgid "&Delete JVCL files (dcu,bpl,dcp, obj,bpi,lib,tds)"
+msgstr ""
+
+#. Programmer's name for it: RsUpdateData
+#: InstallerConsts.pas:193 
+msgid "&Reload"
+msgstr "&Recarregar"
+
+#. Programmer's name for it: RsEvaluationVersion
+#: InstallerConsts.pas:194 
+msgid "Evaluation version is not supported"
+msgstr ""
+
+#. Main.pas
+#. Programmer's name for it: RsBtnInstall
+#: InstallerConsts.pas:198 
+msgid "&Install"
+msgstr "&Instalar"
+
+#. Programmer's name for it: RsBtnUninstall
+#: InstallerConsts.pas:199 
+msgid "&Uninstall"
+msgstr "&Desinstalar"
+
+#. Programmer's name for it: RsNoPackageInstaller
+#: InstallerConsts.pas:200 
+msgid "Application error. No PackageInstaller created."
+msgstr ""
+
+#. Programmer's name for it: RsCancelInstallation
+#: InstallerConsts.pas:201 
+msgid "Do you really want to cancel the installation?"
+msgstr ""
+
+#. Programmer's name for it: RsNoJVCLFound
+#: JVCLData.pas:391 
+msgid "No JVCL directory found. Application terminated."
+msgstr ""
+
+#. Programmer's name for it: RsJVCLInstaller
+#: JVCLData.pas:392 
+msgid "JVCL Installer"
+msgstr "Instalador JVCL"
+
+#. Programmer's name for it: RsCleaningPalette
+#: JVCLData.pas:394 
+msgid "Cleaning Palette..."
+msgstr "Limpando paleta..."
+
+#. Programmer's name for it: RsCleaningPathLists
+#: JVCLData.pas:395 
+msgid "Cleaning Path lists..."
+msgstr "Limpando listas de caminhos..."
+
+#. Programmer's name for it: RsUnregisteringPackages
+#: JVCLData.pas:396 
+msgid "Unregistering packages..."
+msgstr ""
+
+#. Programmer's name for it: RsDeletingFiles
+#: JVCLData.pas:397 
+msgid "Deleting files..."
+msgstr "Apagando arquivos..."
+
+#. Programmer's name for it: RsAppError
+#: Debug/ExceptionDlg.pas:124 
+msgid "%s - application error"
+msgstr "%s - Erro de aplicação"
+
+#. Programmer's name for it: RsExceptionClass
+#: Debug/ExceptionDlg.pas:125 
+msgid "Exception class: %s"
+msgstr ""
+
+#. Programmer's name for it: RsExceptionAddr
+#: Debug/ExceptionDlg.pas:126 
+msgid "Exception address: %p"
+msgstr ""
+
+#. Programmer's name for it: RsStackList
+#: Debug/ExceptionDlg.pas:127 
+msgid "Stack list, generated %s"
+msgstr ""
+
+#. Programmer's name for it: RsModulesList
+#: Debug/ExceptionDlg.pas:128 
+msgid "List of loaded modules:"
+msgstr "Lista dos módulos carregados:"
+
+#. Programmer's name for it: RsOSVersion
+#: Debug/ExceptionDlg.pas:129 
+msgid "System   : %s %s, Version: %d.%d, Build: %x, \"%s\""
+msgstr "Sistema   : %s %s, Versão: %d.%d, Build: %x, \"%s\""
+
+#. Programmer's name for it: RsProcessor
+#: Debug/ExceptionDlg.pas:130 
+msgid "Processor: %s, %s, %d MHz %s%s"
+msgstr "Processador: %s, %s, %d MHz %s%s"
+
+#. Programmer's name for it: RsScreenRes
+#: Debug/ExceptionDlg.pas:131 
+msgid "Display  : %dx%d pixels, %d bpp"
+msgstr "Video  : %dx%d pixels, %d bpp"
+
+#. Programmer's name for it: RsActiveControl
+#: Debug/ExceptionDlg.pas:132 
+msgid "Active Controls hierarchy:"
+msgstr ""
+
+#. Programmer's name for it: RsThread
+#: Debug/ExceptionDlg.pas:133 
+msgid "Thread: %s"
+msgstr "Thread: %s"
+
+#. Programmer's name for it: RsMissingVersionInfo
+#: Debug/ExceptionDlg.pas:134 
+msgid "(no version info)"
+msgstr "(sem informações de versão)"
+
+#. Programmer's name for it: STR_HELPBTN
+#: Helpers/AHCompBrowseFolderDlg.pas:120 
+msgid "&Help"
+msgstr "&Ajuda"
+
+#~ msgid "&DCP Directory:"
+#~ msgstr "Pasta &DCP:"
+
+#~ msgid "To &Start Page"
+#~ msgstr "Para página &inicial"
+
+#~ msgid "To &Last Page"
+#~ msgstr "Para &última página"
+
+#~ msgid "< &Back"
+#~ msgstr "< &Anterior"
+
+#~ msgid "&Next >"
+#~ msgstr "&Próximo >"
+
+#~ msgid "&Finish"
+#~ msgstr "&Finalizar"
+
+#~ msgid "Cancel"
+#~ msgstr "Cancelar"
+
+#~ msgid "&Use JVCL for all packages"
+#~ msgstr "&Usar JVCL para todos os pacotes"

@@ -1,0 +1,44 @@
+[Translation.Info]
+; whatever you want, for example info on translator, version of the program translated, ...
+
+[Form1]
+; ***** MAIN MENUS *****
+&File=&File
+&Edit=&Edit
+&Language=&Language
+&Help=&Help
+
+OK=OK
+Cancel=Cancel
+
+
+; ***** File Menu *****
+&New=&New
+&Open=&Open
+&Save=&Save
+E&xit=E&xit
+
+; ***** Edit Menu *****
+&Undo=&Undo
+&Redo=&Redo
+Cu&t=Cu&t
+&Copy=&Copy
+&Paste=&Paste
+
+; Language menu
+&English=&English
+&Dutch=&Dutch
+&French=&French
+
+; ***** Help Menu *****
+&Help=&Help
+&About...=&About...
+
+
+
+[Strings]
+; ***** const strings *****
+English=English
+Dutch=Dutch
+French=French
+

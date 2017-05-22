@@ -1,0 +1,86 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = crlf.exe MakeRC.exe jconvert.exe dc.exe MakeDOF.exe \
+  MakeCFG.exe jtouch.exe isu.exe stripCmtPO.exe pg.exe pgEdit.exe \
+  dxgettextResstr.exe NoQuotes.exe SetPoHeader.exe JVCLConvert.exe \
+  MakePNG.exe ErrLook.exe Res2Bmp.exe LastModifyRepl.exe JvclVclClx.exe
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+dc.exe: DFMCleaner\dc.dpr
+  $(DCC)
+
+MakeRC.exe: MakeRC\MakeRC.dpr
+  $(DCC)
+
+jconvert.exe: JConvert\jconvert.dpr
+  $(DCC)
+
+MakeDOF.exe: MakeDOF\MakeDOF.dpr
+  $(DCC)
+
+MakeCFG.exe: MakeCFG\MakeCFG.dpr
+  $(DCC)
+
+Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr
+  $(DCC)
+
+jtouch.exe: JTouch\jtouch.dpr
+  $(DCC)
+
+isu.exe: ITEStrip\isu.dpr
+  $(DCC)
+
+crlf.exe: JvAdjustLineBreaks\crlf.dpr
+  $(DCC)
+
+stripCmtPO.exe: stripCmtPO\stripCmtPO.dpr
+  $(DCC)
+
+dxgettextResstr.exe: dxgettextResstr\dxgettextResstr.dpr
+  $(DCC)
+  
+pg.exe: PackagesGenerator\pg.dpr
+  $(DCC)
+
+pgEdit.exe: PackagesGenerator\pgEdit.dpr
+  $(DCC)
+
+JvclVclClx.exe: JvclVclClx\JvclVclClx.dpr
+  $(DCC)
+
+NoQuotes.exe: NoQuotes\NoQuotes.dpr
+  $(DCC)
+
+SetPoHeader.exe: SetPoHeader\SetPoHeader.dpr
+  $(DCC)
+
+JVCLConvert.exe: JVCLConvert\JVCLConvert.dpr
+  $(DCC)
+
+LastModifyRepl.exe: LastModifyRepl\LastModifyRepl.dpr
+  $(DCC)
+
+#------------------------------------------------------------------------------
+# these are put last because they are most likely to fail (needs additional units from other libraries)
+#------------------------------------------------------------------------------
+ErrLook.exe: ErrLook\src\ErrLook.dpr
+  $(DCC)
+
+MakePNG.exe: MakePNG\MakePNG.dpr
+  $(DCC)
+
+Res2Bmp.exe: Res2Bmp\Res2Bmp.dpr
+  $(DCC)
+
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvHMI" Design="0">
+  <Description>JVCL HMI Controls Runtime Package</Description>
+  <GUID>{E8945997-84A1-4589-89BA-EF5759023364}</GUID>
+  <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>49700000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvSLDMappingEditorDialog.pas" Targets="all" Formname="frmSLDMappingEditorDialog" Condition=""/>
+    <File Name="..\..\run\JvDialButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLED.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSegmentedLEDDisplay.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSegmentedLEDDisplayMapperFrame.pas" Targets="all" Formname="fmeJvSegmentedLEDDisplayMapper: TFrame" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSLDMappingEditorDialog.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDialButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLED.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSegmentedLEDDisplay.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSegmentedLEDDisplayMapperFrame.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

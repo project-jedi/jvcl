@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvTimeFramework" Design="0">
+  <Description>JVCL Time Framework Runtime Package</Description>
+  <GUID>{32959537-3463-4102-A7B2-50543739F2AA}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4D470000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvTFSparseMatrix.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFWeeks.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFAlarm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFDays.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFGantt.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFGlance.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFGlanceTextViewer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFManager.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFMonths.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTFSparseMatrix.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTFUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTFWeeks.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTFAlarm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTFDays.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTFGantt.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTFGlance.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTFGlanceTextViewer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTFManager.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTFMonths.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

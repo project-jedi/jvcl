@@ -1,0 +1,12 @@
+LANGUAGE 0, 0
+JvgLabelEditorDlgBRUSH               BITMAP "JvResBRUSH.BMP"
+JvgLabelEditorDlgDOWN                BITMAP "JvResDOWN.BMP"
+; JvgLabelEditorDlgGLYPHDISABLED       BITMAP "JvResGLYPHDISABLED.BMP"
+; JvgLabelEditorDlgGLYPHDISABLEDSQUARE BITMAP "JvResGLYPHDISABLEDSQUARE.BMP"
+; JvgLabelEditorDlgGLYPHOFF            BITMAP "JvResGLYPHOFF.BMP"
+; JvgLabelEditorDlgGLYPHOFFSQUARE      BITMAP "JvResGLYPHOFFSQUARE.BMP"
+; JvgLabelEditorDlgGLYPHON             BITMAP "JvResGLYPHON.BMP"
+; JvgLabelEditorDlgGLYPHONSQUARE       BITMAP "JvResGLYPHONSQUARE.BMP"
+JvgLabelEditorDlgLEFT                BITMAP "JvResLEFT.BMP"
+JvgLabelEditorDlgRIGHT               BITMAP "JvResRIGHT.BMP"
+JvgLabelEditorDlgUP                  BITMAP "JvResUP.BMP"

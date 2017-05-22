@@ -1,0 +1,56 @@
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This file is maintained by Doc-O-Matic, do not edit manually.
+
+[*Control*]
+MasterFile=..\..\..\help\JVCLTemplate.dox
+
+[Configurations\CHM\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvManagedThreadscontents.html
+IndexFile=JvManagedThreadsidx.html
+
+[Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvManagedThreadscontents.html
+IndexFile=JvManagedThreadsidx.html
+
+[Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\HTMLHelp]
+Help2Collection=JvManagedThreads_COL_MASTER.HxC
+Help2ID=JvManagedThreads
+HTMLHelp2Filename=..\..\help\JvManagedThreads.HxS
+
+[Configurations\HLP\{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Basic]
+HLPFilename=..\..\help\JvManagedThreads.hlp
+
+[Configurations\HTML\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvManagedThreadscontents.html
+IndexFile=JvManagedThreadsidx.html
+
+[Project Database Files]
+Count=4
+File0=JvCore.doxdb
+File1=Jcl.doxdb
+File2=JEDI.doxdb
+File3=vcl.doxdb
+
+[Source Files]
+Count=13
+File0=..\..\run\JvMTComponents.pas
+File1=..\..\run\JvMTConsts.pas
+File2=..\..\run\JvMTData.pas
+File3=..\..\run\JvMTSync.pas
+File4=..\..\run\JvMTSyncMon.pas
+File5=..\..\run\JvMTThreading.pas
+File6=..\..\..\help\Common.dtx
+File7=..\..\..\help\JvMTComponents.dtx
+File8=..\..\..\help\JvMTConsts.dtx
+File9=..\..\..\help\JvMTData.dtx
+File10=..\..\..\help\JvMTSync.dtx
+File11=..\..\..\help\JvMTSyncMon.dtx
+File12=..\..\..\help\JvMTThreading.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2012 Project JEDI
+Summary=Documentation of the JVCL Managed Threads Runtime Package
+Title=JVCL Managed Threads Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

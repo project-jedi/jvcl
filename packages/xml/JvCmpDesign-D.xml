@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvCmpDesign" Design="-1">
+  <Description>JVCL Non-Visual Components</Description>
+  <GUID>{B2603E49-5F7D-4817-8484-71DD7B1EA69C}</GUID>
+  <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A060000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvCmp-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="dclstd" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvPageManagerForm.pas" Targets="all_win32" Formname="JvProxyEditor" Condition=""/>
+    <File Name="..\..\design\JvPatcherEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCmpReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDataEmbeddedEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPatchForm.pas" Targets="all_win32" Formname="FoPatch" Condition=""/>
+  </Contains>
+</Package>

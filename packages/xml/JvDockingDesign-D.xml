@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvDockingDesign" Design="-1">
+  <Description>JVCL Docking Components</Description>
+  <GUID>{2EE6377F-B2BB-4036-87FA-15C2DEC8BFFE}</GUID>
+  <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A200000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvDocking-R" Targets="all" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvDockingReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDockPropertyEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

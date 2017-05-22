@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvWizards" Design="0">
+  <Description>JVCL Wizard Runtime Package</Description>
+  <GUID>{86DF4ED4-828C-457A-ADE5-78BE9050BCF6}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>49DC0000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvWizardCommon.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWizardRouteMapNodes.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWizardRouteMapSteps.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWizardRouteMapList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWizard.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWizardCommon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWizardRouteMapNodes.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWizardRouteMapSteps.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWizardRouteMapList.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWizard.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

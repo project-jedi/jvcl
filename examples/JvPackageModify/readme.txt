@@ -1,0 +1,3 @@
+pm is a small program to manipulate some of the directives within package (dpk) files. I used it a bit when I did the JVCL 3.0 restructuring since it made it easy to do global changes to all packages (there are quite a few, so changing them one by one quickly becomes tedious). It is really easy to use: set the options as you want them on the first tab (the default settings are those that I've set up for VCL). Add files you want to change to the second tab (either paste the paths into the memo, drag from the explorer or click the "Add" button to display a multiselecting opendialog). Click the OK button to perform the changes. The program isn't very robust if you do anything stupid, so better keep backups just in case.
+
+// peter3

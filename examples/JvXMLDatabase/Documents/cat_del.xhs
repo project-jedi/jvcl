@@ -1,0 +1,5 @@
+<%
+  Request("UPDATE categories.xml SET CatDeleted = 'true' WHERE (CatId = $id)");
+  Redirect("categories.xhs");
+%>
+

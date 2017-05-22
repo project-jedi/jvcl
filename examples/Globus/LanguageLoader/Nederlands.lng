@@ -1,0 +1,41 @@
+[Translation.Info]
+
+[Form1]
+; ***** MAIN MENUS *****
+&File=&Bestand
+&Edit=B&ewerken
+&Language=&Taal
+&Help=&Help
+
+OK=OK
+Cancel=Annuleren
+
+; ***** File Menu *****
+&New=&Nieuw
+&Open=&Open
+&Save=Op&slaan
+E&xit=&Afsluiten
+
+; ***** Edit Menu *****
+&Undo=&Ongedaan maken
+&Redo=Opnieu&w
+Cu&t=K&nippen
+&Copy=&Kopiëren
+&Paste=&Plakken
+
+; Language menu
+&English=&Engels
+&Dutch=&Nederlands
+&French=&Frans
+
+; ***** Help Menu *****
+&Help=&Help informatie
+&About...=&Info...
+
+
+
+[Strings]
+; ***** const strings *****
+English=Engels
+Dutch=Nederlands
+French=Frans

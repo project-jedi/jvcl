@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvDocking" Design="0">
+  <Description>JVCL Docking Components Runtime Package</Description>
+  <GUID>{45F663F1-EF6E-436F-AE8A-85B96C6EE41E}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>495A0000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvDockControlForm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockDelphiStyle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockGlobals.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockHashTable.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockInfo.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockSupportClass.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockSupportControl.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockSupportProc.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockTree.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockAdvTree.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockVCStyle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockVIDStyle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockVIDVCStyle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDockVSNetStyle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockControlForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockDelphiStyle.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockGlobals.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockHashTable.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockInfo.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockSupportClass.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockSupportControl.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockSupportProc.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockTree.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockAdvTree.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockVCStyle.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockVIDStyle.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockVIDVCStyle.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockVSNetStyle.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

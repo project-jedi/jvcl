@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvXPCtrlsDesign" Design="-1">
+  <Description>JVCL XP Controls</Description>
+  <GUID>{F6D59ED0-9823-4814-B216-A8A78B517198}</GUID>
+  <C6PFlags>-LUDesignIde -LUJcl -LUJclVcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A4C0000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvXPCtrls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvXPCtrlsReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvXPPropertyEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

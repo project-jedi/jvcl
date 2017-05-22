@@ -1,0 +1,17 @@
+dxDotNetCtrls=JvDotNetControls
+TdxDNCheckListBox=TJvDotNetCheckListBox
+TdxDNEdit=TJvDotNetEdit
+TdxDNHotKey=TJvDotNetHotKey
+TdxDNListBox=TJvDotNetListBox
+TdxDNListView=TJvDotNetListView
+TdxDNMaskEdit=TJvDotNetMaskEdit
+TdxDNMemo=TJvDotNetMemo
+TdxDNRichEdit=TJvDotNetRichEdit
+TdxDNScrollBox=TJvDotNetScrollBox
+TdxDNTreeView=TJvDotNetTreeView
+TdxNetControl=TJvNetControl
+TdxDNDbEdit=TJvDotNetDBEdit
+TdxDNDbListBox=TJvDotNetDBListBox
+TdxDNDbLookupListBox=TJvDotNetDBLookupListBox
+TdxDNDbMemo=TJvDotNetDBMemo
+TdxDNDbRichEdit=TJvDotNetDBRichEdit

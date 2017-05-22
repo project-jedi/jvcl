@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="..\..\..\bin\JvThreadProj.exe"/>
+    <OBJFILES value="..\..\..\dcu\JvThreadProj.obj ..\..\..\dcu\fThread.obj"/>
+    <RESFILES value="JvThreadProj.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) fThread.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="JCLC50.lib JVSTDCTRLSC5R.lib JVSYSTEMC5R.lib VCLDB50.lib VCLX50.lib 
+      JVCOREC5R.lib Vcl50.lib"/>
+    <SPARELIBS value="Vcl50.lib JVCOREC5R.lib VCLX50.lib VCLDB50.lib JVSYSTEMC5R.lib 
+      JVSTDCTRLSC5R.lib JCLC50.lib"/>
+    <PACKAGES value="Vcl50.bpi Vclx50.bpi Vcldb50.bpi VCLBDE50.bpi VCLIB50.bpi 
+      VERSIONINFO50.bpi Vclmid50.bpi JVCOREC5R.bpi JVSTDCTRLSC5R.bpi 
+      JVSYSTEMC5R.bpi JVAPPFRMC5R.bpi JVCTRLSC5R.bpi JVBANDSC5R.bpi JVBDEC5R.bpi 
+      JVDLGSC5R.bpi JVDBC5R.bpi JVCMPC5R.bpi JVCRYPTC5R.bpi JVCUSTOMC5R.bpi 
+      JVDOCKINGC5R.bpi JVDOTNETCTRLSC5R.bpi JVEDIC5R.bpi JVHMIC5R.bpi 
+      JVINTERPRETERC5R.bpi JVJANSC5R.bpi JVMANAGEDTHREADSC5R.bpi JVMMC5R.bpi 
+      JVNETC5R.bpi JVPAGECOMPSC5R.bpi JVPLUGINC5R.bpi JVPRINTPREVIEWC5R.bpi 
+      JVTIMEFRAMEWORKC5R.bpi JVUIBC5R.bpi JVVALIDATORSC5R.bpi JVWIZARDC5R.bpi 
+      JVXPCTRLSC5R.bpi JVGLOBUSC5R.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="JvThreadProj.cpp"/>
+    <INCLUDEPATH value="..\..\..\run;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\..\run;..\..\..\resources;..\..\..\..\JCL\lib\c5;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\..\..\run -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp 
+      -D_DEBUG"/>
+    <CFLAG1 value="-vGc -vGt -vGd -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -6 -b- 
+      -k -y -v -vi- -c -tW -tWM"/>
+    <PFLAGS value="-N2..\..\..\dcu -N0..\..\..\dcu -$Y+ -$W -$O- -$A8 -v -JPHNE -M -LUvcl50"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-I..\..\..\dcu -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="cg32.lib $(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1036
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+
+[Excluded Packages]
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=..\..\..\run;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=0
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\..\dcu
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=..\..\..\bin\
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=1
+LinkCGLIB=1
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

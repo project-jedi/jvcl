@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvCustomDesign" Design="-1">
+  <Description>JVCL Custom Controls</Description>
+  <GUID>{3CC450E5-643D-41C8-957A-BA5244E94939}</GUID>
+  <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A140000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvCustom-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="dclstd" Targets="C,D" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvLookoutEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvOutlookBarEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvOutlookBarForm.pas" Targets="all_win32" Formname="FrmOLBEditor" Condition=""/>
+    <File Name="..\..\design\JvScheduleEditorForm.pas" Targets="all_win32" Formname="FrmScheduleEditor" Condition=""/>
+    <File Name="..\..\design\JvScheduleEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTimeLineEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCustomReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvHLEditEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

@@ -1,0 +1,64 @@
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This file is maintained by Doc-O-Matic, do not edit manually.
+
+[*Control*]
+MasterFile=..\..\..\help\JVCLTemplate.dox
+
+[Configurations\CHM\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvXPCtrlscontents.html
+IndexFile=JvXPCtrlsidx.html
+
+[Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvXPCtrlscontents.html
+IndexFile=JvXPCtrlsidx.html
+
+[Configurations\H2\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\HTMLHelp]
+Help2Collection=JvXPCtrls_COL_MASTER.HxC
+Help2ID=JvXPCtrls
+HTMLHelp2Filename=..\..\help\JvXPCtrls.HxS
+
+[Configurations\HLP\{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Basic]
+HLPFilename=..\..\help\JvXPCtrls.hlp
+
+[Configurations\HTML\{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Compatibility]
+ContentFile=JvXPCtrlscontents.html
+IndexFile=JvXPCtrlsidx.html
+
+[Project Database Files]
+Count=6
+File0=JvCore.doxdb
+File1=JvStdCtrls.doxdb
+File2=Jcl.doxdb
+File3=JclVcl.doxdb
+File4=JEDI.doxdb
+File5=vcl.doxdb
+
+[Source Files]
+Count=19
+File0=..\..\run\JvXPBar.pas
+File1=..\..\run\JvXPContainer.pas
+File2=..\..\run\JvXPCore.pas
+File3=..\..\run\JvXPCoreUtils.pas
+File4=..\..\run\JvXPButtons.pas
+File5=..\..\run\JvXPCheckCtrls.pas
+File6=..\..\run\JvXPProgressBar.pas
+File7=..\..\run\JvExplorerBar.pas
+File8=..\..\run\JvExplorerBarItems.pas
+File9=..\..\..\help\Common.dtx
+File10=..\..\..\help\JvXPBar.dtx
+File11=..\..\..\help\JvXPContainer.dtx
+File12=..\..\..\help\JvXPCore.dtx
+File13=..\..\..\help\JvXPCoreUtils.dtx
+File14=..\..\..\help\JvXPButtons.dtx
+File15=..\..\..\help\JvXPCheckCtrls.dtx
+File16=..\..\..\help\JvXPProgressBar.dtx
+File17=..\..\..\help\JvExplorerBar.dtx
+File18=..\..\..\help\JvExplorerBarItems.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2012 Project JEDI
+Summary=Documentation of the JVCL XP Controls Runtime Package
+Title=JVCL XP Controls Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

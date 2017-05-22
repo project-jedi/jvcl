@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvBDE" Design="0">
+  <Description>JVCL BDE Components Runtime Package</Description>
+  <GUID>{9189FAE4-7284-4821-8E3F-0F17EA23C445}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>49060000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvDlgs-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvDB-R" Targets="DB" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="bdertl" Targets="BDE" Condition=""/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvBDELoginDialog.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEMemTable.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEMove.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEProgress.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEQBE.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEQuery.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDESecurity.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDESQLScript.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBdeUtils.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDECheckPasswordForm.pas" Targets="BDE,help" Formname="JvChPswdForm" Condition=""/>
+    <File Name="..\..\run\JvBDEExceptionForm.pas" Targets="BDE,help" Formname="JvBdeErrorDlg" Condition=""/>
+    <File Name="..\..\run\JvBDEFilter.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEIndex.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDELists.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDELoginDialog.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEMemTable.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEMove.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEProgress.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEQBE.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEQuery.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDESecurity.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDESQLScript.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBdeUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDECheckPasswordForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEExceptionForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEFilter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEIndex.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDELists.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

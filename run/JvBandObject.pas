@@ -1,0 +1,1093 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvBandObject.PAS, released on 2001-07-10.
+
+The Initial Developer of the Original Code is Chiang Seng Chang <csatt ctzen dott com>
+Portions created by Chiang Seng Chang are Copyright (C) 2001 Chiang Seng Chang.
+All Rights Reserved.
+
+Contributor(s): ______________________________________.
+
+You may retrieve the latest version of this file at the Project JEDI home page,
+located at http://www.delphi-jedi.org
+
+Description:
+  Band objects wrapper classes.
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
+unit JvBandObject;
+
+{$I jvcl.inc}
+{$I windowsonly.inc}
+
+interface
+
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  Windows, Messages, ComObj, ShlObj, ActiveX, Classes, Controls,
+  JvBandForms;
+
+const
+  CATID_DESKBAND = '{00021492-0000-0000-C000-000000000046}';
+  CATID_INFOBAND = '{00021493-0000-0000-C000-000000000046}';
+  CATID_COMMBAND = '{00021494-0000-0000-C000-000000000046}';
+
+type
+  // Band Object Factory Classes
+  TzCustomBandObjectFactory = class(TComObjectFactory)
+  private
+    function GetClassIDString: string;
+  public
+    property ClassIDString: string read GetClassIDString;
+  end;
+
+  TzToolBandObjectFactory = class(TzCustomBandObjectFactory)
+  public
+    procedure UpdateRegistry(Reg: Boolean); override;
+  end;
+
+  TzCatBandObjectFactory = class(TzCustomBandObjectFactory)
+  protected
+    function GetImplCatID: TGUID; virtual; abstract;
+  public
+    procedure UpdateRegistry(Reg: Boolean); override;
+  end;
+
+  TzDeskBandObjectFactory = class(TzCatBandObjectFactory)
+  protected
+    function GetImplCatID: TGUID; override;
+  end;
+
+  TzExplorerBarObjectFactory = class(TzCatBandObjectFactory)
+  private
+    function BarSize: string;
+  protected
+    function GetURL: string; virtual;
+    function GetBarWidth: Word; virtual;
+    function GetBarHeight: Word; virtual;
+  public
+    procedure UpdateRegistry(Reg: Boolean); override;
+  end;
+
+  TzInfoBandObjectFactory = class(TzExplorerBarObjectFactory)
+  protected
+    function GetImplCatID: TGUID; override;
+  end;
+
+  TzCommBandObjectFactory = class(TzExplorerBarObjectFactory)
+  protected
+    function GetImplCatID: TGUID; override;
+  end;
+
+  TzCustomBandObject = class(TComObject, IDeskBand, IObjectWithSite, IPersist, IPersistStream, IInputObject)
+  private
+    FBandForm: TJvBandForm;
+    FBandID: DWORD;
+    FViewMode: DWORD;
+    FSite: IInputObjectSite;
+    FOleCommandTarget: IOleCommandTarget;
+    FSavedWndProc: TWndMethod;
+    FHasFocus: Boolean;
+  protected
+    function CreateBandForm(const ParentWnd: THandle): TJvBandForm; virtual; abstract;
+    procedure BandWndProc(var Msg: TMessage);
+    procedure FocusChange(HasFocus: Boolean);
+  public
+    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
+    function BandInfoChanged: HRESULT;
+    function Maximize: HRESULT;
+    function ShowAllBands: HRESULT;
+    function HideAllBands: HRESULT;
+    function ShowMeOnly: HRESULT;
+    property BandID: DWORD read FBandID;
+    property ViewMode: DWORD read FViewMode;
+    property Site: IInputObjectSite read FSite;
+    property OleCommandTarget: IOleCommandTarget read FOleCommandTarget;
+    function GetBandInfo(BandID, ViewMode: DWORD;
+      var Dbi: TDeskBandInfo): HRESULT; virtual; stdcall;
+    function ShowDW(AShow: BOOL): HRESULT; virtual; stdcall;
+    function CloseDW(dwReserved: DWORD): HRESULT; virtual; stdcall;
+    function ResizeBorderDW(var Border: TRect;
+      ToolbarSite: IUnknown; Reserved: BOOL): HRESULT; virtual; stdcall;
+
+    // Note: this comes from IDeskBand but may not work under BCB, as it uses
+    // the HWND type. See the compatibility guide for details.
+    function GetWindow(out Wnd: HWND): HRESULT; virtual; stdcall;
+    function ContextSensitiveHelp(EnterMode: BOOL): HRESULT; virtual; stdcall;
+    function SetSite(const Site: IUnknown): HRESULT; virtual; stdcall;
+    function GetSite(const Riid: TIID; out Site: IUnknown): HRESULT; virtual; stdcall;
+    function IsDirty: HRESULT; virtual; stdcall;
+    function Load(const Strm: IStream): HRESULT; virtual; stdcall;
+    function Save(const Strm: IStream; ClearDirty: BOOL): HRESULT; virtual; stdcall;
+    function GetSizeMax(out Size: Largeint): HRESULT; virtual; stdcall;
+    function GetClassID(out ClassID: TCLSID): HRESULT; virtual; stdcall;
+    function UIActivateIO(Activate: BOOL; var Msg: TMsg): HRESULT; virtual; stdcall;
+    function HasFocusIO: HRESULT; virtual; stdcall;
+    function TranslateAcceleratorIO(var Msg: TMsg): HRESULT; virtual; stdcall;
+  end;
+
+  TzToolBandObject = class(TzCustomBandObject)
+  end;
+
+  TzContextMenuBandObject = class(TzCustomBandObject, IContextMenu)
+  public
+    FMenuItemLink: TList;
+    function QueryContextMenu(AMenu: HMENU;
+      IndexMenu, idCmdFirst, idCmdLast, uFlags: UINT): HRESULT; virtual; stdcall;
+    function InvokeCommand(var Ici: TCMInvokeCommandInfo): HRESULT; virtual; stdcall;
+    {$IFDEF RTL230_UP}
+    function GetCommandString(idCmd: UINT_PTR; uFlags: UINT; pwReserved: PUINT;
+      pszName: LPSTR; cchMax: UINT): HRESULT; virtual; stdcall;
+    {$ELSE ~RTL230_UP}
+    function GetCommandString(idCmd, uType: UINT; pwReserved: PUINT;
+      pszName: LPSTR; cchMax: UINT): HRESULT; virtual; stdcall;
+    {$ENDIF ~RTL230_UP}
+  end;
+
+  TzDeskBandObject = class(TzContextMenuBandObject)
+  end;
+
+  TzInfoBandObject = class(TzContextMenuBandObject)
+  end;
+
+  TzCommBandObject = class(TzContextMenuBandObject)
+  end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+implementation
+
+uses
+  {$IFDEF DEBUGINFO_ON}
+  //zTrace,
+  {$ENDIF DEBUGINFO_ON}
+  SysUtils, Registry, Math, Forms, Menus,
+  JvConsts, JvJVCLUtils;
+
+const
+  cIERegistryBase = 'Software\Microsoft\Internet Explorer\';
+  cCLSID = 'CLSID\';
+  cBarSize = 'BarSize';
+  cExplorerBars = 'Explorer Bars\';
+  cInstanceInitPropertyBagUrl = '\Instance\InitPropertyBag\Url';
+  cInstanceInitPropertyBag = '\Instance\InitPropertyBag';
+  cInstanceCLSID = '\Instance\CLSID';
+  cInstance = '\Instance';
+
+{$IFDEF DEBUGINFO_ON}
+// (rom) debugging deactivated
+procedure zTraceLog(const LogText: string);
+begin
+end;
+{$ENDIF DEBUGINFO_ON}
+
+function MakeHResult(Sev, Fac, Code: LongWord): HRESULT;
+begin
+  Result := (Sev shl 31) or (Fac shl 16) or Code;
+end;
+
+//=== { TzCustomBandObjectFactory } ==========================================
+
+function TzCustomBandObjectFactory.GetClassIDString: string;
+begin
+  Result := GUIDToString(ClassID);
+end;
+
+//=== { TzToolBandObjectFactory } ============================================
+
+procedure TzToolBandObjectFactory.UpdateRegistry(Reg: Boolean);
+var
+  ARegistry: TRegistry;
+begin
+  if Reg then
+    inherited;
+  ARegistry := TRegistry.Create;
+  try
+    ARegistry.RootKey := HKEY_LOCAL_MACHINE;
+    if ARegistry.OpenKey(cIERegistryBase + 'Toolbar', True) then
+    try
+      if Reg then
+        ARegistry.WriteString(ClassIDString, Description)
+      else
+        ARegistry.DeleteValue(ClassIDString);
+    finally
+      ARegistry.CloseKey;
+    end;
+  finally
+    ARegistry.Free;
+  end;
+  if not Reg then
+    inherited UpdateRegistry(Reg);
+end;
+
+//=== { TzCatBandObjectFactory } =============================================
+
+procedure TzCatBandObjectFactory.UpdateRegistry(Reg: Boolean);
+var
+  CatRegister: ICatRegister;
+  ImplCatID: TGUID;
+begin
+  if Reg then
+    inherited;
+  ImplCatID := GetImplCatID;
+  CoInitialize(nil);
+  CatRegister := ComObj.CreateComObject(CLSID_StdComponentCategoryMgr) as ICatRegister;
+  if Reg then
+    CatRegister.RegisterClassImplCategories(ClassID, 1, @ImplCatID)
+  else
+  begin
+    CatRegister.UnregisterClassImplCategories(ClassID, 1, @ImplCatID);
+    DeleteRegKey(cCLSID + ClassIDString + '\Implemented Categories');
+  end;
+  CatRegister := nil;
+  CoUninitialize;
+  if not Reg then
+    inherited UpdateRegistry(Reg);
+end;
+
+//=== { TzDeskBandObjectFactory } ============================================
+
+function TzDeskBandObjectFactory.GetImplCatID: TGUID;
+begin
+  Result := StringToGUID(CATID_DESKBAND);
+end;
+
+//=== { TzExplorerBarObjectFactory } =========================================
+
+function TzExplorerBarObjectFactory.BarSize: string;
+var
+  S: string;
+begin
+  S := Format('%.4x', [GetBarWidth]);
+  Result := Copy(S, 3, 2) + ',' + Copy(S, 1, 2) + ',';
+  S := Format('%.4x', [GetBarHeight]);
+  Result := Result + Copy(S, 3, 2) + ',' + Copy(S, 1, 2) + ',00,00,00,00';
+end;
+
+function TzExplorerBarObjectFactory.GetBarHeight: Word;
+begin
+  Result := 0;
+end;
+
+function TzExplorerBarObjectFactory.GetBarWidth: Word;
+begin
+  Result := 0;
+end;
+
+function TzExplorerBarObjectFactory.GetURL: string;
+begin
+  Result := '';
+end;
+
+procedure TzExplorerBarObjectFactory.UpdateRegistry(Reg: Boolean);
+var
+  ARegistry: TRegistry;
+begin
+  if Reg then
+  begin
+    inherited UpdateRegistry(Reg);
+    if GetURL <> '' then
+    begin
+      CreateRegKey(cCLSID + ClassIDString + cInstanceCLSID, '', '{4D5C8C2A-D075-11D0-B416-00C04FB90376}');
+      CreateRegKey(cCLSID + ClassIDString + cInstanceInitPropertyBagUrl, '', GetURL);
+    end;
+    if (GetBarWidth <> 0) or (GetBarHeight <> 0) then
+    begin
+      ARegistry := TRegistry.Create;
+      try
+        ARegistry.RootKey := HKEY_CURRENT_USER;
+        if ARegistry.OpenKey(cIERegistryBase + cExplorerBars + ClassIDString, True) then
+        try
+          ARegistry.WriteString(cBarSize, BarSize)
+        finally
+          ARegistry.CloseKey;
+        end;
+      finally
+        ARegistry.Free;
+      end;
+    end;
+  end
+  else
+  begin
+    ARegistry := TRegistry.Create;
+    try
+      ARegistry.RootKey := HKEY_CURRENT_USER;
+      if ARegistry.OpenKey(cIERegistryBase + cExplorerBars + ClassIDString, True) then
+      try
+        ARegistry.DeleteValue(cBarSize);
+      finally
+        ARegistry.CloseKey;
+      end;
+      ARegistry.DeleteKey(cIERegistryBase + cExplorerBars + ClassIDString);
+    finally
+      ARegistry.Free;
+    end;
+    DeleteRegKey(cCLSID + ClassIDString + cInstanceInitPropertyBagUrl);
+    DeleteRegKey(cCLSID + ClassIDString + cInstanceInitPropertyBag);
+    DeleteRegKey(cCLSID + ClassIDString + cInstanceCLSID);
+    DeleteRegKey(cCLSID + ClassIDString + cInstance);
+    inherited UpdateRegistry(Reg);
+  end;
+end;
+
+//=== { TzInfoBandObjectFactory } ============================================
+
+function TzInfoBandObjectFactory.GetImplCatID: TGUID;
+begin
+  Result := StringToGUID(CATID_INFOBAND);
+end;
+
+//=== { TzCommBandObjectFactory } ============================================
+
+function TzCommBandObjectFactory.GetImplCatID: TGUID;
+begin
+  Result := StringToGUID(CATID_COMMBAND);
+end;
+
+//=== { TzCustomBandObject } =================================================
+
+procedure TzCustomBandObject.AfterConstruction;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.AfterConstruction()');
+  {$ENDIF DEBUGINFO_ON}
+  inherited AfterConstruction;
+  FBandForm := nil;
+  FSite := nil;
+  FOleCommandTarget := nil;
+end;
+
+procedure TzCustomBandObject.BeforeDestruction;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.BeforeDestruction()');
+  {$ENDIF DEBUGINFO_ON}
+  if Assigned(FSite) then
+    FSite := nil; // implicit Release
+  if Assigned(FOleCommandTarget) then
+    FOleCommandTarget := nil; // implicit Release
+  if Assigned(FBandForm) then
+    FreeAndNil(FBandForm);
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.BeforeDestruction End()');
+  {$ENDIF DEBUGINFO_ON}
+  inherited BeforeDestruction;
+end;
+
+function TzCustomBandObject.BandInfoChanged: HRESULT;
+var
+  CGID_DeskBand: TGUID;
+  vaIn, vaOut: OleVariant;
+begin
+  if not Assigned(OleCommandTarget) then
+  begin
+    Result := E_FAIL;
+    Exit;
+  end;
+  CGID_DeskBand := IDeskBand;
+  vaIn := OleVariant(BandID);
+  Result := OleCommandTarget.Exec(@CGID_DeskBand, DBID_BANDINFOCHANGED,
+    OLECMDEXECOPT_DODEFAULT, vaIn, vaOut);
+end;
+
+function TzCustomBandObject.Maximize: HRESULT;
+var
+  CGID_DeskBand: TGUID;
+  vaIn, vaOut: OleVariant;
+begin
+  if not Assigned(OleCommandTarget) then
+  begin
+    Result := E_FAIL;
+    Exit;
+  end;
+  CGID_DeskBand := IDeskBand;
+  vaIn := OleVariant(BandID);
+  Result := OleCommandTarget.Exec(@CGID_DeskBand, DBID_MAXIMIZEBAND,
+    OLECMDEXECOPT_DODEFAULT, vaIn, vaOut);
+end;
+
+function TzCustomBandObject.HideAllBands: HRESULT;
+var
+  CGID_DeskBand: TGUID;
+  vaIn, vaOut: OleVariant;
+begin
+  if not Assigned(OleCommandTarget) then
+  begin
+    Result := E_FAIL;
+    Exit;
+  end;
+  CGID_DeskBand := IDeskBand;
+  vaIn := 0;
+  Result := OleCommandTarget.Exec(@CGID_DeskBand, DBID_SHOWONLY,
+    OLECMDEXECOPT_DODEFAULT, vaIn, vaOut);
+end;
+
+function TzCustomBandObject.ShowAllBands: HRESULT;
+var
+  CGID_DeskBand: TGUID;
+  vaIn, vaOut: OleVariant;
+begin
+  if not Assigned(OleCommandTarget) then
+  begin
+    Result := E_FAIL;
+    Exit;
+  end;
+  CGID_DeskBand := IDeskBand;
+  vaIn := 1;
+  Result := OleCommandTarget.Exec(@CGID_DeskBand, DBID_SHOWONLY,
+    OLECMDEXECOPT_DODEFAULT, vaIn, vaOut);
+end;
+
+function TzCustomBandObject.ShowMeOnly: HRESULT;
+var
+  CGID_DeskBand: TGUID;
+  Unknown: IUnknown;
+  vaIn, vaOut: OleVariant;
+begin
+  if not Assigned(OleCommandTarget) then
+  begin
+    Result := E_FAIL;
+    Exit;
+  end;
+  CGID_DeskBand := IDeskBand;
+  if Self.QueryInterface(IUnknown, Unknown) <> S_OK then
+  begin
+    Result := E_FAIL;
+    Exit;
+  end;
+  try
+    vaIn := Unknown;
+    Result := OleCommandTarget.Exec(@CGID_DeskBand, DBID_SHOWONLY,
+      OLECMDEXECOPT_DODEFAULT, vaIn, vaOut);
+  finally
+    Unknown := nil;
+  end;
+end;
+
+// IDeskBand
+
+function TzCustomBandObject.GetBandInfo(BandID, ViewMode: DWORD;
+  var Dbi: TDeskBandInfo): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetBandInfo()');
+  zTraceLog('  BandID=' + Format('0x%x', [BandID]));
+  zTraceLog('  ViewMode=' + Format('0x%x', [ViewMode]));
+  zTraceLog('  Dbi=' + Format('0x%p', [@Dbi]));
+  zTraceLog('    dwMask=' + Format('0x%x', [Dbi.dwMask]));
+  {$ENDIF DEBUGINFO_ON}
+  FBandID := BandID;
+  FViewMode := ViewMode;
+  if not Assigned(FBandForm) then
+  begin
+    Result := E_UNEXPECTED;
+    Exit;
+  end;
+
+  if (Dbi.dwMask and DBIM_MINSIZE) <> 0 then
+  begin
+    Dbi.ptMinSize := FBandForm.BandMinSize;
+    {$IFDEF DEBUGINFO_ON}
+    zTraceLog('  Dbi.ptMinSize=' + Format('(%d,%d)', [Dbi.ptMinSize.x, Dbi.ptMinSize.y]));
+    {$ENDIF DEBUGINFO_ON}
+  end;
+  if (Dbi.dwMask and DBIM_MAXSIZE) <> 0 then
+  begin
+    Dbi.ptMaxSize := FBandForm.BandMaxSize;
+    {$IFDEF DEBUGINFO_ON}
+    zTraceLog('  Dbi.ptMaxSize=' + Format('(%d,%d)', [Dbi.ptMaxSize.x, Dbi.ptMaxSize.y]));
+    {$ENDIF DEBUGINFO_ON}
+  end;
+  if (Dbi.dwMask and DBIM_INTEGRAL) <> 0 then
+  begin
+    Dbi.ptIntegral := FBandForm.BandIntegral;
+    {$IFDEF DEBUGINFO_ON}
+    zTraceLog('  Dbi.ptIntegral=' + Format('(%d,%d)', [Dbi.ptIntegral.x, Dbi.ptIntegral.y]));
+    {$ENDIF DEBUGINFO_ON}
+  end;
+  if (Dbi.dwMask and DBIM_ACTUAL) <> 0 then
+  begin
+    Dbi.ptActual := FBandForm.BandActualSize;
+    {$IFDEF DEBUGINFO_ON}
+    zTraceLog('  Dbi.ptActual=' + Format('(%d,%d)', [Dbi.ptActual.x, Dbi.ptActual.y]));
+    {$ENDIF DEBUGINFO_ON}
+  end;
+  if (Dbi.dwMask and DBIM_TITLE) <> 0 then
+  begin
+    StringToWideChar(FBandForm.Caption, @Dbi.wszTitle[0], Length(Dbi.wszTitle));
+    {$IFDEF DEBUGINFO_ON}
+    zTraceLog('  Dbi.wszTitle=' + Format('%s', [FBandForm.Caption]));
+    {$ENDIF DEBUGINFO_ON}
+  end;
+  if (Dbi.dwMask and DBIM_MODEFLAGS) <> 0 then
+  begin
+    Dbi.dwModeFlags := DBIMF_NORMAL;
+    if bmfVariableHeight in FBandForm.BandModeFlags then
+      Dbi.dwModeFlags := Dbi.dwModeFlags or DBIMF_VARIABLEHEIGHT;
+    if bmfDebossed in FBandForm.BandModeFlags then
+      Dbi.dwModeFlags := Dbi.dwModeFlags or DBIMF_DEBOSSED;
+    if bmfBkColor in FBandForm.BandModeFlags then
+      Dbi.dwModeFlags := Dbi.dwModeFlags or DBIMF_BKCOLOR;
+    {$IFDEF DEBUGINFO_ON}
+    zTraceLog('  Dbi.dwModeFlags=' + Format('0x%x', [Dbi.dwModeFlags]));
+    {$ENDIF DEBUGINFO_ON}
+  end;
+  if (Dbi.dwMask and DBIM_BKCOLOR) <> 0 then
+  begin
+    Dbi.crBkgnd := FBandForm.Color;
+    {$IFDEF DEBUGINFO_ON}
+    zTraceLog('  Dbi.crBkgnd=' + Format('0x%x', [Dbi.crBkgnd]));
+    {$ENDIF DEBUGINFO_ON}
+  end;
+  Result := NOERROR;
+end;
+
+// IDockingWindow
+
+function TzCustomBandObject.ShowDW(AShow: BOOL): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.ShowDW()');
+  if AShow then
+    zTraceLog('  Show=True')
+  else
+    zTraceLog('  Show=False');
+  {$ENDIF DEBUGINFO_ON}
+  Result := NOERROR;
+  if not Assigned(FBandForm) then
+    Exit;
+  FHasFocus := AShow;
+  if AShow then
+  begin
+    FBandForm.Show;
+    FocusChange(AShow);
+  end
+  else
+    FBandForm.Hide;
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.ShowDW() End');
+  {$ENDIF DEBUGINFO_ON}
+end;
+
+function TzCustomBandObject.CloseDW(dwReserved: DWORD): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.CloseDW()');
+  {$ENDIF DEBUGINFO_ON}
+  Result := NOERROR;
+  try
+    try
+      if not Assigned(FBandForm) then
+        Exit;
+      ShowDW(False);
+      FBandForm.Free;
+    finally
+      FBandForm := nil;
+    end;
+  except
+  end;
+end;
+
+function TzCustomBandObject.ResizeBorderDW(var Border: TRect;
+  ToolbarSite: IUnknown; Reserved: BOOL): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.ResizeBorderDW()');
+  {$ENDIF DEBUGINFO_ON}
+  // Never called for band objects.
+  Result := E_NOTIMPL;
+end;
+
+// IOleWindow
+
+function TzCustomBandObject.GetWindow(out Wnd: HWND): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetWindow()');
+  {$ENDIF DEBUGINFO_ON}
+  if Assigned(FBandForm) then
+    Wnd := FBandForm.Handle
+  else
+    Wnd := 0;
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog('  Wnd=' + Format('0x%x', [Wnd]));
+  {$ENDIF DEBUGINFO_ON}
+  Result := S_OK;
+end;
+
+function TzCustomBandObject.ContextSensitiveHelp(EnterMode: BOOL): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.ContextSensitiveHelp()');
+  {$ENDIF DEBUGINFO_ON}
+  Result := E_NOTIMPL;
+end;
+
+// IObjectWithSite
+
+function TzCustomBandObject.SetSite(const Site: IUnknown): HRESULT;
+var
+  OleWindow: IOleWindow;
+  ParentWnd: HWND;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.SetSite()');
+  if Assigned(Site) then
+    zTraceLog('  Site=not nil')
+  else
+    zTraceLog('  Site=nil');
+  {$ENDIF DEBUGINFO_ON}
+  if Assigned(FSite) then
+    FSite := nil; // implicit Release
+  if Assigned(FOleCommandTarget) then
+    FOleCommandTarget := nil; // implicit Release
+  if Assigned(Site) then
+  begin
+    if not Assigned(FBandForm) then
+    begin
+      if Site.QueryInterface(IOleWindow, OleWindow) <> S_OK then
+      begin
+        Result := E_FAIL;
+        Exit;
+      end;
+      try
+        OleWindow.GetWindow(ParentWnd);
+      finally
+        OleWindow := nil;
+      end;
+      {$IFDEF DEBUGINFO_ON}
+      zTraceLog('  ParentWnd=' + Format('0x%x', [ParentWnd]));
+      {$ENDIF DEBUGINFO_ON}
+      if ParentWnd = 0 then
+      begin
+        Result := E_FAIL;
+        Exit;
+      end;
+      FBandForm := CreateBandForm(ParentWnd);
+
+      FSavedWndProc := FBandForm.WindowProc;
+      FBandForm.WindowProc := BandWndProc;
+    end;
+    if Site.QueryInterface(IInputObjectSite, FSite) <> S_OK then // implicit FSite.AddRef;
+    begin
+      Result := E_FAIL;
+      Exit;
+    end;
+    {$IFDEF DEBUGINFO_ON}
+    zTraceLog('  FSite assigned.');
+    {$ENDIF DEBUGINFO_ON}
+    if FSite.QueryInterface(IOleCommandTarget, FOleCommandTarget) <> S_OK then
+      FOleCommandTarget := nil;
+  end;
+  Result := S_OK;
+end;
+
+function TzCustomBandObject.GetSite(const Riid: TIID;
+  out Site: IUnknown): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetSite()');
+  zTraceLog('  Riid=' + GUIDToString(Riid));
+  {$ENDIF DEBUGINFO_ON}
+  if not Assigned(FSite) then
+  begin
+    Site := nil;
+    Result := E_FAIL;
+    Exit;
+  end;
+  Result := FSite.QueryInterface(Riid, Site);
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog('  Result=' + IntToStr(Result));
+  {$ENDIF DEBUGINFO_ON}
+end;
+
+// IPersistStream
+
+function TzCustomBandObject.IsDirty: HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.IsDirty()');
+  {$ENDIF DEBUGINFO_ON}
+  Result := S_FALSE;
+end;
+
+function TzCustomBandObject.Load(const Strm: IStream): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.Load()');
+  {$ENDIF DEBUGINFO_ON}
+  Result := S_OK;
+end;
+
+function TzCustomBandObject.Save(const Strm: IStream; ClearDirty: BOOL): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.Save()');
+  {$ENDIF DEBUGINFO_ON}
+  Result := S_OK;
+end;
+
+function TzCustomBandObject.GetSizeMax(out Size: Largeint): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetSizeMax()');
+  {$ENDIF DEBUGINFO_ON}
+  Size := 0;
+  Result := S_OK;
+end;
+
+// IPersist
+
+function TzCustomBandObject.GetClassID(out ClassID: TCLSID): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetClassID()');
+  {$ENDIF DEBUGINFO_ON}
+  ClassID := Factory.ClassID;
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog('  ClassID=' + GUIDToString(ClassID));
+  {$ENDIF DEBUGINFO_ON}
+  Result := S_OK;
+end;
+
+// IInputObject
+
+function TzCustomBandObject.UIActivateIO(Activate: BOOL;
+  var Msg: TMsg): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.UIActivateIO()');
+  if Activate then
+    zTraceLog('  Activate=True')
+  else
+    zTraceLog('  Activate=False');
+  {$ENDIF DEBUGINFO_ON}
+  Result := S_OK;
+  FHasFocus := Activate;
+  if not Assigned(FBandForm) then
+    Exit;
+  if Activate then
+    FBandForm.SetFocus;
+end;
+
+function TzCustomBandObject.HasFocusIO: HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.HasFocusIO()');
+  {$ENDIF DEBUGINFO_ON}
+  Result := Ord(not FHasFocus);
+//  Result := iif(Assigned(FBandForm) and FBandForm.Focused,
+//    S_OK, S_FALSE);
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog('  Result=' + IntToStr(Result));
+  {$ENDIF DEBUGINFO_ON}
+end;
+
+function TzCustomBandObject.TranslateAcceleratorIO(var Msg: TMsg): HRESULT;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.TranslateAcceleratorIO()');
+  {$ENDIF DEBUGINFO_ON}
+  Result := S_FALSE;
+end;
+
+procedure TzCustomBandObject.BandWndProc(var Msg: TMessage);
+begin
+  if Msg.Msg = WM_PARENTNOTIFY then
+  begin
+    FHasFocus := True;
+    FocusChange(True);
+  end;
+  //if (Msg.Msg >= WM_KEYFIRST) and (Msg.Msg <= WM_KEYLAST) then
+  //  SendMessage(FBandForm.Handle, Msg.Msg, Msg.wParam, Msg.lParam);
+  FSavedWndProc(Msg);
+end;
+
+procedure TzCustomBandObject.FocusChange(HasFocus: Boolean);
+var
+  Obj: IUnknown;
+begin
+  if Site <> nil then
+  begin
+    if Supports(FBandForm, IUnknown, Obj) then
+      Site.OnFocusChangeIS(Obj, HasFocus);
+  end;
+end;
+
+//=== { TzContextMenuBandObject } ============================================
+
+// IContextMenu
+
+function GetContextMenuCaption(const MenuItem: TMenuItem): string;
+begin
+  Result := MenuItem.Caption;
+  if MenuItem.Count > 0 then
+    Exit;
+  if (MenuItem.ShortCut <> scNone) and
+    ((MenuItem.Parent = nil) or (MenuItem.Parent.Parent <> nil) or not (MenuItem.Parent.Owner is TMainMenu)) then
+    Result := Result + Tab + ShortCutToText(MenuItem.ShortCut);
+end;
+
+(* make Delphi 5 compiler happy // andreas
+function AddContextMenuItem(const MenuItem: TMenuItem; const AMenu: HMENU;
+  const idCmdFirst: UINT; ARightToLeft: Boolean; out idCMD : uInt): Boolean;
+const
+  RightToLeftMenuFlag = MFT_RIGHTORDER or MFT_RIGHTJUSTIFY;
+  IBreaks: array [TMenuBreak] of DWORD = (MFT_STRING, MFT_MENUBREAK, MFT_MENUBARBREAK);
+  IChecks: array [Boolean] of DWORD = (MFS_UNCHECKED, MFS_CHECKED);
+  IDefaults: array [Boolean] of DWORD = (0, MFS_DEFAULT);
+  IEnables: array [Boolean] of DWORD = (MFS_DISABLED or MFS_GRAYED, MFS_ENABLED);
+  IRadios: array [Boolean] of DWORD = (MFT_STRING, MFT_RADIOCHECK);
+  ISeparators: array [Boolean] of DWORD = (MFT_STRING, MFT_SEPARATOR);
+  IRTL: array [Boolean] of DWORD = (0, RightToLeftMenuFlag);
+  IOwnerDraw: array [Boolean] of DWORD = (MFT_STRING, MFT_OWNERDRAW);
+var
+  MenuItemInfo: TMenuItemInfo;
+  IsOwnerDraw: Boolean;
+  ParentMenu: TMenu;
+  Count: Integer;
+begin
+  Result := False;
+  if not MenuItem.Visible then
+    Exit;
+  MenuItemInfo.cbSize := SizeOf(TMenuItemInfo);
+  MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or MIIM_ID or
+    MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+  ParentMenu := MenuItem.GetParentMenu;
+  IsOwnerDraw := Assigned(ParentMenu) and
+    (ParentMenu.OwnerDraw or (MenuItem.GetImageList <> nil)) or
+    Assigned(MenuItem.Bitmap) and not MenuItem.Bitmap.Empty;
+  MenuItemInfo.fType := IRadios[MenuItem.RadioItem] or
+    IBreaks[MenuItem.Break] or
+    ISeparators[MenuItem.Caption = cLineCaption] or
+    IRTL[ARightToLeft] or
+    IOwnerDraw[IsOwnerDraw];
+  MenuItemInfo.fState := IChecks[MenuItem.Checked] or
+    IEnables[MenuItem.Enabled] or
+    IDefaults[MenuItem.Default];
+  MenuItemInfo.wID := MenuItem.Command + idCmdFirst;
+  MenuItemInfo.hbmpChecked := 0;
+  MenuItemInfo.hbmpUnchecked := 0;
+  MenuItemInfo.dwTypeData := PChar(GetContextMenuCaption(MenuItem));
+  if MenuItem.Count > 0 then
+    MenuItemInfo.hSubMenu := MenuItem.Handle
+  else
+  begin
+    MenuItemInfo.fMask := MenuItemInfo.fMask or MIIM_SUBMENU;
+    MenuItemInfo.hSubMenu := CreateMenu;
+    for Count := 0 to MenuItem.Count do
+      if AddContextMenuItem(MenuItem[Count], MenuItemInfo.hSubMenu, idCmdFirst, ARightToLeft,idCMD) then
+        idCmd := Max(idCmd, MenuItem[Count].Command);
+  end;
+  Result := InsertMenuItem(AMenu, DWORD(-1), True, MenuItemInfo);
+  {$IFDEF DEBUGINFO_ON}
+  if not Result then
+    Exit;
+  zTraceLog('  Menu item added, MenuItem.Command=' + IntToStr(MenuItem.Command));
+  zTraceLog('    Count=' + IntToStr(MenuItem.Count));
+  zTraceLog('    Handle=' + Format('0x%x', [MenuItemInfo.hSubMenu]));
+  {$ENDIF DEBUGINFO_ON}
+end;
+*)
+
+function TzContextMenuBandObject.QueryContextMenu(AMenu: HMENU; IndexMenu,
+  idCmdFirst, idCmdLast, uFlags: UINT): HRESULT;
+//var
+//  idCmd: UINT;
+
+  procedure SetItemParams(var ItemInfo: TMenuItemInfo; var MenuItem: TMenuItem);
+  begin
+    ItemInfo.fState := 0;
+    if MenuItem.Checked then
+      ItemInfo.fState := ItemInfo.fState or MFS_CHECKED
+    else
+      ItemInfo.fState := ItemInfo.fState or MFS_UNCHECKED;
+
+    if MenuItem.Default then
+      ItemInfo.fState := ItemInfo.fState or MFS_DEFAULT;
+    if MenuItem.Enabled then
+      ItemInfo.fState := ItemInfo.fState or MFS_ENABLED
+    else
+      ItemInfo.fState := ItemInfo.fState or MFS_DISABLED;
+
+    ItemInfo.fType := 0;
+    if MenuItem.Caption = '-' then
+      ItemInfo.fType := ItemInfo.fType or MFT_SEPARATOR
+    else
+    begin
+      ItemInfo.fType := ItemInfo.fType or MFT_STRING;
+      ItemInfo.dwTypeData := PChar(MenuItem.Caption);
+      ItemInfo.cch := Length(MenuItem.Caption);
+    end;
+    if MenuItem.RadioItem then
+      ItemInfo.fType := ItemInfo.fType or MFT_RADIOCHECK;
+  end;
+
+  procedure InsertContextMenuItems(ThisMenu: HMENU; Items: PMenuItem; InsertIndex: Integer);
+  var
+    I: Integer;
+    ItemInfo: TMenuItemInfo;
+    TempItem: TMenuItem;
+  begin
+    for I := 0 to Items.Count - 1 do
+    begin
+      TempItem := Items^[I];
+      if not TempItem.Visible then
+        Continue;
+      ItemInfo.cbSize := SizeOf(ItemInfo);
+      ItemInfo.fMask := MIIM_DATA or MIIM_ID or MIIM_STATE or MIIM_TYPE;
+      SetItemParams(ItemInfo, TempItem);
+      ItemInfo.wID := idCmdFirst + Cardinal(FMenuItemLink.Count);
+      if Items^[I].Count > 0 then
+      begin
+        ItemInfo.fMask := ItemInfo.fMask or MIIM_SUBMENU;
+        ItemInfo.hSubMenu := CreateMenu;
+        InsertContextMenuItems(ItemInfo.hSubMenu, @TempItem, 0);
+      end;
+      InsertMenuItem(ThisMenu, InsertIndex, True, ItemInfo);
+      FMenuItemLink.Add(Pointer(Items^[I].ComponentIndex));
+      InsertIndex := InsertIndex+1;
+    end;
+  end;
+
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.QueryContextMenu()');
+  zTraceLog('  IndexMenu: ' + IntToStr(IndexMenu));
+  zTraceLog('  idCmdFirst: ' + IntToStr(idCmdFirst));
+  zTraceLog('  idCmdLast: ' + IntToStr(idCmdLast));
+  zTraceLog('  uFlags: ' + Format('0x%x', [uFlags]));
+  {$ENDIF DEBUGINFO_ON}
+
+  if not Assigned(FMenuItemLink) then
+    FMenuItemLink := TList.Create;
+  FMenuItemLink.Clear;
+  if (CMF_DEFAULTONLY and uFlags) <> 0 then
+  begin
+    Result := MakeHResult(SEVERITY_SUCCESS, 0, 0);
+    Exit;
+  end;
+  Result := MakeHResult(SEVERITY_SUCCESS, 0, 1);
+  if not Assigned(FBandForm) then
+    Exit;
+  if not Assigned(FBandForm.BandContextMenu) then
+    Exit;
+  //idCmd := idCmdFirst;
+  InsertContextMenuItems(AMenu, @FBandForm.BandContextMenu.Items, IndexMenu);
+  Result := MakeResult(SEVERITY_SUCCESS, FACILITY_NULL, FMenuItemLink.Count);
+end;
+
+procedure FindItem(Item: TMenuItem; SeekIndex: Integer; var CurrentIndex: Integer);
+var
+  Count: Integer;
+begin
+  if Item.Count > 0 then
+    for Count := 0 to Item.Count-1 do
+    begin
+      if Item[Count].Count > 0 then
+        FindItem(Item[Count], SeekIndex, CurrentIndex);
+
+      if CurrentIndex = SeekIndex then
+       Item[Count].Click;
+      Inc(CurrentIndex);
+    end;
+end;
+
+function TzContextMenuBandObject.InvokeCommand(var Ici: TCMInvokeCommandInfo): HRESULT;
+var
+  idCmd: UINT;
+  ci: Integer;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.InvokeCommand()');
+  {$ENDIF DEBUGINFO_ON}
+  idCmd := LoWord(Ici.lpVerb);
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog('  idCmd=' + IntToStr(idCmd));
+  {$ENDIF DEBUGINFO_ON}
+  Result := E_INVALIDARG;
+  if not Assigned(FBandForm) then
+    Exit;
+  if not Assigned(FBandForm.BandContextMenu) then
+    Exit;
+  FindItem(FBandForm.BandContextMenu.Items, idCmd, ci);
+  //if BandContextMenu.DispatchCommand(idCmd) then
+  //   Result := NOERROR;
+end;
+
+{$IFDEF RTL230_UP}
+function TzContextMenuBandObject.GetCommandString(idCmd: UINT_PTR; uFlags: UINT;
+  pwReserved: PUINT; pszName: LPSTR; cchMax: UINT): HRESULT;
+{$ELSE ~RTL230_UP}
+function TzContextMenuBandObject.GetCommandString(idCmd, uType: UINT;
+  pwReserved: PUINT; pszName: LPSTR; cchMax: UINT): HRESULT;
+{$ENDIF ~RTL230_UP}
+var
+  MenuItem: TMenuItem;
+begin
+  {$IFDEF DEBUGINFO_ON}
+  zTraceLog(ClassName + '.GetCommandString()');
+  zTraceLog('  idCmd=' + IntToStr(idCmd));
+  {$IFDEF RTL230_UP}
+  zTraceLog('  uFlags=' + Format('0x%x', [uFlags]));
+  {$ELSE ~RTL230_UP}
+  zTraceLog('  uType=' + Format('0x%x', [uType]));
+  {$ENDIF ~RTL230_UP}
+  {$ENDIF DEBUGINFO_ON}
+  Result := E_INVALIDARG;
+  if not Assigned(FBandForm) then
+    Exit;
+  if not Assigned(FBandForm.BandContextMenu) then
+    Exit;
+  case {$IFDEF RTL230_UP}uFlags{$ELSE ~RTL230_UP}uType{$ENDIF ~RTL230_UP} of
+    GCS_HELPTEXT:
+      begin
+        MenuItem := FBandForm.BandContextMenu.FindItem(idCmd, fkCommand);
+        if MenuItem = nil then
+          Exit;
+        StrCopy(pszName, PAnsiChar(AnsiString(MenuItem.Hint)));  // text lost here, unicode version should be considered
+      end;
+    GCS_VERB:
+      begin
+        MenuItem := FBandForm.BandContextMenu.FindItem(idCmd, fkCommand);
+        if MenuItem = nil then
+          Exit;
+        StrCopy(pszName, PAnsiChar(AnsiString(GetContextMenuCaption(MenuItem))));    // text lost here, unicode version should be considered
+      end;
+    GCS_VALIDATE:
+      Result := NOERROR;
+  end;
+end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
+end.
+

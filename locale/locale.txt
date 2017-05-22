@@ -1,0 +1,14 @@
+This directory contains the localization files to use with dxGettext (http://dxgettext.sf.net/)
+If you want to add a new language to those that already exist, create a directory for it.
+Then create a LC_MESSAGES directory in it, then finally, copy jvcl.po into that last directory.
+To find the name you should use for the directory, please use this standard:
+ln_CO
+
+where ln is a 2 letter ISO639-1 language code taken from this list: http://www.loc.gov/standards/iso639-2/langcodes.html
+and CO is a 2 letter country code taken from this list: http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html
+
+The Country code should only be used when there is a know variation depending on the country where the language is spoken.
+For instance, the Portuguese in Brasil (pt_BR) is not the same as the "standard" Portuguese (pt).
+Hence, you generally don't have to specify the country code.
+
+Do not forget to update the list of known languages in UpdatePOs.bat so that the new language will be automatically updated when required.

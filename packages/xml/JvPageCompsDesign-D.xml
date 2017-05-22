@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvPageCompsDesign" Design="-1">
+  <Description>JVCL Page Style Components</Description>
+  <GUID>{7F6FA36F-0BB1-4D59-A762-5E1A87CC3443}</GUID>
+  <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A340000</ImageBase>
+  <Requires>
+    <Package Name="JvPageComps-R" Targets="all" Condition=""/>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="dclstd" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvPageLinkEditorForm.pas" Targets="all_win32" Formname="frmJvTreeViewLinksEditor" Condition=""/>
+    <File Name="..\..\design\JvPageListTreeViewReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTreeItemsEditorForm.pas" Targets="all_win32" Formname="frmTreeViewItems" Condition=""/>
+    <File Name="..\..\design\JvPageListEditorForm.pas" Targets="all_win32" Formname="frmPageListEditor" Condition=""/>
+    <File Name="..\..\design\JvPageListEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvNavPaneEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

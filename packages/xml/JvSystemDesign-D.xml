@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvSystemDesign" Design="-1">
+  <Description>JVCL System Components</Description>
+  <GUID>{07B1C96C-1DED-4F54-B6B5-8CCF7AA7D986}</GUID>
+  <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A420000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="dclstd" Targets="C,D" Condition=""/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvMinMaxForm.pas" Targets="all_win32" Formname="MinMaxInfoEditDialog" Condition=""/>
+    <File Name="..\..\design\JvPerfStatEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvSystemReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTimerListEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvChangeNotifyEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFormPropertiesForm.pas" Targets="all_win32" Formname="JvFormPropsDlg" Condition=""/>
+  </Contains>
+</Package>

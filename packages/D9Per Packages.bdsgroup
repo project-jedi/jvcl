@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality" Type="String">Default.Personality</Option>
+      <Option Name="ProjectType" Type="String"></Option>
+      <Option Name="Version" Type="String">1.0</Option>
+      <Option Name="GUID" Type="String">{17A5E582-4675-463D-A507-B23750D23515}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects ActiveProject="JvJans90.bpl">
+      <Projects Name="JvCore90.bpl" Type="String">d9per\JvCore.bdsproj</Projects>
+      <Projects Name="JvCoreDesign90.bpl" Type="String">d9\JvCoreDesign.bdsproj</Projects>
+      <Projects Name="JvSystem90.bpl" Type="String">d9\JvSystem.bdsproj</Projects>
+      <Projects Name="JvSystemDesign90.bpl" Type="String">d9\JvSystemDesign.bdsproj</Projects>
+      <Projects Name="JvStdCtrls90.bpl" Type="String">d9\JvStdCtrls.bdsproj</Projects>
+      <Projects Name="JvStdCtrlsDesign90.bpl" Type="String">d9\JvStdCtrlsDesign.bdsproj</Projects>
+      <Projects Name="JvControls90.bpl" Type="String">d9\JvControls.bdsproj</Projects>
+      <Projects Name="JvControlsDesign90.bpl" Type="String">d9\JvControlsDesign.bdsproj</Projects>
+      <Projects Name="JvCmp90.bpl" Type="String">d9\JvCmp.bdsproj</Projects>
+      <Projects Name="JvCmpDesign90.bpl" Type="String">d9\JvCmpDesign.bdsproj</Projects>
+      <Projects Name="JvCustom90.bpl" Type="String">d9\JvCustom.bdsproj</Projects>
+      <Projects Name="JvCustomDesign90.bpl" Type="String">d9\JvCustomDesign.bdsproj</Projects>
+      <Projects Name="JvDlgs90.bpl" Type="String">d9\JvDlgs.bdsproj</Projects>
+      <Projects Name="JvDlgsDesign90.bpl" Type="String">d9\JvDlgsDesign.bdsproj</Projects>
+      <Projects Name="JvCrypt90.bpl" Type="String">d9\JvCrypt.bdsproj</Projects>
+      <Projects Name="JvCryptDesign90.bpl" Type="String">d9\JvCryptDesign.bdsproj</Projects>
+      <Projects Name="JvMM90.bpl" Type="String">d9\JvMM.bdsproj</Projects>
+      <Projects Name="JvMMDesign90.bpl" Type="String">d9\JvMMDesign.bdsproj</Projects>
+      <Projects Name="JvNet90.bpl" Type="String">d9\JvNet.bdsproj</Projects>
+      <Projects Name="JvNetDesign90.bpl" Type="String">d9\JvNetDesign.bdsproj</Projects>
+      <Projects Name="JvAppFrm90.bpl" Type="String">d9\JvAppFrm.bdsproj</Projects>
+      <Projects Name="JvAppFrmDesign90.bpl" Type="String">d9\JvAppFrmDesign.bdsproj</Projects>
+      <Projects Name="JvPascalInterpreter90.bpl" Type="String">d9per\JvPascalInterpreter.bdsproj</Projects>
+      <Projects Name="JvPascalInterpreterDesign90.bpl" Type="String">d9per\JvPascalInterpreterDesign.bdsproj</Projects>
+      <Projects Name="JvBands90.bpl" Type="String">d9\JvBands.bdsproj</Projects>
+      <Projects Name="JvBandsDesign90.bpl" Type="String">d9\JvBandsDesign.bdsproj</Projects>
+      <Projects Name="JvPluginSystem90.bpl" Type="String">d9\JvPluginSystem.bdsproj</Projects>
+      <Projects Name="JvPluginSystemDesign90.bpl" Type="String">d9\JvPluginSystemDesign.bdsproj</Projects>
+      <Projects Name="JvJans90.bpl" Type="String">d9\JvJans.bdsproj</Projects>
+      <Projects Name="JvJansDesign90.bpl" Type="String">d9\JvJansDesign.bdsproj</Projects>
+      <Projects Name="JvGlobus90.bpl" Type="String">d9per\JvGlobus.bdsproj</Projects>
+      <Projects Name="JvGlobusDesign90.bpl" Type="String">d9per\JvGlobusDesign.bdsproj</Projects>
+      <Projects Name="JvPrintPreview90.bpl" Type="String">d9\JvPrintPreview.bdsproj</Projects>
+      <Projects Name="JvPrintPreviewDesign90.bpl" Type="String">d9\JvPrintPreviewDesign.bdsproj</Projects>
+      <Projects Name="JvPageComps90.bpl" Type="String">d9\JvPageComps.bdsproj</Projects>
+      <Projects Name="JvPageCompsDesign90.bpl" Type="String">d9\JvPageCompsDesign.bdsproj</Projects>
+      <Projects Name="JvWizards90.bpl" Type="String">d9\JvWizards.bdsproj</Projects>
+      <Projects Name="JvWizardsDesign90.bpl" Type="String">d9\JvWizardsDesign.bdsproj</Projects>
+      <Projects Name="JvTimeFramework90.bpl" Type="String">d9\JvTimeFramework.bdsproj</Projects>
+      <Projects Name="JvTimeFrameworkDesign90.bpl" Type="String">d9\JvTimeFrameworkDesign.bdsproj</Projects>
+      <Projects Name="JvHMI90.bpl" Type="String">d9\JvHMI.bdsproj</Projects>
+      <Projects Name="JvHMIDesign90.bpl" Type="String">d9\JvHMIDesign.bdsproj</Projects>
+      <Projects Name="JvManagedThreads90.bpl" Type="String">d9\JvManagedThreads.bdsproj</Projects>
+      <Projects Name="JvManagedThreadsDesign90.bpl" Type="String">d9\JvManagedThreadsDesign.bdsproj</Projects>
+      <Projects Name="JvXPCtrls90.bpl" Type="String">d9\JvXPCtrls.bdsproj</Projects>
+      <Projects Name="JvXPCtrlsDesign90.bpl" Type="String">d9\JvXPCtrlsDesign.bdsproj</Projects>
+      <Projects Name="JvDocking90.bpl" Type="String">d9\JvDocking.bdsproj</Projects>
+      <Projects Name="JvDockingDesign90.bpl" Type="String">d9\JvDockingDesign.bdsproj</Projects>
+      <Projects Name="JvDotNetCtrls90.bpl" Type="String">d9per\JvDotNetCtrls.bdsproj</Projects>
+      <Projects Name="JvDotNetCtrlsDesign90.bpl" Type="String">d9\JvDotNetCtrlsDesign.bdsproj</Projects>
+      <Projects Name="JvRuntimeDesign90.bpl" Type="String">d9per\JvRuntimeDesign.bdsproj</Projects>
+      <Projects Name="JvRuntimeDesignDesign90.bpl" Type="String">d9\JvRuntimeDesignDesign.bdsproj</Projects>
+      <Projects Name="Targets" Type="String">JvCore90.bpl JvCoreDesign90.bpl JvSystem90.bpl JvSystemDesign90.bpl JvStdCtrls90.bpl JvStdCtrlsDesign90.bpl JvControls90.bpl JvControlsDesign90.bpl JvCmp90.bpl JvCmpDesign90.bpl JvCustom90.bpl JvCustomDesign90.bpl JvDlgs90.bpl JvDlgsDesign90.bpl JvCrypt90.bpl JvCryptDesign90.bpl JvMM90.bpl JvMMDesign90.bpl JvNet90.bpl JvNetDesign90.bpl JvAppFrm90.bpl JvAppFrmDesign90.bpl JvPascalInterpreter90.bpl JvPascalInterpreterDesign90.bpl JvBands90.bpl JvBandsDesign90.bpl JvPluginSystem90.bpl JvPluginSystemDesign90.bpl JvJans90.bpl JvJansDesign90.bpl JvGlobus90.bpl JvGlobusDesign90.bpl JvPrintPreview90.bpl JvPrintPreviewDesign90.bpl JvPageComps90.bpl JvPageCompsDesign90.bpl JvWizards90.bpl JvWizardsDesign90.bpl JvTimeFramework90.bpl JvTimeFrameworkDesign90.bpl JvHMI90.bpl JvHMIDesign90.bpl JvManagedThreads90.bpl JvManagedThreadsDesign90.bpl JvXPCtrls90.bpl JvXPCtrlsDesign90.bpl JvDocking90.bpl JvDockingDesign90.bpl JvDotNetCtrls90.bpl JvDotNetCtrlsDesign90.bpl JvRuntimeDesign90.bpl JvRuntimeDesignDesign90.bpl</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>

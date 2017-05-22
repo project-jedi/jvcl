@@ -1,0 +1,716 @@
+Filename,Size,Attributes,Type
+F:\Program\Borland\Add\JEDI\jvcl\run\.cvsignore,27,AC,CVSIGNORE-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvActions.dcu,8873,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvActions.pas,6919,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAddPrinter.pas,5379,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAirBrush.pas,6741,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAlarms.pas,8999,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAni.pas,29168,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAniFile.pas,23199,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAnimate.pas,3532,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAnimatedImage.pas,21411,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAnimTitle.pas,4366,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAppAnimatedIcon.pas,3426,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAppEvent.pas,31191,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAppHotKey.pas,5950,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAppIniStorage.pas,13918,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAppInst.pas,9756,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAppRegistryStorage.pas,12486,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAppStorage.dcu,73392,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAppStorage.pas,83399,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAppStorageSelectList.pas,13136,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAppXMLStorage.pas,16741,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvArrayButton.pas,12116,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvArrowButton.pas,34702,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvaScrollText.pas,12713,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvAVICapture.pas,60844,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBalloonHint.pas,57979,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBandForms.pas,13768,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBandObject.pas,33289,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBaseDlg.dcu,2782,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBaseDlg.pas,1972,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBaseEdits.pas,24439,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBaseThumbnail.dcu,24094,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBaseThumbnail.pas,21749,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDECheckPasswordForm.dfm,1720,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDECheckPasswordForm.pas,6206,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDEExceptionForm.dfm,3893,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDEExceptionForm.pas,7277,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDEFilter.pas,26093,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDEIndex.pas,11193,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDELists.pas,15888,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDELoginDialog.pas,14640,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDEMemTable.pas,13803,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDEMove.pas,15087,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDEProgress.pas,16324,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDEQBE.pas,15968,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDEQuery.pas,26377,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDESecurity.pas,5517,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBDESQLScript.pas,2864,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBdeUtils.pas,62142,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBehaviorLabel.pas,38736,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBevel.dcu,5279,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBevel.pas,3280,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBitBtn.dcu,7993,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBitBtn.pas,5713,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBitmapButton.pas,11750,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBmpAnimator.pas,10543,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBoxProcs.pas,9132,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBrowseFolder.dcu,38213,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvBrowseFolder.pas,50223,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvButton.pas,20385,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvButtonPersistent.pas,6303,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvButtons.pas,48571,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCabFile.pas,8594,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCaesarCipher.pas,3823,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCalc.pas,33469,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCalendar.pas,40368,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCaptionButton.pas,55856,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCaptionPanel.pas,24188,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCaret.dcu,6265,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCaret.pas,8145,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvChangeNotify.pas,13396,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCharMap.pas,43132,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvChart.pas,84991,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCheckBox.dcu,15028,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCheckBox.pas,12827,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCheckedMaskEdit.pas,10016,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCheckListBox.pas,12064,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCheckTreeView.pas,15620,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvClipboardMonitor.pas,5202,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvClipboardViewer.pas,21714,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvClipbrd.pas,22762,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvClock.pas,30115,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JVCLVer.dcu,524,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JVCLVer.pas,1416,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvClxUtils.pas,18514,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvColorBox.pas,13135,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvColorButton.pas,7300,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvColorCombo.pas,31361,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvColorForm.pas,9324,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvColorProvider.pas,121973,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCombobox.dcu,45531,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCombobox.pas,39958,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvComboListBox.pas,17668,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvComCtrls.dcu,66034,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvComCtrls.pas,56718,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCommonDialogD.pas,3515,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCommonExecDlg.pas,1856,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCommStatus.pas,5192,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvComponent.dcu,18300,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvComponent.pas,4269,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvComponentPanel.pas,10221,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvComputerInfo.dcu,13240,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvComputerInfo.pas,11357,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvConnectNetwork.pas,2280,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvContentScroller.pas,10363,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvContextProvider.pas,18824,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvControlBar.pas,8636,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvControlPanelButton.pas,4840,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvConverter.pas,15815,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCoolBar.pas,2912,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCopyError.pas,3593,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCpuUsage.pas,2596,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCreateProcess.pas,39824,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCSVBaseControls.pas,23086,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCsvData.pas,124040,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCsvParse.pas,21649,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCtrls.pas,24848,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvCustomItemViewer.pas,55471,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDataEmbedded.pas,3780,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDataProvider.dcu,198178,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDataProvider.pas,176649,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDataProviderIntf.dcu,16060,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDataProviderIntf.pas,14409,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDatePickerEdit.pas,25340,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDateTimePicker.dcu,8768,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDateTimePicker.pas,6673,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBCombobox.pas,17716,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBControls.pas,70222,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBDatePickerEdit.pas,10407,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBDateTimePicker.pas,13454,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBDotNetControls.pas,6735,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBGrid.pas,74172,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBGridExport.pas,34421,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBGridSelectColumnForm.dfm,1265,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBGridSelectColumnForm.pas,6050,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBHTLabel.dcu,6488,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBHTLabel.pas,5311,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBLookup.pas,101158,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBLookupComboEdit.pas,15984,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBLookupTreeView.pas,47044,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBProgressBar.pas,3083,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBQueryParamsForm.dfm,3563,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBQueryParamsForm.pas,7956,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBRadioPanel.pas,16059,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBRemoteLogin.pas,8511,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBRichEdit.pas,13438,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBSpinEdit.pas,7389,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBTreeView.pas,37708,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDBUtils.pas,25148,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDdeCmd.pas,10112,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDeleteError.pas,3327,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDeviceChanged.pas,3989,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDiagramShape.pas,60460,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDialButton.pas,35032,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDialogActns.pas,14351,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDialogs.dcu,20748,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDialogs.pas,20151,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDice.pas,9733,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDirectories.pas,8606,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDiskPrompt.pas,3393,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockableForm.dfm,352,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockConjoinHost.dfm,354,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockControlForm.pas,156811,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockDelphiStyle.pas,7225,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockGlobals.pas,4070,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockHashTable.pas,7104,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockInfo.pas,38722,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockSupportClass.pas,29462,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockSupportControl.pas,107118,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockSupportProc.pas,10983,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockTabHost.dfm,345,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockTree.pas,114381,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockVCStyle.pas,70168,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockVIDStyle.pas,145227,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDockVSNetStyle.pas,94981,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDotNetControls.pas,11704,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDotNetUtils.pas,2790,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDragDrop.pas,20358,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDrawImage.pas,133013,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDriveCtrls.pas,46489,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDropDownForm.pas,5808,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDSADialogs.pas,81354,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDsgnIntf.pas,2715,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDualList.pas,5958,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDualListForm.dfm,4433,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDualListForm.pas,7265,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDynControlEngine.pas,24450,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDynControlEngineIntf.pas,6642,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDynControlEngineJVCL.pas,49975,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvDynControlEngineVCL.pas,49948,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvEasterEgg.pas,3830,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvEdit.dcu,26131,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvEdit.pas,20149,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvEditor.pas,70306,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvEditorCommon.pas,154039,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvEnterTab.pas,3252,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvErrorIndicator.pas,24398,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExButtons.dcu,19045,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExButtons.pas,15951,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExceptionForm.dfm,3479,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExceptionForm.pas,8954,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExCheckLst.pas,10723,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExComboEdits.pas,49375,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExComCtrls.dcu,253101,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExComCtrls.pas,331840,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExControls.dcu,53848,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExControls.pas,68495,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExDBGrids.pas,18334,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExExtCtrls.dcu,158743,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExExtCtrls.pas,147091,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExForms.dcu,65084,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExForms.pas,63077,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExGrids.dcu,57583,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExGrids.pas,53478,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExMask.dcu,25378,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExMask.pas,25756,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExStdCtrls.dcu,191303,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvExStdCtrls.pas,210251,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFavoritesButton.pas,5982,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFindFiles.pas,3780,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFindReplace.pas,19504,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFixedEditPopUp.dcu,12879,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFixedEditPopUp.pas,15466,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFooter.dcu,16651,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFooter.pas,11840,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFormAnimatedIcon.pas,3187,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFormAnimation.pas,12361,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFormAutoSize.pas,3679,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFormMagnet.pas,17755,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFormPlacement.pas,32798,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFormPlacementSelectList.pas,3914,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFormToHtml.pas,9042,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFormTransparent.pas,4614,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFormWallpaper.pas,2824,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvForth.pas,60414,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvFtpGrabber.pas,15773,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\Jvg3DColors.pas,4995,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgAlignForm.dfm,1461,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgAlignForm.pas,1846,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgAlignFunction.pas,5034,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGammaPanel.pas,11214,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgAskListBox.pas,27101,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgBevel.pas,9212,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgBitBtn.pas,4898,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgButton.pas,46119,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgCaption.pas,17853,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgCGI.pas,5487,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgCheckBox.pas,25500,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgCheckVersionInfoForm.dfm,9476,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgCheckVersionInfoForm.pas,3661,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgCommClasses.pas,45689,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgConstSysRequirements.pas,2487,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgCrossTable.pas,41292,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgDBGrid.pas,10095,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgDBNav.pas,4757,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgDigits.pas,16959,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgDrawTab.pas,13043,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgEdit.pas,6236,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGenetic.pas,7415,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgExceptionHandler.pas,12290,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgExport.pas,6416,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgExportComponents.pas,19271,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgFileIterator.pas,5864,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgFileUtils.pas,5163,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgFixFont.pas,2466,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgFlyingText.pas,24311,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgGraph.pas,3179,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgGraphicButton.pas,5746,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgGridHeaderControl.pas,6001,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgGroupBox.pas,23928,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgHelpPanel.pas,8213,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgHint.pas,10490,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgHoleShape.pas,17846,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgHTTPVersionInfo.pas,4198,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGIF.pas,84735,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGIFCtrl.pas,15518,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgImage.pas,14665,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgImageGroup.pas,7632,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgInspectorGrid.pas,17922,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgJump.pas,5259,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgLabel.pas,39074,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgLanguageLoader.pas,7958,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgListBox.pas,31815,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgLogics.pas,17635,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgMailSlots.pas,7449,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgPage.pas,16843,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgPointEditor.pas,2231,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgProcess.pas,3371,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgProcessUtils.pas,3486,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgProgress.pas,12706,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgQPrintPreviewForm.dfm,64392,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgQPrintPreviewForm.pas,8571,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgQPrintSetupForm.dfm,921,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgQPrintSetupForm.pas,1475,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgQRLabel.pas,8659,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGradient.pas,10872,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGradientCaption.pas,31904,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGradientHeaderPanel.pas,11495,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgReport.pas,38414,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgReportParamsEditor.pas,5376,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgRichEditUtils.pas,6271,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGridFilter.pas,6183,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGridPreviewForm.dfm,7177,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGridPreviewForm.pas,21204,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGridPreviewForm.xfm,8022,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGridPrinter.pas,5044,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGrids.pas,41329,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGroupBox.pas,7630,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvGroupHeader.pas,13229,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgRttiUtils.pas,6579,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgRuler.pas,4791,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgScrollBox.pas,5239,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgShade.pas,4049,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgShadow.pas,14280,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgShape.pas,3227,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgSingleInstance.pas,3300,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgSmallFontsDefense.pas,3519,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgSpeedButton.pas,13987,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgSplit.pas,9713,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgStaticText.pas,8639,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgStepLabel.pas,2805,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgStringContainer.pas,2912,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgStringGrid.pas,22586,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgSysInf.pas,5363,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgSysRequirements.pas,6804,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgTab.pas,15836,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgTabComm.pas,11818,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgTagParser.pas,3409,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgTransparentMemo.pas,2196,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgTreeView.pas,24780,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgTypes.pas,7087,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgUtils.pas,71047,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgVertDBGrid.pas,8714,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgWebDocumentIterator.pas,4269,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgWinMask.pas,3833,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgWizardHeader.pas,9162,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvgXMLSerializer.pas,36629,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHeaderControl.pas,2947,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHidControllerClass.pas,87278,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHint.pas,6461,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHints.pas,13647,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHLEditor.pas,55851,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHLEditorPropertyForm.dfm,16555,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHLEditorPropertyForm.pas,45278,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHLParser.pas,28026,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHotKey.pas,3131,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHtControls.dcu,42782,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHTControls.pas,35206,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHtmlParser.pas,8774,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvHttpGrabber.pas,15951,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvIconList.pas,9992,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvId3v1.pas,9443,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvId3v2.pas,35857,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvID3v2Base.pas,274053,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvId3v2Types.pas,54124,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvImage.dcu,11287,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvImage.pas,10302,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvImageDlg.pas,3003,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvImageDrawThread.pas,2161,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvImageList.pas,24550,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvImageListViewer.pas,9936,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvImageRotate.pas,5703,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvImageSquare.dcu,11403,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvImageSquare.pas,8059,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvImagesViewer.pas,19234,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvImageTransform.pas,9111,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInspDB.pas,22095,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInspector.pas,344467,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInspExtraEditors.pas,28396,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInspXVCL.pas,10830,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInstallLabel.pas,9672,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter.pas,242277,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreterConst.pas,4811,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreterFm.pas,20230,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreterParser.pas,19127,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_all.pas,3765,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Classes.pas,46386,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_ComCtrls.pas,108689,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Contnrs.pas,11957,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Controls.pas,74223,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Db.pas,103569,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_DbCtrls.pas,39393,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_DbGrids.pas,29243,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_DBTables.pas,107090,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Dialogs.pas,38702,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_ExtCtrls.pas,18856,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Forms.pas,53939,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Graphics.pas,59016,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Grids.pas,8938,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_httpapp.pas,39369,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_JvEditor.pas,26340,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_JvInterpreter.pas,4891,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_JvUtils.pas,46665,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Menus.pas,21969,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Quickrpt.pas,84745,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_StdCtrls.pas,26412,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_System.pas,23642,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_SysUtils.pas,75790,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Types.pas,4716,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvInterpreter_Windows.pas,11732,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvItemsPanel.pas,13502,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvItemsSearchs.dcu,4012,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvItemsSearchs.pas,5048,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvJanTreeView.pas,36723,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvJCLUtils.dcu,172509,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvJCLUtils.pas,219673,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvJoystick.pas,14904,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvJVCLAboutForm.dfm,42294,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvJVCLAboutForm.pas,7499,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvJVCLAboutForm.xfm,288072,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvJVCLUtils.dcu,138864,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvJVCLUtils.pas,179087,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvKeyboardStates.pas,6445,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLabel.pas,32676,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLED.pas,8431,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkedControls.dcu,6973,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkedControls.pas,7030,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabel.dcu,25462,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabel.pas,21847,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabelDebug.pas,3541,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabelParser.dcu,12738,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabelParser.pas,12584,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabelRenderer.dcu,7888,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabelRenderer.pas,7722,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabelTextHandler.dcu,20767,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabelTextHandler.pas,22698,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabelTools.dcu,7477,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabelTools.pas,6203,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabelTree.dcu,29313,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLinkLabelTree.pas,26310,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvListBox.pas,62626,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvListComb.pas,43698,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvListView.dcu,30424,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvListView.pas,26363,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLogFile.pas,6846,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLogForm.dfm,12690,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLogForm.pas,2980,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLogForm.xfm,7156,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLogger.pas,9177,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLoggerBaseImpl.pas,12923,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLoggerEmpty.pas,4981,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLoggerFile.pas,3962,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLoggerIntf.pas,10529,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLoggerODS.pas,827,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLoggerUDP.pas,2858,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLoginForm.dfm,4122,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLoginForm.pas,16800,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLoginForm.xfm,4921,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvLookOut.pas,76386,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMail.pas,21166,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMarkupCommon.pas,6164,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMarkupLabel.pas,15662,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMarkupViewer.pas,14355,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMaskEdit.pas,15110,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMaxPixel.dcu,3762,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMaxPixel.pas,3745,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMemo.dcu,21726,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMemo.pas,14578,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMemoryDataset.pas,46875,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMemoryInfos.pas,3763,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMenus.pas,99083,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMergeManager.pas,11910,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMonthCalendar.pas,2947,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMouseGesture.pas,28050,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMouseTimer.pas,4302,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMovableBevel.pas,9172,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMRUList.pas,21073,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMRUManager.pas,20457,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMTComponents.pas,20625,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMTConsts.pas,1624,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMTData.pas,8910,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMTSync.pas,8402,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMTSyncMon.pas,7438,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMTThreading.pas,18414,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvMultiHttpGrabber.pas,17183,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvNTEventLog.pas,15378,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvObjectPickerDialog.pas,27693,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvOutlookBar.pas,66058,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvOwnerDrawViewer.pas,3674,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPageListTreeView.pas,48351,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPageManager.pas,24469,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPageScroller.dcu,5169,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPageScroller.pas,3144,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPageSetup.pas,18908,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPageSetupTitled.pas,3798,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPainterEffectsForm.dfm,7447,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPainterEffectsForm.pas,8202,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPainterEffectsForm.xfm,7360,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPainterQBForm.dfm,4933,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPainterQBForm.pas,15403,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPainterQBForm.xfm,4979,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPaintFX.pas,97186,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPanel.pas,26844,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvParameterList.pas,59184,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvParameterListParameter.pas,55936,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvParserForm.dfm,4808,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvParserForm.pas,5824,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvParserForm.xfm,4854,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPatchFile.pas,5596,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPatchForm.dfm,1683,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPatchForm.pas,4908,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPatchForm.xfm,2666,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPcx.pas,21434,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPerfMon95.pas,15284,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPicClip.pas,8946,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPickDate.dcu,51102,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPickDate.pas,46547,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPlaylist.pas,9059,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPlugin.pas,8941,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPluginManager.pas,15550,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPrint.pas,4039,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProfilerForm.dfm,4332,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProfilerForm.pas,12032,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProfilerForm.xfm,4422,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProgressBar.dcu,5862,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProgressBar.pas,3957,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProgressComponent.pas,7395,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProgressDialog.pas,12610,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProgressForm.dfm,1336,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProgressForm.pas,8441,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProgressForm.xfm,1336,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProgressUtils.dcu,5692,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvProgressUtils.pas,6027,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPropertyStorage.pas,28182,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPropertyStore.dcu,25313,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPropertyStore.pas,22373,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPrvwDoc.pas,54410,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvPrvwRender.pas,27724,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvQtKeySelectionFrame.pas,7750,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvQtKeySelectionFrame.xfm,1141,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvQuickPreviewForm.dfm,1037,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvQuickPreviewForm.pas,2177,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvQuickPreviewForm.xfm,1836,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRadioButton.dcu,14090,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRadioButton.pas,11389,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRadioGroup.pas,4426,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRas32.pas,16636,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRecentMenuButton.pas,7651,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRegistryTreeview.pas,22104,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRenameError.pas,3476,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvResample.pas,21426,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvResources.dcu,93407,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvResources.pas,87109,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRgbToHtml.pas,2829,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRichEdit.dcu,199450,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRichEdit.pas,212245,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRichEditToHtml.pas,7149,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvRollOut.pas,34135,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSAL.pas,16732,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSALCore.pas,11547,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSALHashList.pas,13191,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSALMath.pas,2925,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSchedEvtStore.pas,50309,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvScheduledEvents.pas,39514,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvScreenResolution.pas,2865,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvScreenSaver.pas,2742,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvScrollBar.pas,3222,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvScrollBox.dcu,8522,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvScrollBox.pas,5662,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvScrollMax.pas,41648,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvScrollPanel.pas,18713,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvScrollText.pas,11867,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSearchFiles.dcu,26049,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSearchFiles.pas,33561,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSecretPanel.pas,20109,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSegmentedLEDDisplay.pas,57919,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSegmentedLEDDisplayMapperFrame.dfm,3909,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSegmentedLEDDisplayMapperFrame.pas,13854,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSelectDirectory.pas,2682,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSerialMaker.pas,2945,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvShape.pas,3470,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvShapedButton.pas,76253,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvShellHook.pas,11427,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSHFileOperation.pas,8750,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSimIndicator.pas,4194,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSimLogic.pas,69411,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSimPID.pas,7878,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSimPIDLinker.pas,3172,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSimpleXml.dcu,70989,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSimpleXml.pas,80949,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSimScope.pas,12678,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSLDMappingEditorDialog.dfm,3186,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSLDMappingEditorDialog.pas,4090,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSlider.pas,10106,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSoundControl.pas,7376,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpacer.pas,2933,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpecialImage.pas,8096,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpecialProgress.pas,20606,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpeedbar.pas,88894,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpeedbarSetupForm.dfm,4303,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpeedbarSetupForm.pas,12007,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpeedButton.dcu,76499,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpeedButton.pas,80468,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpellChecker.pas,17646,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpellerForm.dfm,2449,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpellerForm.pas,11724,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpellerForm.xfm,2469,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpellIntf.pas,5028,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSpin.pas,63605,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSplashWindow.pas,5945,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSplit.pas,18277,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSplitter.pas,3804,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvStarfield.pas,5238,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvStartMenuButton.pas,6714,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvStaticText.pas,15086,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvStatusBar.dcu,9285,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvStatusBar.pas,10043,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSticker.pas,9141,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvStringGrid.pas,31379,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvStringHolder.pas,20439,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvStringListToHtml.pas,4663,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvStrings.pas,60758,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvStrToHtml.pas,7586,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSwitch.pas,12580,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSyncSplitter.pas,3807,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSystemColors.pas,9638,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvSystemPopup.pas,15987,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTabControl.pas,3297,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTextListBox.pas,4661,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTFAlarm.pas,9632,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTFDays.pas,420548,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTFGantt.pas,16518,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTFGlance.pas,112922,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTFGlanceTextViewer.pas,37944,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTFManager.pas,148362,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTFMonths.pas,15120,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTFSparseMatrix.pas,6628,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTFUtils.pas,17743,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTFWeeks.pas,13490,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvThemes.dcu,7361,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvThemes.pas,84206,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvThread.pas,8392,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvThreadTimer.pas,8476,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvThumbImage.dcu,22107,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvThumbImage.pas,28625,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvThumbNails.dcu,21454,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvThumbnails.pas,18636,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvThumbViews.dcu,35806,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvThumbViews.pas,36274,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTimeLimit.pas,2055,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTimeLine.pas,79214,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTimer.pas,6443,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTimerList.pas,17105,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTipOfDay.pas,21311,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTMTimeLine.pas,38481,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvToolBar.pas,10369,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvToolEdit.dcu,128132,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvToolEdit.pas,112523,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTracker.pas,19089,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTranslator.pas,25244,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTransparentButton.pas,43343,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTransparentPanel.pas,3844,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTrayIcon.pas,24726,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTurtle.pas,49571,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTypes.dcu,18184,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvTypes.pas,22488,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUIB.pas,92753,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUIBase.pas,208441,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUIBConst.pas,17805,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUIBDataSet.pas,25118,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUIBError.pas,96582,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUIBLib.pas,175846,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUIBMetaData.pas,89031,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUIBObj.pas,24748,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUIBSQLParser.pas,954016,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUIBSrv.pas,9063,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUnicodeCanvas.pas,6119,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUnicodeEditor.pas,71511,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUnicodeHLEditor.pas,54825,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUninstallControls.pas,15011,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUpDown.pas,16671,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUrlGrabbers.pas,31846,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvUrlListGrabber.pas,8547,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvValidateEdit.dcu,41329,AC,DCU-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvValidateEdit.pas,33995,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvValidators.pas,25333,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvVersionInfo.pas,12045,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvVigenereCipher.pas,4535,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvVirtualKeySelectionFrame.dfm,941,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvVirtualKeySelectionFrame.pas,9013,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWaitingGradient.pas,7801,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWaitingProgress.pas,5727,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWallpaperEditForm.dfm,1802,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWallpaperEditForm.pas,4301,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWallpaperEditForm.xfm,2397,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWavePlayer.pas,4017,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWinampLabel.pas,11434,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWinDialogs.pas,59069,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWinHelp.pas,5705,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWizard.pas,109775,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWizardCommon.pas,9153,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWizardPaths.pas,8273,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWizardRouteMapNodes.pas,11954,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWizardRouteMapSteps.pas,10836,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvWndProcHook.pas,29257,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvxCheckListBox.pas,55549,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvXmlDatabase.pas,40443,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvXmlTree.pas,43603,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvXorCipher.pas,3429,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvXPBar.pas,44803,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvXPButtons.pas,19474,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvXPCheckCtrls.pas,8255,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvXPContainer.pas,12602,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvXPCore.pas,26429,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvXPCoreUtils.pas,12282,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvxSlider.pas,37060,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvYearGrid.pas,26215,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvYearGridEditForm.dfm,1644,AC,DFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvYearGridEditForm.pas,2430,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvYearGridEditForm.xfm,1788,AC,XFM-fil
+F:\Program\Borland\Add\JEDI\jvcl\run\JvZlibMultiple.pas,12140,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\JvZoom.pas,7913,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\Kopia av JvButton.pas,20246,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\QWinCursors.pas,16820,AC,Delphi Source File
+F:\Program\Borland\Add\JEDI\jvcl\run\run.txt,0,AC,Textdokument

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvPluginSystem" Design="0">
+  <Description>JVCL Plugin Components Runtime Package</Description>
+  <GUID>{91E3DA9C-373A-4815-A9AA-86F461D83AA7}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>49A20000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvPluginManager.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPlugin.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPluginManager.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPlugin.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

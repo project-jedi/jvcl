@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvManagedThreadsDesign" Design="-1">
+  <Description>JVCL Managed Threads</Description>
+  <GUID>{33656D5A-B67F-4E6D-B879-6EA71C3C79F4}</GUID>
+  <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4D050000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvManagedThreads-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvManagedThreadsReg.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvPascalInterpreterDesign" Design="-1">
+  <Description>JVCL Interpreter Components</Description>
+  <GUID>{9F0A300E-7B7A-4B5A-A5F9-B2A6D3D81A1C}</GUID>
+  <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4D030000</ImageBase>
+  <Requires>
+    <Package Name="JvPascalInterpreter-R" Targets="all" Condition=""/>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvCustom-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="qrpt" Targets="DB" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="qr4rund2006" Targets="D10" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="dclstd" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="bdertl" Targets="DB" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvPascalInterpreterReg.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvPageComps" Design="0">
+  <Description>JVCL Page Style Components Runtime Package</Description>
+  <GUID>{395E4777-D95E-4AB0-8290-0BA981C01E14}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>499E0000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvPageListTreeView.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPageList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvNavigationPane.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPageListTreeView.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPageList.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvNavigationPane.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

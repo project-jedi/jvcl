@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvStdCtrlsDesign" Design="-1">
+  <Description>JVCL Standard Controls</Description>
+  <GUID>{2022FFED-CBA4-4663-8E1E-7C0855769930}</GUID>
+  <C6PFlags>-LUdclstd.dcp -LUJcl -LUJclVcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A3E0000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="dclstd" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvCheckedItemsForm.pas" Targets="all_win32" Formname="JvCheckItemsEditor" Condition=""/>
+    <File Name="..\..\design\JvProgressEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvIPAddressEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvStdCtrlsReg.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

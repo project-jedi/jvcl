@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvPluginSystemDesign" Design="-1">
+  <Description>JVCL Plugin Components</Description>
+  <GUID>{93B24A96-3A23-42CF-8B0D-78DB9833B71D}</GUID>
+  <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A380000</ImageBase>
+  <Requires>
+    <Package Name="JvPluginSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclDeveloperTools" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvPluginSystemReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPluginWizard.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPluginParamsForm.pas" Targets="all_win32" Formname="frmPluginParams" Condition=""/>
+  </Contains>
+</Package>

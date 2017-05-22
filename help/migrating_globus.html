@@ -1,0 +1,904 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Migrating from Globus to JVCL 3.5</title>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+</head>
+<body>
+<h1>Migrating your applications from previous versions of JEDI VCL</h1>
+<h2> </h2>
+<hr>
+<h2> Introduction</h2>
+<p>Following the release of JVCL 3.00 and an overhaul of the code in
+Globus components, it has been decided that they should be merged into
+the main JVCL to avoid maintenance issues and duplicate bug fixing.
+Before undergoing this migration, you must have undergone the one
+mentionned in the <a href="migrating.htm">migrating</a> page, since it
+describes how to move from the original Globus to the JVCL 3.00
+codebase. </p>
+<p>&nbsp; </p>
+<p>Once this is done, and you have installed the latest JVCL, you will
+have to manually edit your source files to ensure the required changes
+are done.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Please note that although the document refers to "Delphi" in several
+places, the instructions applies equally to other versions of Borland
+GUI's (like C++Builder and Kylix) unless the text specifically says
+otherwise.<br>
+</p>
+<h2>Components list</h2>
+<p>Here is the list of Globus components alongside with their JVCL
+replacements. As this is still work in progress, those which mention
+"not done yet" have not been looked after just yet.<br>
+</p>
+<table
+ style="margin-left: auto; margin-right: auto; width: 80%; text-align: left;"
+ border="1" cellpadding="2" cellspacing="0">
+  <tbody>
+    <tr>
+      <td colspan="2" rowspan="1"
+ style="vertical-align: top; text-align: center; font-weight: bold;">Globus<br>
+      </td>
+      <td colspan="2" rowspan="1"
+ style="vertical-align: top; text-align: center; font-weight: bold;">JVCL<br>
+      </td>
+      <td colspan="1" rowspan="2"
+ style="vertical-align: top; text-align: center; font-weight: bold;">Notes<br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Component</td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Property<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Component<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;">Property<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgDBNavigator<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">none</span><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Moved to Archive. Was completely
+nonfunctional.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgPrintCrossTable<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgDBGrid<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvDBGrid<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Too little benefit from this
+component<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgVertDBSGrid<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvDBGrid<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Too little benefit from this
+component</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgGridHeaderControl<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">none</span><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Clunky behaviour<br>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="16" style="vertical-align: top;">TJvgSysInfo<br>
+      </td>
+      <td style="vertical-align: top;">AvailPageFile<br>
+      </td>
+      <td colspan="1" rowspan="10" style="vertical-align: top;">TJvComputerInfoEx<br>
+      </td>
+      <td style="vertical-align: top;">Memory.FreePageFileMemory<br>
+      </td>
+      <td colspan="1" rowspan="10" style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">AvailPhys<br>
+      </td>
+      <td style="vertical-align: top;">Memory.FreePhysicalMemory<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">AvailVirtual<br>
+      </td>
+      <td style="vertical-align: top;">Memory.FreeVirtualMemory<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">ColorDepth<br>
+      </td>
+      <td style="vertical-align: top;">Screen.BitsPerPixel<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">ComputerName<br>
+      </td>
+      <td style="vertical-align: top;">Identification.LocalComputerName<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">CPUKind<br>
+      </td>
+      <td style="vertical-align: top;">CPU.Family<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">CPUName<br>
+      </td>
+      <td style="vertical-align: top;">CPU.Name<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">GraphicResolution<br>
+      </td>
+      <td style="vertical-align: top;">Screen.Witdh, Screen.Height<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">MemoryLoad<br>
+      </td>
+      <td style="vertical-align: top;">Memory.MemoryLoad<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">OSPlatform<br>
+      </td>
+      <td style="vertical-align: top;">OS.Version<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">SystemFont<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td rowspan="1" style="vertical-align: top;">Use
+GetDeviceCaps(DC, LOGPIXELSX) = 96 to get 'SmallFont' and = 120 for
+'BigFont'. Anything else gave an empty string, hence not being reliable
+at all.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TotalPageFile<br>
+      </td>
+      <td colspan="1" rowspan="5" style="vertical-align: top;">TJvComputerInfoEx<br>
+      </td>
+      <td style="vertical-align: top;">Memory.TotalPageFileMemory<br>
+      </td>
+      <td colspan="1" rowspan="5" style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TotalPhys<br>
+      </td>
+      <td style="vertical-align: top;">Memory.TotalPhysicalMemory</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TotalVirtual<br>
+      </td>
+      <td style="vertical-align: top;">Memory.TotalVirtualMemory</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">UserName<br>
+      </td>
+      <td style="vertical-align: top;">Identification.LocalUserName<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">VRefreshRate<br>
+      </td>
+      <td style="vertical-align: top;">Screen.Hz<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgMaskEdit<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvMaskEdit<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Canvas, ScrollBars, Alignment,
+MultiLine, WordWrap and OnAfterPaint have been merged into
+TJvCustomMaskEdit<br>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="4" style="vertical-align: top;">TJvgBevel</td>
+      <td style="vertical-align: top;">*<br>
+      </td>
+      <td colspan="1" rowspan="4" style="vertical-align: top;">TJvBevel<br>
+      </td>
+      <td style="vertical-align: top;">*<br>
+      </td>
+      <td style="vertical-align: top;">All properties have been merged
+into TJvBevel except for those below<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">HorLines<br>
+      </td>
+      <td style="vertical-align: top;">HorizontalLines<br>
+      </td>
+      <td style="vertical-align: top;">Automatically changed by the
+converter<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">VertLines<br>
+      </td>
+      <td style="vertical-align: top;">VerticalLines<br>
+      </td>
+      <td style="vertical-align: top;">Automatically changed by the
+converter</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Gradient</td>
+      <td style="vertical-align: top;">n/a<br>
+      </td>
+      <td style="vertical-align: top;">Gradient has not been ported,
+use a TJvGradient instead and put it behind.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgBitBtn</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvBitBtn<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Set SimpleFrame to True to get
+the Globus drawing style<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgGraphicButton</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvTransparentButton<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Set FrameStyle to fsNone and put
+the Glyphs in an image list in this order:<br>
+0: GlyphPassive<br>
+1: <br>
+2: GlyphPushed<br>
+3:<br>
+4: GlyphActive<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgTreeView<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvTreeView<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgCheckTreeView</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvCheckTreeView<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgSplitter</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvNetscapeSplitter<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgShadow</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Recommendation: Rename and move
+to main JVCL<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgShade <br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Recommendation: Rename and move
+to main JVCL</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgButton</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Recommendation: Rename and move
+to main JVCL</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgProgress<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgTransparentMemo</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvMemo<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Set Transparent to True<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgGroupBox<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgBitmapImage</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgListBox</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgCheckListBox</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgAskListBox<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgScrollBox</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvScrollBox<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Background is now a TGraphic,
+migration is silent.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgStringGrid</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgSpeedButton</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgExtSpeedButton<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgWizardHeader</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">none</span><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Use the TJvWizard components<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgCaption</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgCheckBox<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgRuler<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvRuler<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgPageControl</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgTabControl</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgProcess</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvCreateProcess </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvCreateProcess is superior</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgMailSlotServer<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvMailSlotServer<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgMailSlotClient</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvMailSlotClient<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgLabel</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgFlyingText</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">none</span><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not functionnal, hardly any point<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgDigits<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgStaticText</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvStaticText<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgHoleShape</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgHelpPanel</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">none</span><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Too little added value<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgXMLSerializer</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgLanguageLoader</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">none</span><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Use JvDxGettext<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgExceptionHandler</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">none</span><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Use JvLogFile with JclDebug<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgJumpingComponent</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">none</span><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">moved to archive no replacement</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgStringContainer</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><span style="font-style: italic;">none</span><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Use Resource strings instead<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgSysRequirements</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvSysRequirements<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvg3DColors</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgHint</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvginspectorGrid</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvInspector<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgReport</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgReportParamsEditor</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgLogicProducer</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgSmallFontsDefense</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Removed, hardly any point for
+this component</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgExportExcel<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgExportHTML</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Removed from source, was not
+even coded<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgExportXML<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgExportDataset<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgQRLabel<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgQRDBText</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgMyQRPreview</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Not done yet</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgSingleInstance<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">TJvAppInstances<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">TJvgFixFont<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">Removed, hardly any point for
+this component<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p><br>
+</p>
+</body>
+</html>

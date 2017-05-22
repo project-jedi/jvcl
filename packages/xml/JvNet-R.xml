@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvNet" Design="0">
+  <Description>JVCL Network Components Runtime Package</Description>
+  <GUID>{C70AFC0D-40D7-4F4D-A0F6-B1C17B608455}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs>wininet.lib</C6Libs>
+  <ImageBase>4D3F0000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvDlgs-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="indy" Targets="C,D" Condition="USE_3RDPARTY_INDY &amp;&amp; !USE_3RDPARTY_INDY10"/>
+    <Package Name="indysystem" Targets="C,D" Condition="USE_3RDPARTY_INDY || USE_3RDPARTY_INDY10"/>
+    <Package Name="IndyProtocols60" Targets="C6,C6p,D6,D6p" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
+    <Package Name="IndyProtocols70" Targets="D7,D7p" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
+    <Package Name="IndyProtocols" Targets="allv9up" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
+    <Package Name="IcsBcb60" Targets="C6,C6p" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="IcsDel60" Targets="D6,D6p" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsD7Run" Targets="D7,D7p" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsD2006Run" Targets="D10,D10p" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsD2007Run" Targets="D11" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsD2009Run" Targets="D12" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsD2010Run" Targets="D14" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsDXERun" Targets="D15" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsDXE2Run" Targets="D16" Condition="USE_3RDPARTY_ICS"/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvFormToHtml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHtmlParser.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMail.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvProgramVersionCheck.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRgbToHtml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRichEditToHtml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvStringListToHtml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvStrToHtml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUrlGrabbers.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUrlListGrabber.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormToHtml.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHtmlParser.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMail.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvProgramVersionCheck.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRgbToHtml.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRichEditToHtml.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvStringListToHtml.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvStrToHtml.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvUrlGrabbers.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvUrlListGrabber.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

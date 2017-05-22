@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvXPCtrls" Design="0">
+  <Description>JVCL XP Controls Runtime Package</Description>
+  <GUID>{CFE6ED76-BD93-4A2E-BE82-A8C22E686277}</GUID>
+  <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4B5C0000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
+    <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvXPBar.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXPContainer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXPCore.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXPCoreUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXPButtons.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXPCheckCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXPProgressBar.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExplorerBar.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExplorerBarItems.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPContainer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPCore.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPCoreUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPButtons.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPCheckCtrls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPProgressBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvExplorerBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvExplorerBarItems.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

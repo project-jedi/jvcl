@@ -1,0 +1,460 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>BCB Compatibility Guide</title>
+  <link rel="STYLESHEET" type="text/css" href="styles/default.css">
+</head>
+<body>
+<h2>BCB Compatibility Guide</h2>
+<p> </p>
+<hr>
+<p>This document describes the do's and don'ts of component writing
+when you want your Delphi component to work with C++Builder. Many of
+these issues were discovered while creating and testing the JVCL
+packages with C++ Builder. We are trying to test as much as we can, but
+there might still be other issues. If you know of such issues or even
+any other issues that might help us and other Delphi developers, please
+contact the JVCL team through the newsgroups on talkto.net:<br>
+<a href="news://forums.talkto.net/jedi.vcl">news://forums.talkto.net/jedi.vcl</a></p>
+<p>&nbsp;</p>
+<h3>Making your component work with BCB</h3>
+<ul>
+  <li><b>Do not use structures like TPoint and TRect as published
+property types.</b> Instead, if you need this functionality, use
+TJvPoint and TJvRect respectively. They are defined in JvTypes.pas.</li>
+  <li><b>Do not use HDC, HWND and all Win32 handle types as published
+property type or parameters to public functions.</b> The compiler will
+generate the header file replacing HANDLE by 'void *' but the object
+file will expect an integer parameter, thus triggering a linker error.
+To work around this, use another type for BCB code. See QC bug #9361
+for more details<br>
+  </li>
+  <li><span style="font-weight: bold;">Do not use const pointer
+parameters</span>. This results in an invalid hpp file being generated.
+An example of const pointer parameter is this: "const param: PInt"
+where PInt is declared like that: "PInt = ^Int". This applies to all
+pointer types in Delphi. See QC bug #7224 for more details.</li>
+  <li><span style="font-weight: bold;">Do not make your Delphi
+interfaces inheritance hierarchy deeper than one level.</span> If you
+do, the generated header file will be invalid and unusable under C++
+Builder. See QC bug #9360 for more details.<br>
+  </li>
+  <li><b>Do not declare class methods as dynamic.</b> Use virtual
+instead.</li>
+  <li><b>Do not declare class methods as abstract.</b> Use virtual
+only and provide an empty implementation</li>
+  <li><span style="font-weight: bold;">Do not declare a property of
+array type.</span> This is not supported, find another way to achieve
+the same functionnality. This is different from an indexed property, a
+property of array type is something like that: <span
+ style="font-style: italic;">property MyProp: TMyArray</span> with <span
+ style="font-style: italic;">TMyArray = array [0..n] of char</span>.<br>
+  </li>
+  <li><b>Do not use WEAKPACKAGEUNIT if you can avoid it</b>. This will
+in most cases cause a linker error, especially if the unit contains
+constants, resourcestrings and/or global variables.</li>
+  <li><span style="font-weight: bold;">Only use Integer in indexed
+property getters or setters</span>. If not, this will cause a E2347
+error when using the generated hpp file. As a result, it would be
+better not to use indexed property getters or setters.<br>
+  </li>
+</ul>
+<p>&nbsp;</p>
+<h3>Encountered errors and possible solutions when compiling a package
+for BCB</h3>
+When creating and/or updating packages with BCB, please keep in mind
+that the IDE has a tendancy to put static paths in different locations.
+This will prevent the packages from working on a machine different from
+your own. For ease of use, you should use the IDE to do add or remove
+files, but you will have to do some cleanup. First, you must remove all
+required package as BCB will add a lot of unecessary dependencies. For
+instance, it adds designintf.bpi in the runtime packages. Then save the
+packages, close it and reopen it with a text editor. You will see that
+a
+bpk file is just a XML file with different nodes for different options.
+The cleaning process involves:<br>
+<ul>
+  <li>Removing all libraries from the SPARELIBS and LIBRARIES nodes.
+Yes, all.</li>
+  <li>Removing all fixed path (C:\prog\bcb6 for instance) in every
+places you see them. If the package refuses to compile after that, you
+must change your environment for it to work. There is no way we will
+force users to put the JVCL in a particular path. Have a look at the
+CJCL60.bpl error below for a solution. You may also want to use the
+$(BCB) constant to refer to the location where BCB is installed.<br>
+  </li>
+  <li>Fixing all the wrong relative paths in the FILES nodes in the
+FILELIST node. Usually, BCB will add ..\..\design or ..\..\run in front
+of the required packages such as rtl.bpi, vcl.bpi and the JVCL ones.
+These packages must be specified with no path information.<br>
+  </li>
+</ul>
+Once you have cleaned the package, you can reopen it with BCB and
+compile it. At first there is a great chance that it will complain
+about
+missing object files (*.obj) at the linking stage. These are solved by
+adding one package after the other in the requires list of the package
+you are building. The usual order for BCB6 is:<br>
+rtl.bpi, vcl.bpi, vclx.bpi. Database related packages may also require
+dbrtl.bpi and vcldb.bpi. With BCB5, rtl.bpi and vcl.bpi are together in
+vcl50.bpi<br>
+If this is the case, use BCB to update your package, save it, close it
+and verify it is still clean (it should, except maybe for SPARELIBS and
+some absolute path). Once cleaned again, try to compile it. If it
+compiles and links, DO NOT save it. It is fine the way it is, you don't
+want to have to clean it again.<br>
+On some occasions, BCB may come up with a dialog saying that your
+package needs to require other packages in order to be compatible with
+installed packages. You must accept these changes. BCB will
+automatically recompile and relink your package. You then must save the
+changes, reclean your package and retry to compile it.<br>
+For design packages, you must try to install it, with all the packages
+it depends on installed. For instance if your package depends on
+JvCoreC6R.bpi, you must install yours with JvCoreC6D installed.<br>
+If all went fine, your package is ready to use. However, there is a
+great chance that you will encounter some problems when compiling pas
+files and the one we know of are listed below.<br>
+<br>
+<h5>Null not defined</h5>
+<p>You must add 'uses Variant' in the implementation section of the
+incriminated pas file even if it was already in the interface section. <br>
+Doing so would break Delphi compilation, so you must enclose it with
+conditional compilation directives, {$IFDEF BCB6}uses Variant;{$ENDIF}<br>
+&nbsp; <br>
+</p>
+<h5>Cannot find somefile.dcu</h5>
+<p>This error occurs because the pascal compiler (yes, pascal, not c++)
+couldn't find the indicated dcu file. If the dcu file is available
+directly, then add the path to where it is in the include path for the
+package. By doing so, please use the $(BCB) constant and not the
+absolute path to your installation. <br>
+But in most cases, the dcu file is not available in the distribution.
+If you have the VCL source, you may find the associated .pas file.
+However, DO NOT compile this file, you would break your installation.
+The dcu file IS AVAILABLE but not directly, it is included in a .dcp
+file and this file must be indicated to the pascal compiler.
+Unfortunately, there is no easy way to do that in the IDE, so you will
+have to close the package from BCB and reopen it with a text editor.
+This is an XML file and the node you're looking for is called PFLAGS.
+This contains the flags passed to the pascal compiler. At the end, just
+before the closing quote, add the recommended flag (preceded by a
+space)
+as indicated in the table below:<br>
+</p>
+<table
+ style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="1" cellpadding="1" cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center; width: 30%;">Missing
+file<br>
+      </td>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center; width: 35%;">BCB5
+flag<br>
+      </td>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center;">BCB6
+flag<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">AccCtrl.dcu<br>
+      </td>
+      <td style="vertical-align: top; width: 35%;">-LUvcl50<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">FiltEdit.dcu<small><sup>*</sup></small><br>
+      </td>
+      <td style="vertical-align: top; width: 35%;">-LUdclstd50<br>
+      </td>
+      <td style="vertical-align: top;">-LUdclstd<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 30%;">DesignIntf.dcu<small><sup>*</sup></small><br>
+      </td>
+      <td style="vertical-align: top; width: 35%;">-LUdsnide50<br>
+      </td>
+      <td style="vertical-align: top;">-LUDesignIde<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<small><sup>*</sup></small>This error should only occur in designtime
+packages. If you have this error with a runtime package, please notify
+us.<br>
+<br>
+<h5>Incompatible types: Set of char and String</h5>
+<p>Some files in the JVCL were imported from libraries that had partial
+support for BCB prior to version 5. As these versions did not support
+sets, they were replaced by other constructs, most often strings. But
+because JVCL doesn't support anything below BCB5, all conditional
+compilation directives defining Delphi sets as string must be removed
+to
+only leave Delphi style sets definitions and as such remove this error.<br>
+&nbsp; </p>
+<h5>Incompatible types</h5>
+<p>Usually an error that has to do with record constructs being used to
+perform automatic casting. This a language feature to avoid as it is
+not
+supported by BCB.<br>
+<br>
+</p>
+<h5>[Linker Fatal Error] Fatal: Unable to open file 'SOMEFILE.OBJ'</h5>
+This is because a bpi file is missing from the requires node of the
+package your are trying to build. The table below indicates the name of
+the bpi files you need to add for different missing obj files<br>
+<table
+ style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="1" cellpadding="1" cellspacing="1">
+  <tbody>
+    <tr>
+      <td colspan="1" rowspan="2"
+ style="vertical-align: top; width: 50%; font-weight: bold; text-align: center;">Missing
+file<br>
+      </td>
+      <td colspan="2" rowspan="1"
+ style="vertical-align: top; text-align: center;"><span
+ style="font-weight: bold;">Missing
+bpi file</span><br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; font-style: italic;">BCB5,
+D5<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-style: italic;">Others<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 50%;">CHECKLST.OBJ<br>
+      </td>
+      <td style="vertical-align: top;">vclx50.bpi<br>
+      </td>
+      <td style="vertical-align: top;">vclx.bpi<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">SYSTEM.OBJ<br>
+      </td>
+      <td style="vertical-align: top;">vcl50.bpi<br>
+      </td>
+      <td style="vertical-align: top;">rtl.bpi<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">CONTROLS.OBJ<br>
+      </td>
+      <td style="vertical-align: top;">vcl50.bpi<br>
+      </td>
+      <td style="vertical-align: top;">vcl.bpi<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">FILECTRL.OBJ<br>
+      </td>
+      <td style="vertical-align: top;">vclx50.bpi<br>
+      </td>
+      <td style="vertical-align: top;">vclx.bpi<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">SPIN.OBJ<br>
+      </td>
+      <td style="vertical-align: top;">vclsmp50.bpi<br>
+      </td>
+      <td style="vertical-align: top;">vclsmp.bpi<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h5>[Linker Fatal Error] Fatal: Cannot find CJCL60.bpl</h5>
+<p>You must add CJCL60.bpi to the requires list of your package. The
+directory to both CJCL60.bpi and CJCL60.bpl MUST be in the PATH
+environment variable. If you don't have these files, you need to
+compile
+the JCL first, with the BCB6 specific packages. Remember that you must
+use JCL version 1.9 or newer in order to compile the JVCL 3.<br>
+<br>
+</p>
+<h5>[Linker Fatal Error] Fatal: Access violation. Link Terminated.</h5>
+<p>See "Do not use WEAKPACKAGEUNIT" above. These errors should have
+been all removed from the JVCL following the discovery of a useless
+WEAKPACKAGEUNIT directive in the file JclResources.pas from the
+JCL.&nbsp; Their team has been informed and the file has been updated
+in version 1.9 and newer.<br>
+Before discovering this error, we found that changing the order of the
+bpi files in the FILELIST node sometimes solved this crash. It is not
+clear what is the best order, but you may want to try shuffling around
+the order of CJCL60.bpi, JvCoreC6R.bpi and JvCoreC6D.bpi<br>
+</p>
+<p>This problem may arise from other files and because it actually is
+the result of the linker crashing, it is very hard to track down.
+Borland has been told about this problem, we are yet to receive any
+answer from them.</p>
+<p>Please note that sometimes, the linker decides to crash on its own,
+giving you two linker errors. If this happens, close BCB and reopen it.
+<br>
+</p>
+<p>Finally, it seems that Update 4 for BCB6 corrected most errors in
+the linker and as a result we won't support any BCB installation that
+doesn't use Update 4.<br>
+</p>
+<p><br>
+</p>
+<h3>Encountered errors and possible solutions when compiling an
+application using a JVCL component</h3>
+These errors generally occur in a JVCL related hpp file. The hpp files
+are generated from the interface section of the pas files which
+requires
+that your components follow some simple rules so that the generated hpp
+file is a valid file. Some people have suggested that we should put the
+hpp files in the distribution packages so that we can modify them in
+order to repair them after they have been generated. This is not
+possible because those modified files would be overwritten when the
+users recompile the JVCL on their computers. And not requiring the
+users
+to recompile would mean a precompiled distribution package at least 80M
+big !<br>
+So we are asking every developer in the JVCL team to follow the above
+mentionned guidelines. However, from times to times, somebody may
+encounter an error when using one of the JVCL components. The below
+list
+contains the known errors and their solutions.<br>
+<br>
+<h5>E2238 Multiple declaration for '_fastcall TJvClass::SomeFunction'<br>
+</h5>
+<p>This one is coupled with an E2344 error. This problems comes from
+the fact that C++ Builder puts all the inherited functions in the
+declaration of a class in a header file and the VCL may already define
+a method with the same name and the same parameters. If your method is
+not a constructor, the easiest solution is to rename it so that it is
+different from the inherited one. However, if the error occurs on a
+constructor (TJvClass::TJvClass), you must follow the guidelines
+hereafter. This problem comes from the fact that in C++, constructors
+are named after the class name and
+there is no way to change that. So to avoid confusion, avoid calling
+your constructors anything else than Create. If you need additionnal
+parameters, use the overload directive and adapt your code to take this
+into account. The disctinction between the different constructors is
+made upon the order and the types of their parameters. <br>
+</p>
+<p>But in the end, this may not be enough as Borland's VCL already
+contains a number of constructors. As a result, the types you chose to
+use for your own constructor may conflict with an existing constructor.
+In such a case, you should follow Borland's guidelines from their help
+files: Add a dummy parameter at the end, giving it a default value.
+Usually, an Integer parameter is enough, like this:<br>
+</p>
+<div style="margin-left: 40px;">constructor Create(param1 : string;
+param2 : Integer; dummyForBCB : Byte = 0);<br>
+</div>
+<p>From the C++ code, to be sure to call the correct constructor, you
+must give a value for this dummy parameter even if it won't be used.</p>
+<br>
+<h5>E2303 Type name expected (on a __property line)</h5>
+<p>This is because of bad casing on an inherited property. The usual
+example is having a property named PopUpMenu where it should be
+PopupMenu. BCB is case sensitive so you must respect casing in your pas
+files, at least in the interface section.<br>
+&nbsp;</p>
+<h5>E2040 Declaration terminated incorrectly</h5>
+<p>This generally happens on a constant declaration and is because one
+or more pas files declare a value for a constant that already exists in
+the
+header files bundled with BCB. You must tell the hpp generator not to
+include this constant by adding a $EXTERNALSYM compilation directive in
+the pas file, just after your pascal constant. For instance, you must
+do
+this for S_OK</p>
+<p>const S_OK : Integer = 0;<br>
+{$EXTERNALSYM S_OK}<br>
+&nbsp;<br>
+</p>
+<h5>E2316 'TPoint' is not a member of 'Windows'<br>
+</h5>
+<p>This is because you placed Windows after Types in the uses for your
+unit. If you don't have Types in the uses for your unit, either add it
+(simplest), or find all instances of TPoint and replace them by
+Types.TPoint. This has no impact on your code as the Windows.pas unit
+defines its TPoint type to be Types.TPoint. However, it does not end up
+in the Windows.hpp file for C++ Builder because of a NODEFINE directive.<br>
+Note that the Types unit is not available in version 5 of the VCL,
+which means that this problem does not affect Delphi 5 or C++ Builder 5.<br>
+</p>
+&nbsp;
+<br>
+<h5>Cannot initialize constant</h5>
+<p>(or something similar, usually provokes 3 errors on the same line,
+the second being the interesting one). This is because the parameter
+name you chose for your function is a constant under BCB. The only
+solution is to change the name of the incriminated parameter. This was
+found with a parameter called SwitchChars in the GetCmdLineArg function
+in JvJCLUtils.pas<br>
+<br>
+</p>
+<h5>E2347 Parameter mismatch in access specifier &#8216;specifier&#8217; of
+property &#8216;property&#8217;<br>
+</h5>
+<p>This is generally because the component doesn't uses Integer as its
+index type for an indexed property getter or setter. You can always
+avoid using indexed property setters, so please don't use them.<br>
+</p>
+&nbsp;
+<h5>E2015 Ambiguity between SOMETYPE and SomeDomain::SOMETYPE</h5>
+<p>This is because the type SOMETYPE is a global type (in windows.h,
+generally) and is also defined in the SomeDomain file. To lift this
+ambiguity, you must add a line at the beginning of the pas file that
+does that: "{$HPPEMIT '#define SOMETYPE SomeDomain::SOMETYPE'}". But if
+SOMETYPE is a JVCL type (starts with TJv) then this is because
+SomeDomain.pas contains a bogus declaration and should be fixed. Please
+notify us if that problem occurs.<br>
+</p>
+<p>ATTENTION: If the second type is a function like in
+"JclWin32::WORD(const unsigned int)" you MUST not add this HPPEMIT
+directive. The problem in this case comes from the fact that a function
+defined in the .pas file is named exactly as a macro in the windows
+header an gets replaced by its value. For instance in the given
+example,
+LANGFROMLCID was replaced by its value which is WORD and that lead to
+the declaration of LANGFROMLCID(const unsigned int) from the pascal
+code
+to be replaced by WORD(const unsigned int).<br>
+</p>
+<p>However, if this error is generated in an hpp file not from the JVCL
+(filename not starting with Jv), such as Controls.hpp, you can't change
+this file, you must reorder the units in your uses clause so that the
+conflict goes away. For instance, in the case of Controls.hpp, the
+solution was to put Controls before Windows in the uses clause.<br>
+</p>
+<h5>[Linker Error] Error: Unresolved external SomeType::GetMessageA
+referenced from SomeUnit.OBJ&nbsp; (Any function with a capital A at
+the end can be in the message)<br>
+</h5>
+<p>This is because SomeType has a public function (or getter/setter for
+a public property) that is named GetMessage while GetMessage is also a
+function from the Win32 API. As this function is implemented as Ansi
+and Unicode versions, there is a typedef that tells the compiler this:
+whenever you see GetMessage, replace it by GetMessageA.<br>
+So the compiler always uses GetMessageA and is happy about it. But when
+the linker comes in, it looks for GetMessageA in the SomeType class and
+of course does not find it.<br>
+The ONLY solution to this is to rename the function to a name that is
+not the name of an API function, and as such must be mentionned to the
+JVCL developpers.<br>
+GetMessage is not the only function name that can trigger this error,
+any function from the Win32 API that is implemented as Ansi and Unicode
+is not to be used for a public method of a class.<br>
+</p>
+<p></p>
+</body>
+</html>

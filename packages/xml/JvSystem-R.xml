@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvSystem" Design="0">
+  <Description>JVCL System Components Runtime Package</Description>
+  <GUID>{5AA7A634-CDB2-46E6-B265-F973C14FFB4B}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs>wininet.lib</C6Libs>
+  <ImageBase>49D00000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\Ras32.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\Hid.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\HidToken.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\HidUsage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\ModuleLoader.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\WinConvTypes.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\DBT.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSetupApi.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXmlDatabase.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppInst.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvChangeNotify.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvClipboardMonitor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvClipboardViewer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCommStatus.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDdeCmd.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDragDrop.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormPlacement.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormPlacementSelectList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHidControllerClass.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvJoystick.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMRUList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMRUManager.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvNTEventLog.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPerfMon95.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRas32.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScreenResolution.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScreenSaver.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSearchFiles.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvShellHook.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSHFileOperation.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSimpleXml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSoundControl.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvThread.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvThreadDialog.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvThreadTimer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTimer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTimerList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWndProcHook.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDebugHandler.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppXMLStorage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvComputerInfoEx.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppCommand.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScreenSaveSuppress.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSysRequirements.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMailSlots.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXmlDatabase.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAppInst.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvChangeNotify.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvClipboardMonitor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvClipboardViewer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCommStatus.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDdeCmd.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDragDrop.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormPlacement.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormPlacementSelectList.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHidControllerClass.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvJoystick.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMRUList.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMRUManager.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvNTEventLog.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPerfMon95.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRas32.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScreenResolution.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScreenSaver.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSearchFiles.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvShellHook.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSHFileOperation.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSimpleXml.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSoundControl.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvThread.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvThreadDialog.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvThreadTimer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTimer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTimerList.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWndProcHook.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDebugHandler.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAppXMLStorage.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvComputerInfoEx.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAppCommand.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScreenSaveSuppress.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSysRequirements.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMailSlots.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

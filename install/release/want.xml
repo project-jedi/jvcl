@@ -1,0 +1,307 @@
+<?xml version="1.0"?>
+<!-- JVCL build script -->
+<project name="JVCL" default="help">
+  <property name="version.major"    value="3"/>
+  <property name="version.minor"    value="4"/>
+  <property name="version.release"  value="6"/>
+  <property name="version.build"    value=" "/>
+  <property name="jclversion"       value="241-Build4571" />
+  <property name="version"          value="${version.major}.${version.minor}.${version.release}.${version.build}"/>
+  <property name="shortversion"     value="${version.major}${version.minor}${version.release}${version.build}"/>
+  <!-- JVCL releases -->
+  <property name="fullzip"     value="JVCL${shortversion}CompleteNoJCL.zip" />
+  <property name="fulljclzip"  value="JVCL${shortversion}CompleteJCL${jclversion}.zip" />
+  <property name="srcexzip"    value="JVCL${shortversion}SourceExamples.zip" />
+  <property name="srczip"      value="JVCL${shortversion}SourceOnly.zip" />
+  <!-- standalone -->
+  <property name="uibzip"      value="JvUIB${shortversion}.zip" />
+  <property name="tfzip"       value="JvTimeFramework${shortversion}.zip" />
+  <property name="mtzip"       value="JvManagedThreads${shortversion}.zip" />
+  <property name="dotnetzip"   value="JvDotNetCtrls${shortversion}.zip" />
+  <property name="dockzip"     value="JvDocking${shortversion}.zip" />
+  <property name="xpzip"       value="JvXPCtrls${shortversion}.zip" />
+  <property name="wizzip"      value="JvWizard${shortversion}.zip" />
+
+  <target name="help">
+    <echo message="Usage: want [target]" />
+    <echo message="" />
+    <echo message="Available targets:" />
+    <echo message="" />
+    <echo message="  jvcl_export - gets latest JVCL from SVN." />
+    <echo message="    NOTE: svn must be in PATH!" />
+    <echo message="" />
+    <echo message="  jcl_export - gets latest JCL from SVN." />
+    <echo message="    NOTE: svn must be in PATH!" />
+    <echo message="" />
+    <echo message="  dist - builds JVCL zip files" />
+    <echo message="" />
+    <echo message="  standalone - builds standalone zip files" />
+    <echo message="" />
+    <echo message="  separate - builds separate zip files" />
+    <echo message="" />
+    <echo message="  all - build all zip files" />
+    <echo message="" />
+    <echo message="  release - get all from CVS and build all zip files" />
+    <echo message="" />
+    <echo message="  ftpupload - upload generated zip files to sourceforge" />
+    <echo message="" />
+    <echo message="  JVCLConvert - builds and packs the JVCLConvert application" />
+    <echo message="" />
+    <echo message="  convert - converts the zip files to 7z." />
+    <echo message="    NOTE: Converter program must be in PATH!" />
+  </target>
+
+  <target name="jcl_export" description="Get latest jcl from SVN">
+<!--  <delete dir="jcl" /> -->
+    <exec executable="svn.exe" basedir=".">
+      <arg value="export http://jcl.svn.sourceforge.net/svnroot/jcl/trunk/jcl" />
+    </exec>
+  </target>
+
+  <target name="jvcl_export" description="Get latest jvcl from SVN">
+<!--  <delete dir="jvcl" /> -->
+    <exec executable="svn.exe" basedir=".">
+      <arg value="export http://jvcl.svn.sourceforge.net/svnroot/jvcl/trunk/jvcl" />
+    </exec>
+  </target>
+  <target name="JVCLConvert" description="Builds and packs the JVCLConvert application">
+    <exec executable="make.exe" basedir="./jvcl/devtools">
+      <arg value="JVCLConvert.exe" />
+    </exec>
+    <zip zipfile="JVCLConvert${shortversion}.zip" preservePath="false">
+      <include name="./jvcl/devtools/bin/JVCLConvert.exe" />
+    </zip>
+    <delete file="./jvcl/devtools/bin/JVCLConvert.exe" />
+  </target>
+  <target name="dist" description="Build JVCL .zip files">
+    <delete file="${fulljclzip}" />
+    <zip zipfile="${fulljclzip}">
+      <fileset>
+        <exclude name=".cvsignore" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jcl/**" />
+        <include name="./jvcl/**" />
+      </fileset>
+    </zip>
+    <delete file="${fullzip}" />
+    <zip zipfile="${fullzip}">
+      <fileset>
+        <exclude name=".cvsignore" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/**" />
+      </fileset>
+    </zip>
+    <delete file="${srcexzip}" />
+    <zip zipfile="${srcexzip}">
+      <fileset>
+        <exclude name=".cvsignore" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/bin/**" />
+        <include name="./jvcl/common/**" />
+        <include name="./jvcl/dcu/**" />
+        <include name="./jvcl/design/**" />
+        <include name="./jvcl/Dict/**" />
+        <include name="./jvcl/examples/**" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
+        <include name="./jvcl/lib/**" />
+        <include name="./jvcl/packages/**" />
+        <include name="./jvcl/Resources/**" />
+        <include name="./jvcl/run/**" />
+      </fileset>
+    </zip>
+    <delete file="${srczip}" />
+    <zip zipfile="${srczip}">
+      <fileset>
+        <exclude name=".cvsignore" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/common/**" />
+        <include name="./jvcl/design/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/lib/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <include name="./jvcl/packages/**" />
+        <include name="./jvcl/Resources/**" />
+        <include name="./jvcl/run/**" />
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="standalone" description="Build standalone zip files">
+    <delete file="${uibzip}" />
+    <zip zipfile="${uibzip}">
+      <fileset>
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvUIB*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/Includes/**" />
+        <include name="./jvcl/examples/JvUIB/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
+      </fileset>
+    </zip>
+    <delete file="${tfzip}" />
+    <zip zipfile="${tfzip}">
+      <fileset>
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvTF*" />
+        <include name="./jvcl/**/JvTimeFramework*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/examples/JvTimeFrameWork/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
+      </fileset>
+    </zip>
+    <delete file="${mtzip}" />
+    <zip zipfile="${mtzip}">
+      <fileset>
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvMT*" />
+        <include name="./jvcl/**/JvManagedThreads*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/examples/JvManagedThreads/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
+      </fileset>
+    </zip>
+    <delete file="${dotnetzip}" />
+    <zip zipfile="${dotnetzip}">
+      <fileset>
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvDotNet*" />
+        <include name="./jvcl/**/JvDBDotNet*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/examples/JvDotNetCtrls/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
+      </fileset>
+    </zip>
+    <delete file="${dockzip}" />
+    <zip zipfile="${dockzip}">
+      <fileset>
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvDock**" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/examples/JvDocking/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
+      </fileset>
+    </zip>
+    <delete file="${xpzip}" />
+    <zip zipfile="${xpzip}">
+      <fileset>
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvXP*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/examples/JvXPControls/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
+      </fileset>
+    </zip>
+    <delete file="${wizzip}" />
+    <zip zipfile="${wizzip}">
+      <fileset>
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvWizard*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
+      </fileset>
+    </zip>
+  </target>
+  <target name="separate" description="Build separate zip files">
+    <want buildfile="separate.xml"/>
+  </target>
+  <target name="all" description="Build all zip files" depends="separate, standalone, dist">
+    <!-- builds everything -->
+  </target>
+  <target name="release" description="Get all from CVS and build all zip files" depends="jvcl_export, jcl_export, all">
+    <!-- exports from CVS and builds everything -->
+  </target>
+  <target name="ftpupload" description="Upload zip files to sourceforge FTP">
+    <echo file="ftpupload.txt" append="no">
+    open upload.sourceforge.net
+    anonymous
+    peter3@sourceforge.net
+    binary
+    hash
+    cd /incoming
+    put ${fulljclzip}
+    put ${fullzip}
+    put ${srcexzip}
+    put ${srczip}
+    put ${uibzip}
+    put ${tfzip}
+    put ${mtzip}
+    put ${dotnetzip}
+    put ${dockzip}
+    put ${xpzip}
+    put ${wizzip}
+    quit
+    </echo>
+    <exec executable="ftp.exe">
+      <arg value="-s:ftpupload.txt" />
+    </exec>
+  </target>
+  <property name="archiver" value="C:\Program Files (x86)\IZArc\izarc.exe"/>
+  <target name="convert" description="Convert large zips to 7z">
+    <exec executable="${archiver}">
+      <arg value="-cv ${fulljclzip}" />
+    </exec>
+    <exec executable="${archiver}">
+      <arg value="-cv ${fullzip}" />
+    </exec>
+    <exec executable="${archiver}">
+      <arg value="-cv ${srcexzip}" />
+    </exec>
+    <exec executable="${archiver}">
+      <arg value="-cv ${srczip}" />
+    </exec>
+  </target>
+  
+</project>

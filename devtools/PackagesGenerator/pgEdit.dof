@@ -1,0 +1,10 @@
+[Directories]
+OutputDir=..\bin
+UnitOutputDir=..\dcu
+PackageDLLOutputDir=
+PackageDCPOutputDir=
+SearchPath=..\..\common
+Conditionals=
+DebugSourceDirs=
+UsePackages=0
+

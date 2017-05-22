@@ -1,0 +1,5 @@
+strips comments from PO files
+Usage:
+  stripCmtPo input.po output.po
+
+if output.po is not given, input.po is saved as input.new.po

@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>JVCL Localization</title>
+  <link rel="STYLESHEET" type="text/css" href="styles/default.css">
+</head>
+<body>
+<h1>Localization of the JVCL<br>
+</h1>
+<hr style="width: 100%; height: 2px;"><br>
+All strings in JVCL that are displayed to the user have been grouped
+into JvResources.pas and are stored as resourcestrings. Even if you
+could use
+the Integrated Translation Environment that comes with Delphi, we do
+not recommend it as it is not easily maintainable and contains a few
+very annoying bugs. The only
+other localization method supported by the JVCL group is DxGettext, a
+port of
+the GNU Gettext library to Delphi done by <a
+ href="mailto:Lars@dybdahl.dk">Lars
+B. Dybdahl</a>. It is available at this address: <a
+ href="http://dybdahl.dk/dxgettext/">http://dybdahl.dk/dxgettext/</a><br>
+<br>
+All you need to do is download and install DxGettext, compile the JVCL
+with USE_DXGETTEXT defined (this define is in \common\jvcl.inc) and the
+JVCL will be localized to the
+language your application chose to run in. We won't go into the details
+of the usage of DxGettext here, but the easiest way to have your
+forms localized is to make them inherit from TJvForm
+instead of TForm (the declaration of TJvForm can be found in
+\run\JvComponent, so you need to add JvComponent to the uses clause of
+your form). This ensures automatic localization of JVCL components and
+strings. <br>
+<br>
+The following languages are currently distributed with the JVCL:<br>
+<br>
+<table
+ style="width: 70%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="1" cellpadding="2" cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold; width: 10%;"
+ rowspan="2" colspan="1">Language<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold; width: 15%;"
+ rowspan="2" colspan="1">Language
+code<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold; width: 10%;"
+ rowspan="1" colspan="2">Progress<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; font-weight: bold;"
+ rowspan="2" colspan="1">Translators<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; width: 10%;">JVCL<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 10%;">JVCL&nbsp;Installer<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Bulgarian<br>
+      </td>
+      <td style="vertical-align: top; text-align: left;">
+      <div style="margin-left: 40px;">bg<br>
+      </div>
+      </td>
+      <td style="vertical-align: top; text-align: right;">35%<br>
+      </td>
+      <td style="vertical-align: top; text-align: right;">64%<br>
+      </td>
+      <td style="vertical-align: top;">Georgi Panayotov<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: middle;">Dutch<br>
+      </td>
+      <td style="text-align: left; vertical-align: middle;">
+      <div style="margin-left: 40px;">nl<br>
+      </div>
+      </td>
+      <td style="vertical-align: top; text-align: right;">21%<br>
+      </td>
+      <td style="vertical-align: top; text-align: right;">65%<br>
+      </td>
+      <td style="vertical-align: top;">Wiebe Tijsma<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 10%; vertical-align: middle;" rowspan="1"
+ colspan="1">French<br>
+      </td>
+      <td style="width: 15%; vertical-align: middle;" rowspan="1"
+ colspan="1">
+      <div style="margin-left: 40px;">fr<br>
+      </div>
+      </td>
+      <td style="vertical-align: top; width: 10%; text-align: right;">100%<br>
+      </td>
+      <td style="vertical-align: top; text-align: right;">100%<br>
+      </td>
+      <td style="vertical-align: top;">Lionel Reynaud, Olivier Sannier,
+nanotonne<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 10%; vertical-align: middle;">German<br>
+      </td>
+      <td style="width: 15%; vertical-align: middle;">
+      <div style="margin-left: 40px;">de<br>
+      </div>
+      </td>
+      <td style="vertical-align: top; width: 10%; text-align: right;">58%<br>
+      </td>
+      <td style="vertical-align: top; text-align: right;">100%</td>
+      <td style="vertical-align: top;">Andreas Hausladen<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 10%; vertical-align: middle;">Italian<br>
+      </td>
+      <td style="width: 15%; vertical-align: middle;">
+      <div style="margin-left: 40px;">it<br>
+      </div>
+      </td>
+      <td style="vertical-align: top; width: 10%; text-align: right;">92%<br>
+      </td>
+      <td style="vertical-align: top; text-align: right;">89%</td>
+      <td style="vertical-align: top;"> Carmelo Viavattene, Stefano
+Pessina, peste1, Gianpiero Caretti<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Polish<br>
+      </td>
+      <td style="vertical-align: top;">
+      <div style="margin-left: 40px;">pl<br>
+      </div>
+      </td>
+      <td style="vertical-align: top; text-align: right;">51%<br>
+      </td>
+      <td style="vertical-align: top; text-align: right;">64%<br>
+      </td>
+      <td style="vertical-align: top;"> Grzegorz Skoczylas</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; white-space: nowrap;">Portuguese
+(Brazil)<br>
+      </td>
+      <td style="vertical-align: top; text-align: left;">
+      <div style="margin-left: 40px;">pt_BR<br>
+      </div>
+      </td>
+      <td style="vertical-align: top; text-align: right;">98%<br>
+      </td>
+      <td style="vertical-align: top; text-align: right;">62%<br>
+      </td>
+      <td style="vertical-align: top;">Franklin Haut<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Romanian</td>
+      <td style="vertical-align: top;">
+      <div style="margin-left: 40px;">ro</div>
+      </td>
+      <td style="vertical-align: top; text-align: right;">32%</td>
+      <td style="vertical-align: top; text-align: right;">0%</td>
+      <td style="vertical-align: top;">Anton Iulian</td>
+    </tr>
+    <tr>
+      <td style="width: 10%; vertical-align: middle;">Russian<br>
+      </td>
+      <td style="width: 15%; vertical-align: middle;">
+      <div style="margin-left: 40px;">ru<br>
+      </div>
+      </td>
+      <td style="vertical-align: top; width: 10%; text-align: right;">0%<br>
+      </td>
+      <td style="vertical-align: top; text-align: right;">63%</td>
+      <td style="vertical-align: top;">SHC<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 10%; vertical-align: middle;">Spanish<br>
+      </td>
+      <td style="width: 15%; vertical-align: middle;">
+      <div style="margin-left: 40px;">es<br>
+      </div>
+      </td>
+      <td style="vertical-align: top; width: 10%; text-align: right;">73%<br>
+      </td>
+      <td style="vertical-align: top; text-align: right;">66%</td>
+      <td style="vertical-align: top;">Enrique F. Becerra<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 10%; vertical-align: middle;">Swedish<br>
+      </td>
+      <td style="width: 15%; vertical-align: middle;">
+      <div style="margin-left: 40px;">sv<br>
+      </div>
+      </td>
+      <td style="vertical-align: top; width: 10%; text-align: right;">30%<br>
+      </td>
+      <td style="vertical-align: top; text-align: right;">80%</td>
+      <td style="vertical-align: top;">Peter Thornqvist<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+As you can see, there is still a lot of work to do on this side of the
+JVCL. If you want to help us, we recommend you download poEdit from <a
+ href="http://www.poedit.org/">http://www.poedit.org/</a> and edit the
+jvcl.po file for the language you want to work on.
+<p><br>
+If your language doesn't appear in this list, use the file jvcl.po
+located directly in the <span style="font-weight: bold;">locale</span>
+directory. Translate as much as you can, then send the file to us
+indicating the language on which you worked (ideally indicating the two
+letter code). You can contact us <a href="../readme.htm#contact">here</a>.</p>
+<p><br>
+Should you require any assistance, do not hesitate to contact
+us, but please keep in mind that most of the issues related to the use
+of DxGettext are covered by the documentation available on the
+DxGettext website.<br>
+</p>
+</body>
+</html>

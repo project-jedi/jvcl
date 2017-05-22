@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<Package Name="JvCustom" Design="0">
+  <Description>JVCL Custom Controls Runtime Package</Description>
+  <GUID>{4A50AFAA-822C-4884-9143-3B7A7963E7CB}</GUID>
+  <C6PFlags>-LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>49340000</ImageBase>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
+    <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
+    <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
+    <Package Name="vclimg" Targets="allv12up" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvChart.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDiagramShape.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGammaPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvEditorCommon.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUnicodeEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUnicodeHLEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHLEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHLEditorPropertyForm.pas" Targets="all" Formname="JvHLEditorParamsForm" Condition=""/>
+    <File Name="..\..\run\JvHLParser.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLinkLabel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLinkLabelDebug.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLinkLabelParser.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLinkLabelRenderer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLinkLabelTextHandler.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLinkLabelTools.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLinkLabelTree.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLookOut.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOutlookBar.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSchedEvtStore.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScheduledEvents.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvThumbImage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvThumbnails.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvThumbViews.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTMTimeLine.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTrayIcon.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUnicodeCanvas.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvValidateEdit.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBalloonHint.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBaseThumbnail.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTimeLine.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCustomItemViewer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImagesViewer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImagelistViewer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOwnerDrawViewer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTabBar.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTabBarXPPainter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvChart.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDiagramShape.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGammaPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvEditorCommon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvUnicodeEditor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvUnicodeHLEditor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvEditor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHLEditor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHLEditorPropertyForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHLParser.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelDebug.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelParser.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelRenderer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelTextHandler.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelTools.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelTree.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLookOut.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOutlookBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSchedEvtStore.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScheduledEvents.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvThumbImage.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvThumbnails.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvThumbViews.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTMTimeLine.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTrayIcon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvUnicodeCanvas.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvValidateEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBalloonHint.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBaseThumbnail.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTimeLine.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCustomItemViewer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImagesViewer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImagelistViewer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOwnerDrawViewer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTabBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTabBarXPPainter.dtx" Targets="help" Formname="" Condition=""/>
+  </Contains>
+</Package>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvTimeFrameworkDesign" Design="-1">
+  <Description>JVCL Time Framework</Description>
+  <GUID>{D6D9B4EE-4AC3-4971-8178-DC1EA29EC16F}</GUID>
+  <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
+  <C6Libs/>
+  <ImageBase>4A450000</ImageBase>
+  <Requires>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+    <Package Name="JvTimeFramework-R" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvTimeFrameworkReg.pas" Targets="all_win32" Formname="" Condition=""/>
+  </Contains>
+</Package>

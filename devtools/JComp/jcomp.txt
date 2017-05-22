@@ -1,0 +1,7 @@
+Tool that extracts all the components registered using RegisterComponents in a pas unit.
+Usage:
+  jcomp <filemask>, where <filemask> is the wildcard enabled file mask to use
+
+Output is written to the console. To check all registration files in JVCL\design and put the result into a file, use something like:
+
+jcomp Jv*Reg.pas >JVCLComps.txt

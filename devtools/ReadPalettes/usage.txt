@@ -1,0 +1,8 @@
+This package spies on various IDE functions to create lists.
+
+The JVCL needs to be installed already.
+1. Install this design time only package.
+2. While still in the IDE open "DXXX Packages.bpg" from the Packages directory.
+3. Perform a "Build all Projects" on it.
+4. While still in the IDE uninstall this package (named 'IDE tool to create the list of all installed JVCL components').
+5. You will get a series of save dialogs for the various CSV files generated.

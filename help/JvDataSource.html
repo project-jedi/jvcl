@@ -1,0 +1,367 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+  <title>Usage of JvDataSource</title>
+</head>
+<body>
+<h1>Usage of JvDataSource</h1>
+<h3> </h3>
+<hr>
+<h2>How to connect JVCL controls with a DataSet</h2>
+<p>There are two different kinds of JVCL controls. One that support the TDataSource
+component and start with the <b>TJvDB</b> prefix. And the other that do not show their
+data binding in the name. The <b>TJvDB</b> controls can be connected to a DataSet by
+simply setting their DataSource property to a TDataSource. But the more interesting
+controls are the so called JvDataSource-aware controls.<br />
+These components have a <b>DataConnector</b> property that handles the data binding for
+the control.
+<p align="left">&nbsp;</p>
+<p align="left">
+<img src="images/JvDataSourceJvCheckBox.png" border="0"></p>
+<p align="left">&nbsp;</p>
+<p>The DataConnector does not depend on any database code. This allows the component to
+be data aware when you have a Delphi/BCB/BDS SKU that has the DB.pas unit and to use the
+component without a DataSet when you have a Personal Edition. This is made possibile by
+the IJvDataSource interface that is used by the DataConnector to communicate with the
+TJvDataSource component. The TJvDataSource implements the IJvDataSource interface what
+TDataSource doesn't do. So it is only possible to connect the DataConnector to a TJvDataSource.
+</p>
+<p>&nbsp;</p>
+<h2>Available JvDataSource-aware control</h2>
+<p>The following components have a DataConnector property:</p>
+<ul>
+  <li><b>TJvEdit</b></li>
+  <li><b>TJvValidateEdit</b><br /><i>Supports NullValue when the field is NULL</i></li>
+  <li><b>TJvComboEdit</b></li>
+  <li><b>TJvDateEdit</b><br /><i>Supports DefaultDate and DefaultDateIsNow when the field is NULL</i></li>
+  <li><b>TJvCheckBox</b></li>
+  <li><b>TJvCheckListBox</b><br /><i>Selects a row and the checked state can be written to another JvDataSource</i></li>
+  <li><b>TJvHTListBox</b><br /><i>Selects a row</i></li>
+  <li><b>TJvTimeEdit</b></li>
+  <li><b>TJvIPAddress</b><br /><i>Works only with a String-Field, no NULL value</i></li>
+</ul>
+<p>&nbsp;</p>
+<h1>Making an edit control JvDataSource-aware</h1>
+<h3> </h3>
+<hr>
+<h2>Decide what DataConnector to use</h2>
+<p>The following predefined DataConnectors are available:</p>
+<ul>
+  <li><b>TJvDataConnector</b>: Connects the whole DataSet to the control</li>
+  <li><b>TJvFieldDataConnector</b>: Connects a single field to the control (e.g. TJvEdit)</li>
+  <li><b>TJvLookupDataConnector</b>: Connects a lookup list to the control (e.g. TJvCheckListBox)</li>
+</ul>
+<p>&nbsp;</p>
+<h2>Deriving a specialized DataConnector</h2>
+After you have choosen a DataConnector base class that fullfill the needs of the control, you
+must create a decendent of this base class that does the actual data binding for the component.
+In that decendent you have to implement the RecordChanged and UpdateData virtual methods. The 
+default implementation of ActiveChanged calls RecordChanged. In RecordChanged you have to load 
+the values from the DataSource and write them to the assigned control. The UpdateData method is
+called whenever the data in the control should be transfered to the DataSource.</p>
+<p>As an example the TEdit should be made JvDataSource aware.</p>
+
+<pre class="sourcecode">
+<code class="keyword">type</code>
+  TEditEx = <code class="keyword">class</code>;
+
+  TEditExDataConnector = <code class="keyword">class</code>(TJvFieldDataConnector)
+  <code class="keyword">private</code>
+    FEdit: TEditEx;
+  <code class="keyword">protected</code>
+    <code class="keyword">procedure</code> RecordChanged; <code class="keyword">override</code>;
+    <code class="keyword">procedure</code> UpdateData; <code class="keyword">override</code>;
+    <code class="keyword">property</code> Edit: TEditEx <code class="keyword">read</code> FEdit;
+  <code class="keyword">public</code>
+    <code class="keyword">constructor</code> Create(AEdit: TEditEx);
+  <code class="keyword">end</code>;
+</pre>
+The <b>TEditExDataConnector</b> class connects the FieldDataConnector to the <b>TEditEx</b> class.<br />
+In the <i>RecordChanged</i> method the value from the data field is copied to the Edit.Text property and the ReadOnly
+property is set depending on the field's CanModify property. If the field is not valid (Field.IsValue returns False)
+then the edit is set to readonly mode.<br />
+In the <i>UpdateData</i> method the edit's text is written to the field's value property.</p>
+<pre class="sourcecode">
+<code class="keyword">constructor</code> TEditExDataConnector.Create(AEdit: TEditEx);
+<code class="keyword">begin</code>
+  <code class="keyword">inherited</code> Create;
+  FEdit := AEdit;
+<code class="keyword">end</code>;
+
+<code class="keyword">procedure</code> TEditExDataConnector.RecordChanged;
+<code class="keyword">begin</code>
+  <code class="keyword">if</code> Field.IsValid <code class="keyword">then</code>
+  <code class="keyword">begin</code>
+    FEdit.ReadOnly := <code class="keyword">not</code> Field.CanModify;
+    FEdit.Text := Field.AsString;
+  <code class="keyword">end</code>
+  <code class="keyword">else</code>
+  <code class="keyword">begin</code>
+    FEdit.Text := <code class="quote">''</code>;
+    FEdit.ReadOnly := True;
+  <code class="keyword">end</code>;
+<code class="keyword">end</code>;
+
+<code class="keyword">procedure</code> TEditExDataConnector.UpdateData;
+<code class="keyword">begin</code>
+  Field.AsString := FEdit.Text;
+  FEdit.Text := Field.AsString; <code class="comment">// update to stored value</code>
+<code class="keyword">end</code>;
+</pre>
+
+
+<p>&nbsp;</p>
+<h2>Adding the necessary functionality to the edit control</h2>
+<pre class="sourcecode">
+  TEditEx = <code class="keyword">class</code>(TEdit)
+  <code class="keyword">private</code>
+    FDataConnector: TEditExDataConnector;
+    <code class="keyword">procedure</code> SetDataConnector(<code class="keyword">const</code> Value: TEditExDataConnector);
+  <code class="keyword">protected</code>
+    <code class="keyword">procedure</code> KeyPress(<code class="keyword">var</code> Key: Char); <code class="keyword">override</code>;
+    <code class="keyword">procedure</code> DoExit; <code class="keyword">override</code>;
+    <code class="keyword">procedure</code> Change; <code class="keyword">override</code>;
+    <code class="keyword">function</code> CreateDataConnector: TEditExDataConnector; <code class="keyword">virtual</code>;
+  <code class="keyword">public</code>
+    <code class="keyword">constructor</code> Create(AOwner: TComponent); <code class="keyword">override</code>;
+    <code class="keyword">destructor</code> Destroy; <code class="keyword">override</code>;
+  <code class="keyword">published</code>
+    <code class="keyword">property</code> DataConnector: TEditExDataConnector <code class="keyword">read</code> FDataConnector <code class="keyword">write</code> SetDataConnector;
+  <code class="keyword">end</code>;
+</pre>
+<p>The next step is to add the new DataConnector class to the TEdit control. For this we need
+a DataConnector property that has a setter method. Without the setter Delphi would not store the
+properties of the DataConnector to the DFM/NFM/XFM. The virtual CreateDataConnector method allow
+decendants to implement an own DataConnector class.<br />
+In the <i>KeyPress</i> method we test if the user has pressed the ESCAPE key and reset the control's data
+by calling the DataConnector.Reset method.<br />
+In the <i>Change</i> method we inform the data source that we want to edit it's data.<br />
+The <ii>DoExit</i> method transfers the edit's data to the data source by calling DataConnector.UpdateRecord<br />
+&nbsp;</br />
+<b>The DataConnector ignores all actions if no JvDataSource is connected to it.</b></p>
+<pre class="sourcecode">
+<code class="keyword">constructor</code> TEditEx.Create(AOwner: TComponent);
+<code class="keyword">begin</code>
+  <code class="keyword">inherited</code> Create(AOwner);
+  FDataConnector := CreateDataConnector;
+<code class="keyword">end</code>;
+
+<code class="keyword">destructor</code> TEditEx.Destroy;
+<code class="keyword">begin</code>
+  FDataConnector.Free;
+  <code class="keyword">inherited</code> Destroy;
+<code class="keyword">end</code>;
+
+<code class="keyword">function</code> TEditEx.CreateDataConnector: TEditExDataConnector;
+<code class="keyword">begin</code>
+  Result := TEditExDataConnector.Create(Self);
+<code class="keyword">end</code>;
+
+<code class="keyword">procedure</code> TEditEx.SetDataConnector(<code class="keyword">const</code> Value: TEditExDataConnector);
+<code class="keyword">begin</code>
+  <code class="keyword">if</code> Value &lt;&gt; FDataConnector <code class="keyword">then</code>
+    FDataConnector.Assign(Value);
+<code class="keyword">end</code>;
+
+<code class="keyword">procedure</code> TEditEx.Change;
+<code class="keyword">begin</code>
+  DataConnector.Modify;
+  <code class="keyword">inherited</code> Change;
+<code class="keyword">end</code>;
+
+<code class="keyword">procedure</code> TEditEx.DoExit;
+<code class="keyword">begin</code>
+  DataConnector.UpdateRecord;
+  <code class="keyword">inherited</code> DoExit;
+<code class="keyword">end</code>;
+
+<code class="keyword">procedure</code> TEditEx.KeyPress(<code class="keyword">var</code> Key: Char);
+<code class="keyword">begin</code>
+  <code class="keyword">inherited</code> KeyPress(Key);
+  <code class="keyword">if</code> (Key = <code class="quote">#27</code>) <code class="keyword">and</code> DataConnector.Active <code class="keyword">then</code>
+  <code class="keyword">begin</code>
+    DataConnector.Reset;
+    Key := <code class="quote">#0</code>;
+  <code class="keyword">end</code>;
+<code class="keyword">end</code>;
+</pre>
+
+
+
+
+
+<p>&nbsp;</p>
+<h1>Making a list control JvDataSource-aware</h1>
+<h3> </h3>
+<hr>
+<h2>Decide what DataConnector to use</h2>
+<p>In this case we use a TJvFieldDataConnector because the ListBox should display the field values.
+The ListBox is used as a navigator and as such it does not need to update any data to the data source.</p>
+<p>&nbsp;</p>
+<h2>Deriving a specialized DataConnector</h2>
+<pre class="sourcecode">
+<code class="keyword">type</code>
+  TJvCustomListBoxDataConnector = <code class="keyword">class</code>(TJvFieldDataConnector)
+  <code class="keyword">private</code>
+    FListBox: TCustomListBox;
+    FMap: TList;
+    FRecNoMap: TBucketList;
+  <code class="keyword">protected</code>
+    <code class="keyword">procedure</code> Populate; <code class="keyword">virtual</code>;
+    <code class="keyword">procedure</code> ActiveChanged; <code class="keyword">override</code>;
+    <code class="keyword">procedure</code> RecordChanged; <code class="keyword">override</code>;
+    <code class="keyword">property</code> ListBox: TCustomListBox <code class="keyword">read</code> FListBox;
+  <code class="keyword">public</code>
+    <code class="keyword">constructor</code> Create(AListBox: TCustomListBox);
+    <code class="keyword">destructor</code> Destroy; <code class="keyword">override</code>;
+
+    <code class="keyword">procedure</code> GotoCurrent;
+  <code class="keyword">end</code>;
+</pre>
+<p>The <i>Populate</i> method iterates the data source's records and fills the Items property of the ListBox.<br />
+The <i>GotoCurrent</i> method is called by the CM_CHANGED message handler of the ListBox which is invoked
+when the ItemIndex has changed.<br />
+The two maps are used to find the record and the list item.</p>
+<pre class="sourcecode">
+<code class="keyword">constructor</code> TJvCustomListBoxDataConnector.Create(AListBox: TCustomListBox);
+<code class="keyword">begin</code>
+  <code class="keyword">inherited</code> Create;
+  FListBox := AListBox;
+  FRecNoMap := TBucketList.Create;
+  FMap := TList.Create;
+<code class="keyword">end</code>;
+
+<code class="keyword">destructor</code> TJvCustomListBoxDataConnector.Destroy;
+<code class="keyword">begin</code>
+  FMap.Free;
+  FRecNoMap.Free;
+  <code class="keyword">inherited</code> Destroy;
+<code class="keyword">end</code>;
+
+<code class="keyword">procedure</code> TJvCustomListBoxDataConnector.ActiveChanged;
+<code class="keyword">begin</code>
+  Populate;
+  <code class="keyword">inherited</code> ActiveChanged;
+<code class="keyword">end</code>;
+
+<code class="keyword">procedure</code> TJvCustomListBoxDataConnector.GotoCurrent;
+<code class="keyword">begin</code>
+  <code class="keyword">if</code> Field.IsValid <code class="keyword">and</code> (FListBox.ItemIndex &lt;&gt; -1) <code class="keyword">then</code>
+    DataSource.RecNo := Integer(FMap[FListBox.ItemIndex]);
+<code class="keyword">end</code>;
+</pre>
+<p>The ActiveChanged method populates the list when the DataSource' state has changed.<br />
+By setting DataSource.RecNo the </p>
+<pre class="sourcecode">
+<code class="keyword">procedure</code> TJvCustomListBoxDataConnector.RecordChanged;
+<code class="keyword">var</code>
+  Index: Integer;
+<code class="keyword">begin</code>
+  <code class="keyword">if</code> Field.IsValid <code class="keyword">then</code>
+  <code class="keyword">begin</code>
+    <code class="keyword">if</code> FListBox.Items.Count &lt;&gt; DataSource.RecordCount <code class="keyword">then</code>
+      Populate
+    <code class="keyword">else</code>
+      <code class="keyword">if</code> FRecNoMap.Find(TObject(DataSource.RecNo), Pointer(Index)) <code class="keyword">then</code>
+      <code class="keyword">begin</code>
+        FListBox.Items[Index] := Field.AsString;
+        FListBox.ItemIndex := Index;
+      <code class="keyword">end</code>;
+  <code class="keyword">end</code>;
+<code class="keyword">end</code>;
+</pre>
+<p>The <i>RecordChanged</i> event either populates the list again if a new record was inserted or a record was deleted,
+or it updates the list item with a new value and selects the current record.</p>
+<pre class="sourcecode">
+<code class="keyword">procedure</code> TJvCustomListBoxDataConnector.Populate;
+<code class="keyword">var</code>
+  Index: Integer;
+<code class="keyword">begin</code>
+  FMap.Clear;
+  FRecNoMap.Clear;
+  FListBox.Items.BeginUpdate;
+  <code class="keyword">try</code>
+    FListBox.Items.Clear;
+    <code class="keyword">if</code> Field.IsValid <code class="keyword">then</code>
+    <code class="keyword">begin</code>
+      DataSource.BeginUpdate;
+      <code class="keyword">try</code>
+        DataSource.First;
+        <code class="keyword">while</code> <code class="keyword">not</code> DataSource.Eof <code class="keyword">do</code>
+        <code class="keyword">begin</code>
+          Index := FListBox.Items.Add(Field.AsString);
+          FMap.Add(TObject(DataSource.RecNo));
+          FRecNoMap.Add(TObject(DataSource.RecNo), TObject(Index));
+          DataSource.Next;
+        <code class="keyword">end</code>;
+      <code class="keyword">finally</code>
+        DataSource.EndUpdate;
+      <code class="keyword">end</code>;
+      <code class="keyword">if</code> FRecNoMap.Find(TObject(DataSource.RecNo), Pointer(Index)) <code class="keyword">then</code>
+        FListBox.ItemIndex := Index;
+    <code class="keyword">end</code>;
+  <code class="keyword">finally</code>
+    FListBox.Items.EndUpdate;
+  <code class="keyword">end</code>;
+<code class="keyword">end</code>;
+</pre>
+<p>The <i>Populate</i> method fills the list and builds the two maps. Because it wouldn't be a lot of flicker if when the
+DataDource's records are iterated, the <i>Populate</i> method uses the DataSource.BeginUpdate and DataSOurce.EndUpdate
+methods. Those save the current record number and disable the controls.</p>
+
+
+<p>&nbsp;</p>
+<h2>Adding the necessary functionality to the list control</h2>
+<pre class="sourcecode">
+<code class="keyword">type</code>
+  TListBoxEx = <code class="keyword">class</code>(TListBox)
+  <code class="keyword">private</code>
+    FDataConnector: TJvCustomListBoxDataConnector;
+    <code class="keyword">procedure</code> SetDataConnector(<code class="keyword">const</code> Value: TJvCustomListBoxDataConnector);
+  <code class="keyword">protected</code>
+    <code class="keyword">function</code> CreateDataConnector: TJvCustomListBoxDataConnector; <code class="keyword">virtual</code>;
+    <code class="keyword">procedure</code> CMChanged(<code class="keyword">var</code> Message: TCMChanged); message CM_CHANGED;
+  <code class="keyword">public</code>
+    <code class="keyword">constructor</code> Create(AOwner: TComponent); <code class="keyword">override</code>;
+    <code class="keyword">destructor</code> Destroy; <code class="keyword">override</code>;
+  <code class="keyword">published</code>
+    <code class="keyword">property</code> DataConnector: TJvCustomListBoxDataConnector <code class="keyword">read</code> FDataConnector <code class="keyword">write</code> SetDataConnector;
+  <code class="keyword">end</code>;
+
+<code class="comment">{ TListBoxEx }</code>
+
+<code class="keyword">constructor</code> TListBoxEx.Create(AOwner: TComponent);
+<code class="keyword">begin</code>
+  <code class="keyword">inherited</code> Crreate(AOwner);
+  FDataConnector := CreateDataConnector;
+<code class="keyword">end</code>;
+
+<code class="keyword">destructor</code> TListBoxEx.Destroy;
+<code class="keyword">begin</code>
+  FDataConnector.Free;
+  <code class="keyword">inherited</code> Destroy;
+<code class="keyword">end</code>;
+
+<code class="keyword">function</code> TListBoxEx.CreateDataConnector: TJvCustomListBoxDataConnector;
+<code class="keyword">begin</code>
+  Result := TJvCustomListBoxDataConnector.Create(Self);
+<code class="keyword">end</code>;
+
+<code class="keyword">procedure</code> TListBoxEx.CMChanged(<code class="keyword">var</code> Message: TCMChanged);
+<code class="keyword">begin</code>
+  <code class="keyword">inherited</code>;
+  DataConnector.GotoCurrent;
+<code class="keyword">end</code>;
+
+<code class="keyword">procedure</code> TListBoxEx.SetDataConnector(<code class="keyword">const</code> Value: TJvCustomListBoxDataConnector);
+<code class="keyword">begin</code>
+  <code class="keyword">if</code> Value &lt;&gt; FDataConnector <code class="keyword">then</code>
+    FDataConnector.Assign(Value);
+<code class="keyword">end</code>;
+</pre>
+
+<br>
+<br>
+</body>
+</html>
