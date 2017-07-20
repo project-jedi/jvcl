@@ -486,14 +486,17 @@ begin
   CreateTextPanel(Self, MainPanel, FTimePanel, FTimeLabel, FTimeStaticText, 'Time');
   if Supports(FTimeLabel, IJvDynControlCaption, ITmpControl) then
     ITmpControl.ControlSetCaption(RsODSOpenFetch);
+  FTimeLabel.Top := 0;
   CreateTextPanel(Self, MainPanel, FRowsPanel, FRowsLabel, FRowsStaticText, 'Rows');
   if Supports(FRowsLabel, IJvDynControlCaption, ITmpControl) then
     ITmpControl.ControlSetCaption(RsODSCurrentRecord);
+  FRowsPanel.Top := FTimeLabel.Top + FTimeLabel.Height + 1;
   FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ButtonPanel', '', alTop);
   FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
     'CancelBtn', RsButtonCancelCaption, '', DefaultCancelBtnClick, True, True);
   FCancelBtn.Anchors := [akTop];
   FCancelBtn.Top := 2;
+  FCancelButtonPanel.Top := FRowsPanel.Top + FRowsPanel.Height + 1;
   FCancelButtonPanel.Height := FCancelBtn.Height + 3;
 
   BorderIcons := [];

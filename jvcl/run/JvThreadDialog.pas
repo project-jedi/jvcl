@@ -507,10 +507,34 @@ begin
 end;
 
 procedure TJvThreadSimpleDialogForm.SetControlHeightWidth;
+var
+  h: Integer;
 begin
   inherited SetControlHeightWidth;
   if Assigned(FProgressbarPanel) then
     FProgressbarPanel.Width := FTimeTextPanel.Width;
+  h := FDefaultBorderWidth;
+  if Assigned(FInfoTextPanel) and FInfoTextPanel.Visible then
+  begin
+    if FInfoTextPanel.Top <> h then
+      FInfoTextPanel.Top := h;
+    H := H + FInfoTextPanel.Height;
+  end;
+  if Assigned(FProgressbarPanel) and FProgressbarPanel.Visible then
+  begin
+    if FProgressbarPanel.Top <> h then
+      FProgressbarPanel.Top := h;
+    H := H + FProgressbarPanel.Height;
+  end;
+  if Assigned(FTimeTextPanel) and FTimeTextPanel.Visible then
+  begin
+    if FTimeTextPanel.Top <> h then
+      FTimeTextPanel.Top := h;
+    H := H + FTimeTextPanel.Height;
+  end;
+  if Assigned(FCancelButtonPanel) and FCancelButtonPanel.Visible then
+    if FCancelButtonPanel.Top <> h then
+      FCancelButtonPanel.Top := h;
 end;
 
 procedure TJvThreadSimpleDialogForm.SetDialogOptions(Value:
@@ -605,29 +629,28 @@ begin
   Inherited SetControlHeightWidth;
   FAnimate.Left   := (FAnimatePanel.Width - FAnimate.Width) div 2;
   FAnimatePanel.Height := FAnimate.Height + FDefaultBorderWidth*2;
-  h := 0;
+  h := FDefaultBorderWidth;
   if Assigned(FInfoTextPanel) and FInfoTextPanel.Visible then
   begin
-    FInfoTextPanel.Top := h;
+    if FInfoTextPanel.Top <> h then
+      FInfoTextPanel.Top := h;
     H := H + FInfoTextPanel.Height;
   end;
   if Assigned(FAnimatePanel) and FAnimatePanel.Visible then
   begin
-    FAnimatePanel.Top := h;
+    if FAnimatePanel.Top <> h then
+      FAnimatePanel.Top := h;
     H := H + FAnimatePanel.Height;
   end;
   if Assigned(FTimeTextPanel) and FTimeTextPanel.Visible then
   begin
-    FTimeTextPanel.Top := h;
+    if FTimeTextPanel.Top <> h then
+      FTimeTextPanel.Top := h;
     H := H + FTimeTextPanel.Height;
   end;
   if Assigned(FCancelButtonPanel) and FCancelButtonPanel.Visible then
-  begin
-    FCancelButtonPanel.Top := h;
-
-    // No need to assign, this is not used later on
-    //H := H + FCancelButtonPanel.Height;
-  end;
+    if FCancelButtonPanel.Top <> h then
+      FCancelButtonPanel.Top := h;
 end;
 
 procedure TJvThreadAnimateDialogForm.SetDialogOptions(Value:
@@ -714,6 +737,7 @@ procedure TJvThreadBaseDialogForm.CreateControlInfoText;
 begin
   CreateTextPanel(Self, FMainPanel, FInfoTextPanel, FInfoText,
     DialogOptions.InfoTextAlignment, 'Info');
+
   Supports(FInfoText, IJvDynControlCaption, IInfoTextControlCaption);
   Supports(FInfoText, IJvDynControlAutoSize, IInfoTextControlAutoSize);
 end;
@@ -796,8 +820,10 @@ begin
   h := Round(h/10)*10;
   if H > Screen.Height-100 then
     H := Screen.Height-100;
-  if ClientHeight <> H then
-    ClientHeight := H;
+  if H < (ClientHeight -20) then // Reduces the resize flickering when the text is changed to often
+    ClientHeight := H
+  else if H > ClientHeight then
+    ClientHeight := H+10; // Reduces the resize flickering when the text is changed to often
 end;
 
 procedure TJvThreadBaseDialogForm.SetFormInfoText;
@@ -811,7 +837,7 @@ begin
       if Assigned(IInfoTextControlAutoSize) then
       begin
         IInfoTextControlAutoSize.ControlSetAutoSize(True);
-        IInfoTextControlAutoSize.ControlSetAutoSize(False);
+//        IInfoTextControlAutoSize.ControlSetAutoSize(False);
       end;
       FInfoText.Left := FDefaultBorderWidth; // Some Components change the left position when activating autosize (TcxStaticText)
       FOrgInfoTextWidth := FInfoText.Width;

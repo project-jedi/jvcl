@@ -1754,7 +1754,7 @@ end;
 
 procedure TJvCustomComboBox.KeyPress(var Key: Char);
 begin
-  if (ReadOnly) and (Key = Chr(VK_BACK)) then
+  if ReadOnly and (AutoComplete or (Key = Chr(VK_BACK))) then
     Key := #0;
   inherited KeyPress(Key);
 end;

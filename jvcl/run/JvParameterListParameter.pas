@@ -19,7 +19,7 @@ located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: jvcl/run/JvParameterListParameter.pas obones date $
+// $Id$
 
 unit JvParameterListParameter;
 
@@ -649,9 +649,9 @@ function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; con
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: jvcl/run/JvParameterListParameter.pas $';
-    Revision: '$Revision: 43d010017965270e46f2ff51f06334923015d5c1 $';
-    Date: '$Date: 2012-09-10 09:51:54 +0000 $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
     );
   {$ENDIF UNITVERSIONING}

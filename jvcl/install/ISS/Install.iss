@@ -268,7 +268,7 @@ Name: "{app}\lib\d24\win32"
 Name: "{app}\lib\d24\win32\debug"
 Name: "{app}\lib\d24\win64"
 Name: "{app}\lib\d24\win64\debug"
-; 10.2 ?
+; 10.2
 Name: "{app}\lib\d25"
 Name: "{app}\lib\d25\win32"
 Name: "{app}\lib\d25\win32\debug"
@@ -715,7 +715,7 @@ Type: files; Name: "{app}\lib\d24\win64\debug\*"
 Type: files; Name: "{app}\include\d24\*"
 Type: files; Name: "{code:GetDelphiBplDir|24}\Jv*.*"
 Type: files; Name: "{code:GetDelphiBplDir|24}\Win64\Jv*.*"
-; lib\Delphi/C++Builder 10.2 ?
+; lib\Delphi/C++Builder 10.2
 Type: files; Name: "{app}\lib\d25\win32\*"
 Type: files; Name: "{app}\lib\d25\win32\debug\*"
 Type: files; Name: "{app}\lib\d25\win64\*"
