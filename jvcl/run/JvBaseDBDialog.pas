@@ -102,6 +102,8 @@ function TJvBaseDBDialog.Execute(ParentWnd: HWND): Boolean;
 begin
   if not Assigned(Session) then
     Abort;
+  if Assigned(FDBDialog) then
+    Exit;
   FParentWnd := ParentWnd;
   FDBDialog := CreateForm;
   try
