@@ -103,7 +103,10 @@ begin
   if not Assigned(Session) then
     Abort;
   if Assigned(FDBDialog) then
+  begin
+    Result := False;
     Exit;
+  end;
   FParentWnd := ParentWnd;
   FDBDialog := CreateForm;
   try
