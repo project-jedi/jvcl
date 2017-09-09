@@ -107,8 +107,7 @@ const
 implementation
 
 uses
-  Messages,
-  JvJCLUtils;
+  Messages;
 
 type
   TJvTimerThread = class(TJvCustomThread)

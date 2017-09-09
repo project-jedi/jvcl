@@ -2374,6 +2374,7 @@ end;
 procedure TJvDBLookupList.WMVScroll(var Msg: TWMVScroll);
 var
   ScrollableRowCount: Integer;
+  ScrollInfo: TScrollInfo;
 begin
   FSearchText := '';
   if FLookupLink.DataSet = nil then
@@ -2391,19 +2392,36 @@ begin
         MoveBy(-FRecordIndex - ScrollableRowCount + 1);
       SB_PAGEDOWN:
         MoveBy(ScrollableRowCount - FRecordIndex + ScrollableRowCount - 2);
-      SB_THUMBPOSITION:
+      SB_THUMBPOSITION, SB_THUMBTRACK:
         begin
-          case Pos of
-            0:
-              First;
-            1:
-              MoveBy(-FRecordIndex - ScrollableRowCount + 1);
-            2:
-              Exit;
-            3:
-              MoveBy(ScrollableRowCount - FRecordIndex + ScrollableRowCount - 2);
-            4:
-              Last;
+          if UseRecordCount then
+          begin
+            if Pos = 0 then
+              First
+            else if Pos = FRecordCount - 1 then
+              Last
+            else
+            begin
+              ScrollInfo.cbSize := SizeOf(ScrollInfo);
+              ScrollInfo.fMask := SIF_POS;
+              if GetScrollInfo(Handle, SB_VERT, ScrollInfo) then
+                MoveBy(-ScrollInfo.nPos + Pos);
+            end;
+          end
+          else if ScrollCode = SB_THUMBPOSITION then
+          begin
+            case Pos of
+              0:
+                First;
+              1:
+                MoveBy(-FRecordIndex - ScrollableRowCount + 1);
+              2:
+                Exit;
+              3:
+                MoveBy(ScrollableRowCount - FRecordIndex + ScrollableRowCount - 2);
+              4:
+                Last;
+            end;
           end;
         end;
       SB_BOTTOM:
