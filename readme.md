@@ -29,10 +29,6 @@ How to install
 1. Install the JCL <https://github.com/project-jedi/jcl>
 2. Start the **jvcl\install.bat**
 
-Release version
----------------
-You can download the latest released version from <https://sourceforge.net/projects/jvcl/files/>
-
 Daily snapshots
 ---------------
 You can download daily snapshots from <http://jvcl.sourceforge.net/daily>
