@@ -142,6 +142,7 @@ type
     FAllowEmpty: Boolean;
     FEnforcingMinMaxValue: Boolean;
     FForceDecimalSeparatorInput: Boolean;
+    FKeepPrefixSuffixIntact: Boolean;
     FLastDownKey: Word;
     procedure DisplayText;
     function ScientificStrToFloat(SciString: string): Double;
@@ -188,19 +189,24 @@ type
     procedure FocusSet(PrevWnd: THandle); override;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetText(const NewValue: TCaption); override;
-    property CheckChars: string read FCheckChars write SetCheckChars
-      stored IsCheckCharsStored;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: Char); override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    function DoValidate(const Key: Char; const AText: string; const Posn: Integer): Boolean;
+    procedure Loaded; override;
+
+    function CreateDataConnector: TJvFieldDataConnector; override;
+
+    property CheckChars: string read FCheckChars write SetCheckChars stored IsCheckCharsStored;
     property TrimDecimals: Boolean read FTrimDecimals write SetTrimDecimals;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces;
-    property DisplayFormat: TJvValidateEditDisplayFormat read FDisplayFormat
-      write SetDisplayFormat;
+    property DisplayFormat: TJvValidateEditDisplayFormat read FDisplayFormat write SetDisplayFormat;
     property EditText: string read GetEditText write SetEditText;
     property HasMaxValue: Boolean read FHasMaxValue write SetHasMaxValue;
     property HasMinValue: Boolean read FHasMinValue write SetHasMinValue;
     property MaxValue: Double read FMaxValue write SetMaxValue;
     property MinValue: Double read FMinValue write SetMinValue;
-    property OnCustomValidate: TJvCustomTextValidateEvent
-      read FOnCustomValidate write FOnCustomValidate;
+    property OnCustomValidate: TJvCustomTextValidateEvent read FOnCustomValidate write FOnCustomValidate;
     property OnValueChanged: TNotifyEvent read FOnValueChanged write FOnValueChanged;
     property OnDecimalRounding: TJvCustomDecimalRoundingEvent read FOnDecimalRounding write FOnDecimalRounding;
     property Value: Variant read GetValue write SetValue stored False;
@@ -208,20 +214,10 @@ type
     property ZeroEmpty: Boolean read FZeroEmpty write SetZeroEmpty;
     property DisplayPrefix: string read FDisplayPrefix write SetDisplayPrefix;
     property DisplaySuffix: string read FDisplaySuffix write SetDisplaySuffix;
-    property CriticalPoints: TJvValidateEditCriticalPoints read FCriticalPoints
-      write FCriticalPoints;
+    property KeepPrefixSuffixIntact: Boolean read FKeepPrefixSuffixIntact write FKeepPrefixSuffixIntact default False;
+    property CriticalPoints: TJvValidateEditCriticalPoints read FCriticalPoints write FCriticalPoints;
     property AutoAlignment: Boolean read FAutoAlignment write FAutoAlignment;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: Char); override;
-    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
-    function DoValidate(const Key: Char; const AText: string;
-      const Posn: Integer): Boolean;
-    procedure Loaded; override;
-
-    function CreateDataConnector: TJvFieldDataConnector; override;
-
     property OnIsValid: TJvCustomIsValidEvent read FOnIsValid write FOnIsValid;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -337,6 +333,7 @@ type
     property OnIsValid;
     property OnDecimalRounding;
     property DataConnector;
+    property KeepPrefixSuffixIntact;
 
     {$IFDEF COMPILER12_UP}
     //property NumbersOnly;
@@ -1103,11 +1100,15 @@ begin
   Result := FEditText;
 end;
 
-function TJvCustomValidateEdit.GetUnprefixedUnsuffixedText(
-  const Value: string): string;
+function TJvCustomValidateEdit.GetUnprefixedUnsuffixedText(const Value: string): string;
 begin
-  Result := StrEnsureNoPrefix(DisplayPrefix, StrEnsureNoSuffix(DisplaySuffix, Value));
-  Result := StrEnsureNoPrefix(JclFormatSettings.CurrencyString, StrEnsureNoSuffix(JclFormatSettings.CurrencyString, Result));
+  if not FKeepPrefixSuffixIntact then
+  begin
+    Result := StrEnsureNoPrefix(DisplayPrefix, StrEnsureNoSuffix(DisplaySuffix, Value));
+    Result := StrEnsureNoPrefix(JclFormatSettings.CurrencyString, StrEnsureNoSuffix(JclFormatSettings.CurrencyString, Result));
+  end
+  else
+    Result := Value;
 end;
 
 procedure TJvCustomValidateEdit.SetEditText(const NewValue: string);
