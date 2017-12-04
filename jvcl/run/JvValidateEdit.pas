@@ -143,6 +143,7 @@ type
     FEnforcingMinMaxValue: Boolean;
     FForceDecimalSeparatorInput: Boolean;
     FKeepPrefixSuffixIntact: Boolean;
+    FHidePrefixSuffixIfEmpty: Boolean;
     FLastDownKey: Word;
     procedure DisplayText;
     function ScientificStrToFloat(SciString: string): Double;
@@ -218,6 +219,7 @@ type
     property DisplayPrefix: string read FDisplayPrefix write SetDisplayPrefix;
     property DisplaySuffix: string read FDisplaySuffix write SetDisplaySuffix;
     property KeepPrefixSuffixIntact: Boolean read FKeepPrefixSuffixIntact write FKeepPrefixSuffixIntact default False;
+    property HidePrefixSuffixIfEmpty: Boolean read FHidePrefixSuffixIfEmpty write FHidePrefixSuffixIfEmpty default True;
     property CriticalPoints: TJvValidateEditCriticalPoints read FCriticalPoints write FCriticalPoints;
     property AutoAlignment: Boolean read FAutoAlignment write FAutoAlignment;
     property OnIsValid: TJvCustomIsValidEvent read FOnIsValid write FOnIsValid;
@@ -226,6 +228,7 @@ type
     destructor Destroy; override;
 
     function IsValid: Boolean; virtual; // fires OnIsValid if assigned
+    function IsEmpty: Boolean; override;
 
     // When the DecimalSeparator variable has changed, one should call
     // RecalcCheckChars to ensure that it contains the new value (Mantis 4682)
@@ -338,6 +341,7 @@ type
     property OnDecimalRounding;
     property DataConnector;
     property KeepPrefixSuffixIntact;
+    property HidePrefixSuffixIfEmpty;
 
     {$IFDEF COMPILER12_UP}
     //property NumbersOnly;
@@ -514,6 +518,7 @@ begin
   FHasMinValue := False;
   FHasMaxValue := False;
   FZeroEmpty := False;
+  FHidePrefixSuffixIfEmpty := True;
   FStandardFontColor := Font.Color;
   FOldFontChange := Font.OnChange;
   Font.OnChange := FontChange;
@@ -676,31 +681,34 @@ begin
     if OldFormat = dfYear then
       MaxLength := 0;
 
-    // Convert non-base 10 numbers to base 10 and base-10 numbers to non-base 10
-    if (OldFormat = dfBinary) and
-      (NewValue in [dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed, dfBcd]) then
-      SetAsInteger(BaseToInt(FEditText, 2))
-    else
-    if (OldFormat in [dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfPercent, dfFloatFixed, dfBcd]) and
-      (NewValue in [dfBinary, dfHex, dfOctal]) then
-      SetAsFloat(JvSafeStrToFloatDef(FEditText, 0))
-    else
-    if (OldFormat = dfHex) and
-      (NewValue in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed, dfBcd]) then
-      SetAsInteger(BaseToInt(FEditText, 16))
-    else
-    if (OldFormat in [dfInteger, dfYear]) and
-      (NewValue in [dfBinary, dfHex, dfOctal, dfBcd]) then
-      SetAsInteger(StrToIntDef(FEditText, 0))
-    else
-    if (OldFormat = dfOctal) and
-      (NewValue in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger, dfPercent, dfScientific, dfYear, dfFloatFixed, dfBcd]) then
-      SetAsInteger(BaseToInt(FEditText, 8))
-    else
+    if not IsEmpty then
     begin
-      // ...or just display the value
-      if not (csLoading in ComponentState) then
-        EditText := FEditText;
+      // Convert non-base 10 numbers to base 10 and base-10 numbers to non-base 10
+      if (OldFormat = dfBinary) and
+        (NewValue in [dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed, dfBcd]) then
+        SetAsInteger(BaseToInt(FEditText, 2))
+      else
+      if (OldFormat in [dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfPercent, dfFloatFixed, dfBcd]) and
+        (NewValue in [dfBinary, dfHex, dfOctal]) then
+        SetAsFloat(JvSafeStrToFloatDef(FEditText, 0))
+      else
+      if (OldFormat = dfHex) and
+        (NewValue in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed, dfBcd]) then
+        SetAsInteger(BaseToInt(FEditText, 16))
+      else
+      if (OldFormat in [dfInteger, dfYear]) and
+        (NewValue in [dfBinary, dfHex, dfOctal, dfBcd]) then
+        SetAsInteger(StrToIntDef(FEditText, 0))
+      else
+      if (OldFormat = dfOctal) and
+        (NewValue in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger, dfPercent, dfScientific, dfYear, dfFloatFixed, dfBcd]) then
+        SetAsInteger(BaseToInt(FEditText, 8))
+      else
+      begin
+        // ...or just display the value
+        if not (csLoading in ComponentState) then
+          EditText := FEditText;
+      end;
     end;
   end;
 end;
@@ -1275,7 +1283,7 @@ end;
 
 procedure TJvCustomValidateEdit.ChangeText(const NewValue: string);
 var
-  S, Exponent: string;
+  S, Exponent, DisplayValue: string;
   Ps, I: Integer;
 begin
   FSelfChange := True;
@@ -1302,10 +1310,21 @@ begin
         if Ps = I then
           Dec(I); // skip decimal separator (Ivo Bauer)
         S := FDisplayPrefix + Copy(NewValue, 1, I) + Exponent + FDisplaySuffix;
+
+        DisplayValue := Copy(NewValue, 1, I);
+        if HidePrefixSuffixIfEmpty and (DisplayValue = '') and (Exponent = '') then
+          S := ''
+        else
+          S := FDisplayPrefix + DisplayValue + Exponent + FDisplaySuffix;
       end;
     end;
     if Ps = 0 then
-      S := FDisplayPrefix + NewValue + FDisplaySuffix;
+    begin
+      if HidePrefixSuffixIfEmpty and (NewValue = '') and (Exponent = '') then
+        S := ''
+      else
+        S := FDisplayPrefix + NewValue + FDisplaySuffix;
+    end;
     if S <> inherited Text then
       inherited SetText(S);
   finally
@@ -1481,6 +1500,11 @@ begin
     FOnIsValid(Self, Result);
 end;
 
+function TJvCustomValidateEdit.IsEmpty: Boolean;
+begin
+  Result := inherited IsEmpty or (GetUnprefixedUnsuffixedText(Text) = '');
+end;
+
 procedure TJvCustomValidateEdit.SetFontColor;
 begin
   if not (csDesigning in ComponentState) and not (csLoading in ComponentState) then
@@ -1526,11 +1550,14 @@ begin
     dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed, dfBcd]) and
     (AsFloat > FMaxValue) and not FEnforcingMinMaxValue then
   begin
-    FEnforcingMinMaxValue := True;
-    try
-      SetAsFloat(FMaxValue);
-    finally
-      FEnforcingMinMaxValue := False;
+    if not (AllowEmpty and IsEmpty) then
+    begin
+      FEnforcingMinMaxValue := True;
+      try
+        SetAsFloat(FMaxValue);
+      finally
+        FEnforcingMinMaxValue := False;
+      end;
     end;
   end;
 end;
@@ -1542,11 +1569,14 @@ begin
     dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed, dfBcd]) and
     (AsFloat < FMinValue) and not FEnforcingMinMaxValue then
   begin
-    FEnforcingMinMaxValue := True;
-    try
-      SetAsFloat(FMinValue);
-    finally
-      FEnforcingMinMaxValue := False;
+    if not (AllowEmpty and IsEmpty) then
+    begin
+      FEnforcingMinMaxValue := True;
+      try
+        SetAsFloat(FMinValue);
+      finally
+        FEnforcingMinMaxValue := False;
+      end;
     end;
   end;
 end;
