@@ -686,25 +686,28 @@ function SelectColorByLuminance(AColor, DarkColor, BrightColor: TColor): TColor;
 type
   TJvHTMLCalcType = (htmlShow, htmlCalcWidth, htmlCalcHeight, htmlHyperLink);
 
+const
+  DefaultSuperSubScriptRatio = 2/3;
+
 procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; SuperSubScriptRatio: Double; Scale: Integer = 100); overload;
+  var LinkName: string; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100); overload;
 procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width, Height: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; SuperSubScriptRatio: Double; Scale: Integer = 100); overload;
+  var LinkName: string; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100); overload;
 function HTMLDrawText(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): string;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100): string;
 function HTMLDrawTextHL(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer; SuperSubScriptRatio: Double; 
+  const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; 
   Scale: Integer = 100): string;
 function HTMLPlainText(const Text: string): string;
 function HTMLTextExtent(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): TSize;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100): TSize;
 function HTMLTextWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
-function HTMLTextHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100): Integer;
+function HTMLTextHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100): Integer;
 function HTMLPrepareText(const Text: string): string;
 
 // This type is used to allow an easy migration from a TBitmap property to a
@@ -7119,7 +7122,7 @@ begin
 end;
 
 function HTMLTextExtent(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): TSize;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer): TSize;
 var
   S: Boolean;
   St: string;
@@ -7131,7 +7134,7 @@ begin
 end;
 
 function HTMLTextWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer): Integer;
 var
   S: Boolean;
   St: string;
@@ -7139,7 +7142,7 @@ begin
   HTMLDrawTextEx(Canvas, Rect, State, Text, Result, htmlCalcWidth, 0, 0, S, St, SuperSubScriptRatio, Scale);
 end;
 
-function HTMLTextHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
+function HTMLTextHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double; Scale: Integer): Integer;
 var
   S: Boolean;
   St: string;

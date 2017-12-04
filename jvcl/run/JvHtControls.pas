@@ -118,7 +118,7 @@ uses
   JvJVCLUtils, JvExStdCtrls, JvDataSourceIntf;
 
 const
-  DefaultSuperSubScriptRatio: Double = 2/3;
+  DefaultSuperSubScriptRatio = 2/3;
 
 type
   TJvCustomListBoxDataConnector = class(TJvFieldDataConnector)
@@ -415,18 +415,18 @@ type
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; SuperSubScriptRatio: Double; Scale: Integer = 100);
+  var LinkName: string; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100);
   { example for Text parameter : 'Item 1 <b>bold</b> <i>italic ITALIC <br><FONT COLOR="clRed">red <FONT COLOR="clgreen">green <FONT COLOR="clblue">blue </i>' }
 function ItemHTDraw(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): string;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100): string;
 function ItemHTDrawHL(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer; SuperSubScriptRatio: Double; Scale: Integer = 100): string;
+  const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100): string;
 function ItemHTPlain(const Text: string): string;
 function ItemHTExtent(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): TSize;
+  const Text: string; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100): TSize;
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
-function ItemHTHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100): Integer;
+function ItemHTHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double = DefaultSuperSubScriptRatio; Scale: Integer = 100): Integer;
 function PrepareText(const A: string): string; deprecated;
 
 {$IFDEF UNITVERSIONING}
@@ -462,19 +462,19 @@ end;
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType; MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; SuperSubScriptRatio: Double; Scale: Integer = 100);
+  var LinkName: string; SuperSubScriptRatio: Double; Scale: Integer);
 begin
   HTMLDrawTextEx(Canvas, Rect, State, Text, Width, CalcType, MouseX, MouseY, MouseOnLink, LinkName, SuperSubScriptRatio, Scale);
 end;
 
 function ItemHTDraw(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): string;
+  const Text: string; SuperSubScriptRatio: Double; Scale: Integer): string;
 begin
   HTMLDrawText(Canvas, Rect, State, Text, SuperSubScriptRatio, Scale);
 end;
 
 function ItemHTDrawHL(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string; MouseX, MouseY: Integer; SuperSubScriptRatio: Double; Scale: Integer = 100): string;
+  const Text: string; MouseX, MouseY: Integer; SuperSubScriptRatio: Double; Scale: Integer): string;
 begin
   HTMLDrawTextHL(Canvas, Rect, State, Text, MouseX, MouseY, SuperSubScriptRatio, Scale);
 end;
@@ -485,18 +485,18 @@ begin
 end;
 
 function ItemHTExtent(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): TSize;
+  const Text: string; SuperSubScriptRatio: Double; Scale: Integer): TSize;
 begin
   Result := HTMLTextExtent(Canvas, Rect, State, Text, SuperSubScriptRatio, Scale);
 end;
 
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer): Integer;
 begin
   Result := HTMLTextWidth(Canvas, Rect, State, Text, SuperSubScriptRatio, Scale);
 end;
 
-function ItemHTHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
+function ItemHTHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double; Scale: Integer): Integer;
 begin
   Result := HTMLTextHeight(Canvas, Text, SuperSubScriptRatio, Scale);
 end;
