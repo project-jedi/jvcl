@@ -169,7 +169,7 @@ type
     function CurrRangeValue(CheckValue: Currency): Currency;
     function FloatRangeValue(CheckValue: Double): Double;
     function IntRangeValue(CheckValue: Int64): Int64;
-    function BcdRangeValue(CheckValue: TBcd): TBcd;
+    function BcdRangeValue(const CheckValue: TBcd): TBcd;
     function GetEditText: string;
     procedure SetEditText(const NewValue: string);
     procedure ChangeText(const NewValue: string);
@@ -697,7 +697,7 @@ begin
         SetAsInteger(BaseToInt(FEditText, 16))
       else
       if (OldFormat in [dfInteger, dfYear]) and
-        (NewValue in [dfBinary, dfHex, dfOctal, dfBcd]) then
+        (NewValue in [dfBinary, dfHex, dfOctal]) then
         SetAsInteger(StrToIntDef(FEditText, 0))
       else
       if (OldFormat = dfOctal) and
@@ -872,6 +872,7 @@ begin
     if not TryStrToBcd(FEditText, Result) then
       ZeroBcd(Result);
   end;
+  Result := BcdRangeValue(Result);
 end;
 
 procedure TJvCustomValidateEdit.SetAsBcd(const NewValue: TBcd);
@@ -1219,7 +1220,7 @@ begin
     Result := Trunc(FMinValue);
 end;
 
-function TJvCustomValidateEdit.BcdRangeValue(CheckValue: TBcd): TBcd;
+function TJvCustomValidateEdit.BcdRangeValue(const CheckValue: TBcd): TBcd;
 begin
   Result := CheckValue;
   if FHasMaxValue and (BcdCompare(CheckValue, DoubleToBcd(FMaxValue)) = 1) then // CheckValue > FMaxValue
