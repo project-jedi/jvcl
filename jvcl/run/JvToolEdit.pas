@@ -779,7 +779,7 @@ type
     property Action;
     property Align;
     property AutoSize;
-    property DialogKind: TDirDialogKind read FDialogKind write FDialogKind default dkVCL;
+    property DialogKind: TDirDialogKind read FDialogKind write FDialogKind default dkWin32;
     property DialogText: string read FDialogText write FDialogText;
     property DisplayLocalizedName: Boolean read FDisplayLocalizedName write SetDisplayLocalizedName default False;
     property AutoCompleteOptions;
