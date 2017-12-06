@@ -796,7 +796,7 @@ type
     FSelection: TJvSelectionRec;
     FCaretX: Integer;
     FCaretY: Integer;
-    FTabPos: array [0..Max_X] of Boolean;
+    FTabPos: TDynBoolArray; //array [0..Max_X] of Boolean;
     { FMacro - buffer of TEditCommand, each command represents by two chars }
     FMacro: TMacro;
     FDefMacro: TMacro;

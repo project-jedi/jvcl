@@ -805,12 +805,12 @@ begin
   begin
     S := FLines[Line];
 
-    Len := Max(Length(S), Max_X) + 1;
+    Len := Max(Length(S), Max_X) + 1; // LineAttrs is used as 1-based array => one element more needed
     if Len > Length(LineAttrs) then
-      SetLength(LineAttrs, Len)
-    else
-    if Len + 128 < Length(LineAttrs) then
       SetLength(LineAttrs, Len);
+
+    if ColEnd >= Len then
+      ColEnd := Len - 1;
 
     GetLineAttr(S, Line, ColBeg, ColEnd);
 
@@ -846,9 +846,8 @@ begin
         else
           Ch := ' ';
         jCStart := jC;
-        while (jC <= MX + 1) and
-          CompareMem(@LA, @LineAttrs[jC], SizeOf(LineAttrs[1])) do
-            Inc(jC);
+        while (jC <= MX + 1) and CompareMem(@LA, @LineAttrs[jC], SizeOf(LineAttrs[1])) do
+          Inc(jC);
         Ch := Copy(S, jCStart - 1, jC - jCStart + 1);
         if jC > SL + 1 then
           Ch := Ch + Spaces(jC - SL - 1);
@@ -863,7 +862,7 @@ begin
         for iC := 0 to High(MyDi) - 1 do
         begin
           {TODO: a cache for the TextWidth() call should be used and cleared if the font name changes. }
-          if (iC < Len) and (Ch[iC + 1] >= #256) then
+          if (iC < Len) and (Ord(Ch[iC + 1]) >= 256) then
           begin
             CharSize := ((EditorClient.Canvas.TextWidth(Ch[iC + 1]) + (CellRect.Width - 1)) div CellRect.Width);
             MyDi[iC] := CellRect.Width * CharSize;
@@ -907,8 +906,6 @@ begin
     ColBeg := 0;
   if ColEnd > Max_X then
     ColEnd := Max_X;
-
-  SetLength(LineAttrs, Max(Length(LineAttrs), Max_X + 1));
 
   LineAttrs[ColBeg].Style := Font.Style;
   LineAttrs[ColBeg].FC := Font.Color;
@@ -1565,8 +1562,11 @@ begin
         begin
           // line
           S := FLines[I];
-          Move(S[1], P^, Length(S) * SizeOf(Char));
-          Inc(P, Length(S));
+          if S <> '' then
+          begin
+            Move(S[1], P^, Length(S) * SizeOf(Char));
+            Inc(P, Length(S));
+          end;
 
           // line break
           Move(sLineBreakStr[1], P^, sLineBreakLen * SizeOf(Char));
@@ -2123,15 +2123,20 @@ begin
 end;
 
 function TJvCustomEditor.GetTabStop(X, Y: Integer; Next: Boolean): Integer;
-var
-  I: Integer;
 
   procedure UpdateTabStops;
   var
     S: string;
     J, I: Integer;
+    Len, TabPosLen: Integer;
   begin
-    FillChar(FTabPos, SizeOf(FTabPos), False);
+    TabPosLen := Max_X;
+    if Length(FTabPos) <> Max_X then
+    begin
+      SetLength(FTabPos, Max_X);
+      TabPosLen := Max_X;
+    end;
+    FillChar(FTabPos[0], TabPosLen * SizeOf(FTabPos[0]), False);
     if SmartTab then
     begin
       J := 1;
@@ -2139,14 +2144,20 @@ var
       while Y - J >= 0 do
       begin
         S := TrimRight(FLines[Y - J]);
-        if Length(S) > I then
-          FTabPos[Length(S)] := True;
-        while I <= Length(S) do
+        Len := Length(S);
+        if Len > TabPosLen then
+        begin
+          SetLength(FTabPos, Len);
+          FillChar(FTabPos[TabPosLen], (TabPosLen - Len) * SizeOf(FTabPos[0]), False);
+        end;
+        if Len > I then
+          FTabPos[Len - 1] := True;
+        while I <= Len do
         begin
           if CharInSet(S[I], IdentifierSymbols) then
           begin
             FTabPos[I - 1] := True;
-            while (I <= Length(S)) and CharInSet(S[I], IdentifierSymbols) do
+            while (I <= Len) and CharInSet(S[I], IdentifierSymbols) do
               Inc(I);
           end;
           Inc(I);
@@ -2161,12 +2172,14 @@ var
     end;
   end;
 
+var
+  I: Integer;
 begin
   UpdateTabStops;
   Result := X;
   if Next then
   begin
-    for I := X + 1 to High(FTabPos) do
+    for I := X + 1 to Length(FTabPos) - 1 do
       if FTabPos[I] then
       begin
         Result := I;
@@ -2183,23 +2196,34 @@ begin
 end;
 
 function TJvCustomEditor.GetBackStop(X, Y: Integer): Integer;
-var
-  I: Integer;
-  S: string;
 
   procedure UpdateBackStops;
   var
     S: string;
     J, I, K: Integer;
+    Len, TabPosLen: Integer;
   begin
     J := 1;
     I := X - 1;
-    FillChar(FTabPos, SizeOf(FTabPos), False);
+    TabPosLen := Max_X;
+    if Length(FTabPos) <> Max_X then
+    begin
+      SetLength(FTabPos, Max_X);
+      TabPosLen := Max_X;
+    end;
+    FillChar(FTabPos[0], TabPosLen * SizeOf(FTabPos[0]), False);
     FTabPos[0] := True;
     while Y - J >= 0 do
     begin
       S := FLines[Y - J];
-      for K := 1 to Min(Length(S), I) do
+      Len := Length(S);
+      if Len > TabPosLen then
+      begin
+        SetLength(FTabPos, Len);
+        FillChar(FTabPos[TabPosLen], (TabPosLen - Len) * SizeOf(FTabPos[0]), False);
+      end;
+
+      for K := 1 to Min(Len, I) do
         if S[K] <> ' ' then
         begin
           I := K;
@@ -2214,6 +2238,9 @@ var
     end;
   end;
 
+var
+  I: Integer;
+  S: string;
 begin
   Result := X - 1;
   S := TrimRight(FLines[Y]);
