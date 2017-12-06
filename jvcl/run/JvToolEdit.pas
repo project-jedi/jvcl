@@ -4407,80 +4407,119 @@ end;
 
 procedure TJvDirectoryEdit.PopupDropDown(DisableEdit: Boolean);
 var
-  Temp, Txt: string;
+  Dir, Txt: string;
   Action: Boolean;
   BrowseForFolder: TJvBrowseForFolderDialog;
+  {$IF declared(TFileOpenDialog)}
+  FileOpenDialog: TFileOpenDialog;
+  Options: TFileDialogOptions;
+  {$IFEND}
 begin
-  Temp := Directory;
+  Dir := Directory;
   Action := True;
-  DoBeforeDialog(Temp, Action);
+  DoBeforeDialog(Dir, Action);
   if not Action then
     Exit;
-  if Temp = '' then
+  if Dir = '' then
   begin
     if InitialDir <> '' then
-      Temp := InitialDir
+      Dir := InitialDir
     else
-      Temp := PathDelim;
+      Dir := PathDelim;
   end;
 
-  if not DirectoryExists(Temp) then
-    Temp := PathDelim;
+  if not DirectoryExists(Dir) then
+    Dir := PathDelim;
 
   case DialogKind of
     dkVCL:
       begin
         DisableSysErrors;
         try
-          Action := SelectDirectory(Temp, FOptions, Self.HelpContext);
+          Action := SelectDirectory(Dir, FOptions, Self.HelpContext);
         finally
           EnableSysErrors;
         end;
       end;
     dkWin32:
       begin
-        BrowseForFolder := TJvBrowseForFolderDialog.Create(Self);
-        try
-          BrowseForFolder.Options := DialogOptionsWin32;
-          BrowseForFolder.Directory := Temp;
-          BrowseForFolder.StatusText := DialogText;
-          Action := BrowseForFolder.Execute;
-          Temp := BrowseForFolder.Directory;
-        finally
-          BrowseForFolder.Free;
+        {$IF declared(TFileOpenDialog)}
+        if (odNewDialogStyle in DialogOptionsWin32) and JclCheckWinVersion(6, 0) and
+           ([odNoBelowDomain, odBrowseForComputer, odOnlyPrinters, odIncludeFiles, odIncludeUrls, odNoNewButtonFolder] * DialogOptionsWin32 = []) then
+        begin
+          FileOpenDialog := TFileOpenDialog.Create(nil);
+          try
+            Options := FileOpenDialog.Options;
+            Options := Options + [fdoPickFolders, fdoPathMustExist];
+            if odFileSystemDirectoryOnly in DialogOptionsWin32 then
+              Options := Options + [fdoForceFileSystem];
+            if not (odValidate in DialogOptionsWin32) then
+              Options := Options + [fdoNoTestFileCreate];
+            if odShareable in DialogOptionsWin32 then
+              Options := Options + [fdoShareAware];
+
+            FileOpenDialog.Options := Options;
+            FileOpenDialog.Title := DialogText;
+            FileOpenDialog.DefaultFolder := Dir;
+            if Parent <> nil then
+              Action := FileOpenDialog.Execute(Parent.Handle)
+            else if (Application.MainForm <> nil) and Application.MainForm.HandleAllocated then
+              Action := FileOpenDialog.Execute(Application.MainForm.Handle)
+            else
+              Action := FileOpenDialog.Execute(Application.Handle);
+
+            if Action then
+              Dir := FileOpenDialog.FileName;
+          finally
+            FileOpenDialog.Free;
+          end;
+        end
+        else
+        {$IFEND}
+        begin
+          BrowseForFolder := TJvBrowseForFolderDialog.Create(Self);
+          try
+            BrowseForFolder.Options := DialogOptionsWin32;
+            BrowseForFolder.Directory := Dir;
+            BrowseForFolder.StatusText := DialogText;
+            Action := BrowseForFolder.Execute;
+            Dir := BrowseForFolder.Directory;
+          finally
+            BrowseForFolder.Free;
+          end;
         end;
       end;
   end;
 
   if CanFocus then
     SetFocus;
-  DoAfterDialog(Temp, Action);
+  DoAfterDialog(Dir, Action);
   if Action then
   begin
     SelText := '';
     if (Text = '') or not MultipleDirs then
-      Txt := Temp
+      Txt := Dir
     else
-      Txt := Directory + PathSep + Temp;
+      Txt := Directory + PathSep + Dir;
     Text := Txt;
     FPhysicalDirectory := Txt; // Must be set after "Text:="
-    if (Temp <> '') and DirectoryExists(Temp) then
-      InitialDir := Temp;
+    if (Dir <> '') and DirectoryExists(Dir) then
+      InitialDir := Dir;
   end;
 end;
 
 procedure TJvDirectoryEdit.ReceptFileDir(const AFileName: string);
 var
-  Temp: string;
+  Dir: string;
 begin
   if FileExists(AFileName) then
-    Temp := StrEnsureNoSuffix(PathDelim, ExtractFilePath(AFileName))
+    Dir := StrEnsureNoSuffix(PathDelim, ExtractFilePath(AFileName))
   else
-    Temp := StrEnsureNoSuffix(PathDelim, AFileName);
+    Dir := StrEnsureNoSuffix(PathDelim, AFileName);
   if (Text = '') or not MultipleDirs then
-    Text := Temp
+    Text := Dir
   else
-    Text := Text + PathSep + Temp;
+    Text := Text + PathSep + Dir;
 end;
 
 //=== { TJvEditButton } ======================================================
