@@ -43,7 +43,7 @@ interface
 
 uses
   Windows,
-  Cfg, WinConvTypes;
+  Cfg, WinConvTypes, JvSetupApi;
 
 {$WEAKPACKAGEUNIT ON}
 

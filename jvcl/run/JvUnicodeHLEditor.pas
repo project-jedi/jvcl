@@ -841,7 +841,7 @@ begin
   N := Min(Max_X, Length(S));
   for I := 2 to N do
     Move(LineAttrs[1], LineAttrs[I], SizeOf(LineAttrs[1]));
-  if Length(S) < Max_X then
+  if N + 1 <= Max_X then
   begin
     LineAttrs[N + 1].FC := Font.Color;
     LineAttrs[N + 1].Style := Font.Style;

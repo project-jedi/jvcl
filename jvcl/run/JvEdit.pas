@@ -152,7 +152,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DefineProperties(Filer: TFiler); override;
   public
-    function IsEmpty: Boolean;
+    function IsEmpty: Boolean; virtual;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DefaultHandler(var Msg); override;
