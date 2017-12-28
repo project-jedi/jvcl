@@ -17,7 +17,7 @@
    finally to the members of the JEDI group who wrote the wonderful underlying code
    which this component depends upon.}
 
- { © Copyright 2004 Robert Meek dba Tangentals Design  [All Rights Reserved]
+ { Â© Copyright 2004 Robert Meek dba Tangentals Design  [All Rights Reserved]
 
     707 Rear Maple St.
     Minersville, Pa. U.S.A.  17954
@@ -132,6 +132,8 @@ uses
   AppEvnts;
 
 type
+  TJvOtherDestinationEvent = procedure(Sender: TObject; E: Exception) of object;
+
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
   {$ENDIF RTL230_UP}
@@ -147,7 +149,7 @@ type
     FIsLoaded: Boolean;
     FExceptionStringList: TStrings;
 
-    FOnOtherDestination: TNotifyEvent;
+    FOnOtherDestination: TJvOtherDestinationEvent;
     procedure SetUnhandled(Value: Boolean);
     procedure HandleUnKnownException(Sender: TObject; E: Exception);
     procedure SetStackTracking(Value: Boolean);
@@ -165,7 +167,7 @@ type
     property LogToFile: Boolean read FLogToFile write FLogToFile default True;
     property LogFileName: string read FName write FName;
     property AppendLogFile: Boolean read FAppendLogFile write FAppendLogFile default True;
-    property OnOtherDestination: TNotifyEvent read FOnOtherDestination write FOnOtherDestination;
+    property OnOtherDestination: TJvOtherDestinationEvent read FOnOtherDestination write FOnOtherDestination;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -304,7 +306,7 @@ begin
       end;
 
       if Assigned(FOnOtherDestination) Then
-        FOnOtherDestination(Self)
+        FOnOtherDestination(Self, Exception(ExceptObj))
       else
         Application.ShowException(Exception(ExceptObj));
     finally
