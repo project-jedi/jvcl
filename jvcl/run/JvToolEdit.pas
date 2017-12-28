@@ -88,7 +88,7 @@ type
     function GetOptions(var dwFlag: DWORD): HRESULT; stdcall;
   end;
   {$EXTERNALSYM IAutoComplete2}
-  
+
   // To avoid ambiguities, we include shldisp.h and define the _di_ interfaces ourselves
   {$HPPEMIT '#include "shldisp.h"'}
   {$HPPEMIT 'typedef DelphiInterface<IAutoComplete> _di_IAutoComplete;'}
@@ -1020,7 +1020,7 @@ type
     property DateAutoBetween;
     property MinDate;
     property MaxDate;
-    property Align; 
+    property Align;
     property Action;
     property AutoSelect;
     property AutoSize;
@@ -1999,6 +1999,9 @@ end;
 
 procedure TJvCustomComboEdit.ButtonClick;
 begin
+  if Assigned(FPopup) then
+    TJvPopupWindow(FPopup).Font.Assign(Font);
+
   if Assigned(FOnButtonClick) then
     FOnButtonClick(Self);
 
@@ -4593,7 +4596,7 @@ begin
       DrawState := FState;
       if FPopupVisible then
         DrawState := rbsDown;
-    
+
       Details.Part := DP_SHOWCALENDARBUTTONRIGHT;
 
       if not Enabled then
