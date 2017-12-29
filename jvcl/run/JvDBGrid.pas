@@ -665,6 +665,11 @@ type
     property OnAfterMouseDown: TMouseEvent read FOnAfterMouseDown write FOnAfterMouseDown;
   end;
 
+var
+  // UseThemedHighlighting changes how grids look and if the application wants to be rendered with
+  // the classic highlighting, all grids can be reverted with JvDBGridDisableUseThemedHighlighting = True
+  JvDBGridDisableUseThemedHighlighting: Boolean = False;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -3060,7 +3065,8 @@ end;
 function TJvDBGrid.DrawThemedHighlighting(ACanvas: TCanvas; R: TRect): Boolean;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if UseThemedHighlighting and UseXPThemes and StyleServices.Enabled and (ACanvas.Brush.Color = clHighlight) then
+  if UseThemedHighlighting and not JvDBGridDisableUseThemedHighlighting and
+     UseXPThemes and StyleServices.Enabled and (ACanvas.Brush.Color = clHighlight) then
   begin
     if ACanvas.Brush.Style <> bsSolid then
       ACanvas.Brush.Style := bsSolid;
@@ -3732,7 +3738,8 @@ begin
   begin
     R := Rect;
     {$IFDEF JVCLThemesEnabled}
-    if UseThemedHighlighting and UseXPThemes and StyleServices.Enabled then
+    if UseThemedHighlighting and not JvDBGridDisableUseThemedHighlighting and
+       UseXPThemes and StyleServices.Enabled then
     begin
       InflateRect(R, -1, -1);
       Bmp := TBitmap.Create;

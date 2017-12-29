@@ -778,6 +778,9 @@ type
     FImageChangeLink: TChangeLink;
     FAutoHideButtonBar: Boolean;
     FDefaultButtons: Boolean;
+    class function CalculateButtonBarHeight: Integer;
+    class function CalculateButtonHeight: Integer;
+    class function CalculateButtonPlacement: Integer;
     procedure SetShowDivider(Value: Boolean);
     function GetShowRouteMap: Boolean;
     procedure SetShowRouteMap(Value: Boolean);
@@ -892,10 +895,10 @@ uses
   JvResources, JvJVCLUtils;
 
 const
+  ciDefaultPPI = 96;
+
   ciButtonWidth = 75;
-  ciButtonHeight = 25;
-  ciButtonBarHeight = 42;
-  ciButtonPlacement = (ciButtonBarHeight - ciButtonHeight) div 2;
+  ciBaseButtonHeight = 25; // button height for default ppi
 
 type
   TJvWizardBaseButton = class(TJvWizardButtonControl)
@@ -2424,7 +2427,7 @@ begin
         if FVisibleButtons = [] then
           FWizard.ButtonBarHeight := 0
         else
-          FWizard.ButtonBarHeight := ciButtonBarHeight;
+          FWizard.ButtonBarHeight := FWizard.CalculateButtonBarHeight;
       end;
       Invalidate;
     end;
@@ -2530,7 +2533,7 @@ begin
   FPages.Wizard := Self;
   Align := alClient;
   FShowDivider := True;
-  FButtonBarHeight := ciButtonBarHeight;
+  FButtonBarHeight := CalculateButtonBarHeight;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
   FAutoHideButtonBar := True;
@@ -2552,6 +2555,21 @@ begin
   FImageChangeLink.Free;
   FPages.Free;
   inherited Destroy;
+end;
+
+class function TJvWizard.CalculateButtonBarHeight: Integer;
+begin
+  Result := CalculateButtonHeight + Round(Screen.PixelsPerInch / ciDefaultPPI * 17);
+end;
+
+class function TJvWizard.CalculateButtonHeight: Integer;
+begin
+  Result := Round(Screen.PixelsPerInch / ciDefaultPPI * ciBaseButtonHeight);
+end;
+
+class function TJvWizard.CalculateButtonPlacement: Integer;
+begin
+  Result := (CalculateButtonBarHeight - CalculateButtonHeight) div 2;
 end;
 
 procedure TJvWizard.Loaded;
@@ -2596,7 +2614,7 @@ begin
     AButton := GetButtonControlClass(AKind).Create(Self);
     try
       AButton.Parent := Self;
-      AButton.Height := ciButtonHeight;
+      AButton.Height := CalculateButtonHeight;
       AButton.Wizard := Self;
     finally
       FNavigateButtons[AKind] := TJvWizardNavigateButton.Create;
@@ -2786,7 +2804,7 @@ begin
       if (FActivePage <> nil) and (FActivePage.FVisibleButtons = []) then
         ButtonBarHeight := 0
       else
-        ButtonBarHeight := ciButtonBarHeight;
+        ButtonBarHeight := CalculateButtonBarHeight;
     end;
     { At design time, if the Page's Enabled property set to False,
       the following if block never gets called. }
@@ -2863,7 +2881,7 @@ begin
     Canvas.Brush.Style := bsSolid;
     Canvas.FillRect(R);
   end;
-  if (FButtonBarHeight > ciButtonHeight) and FShowDivider then
+  if (FButtonBarHeight > CalculateButtonHeight) and FShowDivider then
   begin
     R.Top := R.Bottom - FButtonBarHeight;
     JvWizardDrawBorderEdges(Canvas, R, fsGroove, [beTop]);
@@ -2950,7 +2968,7 @@ begin
     call it because they do not have align set, so they can display at
     the bottom of the wizard. }
   inherited AdjustClientRect(Rect);
-  if FButtonBarHeight > ciButtonHeight then
+  if FButtonBarHeight > CalculateButtonHeight then
     Rect.Bottom := Rect.Bottom - FButtonBarHeight;
 end;
 
@@ -3016,7 +3034,7 @@ var
       begin
         if FControl.Alignment = alRight then
           ALeft := ALeft - FControl.Width;
-        FControl.SetBounds(ALeft, ATop, FControl.Width, ciButtonHeight);
+        FControl.SetBounds(ALeft, ATop, FControl.Width, CalculateButtonHeight);
         if FControl.Alignment = alLeft then
           ALeft := ALeft + FControl.Width;
       end;
@@ -3027,7 +3045,7 @@ var
 begin
   if Parent = nil then
     Exit;
-  if FButtonBarHeight > ciButtonHeight then
+  if FButtonBarHeight > CalculateButtonHeight then
   begin
     AButtonSet := [bkBack, bkNext, bkCancel];
     if FActivePage <> nil then
@@ -3040,22 +3058,22 @@ begin
         Exclude(AButtonSet, bkFinish);
       end;
     end;
-    ATop := ClientRect.Bottom - FButtonBarHeight + ciButtonPlacement + 2;
+    ATop := ClientRect.Bottom - FButtonBarHeight + CalculateButtonPlacement + 2;
     { Position left side buttons }
-    ALeft := ClientRect.Left + ciButtonPlacement;
-    LocateButton(bkHelp, ciButtonPlacement + 2);
+    ALeft := ClientRect.Left + CalculateButtonPlacement;
+    LocateButton(bkHelp, CalculateButtonPlacement + 2);
     LocateButton(bkStart, 1);
     LocateButton(bkLast, 0);
     { Position right side buttons }
-    ALeft := ClientRect.Right - ciButtonPlacement;
+    ALeft := ClientRect.Right - CalculateButtonPlacement;
     if [bkNext, bkFinish] * AButtonSet = [bkNext, bkFinish] then
     begin
       LocateButton(bkCancel, -1);
-      LocateButton(bkFinish, -ciButtonPlacement - 2);
+      LocateButton(bkFinish, -CalculateButtonPlacement - 2);
     end
     else
     begin
-      LocateButton(bkCancel, -ciButtonPlacement - 2);
+      LocateButton(bkCancel, -CalculateButtonPlacement - 2);
       LocateButton(bkFinish, -1);
     end;
     LocateButton(bkNext, -2);

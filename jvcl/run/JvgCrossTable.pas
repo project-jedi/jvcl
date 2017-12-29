@@ -190,6 +190,9 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Controls, Graphics, Buttons, Dialogs,
   StdCtrls, ExtCtrls, SysUtils, Forms, DB, DBCtrls, Menus, Printers,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvComponentBase, JvJVCLUtils,
   JvgTypes, JvgCommClasses, JvgUtils;
 

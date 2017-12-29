@@ -418,7 +418,7 @@ begin
       Continue;
     end
     else
-    if (Ch >= #128) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
+    if (Ord(Ch) >= 128) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
     begin
       W := Word(Ch);
       {$IFNDEF UNICODE}
@@ -467,7 +467,7 @@ begin
         Continue;
       end
       else
-      if (Ch >= #128) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
+      if (Ord(Ch) >= 128) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
       begin
         W := Word(Ch);
         {$IFNDEF UNICODE}
@@ -588,7 +588,7 @@ var
   I: Integer;
   W: Word;
 begin
-  if (Ch >= #128) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
+  if (Ord(Ch) >= 128) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
   begin
     W := Word(Ch);
     {$IFNDEF UNICODE}
