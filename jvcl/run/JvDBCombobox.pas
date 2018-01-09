@@ -686,7 +686,7 @@ begin
     if ListSettings.DisplayField <> '' then
     begin
       Index := ListSettings.FOutfilteredValues.IndexOf(FDataLink.Field.AsString);
-      if (Index <> -1) and (Index < Items.Count) then
+      if (Index <> -1) and (Index < ListSettings.FOutfilteredItems.Count) then
         S := ListSettings.FOutfilteredItems[Index];
     end
     else
