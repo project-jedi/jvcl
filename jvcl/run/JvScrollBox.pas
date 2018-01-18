@@ -138,7 +138,6 @@ begin
   FBackgroundFillMode := sfmTile;
 
   FLockRefreshCount := 0;
-  DoubleBuffered := true;
 end;
 
 destructor TJvScrollBox.Destroy;
