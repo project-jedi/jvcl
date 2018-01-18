@@ -418,6 +418,7 @@ type
     procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMNCPaint(var Message: TWMNCPaint); message WM_NCPAINT;
+    procedure CMDoublebufferedchanged(var Message: TMessage); message CM_DOUBLEBUFFEREDCHANGED;
     procedure ReadEscapeClear(Reader: TReader);
     procedure SetMouseOverButton(Value: Boolean);
   protected
@@ -3397,6 +3398,18 @@ begin
     inherited;
 end;
 
+procedure TJvDBLookupCombo.CMDoublebufferedchanged(var Message: TMessage);
+begin
+  {$IFDEF JVCLThemesEnabled}
+  // We don't support double buffering. It causes painting issues in double buffered WM_PAINT vs.
+  // our WM_NCPAINT code that paints over the region that WM_PAINT also paints.
+  if DoubleBuffered then
+    DoubleBuffered := False // recurive call
+  else
+  {$ENDIF JVCLThemesEnabled}
+    inherited;
+end;
+
 procedure TJvDBLookupCombo.Paint;
 const
   TransColor: array [Boolean] of TColor = (clBtnFace, clWhite);
@@ -3587,8 +3600,15 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if StyleServices.Enabled then
   begin
-    if not (StyleServices.IsSystemStyle and JclCheckWinVersion(6, 0)) then // for Vista and newer the WM_NCPAINT handler paints the button
+    if DoubleBuffered or not (StyleServices.IsSystemStyle and JclCheckWinVersion(6, 0)) then // for Vista and newer the WM_NCPAINT handler paints the button
     begin
+      if not (StyleServices.IsSystemStyle and JclCheckWinVersion(6, 0)) then
+      begin
+        // If DoubleBuffered we need to paint it as client (WM_PRINTCLIENT) and as non-client (WM_NCPAINT)
+        InflateRect(R, 1, 1);
+        OffsetRect(R, 2, 0);
+      end;
+
       if not FListActive or not Enabled or ReadOnly then
         State := tcDropDownButtonDisabled
       else
