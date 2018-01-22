@@ -297,8 +297,11 @@ begin
       Val(Copy(Line, ps + 1, psEnd - ps - 1), LineNum, Err);
       if Err = 0 then
       begin
-        Compiling(Filename);
-        CurrentLine := LineNum;
+        if not SameText('.inc', ExtractFileExt(Filename)) then
+        begin
+          Compiling(Filename);
+          CurrentLine := LineNum;
+        end;
         Result := True;
       end;
     end;
