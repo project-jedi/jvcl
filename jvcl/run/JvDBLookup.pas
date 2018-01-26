@@ -418,7 +418,9 @@ type
     procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMNCPaint(var Message: TWMNCPaint); message WM_NCPAINT;
+    {$IFDEF RTL200_UP}
     procedure CMDoublebufferedchanged(var Message: TMessage); message CM_DOUBLEBUFFEREDCHANGED;
+    {$ENDIF RTL200_UP}
     procedure ReadEscapeClear(Reader: TReader);
     procedure SetMouseOverButton(Value: Boolean);
   protected
@@ -3398,6 +3400,7 @@ begin
     inherited;
 end;
 
+{$IFDEF RTL200_UP}
 procedure TJvDBLookupCombo.CMDoublebufferedchanged(var Message: TMessage);
 begin
   {$IFDEF JVCLThemesEnabled}
@@ -3409,6 +3412,7 @@ begin
   {$ENDIF JVCLThemesEnabled}
     inherited;
 end;
+{$ENDIF RTL200_UP}
 
 procedure TJvDBLookupCombo.Paint;
 const
