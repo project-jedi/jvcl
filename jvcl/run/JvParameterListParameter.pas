@@ -29,6 +29,7 @@ unit JvParameterListParameter;
 interface
 
 uses
+  Windows,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -661,6 +662,13 @@ implementation
 uses
   JvResources, JvJVCLUtils, JclSysUtils;
 
+//=== { Support function for DPI Aware apps } ================================
+
+function PPIScale(Value: Integer): Integer;
+begin
+  Result := MulDiv(Value, Screen.PixelsPerInch, 96);
+end;
+
 function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
   const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
@@ -730,6 +738,7 @@ begin
     GetParameterName, Caption, Hint, Click, False, False);
   Button.Action := Action;
   SetWinControl (Button);
+  WinControl.Height := PPIScale(WinControl.Height);
   if Height > 0 then
     WinControl.Height := Height;
   if Width > 0 then
@@ -862,7 +871,7 @@ begin
                                               DynCtrlFont.ControlFont, Caption+'X');
 
   t := LabelControl.Top;
-  l := LabelControl.Left + LabelControl.Width + 4;
+  l := LabelControl.Left + LabelControl.Width + PPIScale(4);
 
   if Height > 0 then
     h := Height
@@ -889,25 +898,25 @@ procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanelGroupBox;
 var
   l, t, w, h: Integer;
 begin
-  t := 16;
-  l := 5;
+  t := PPIScale(16);
+  l := PPIScale(5);
 
   if Height > 0 then
-    h := Height - 20
+    h := Height - PPIScale(20)
   else
     h := fOrgWinControlHeight;
 
   if EditWidth > 0 then
     w := EditWidth
   else if Width > 0 then
-    w := Width - 9
+    w := Width - PPIScale(9)
   else
     w := 0;
 
   ArrangeWinControlsonPanel(l, t, w, h);
 
-  FrameControl.Height := h + 20;
-  FrameControl.Width := w + 9;
+  FrameControl.Height := h + PPIScale(20);
+  FrameControl.Width := w + PPIScale(9);
 end;
 
 procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanelNone;
@@ -949,8 +958,8 @@ begin
     FBeforeParameterControl.Left := l;
     FBeforeParameterControl.Top := iTop;
     FBeforeParameterControl.Height := iHeight;
-    l := FBeforeParameterControl.Left + FBeforeParameterControl.Width+ Space;
-    w := w + FBeforeParameterControl.Width+ Space;
+    l := FBeforeParameterControl.Left + FBeforeParameterControl.Width+ PPIScale(Space);
+    w := w + FBeforeParameterControl.Width+ PPIScale(Space);
   end;
   WinControl.Left := l;
   WinControl.Top := iTop;
@@ -959,18 +968,18 @@ begin
   begin
     WinControl.Width := iWidth-l+iLeft;
     if Assigned (FAfterParameterControl) then
-      WinControl.Width := WinControl.Width - (FAfterParameterControl.Width + Space);
+      WinControl.Width := WinControl.Width - (FAfterParameterControl.Width + PPIScale(Space));
   end
   else
     WinControl.Width := FOrgWinControlWidth;
   w := w + WinControl.Width;
   if Assigned(FAfterParameterControl) then
   begin
-    l := WinControl.Left + WinControl.Width + Space;
+    l := WinControl.Left + WinControl.Width + PPIScale(Space);
     FAfterParameterControl.Left := l;
     FAfterParameterControl.Top := iTop;
     FAfterParameterControl.Height := iHeight;
-    w := w + FAfterParameterControl.Width+ Space;
+    w := w + FAfterParameterControl.Width+ PPIScale(Space);
   end;
   iWidth := w;
 end;
@@ -1066,7 +1075,7 @@ begin
     IDynAutoSize.ControlSetAutosize(False);
   end
   else
-    LabelControl.Height := 16;
+    LabelControl.Height := PPIScale(16);
 
 end;
 
@@ -1252,10 +1261,10 @@ constructor TJvArrangeParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   FArrangeSettings := TJvArrangeSettings.Create(Self);
-  FArrangeSettings.BorderLeft := 2;
-  FArrangeSettings.BorderTop := 2;
-  FArrangeSettings.DistanceVertical := 2;
-  FArrangeSettings.DistanceHorizontal := 2;
+  FArrangeSettings.BorderLeft := PPIScale(2);
+  FArrangeSettings.BorderTop := PPIScale(2);
+  FArrangeSettings.DistanceVertical := PPIScale(2);
+  FArrangeSettings.DistanceHorizontal := PPIScale(2);
   FArrangeSettings.AutoArrange := True;
 end;
 
@@ -1395,9 +1404,9 @@ end;
 procedure TJvGroupBoxParameter.ReArrangeGroupbox(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
 begin
   if ArrangeSettings.AutoSize in [asWidth, asBoth] then
-    WinControl.Width := nWidth + 5;
+    WinControl.Width := nWidth + PPIScale(5);
   if ArrangeSettings.AutoSize in [asHeight, asBoth] then
-    WinControl.Height := nHeight + 22;
+    WinControl.Height := nHeight + PPIScale(22);
 end;
 
 procedure TJvGroupBoxParameter.SetWinControlProperties;
@@ -2678,11 +2687,11 @@ begin
   if Assigned(Sender) and (Sender is TWinControl) then
   begin
     if (ArrangeSettings.AutoSize in [asWidth, asBoth])
-      and (TWinControl(Sender).Width <> nWidth + 5) then
-      TWinControl(Sender).Width := nWidth + 5;
+      and (TWinControl(Sender).Width <> nWidth + PPIScale(5)) then
+      TWinControl(Sender).Width := nWidth + PPIScale(5);
     if (ArrangeSettings.AutoSize in [asHeight, asBoth])
-      and (TWinControl(Sender).Height <> nHeight + 45) then
-      TWinControl(Sender).Height := nHeight + 45;
+      and (TWinControl(Sender).Height <> nHeight + PPIScale(45)) then
+      TWinControl(Sender).Height := nHeight + PPIScale(45);
   end;
 end;
 
