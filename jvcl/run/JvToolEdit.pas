@@ -1296,9 +1296,9 @@ var
   GDirImageIndexXP: TImageIndex = -1;
   GFileImageIndexXP: TImageIndex = -1;
   GDatePickerThemeDataAvailable: Integer = -1;
-  {$IFDEF HAS_UNIT_VCL_THEMES}
+  {$IFDEF HAS_UNIT_UXTHEME}
   GDatePickerThemeData: HTHEME;
-  {$ENDIF HAS_UNIT_VCL_THEMES}
+  {$ENDIF HAS_UNIT_UXTHEME}
   {$ENDIF JVCLThemesEnabled}
   GCoInitialized: Integer = 0;
 
@@ -1330,7 +1330,7 @@ const
 
 function IsDatePickerThemeDataAvailable: Boolean;
 begin
-  {$IFDEF HAS_UNIT_VCL_THEMES}
+  {$IFDEF HAS_UNIT_UXTHEME}
   if (GDatePickerThemeDataAvailable = -1) and StyleServices.Available and Assigned(OpenThemeData) then
   begin
     GDatePickerThemeData := OpenThemeData(Application.Handle, VSCLASS_DATEPICKER);
@@ -1342,7 +1342,7 @@ begin
   Result := (GDatePickerThemeDataAvailable = 1) and StyleServices.IsSystemStyle; // CustomStyles don't support the DatePicker theme
   {$ELSE}
   Result := False;
-  {$ENDIF ~HAS_UNIT_VCL_THEMES}
+  {$ENDIF ~HAS_UNIT_UXTHEME}
 end;
 {$ENDIF JVCLThemesEnabled}
 
@@ -1759,12 +1759,12 @@ type
 
 procedure TJvBtnWinControl.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
-  {$IFDEF HAS_UNIT_VCL_THEMES}
+  {$IFDEF HAS_UNIT_UXTHEME}
   if ((Owner as TJvCustomComboEdit).ImageKind in [ikDropDown, ikDatePicker]) and
      StyleServices.Enabled and not TJvCustomComboEdit(Owner).ButtonFlat then
     Message.Result := 1 // the button is alClient and paints everything, reduces flicker
   else
-  {$ENDIF HAS_UNIT_VCL_THEMES}
+  {$ENDIF HAS_UNIT_UXTHEME}
     inherited;
 end;
 
@@ -4576,9 +4576,9 @@ end;
 procedure TJvEditButton.Paint;
 {$IFDEF JVCLThemesEnabled}
 var
-  {$IFDEF HAS_UNIT_VCL_THEMES}
+  {$IFDEF HAS_UNIT_UXTHEME}
   DrawState: TJvButtonState;
-  {$ENDIF HAS_UNIT_VCL_THEMES}
+  {$ENDIF HAS_UNIT_UXTHEME}
   ThemedState: TThemedComboBox;
   Details: TThemedElementDetails;
   R: TRect;
@@ -4589,7 +4589,7 @@ begin
   begin
     if FDrawThemedDatePickerBtn and IsDatePickerThemeDataAvailable then
     begin
-      {$IFDEF HAS_UNIT_VCL_THEMES}
+      {$IFDEF HAS_UNIT_UXTHEME}
       DrawState := FState;
       if FPopupVisible then
         DrawState := rbsDown;
@@ -4615,7 +4615,7 @@ begin
       if Width < DefDatePickerThemeButtonWidth then
         R.Left := R.Right - 15; // paint without the dropdown arrow
       DrawThemeBackground(GDatePickerThemeData, Canvas.Handle, Details.Part, Details.State, R, nil);
-      {$ENDIF HAS_UNIT_VCL_THEMES}
+      {$ENDIF HAS_UNIT_UXTHEME}
     end
     else
     if FDrawThemedDropDownBtn then
@@ -5409,10 +5409,10 @@ finalization
   FreeAndNil(GDateHook);
   FreeAndNil(GDefaultComboEditImagesList);
   {$IFDEF JVCLThemesEnabled}
-  {$IFDEF HAS_UNIT_VCL_THEMES}
+  {$IFDEF HAS_UNIT_UXTHEME}
   if (GDatePickerThemeData <> 0) and Assigned(CloseThemeData) then
     CloseThemeData(GDatePickerThemeData);
-  {$ENDIF HAS_UNIT_VCL_THEMES}
+  {$ENDIF HAS_UNIT_UXTHEME}
   {$ENDIF JVCLThemesEnabled}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
