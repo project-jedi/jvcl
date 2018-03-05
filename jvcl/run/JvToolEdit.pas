@@ -1317,7 +1317,6 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-  {$IFNDEF HAS_UNIT_UXTHEME}
 const
   // Vista+
   VSCLASS_DATEPICKER = 'DATEPICKER';
@@ -1326,7 +1325,6 @@ const
   DPSCBR_HOT      = 2;
   DPSCBR_PRESSED  = 3;
   DPSCBR_DISABLED = 4;
-  {$ENDIF ~HAS_UNIT_UXTHEME}
 
 function IsDatePickerThemeDataAvailable: Boolean;
 begin
