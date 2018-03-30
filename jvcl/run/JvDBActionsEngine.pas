@@ -70,13 +70,13 @@ type
     FLeft: Integer;
     FWidth: Integer;
     FHeight: Integer;
-    FArrangeConstraints: TSizeConstraints;
+    FArrangeConstraints: TJvDynControlSizeConstraints;
     FArrangeSettings: TJvArrangeSettings;
     FFieldCreateOptions: TJvCreateDBFieldsOnControlOptions;
     FIncludeNavigator: Boolean;
   protected
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
-    procedure SetArrangeConstraints(Value: TSizeConstraints);
+    procedure SetArrangeConstraints(Value: TJvDynControlSizeConstraints);
     procedure SetFieldCreateOptions(Value: TJvCreateDBFieldsOnControlOptions);
   public
     constructor Create;
@@ -93,7 +93,7 @@ type
     property Left: Integer read FLeft write FLeft default 0;
     property Width: Integer read FWidth write FWidth default 640;
     property Height: Integer read FHeight write FHeight default 480;
-    property ArrangeConstraints: TSizeConstraints read FArrangeConstraints write SetArrangeConstraints;
+    property ArrangeConstraints: TJvDynControlSizeConstraints read FArrangeConstraints write SetArrangeConstraints;
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions
       write SetFieldCreateOptions;
@@ -739,7 +739,7 @@ begin
   FArrangeSettings.BorderLeft := 3;
   FArrangeSettings.BorderTop := 3;
   FArrangeSettings.WrapControls := True;
-  FArrangeConstraints := TSizeConstraints.Create(nil);
+  FArrangeConstraints := TJvDynControlSizeConstraints.Create;
   FArrangeConstraints.MaxHeight := 480;
   FArrangeConstraints.MaxWidth := 640;
   FFieldCreateOptions := TJvCreateDBFieldsOnControlOptions.Create;
@@ -759,7 +759,7 @@ begin
   FArrangeSettings.Assign(Value);
 end;
 
-procedure TJvShowSingleRecordWindowOptions.SetArrangeConstraints(Value: TSizeConstraints);
+procedure TJvShowSingleRecordWindowOptions.SetArrangeConstraints(Value: TJvDynControlSizeConstraints);
 begin
   FArrangeConstraints.Assign(Value);
 end;

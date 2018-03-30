@@ -44,6 +44,22 @@ type
       TComponent; ADynControlEngineDB: TJvDynControlEngineDB) of
       object;
 
+  TJvDynControlSizeConstraints = class(TPersistent)
+  private
+    FMaxHeight: TConstraintSize;
+    FMaxWidth: TConstraintSize;
+    FMinWidth: TConstraintSize;
+    FMinHeight: TConstraintSize;
+    procedure SetConstraints(Index: Integer; Value: TConstraintSize);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+  published
+    property MaxHeight: TConstraintSize index 0 read FMaxHeight write SetConstraints default 0;
+    property MaxWidth: TConstraintSize index 1 read FMaxWidth write SetConstraints default 0;
+    property MinHeight: TConstraintSize index 2 read FMinHeight write SetConstraints default 0;
+    property MinWidth: TConstraintSize index 3 read FMinWidth write SetConstraints default 0;
+  end;
+
   TJvDynControlDataSourceEditDialog = class(TJvPersistentProperty)
     procedure OnFormShow(Sender: TObject);
   private
@@ -66,7 +82,7 @@ type
     FWidth: Integer;
     FHeight: Integer;
     FOnCreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent;
-    FArrangeConstraints: TSizeConstraints;
+    FArrangeConstraints: TJvDynControlSizeConstraints;
     FArrangeSettings: TJvArrangeSettings;
     FFieldCreateOptions: TJvCreateDBFieldsOnControlOptions;
     FScrollBox: TScrollBox;
@@ -83,7 +99,7 @@ type
     procedure OnCloseButtonClick(Sender: TObject);
     function CreateDynControlDialog(var AMainPanel: TWinControl): TCustomForm;
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
-    procedure SetArrangeConstraints(Value: TSizeConstraints);
+    procedure SetArrangeConstraints(Value: TJvDynControlSizeConstraints);
     procedure SetFieldCreateOptions(Value: TJvCreateDBFieldsOnControlOptions);
     procedure ArrangePanelChangedWidth(Sender: TObject; ChangedSize: Integer);
     procedure ArrangePanelChangedHeight(Sender: TObject; ChangedSize: Integer);
@@ -114,7 +130,7 @@ type
     property Height: Integer read FHeight write FHeight default 0;
     property OnCreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent read FOnCreateDataControlsEvent write
       FOnCreateDataControlsEvent;
-    property ArrangeConstraints: TSizeConstraints read FArrangeConstraints write SetArrangeConstraints;
+    property ArrangeConstraints: TJvDynControlSizeConstraints read FArrangeConstraints write SetArrangeConstraints;
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write
         SetArrangeSettings;
     property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions read
@@ -128,7 +144,7 @@ function ShowDataSourceEditDialog(ADataComponent: TComponent; const
     ADialogCaption, APostButtonCaption, ACancelButtonCaption,
     ACloseButtonCaption: string; AIncludeNavigator: Boolean;
     AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions = nil;
-    AArrangeConstraints: TSizeConstraints = nil; AArrangeSettings:
+    AArrangeConstraints: TJvDynControlSizeConstraints = nil; AArrangeSettings:
     TJvArrangeSettings = nil; ADynControlEngineDB: TJvDynControlEngineDB = nil;
     ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent =
     nil; AOnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent = nil):
@@ -218,7 +234,7 @@ begin
   FArrangeSettings.BorderLeft := 3;
   FArrangeSettings.BorderTop := 3;
   FArrangeSettings.WrapControls := True;
-  FArrangeConstraints := TSizeConstraints.Create(nil);
+  FArrangeConstraints := TJvDynControlSizeConstraints.Create;
   FArrangeConstraints.MaxHeight := 480;
   FArrangeConstraints.MaxWidth := 640;
   FFieldCreateOptions := TJvCreateDBFieldsOnControlOptions.Create;
@@ -237,7 +253,7 @@ begin
   FArrangeSettings.Assign(Value);
 end;
 
-procedure TJvDynControlDataSourceEditDialog.SetArrangeConstraints(Value: TSizeConstraints);
+procedure TJvDynControlDataSourceEditDialog.SetArrangeConstraints(Value: TJvDynControlSizeConstraints);
 begin
   FArrangeConstraints.Assign(Value);
 end;
@@ -405,7 +421,7 @@ begin
     {$IFDEF COMPILER10_UP}
     FScrollBox.ParentBackground := True;
     {$ENDIF COMPILER10_UP}
-    FForm.Constraints := ArrangeConstraints;
+    FForm.Constraints.Assign(ArrangeConstraints);
     ArrangePanel := TJvPanel.Create(FForm);
     ArrangePanel.Align := alTop;
     ArrangePanel.BevelInner := bvNone;
@@ -453,7 +469,7 @@ function ShowDataSourceEditDialog(ADataComponent: TComponent; const
     ADialogCaption, APostButtonCaption, ACancelButtonCaption,
     ACloseButtonCaption: string; AIncludeNavigator: Boolean;
     AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions = nil;
-    AArrangeConstraints: TSizeConstraints = nil; AArrangeSettings:
+    AArrangeConstraints: TJvDynControlSizeConstraints = nil; AArrangeSettings:
     TJvArrangeSettings = nil; ADynControlEngineDB: TJvDynControlEngineDB = nil;
     ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent =
     nil; AOnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent = nil):
@@ -481,6 +497,53 @@ begin
     Result := Dialog.ShowDialog;
   finally
     Dialog.Free;
+  end;
+end;
+
+procedure TJvDynControlSizeConstraints.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TSizeConstraints then
+  begin
+    TSizeConstraints (Dest).MinWidth := MinWidth;
+    TSizeConstraints (Dest).MinHeight := MinHeight;
+    TSizeConstraints (Dest).MaxWidth := MaxWidth;
+    TSizeConstraints (Dest).MaxHeight := MaxHeight;
+  end
+  else
+    inherited;
+end;
+
+procedure TJvDynControlSizeConstraints.SetConstraints(Index: Integer; Value: TConstraintSize);
+begin
+  case Index of
+    0:
+      if Value <> FMaxHeight then
+      begin
+        FMaxHeight := Value;
+        if (Value > 0) and (Value < FMinHeight) then
+          FMinHeight := Value;
+      end;
+    1:
+      if Value <> FMaxWidth then
+      begin
+        FMaxWidth := Value;
+        if (Value > 0) and (Value < FMinWidth) then
+          FMinWidth := Value;
+      end;
+    2:
+      if Value <> FMinHeight then
+      begin
+        FMinHeight := Value;
+        if (FMaxHeight > 0) and (Value > FMaxHeight) then
+          FMaxHeight := Value;
+      end;
+    3:
+      if Value <> FMinWidth then
+      begin
+        FMinWidth := Value;
+        if (FMaxWidth > 0) and (Value > FMaxWidth) then
+          FMaxWidth := Value;
+      end;
   end;
 end;
 
