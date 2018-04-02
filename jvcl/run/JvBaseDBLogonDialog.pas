@@ -25,7 +25,6 @@ Known Issues:
 unit JvBaseDBLogonDialog;
 
 {$I jvcl.inc}
-{$DEFINE CODESITE}
 
 interface
 
