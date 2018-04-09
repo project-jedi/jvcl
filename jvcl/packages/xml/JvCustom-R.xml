@@ -18,6 +18,7 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
+    <Package Name="dbrtl" Targets="c6" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvChart.pas" Targets="all" Formname="" Condition=""/>
