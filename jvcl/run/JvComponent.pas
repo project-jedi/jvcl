@@ -75,7 +75,7 @@ type
   TJvPopupListBox = class(TJvExCustomListBox)
   private
     FSearchText: string;
-    FSearchTickCount: Longint;
+    FSearchTickCount: Int64;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -243,7 +243,7 @@ begin
         TickCount := GetTickCount;
         if TickCount < FSearchTickCount then
           Inc(TickCount, $100000000); // (ahuser) reduces the overflow
-        if TickCount - FSearchTickCount >= 4000 then
+        if ((TickCount - FSearchTickCount >= 4000) and (FSearchText <> '')) then
           FSearchText := '';
         FSearchTickCount := TickCount;
         if Length(FSearchText) < 32 then
