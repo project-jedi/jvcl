@@ -140,8 +140,10 @@ type
     FAllowBlank: Boolean;
   protected
     procedure Validate; override;
+  public
+    constructor Create(AOwner: TComponent); override;
   published
-    property AllowBlank: Boolean read FAllowBlank write FAllowBlank default true;
+    property AllowBlank: Boolean read FAllowBlank write FAllowBlank default True;
   end;
 
   TJvValidateCompareOperator = (vcoLessThan, vcoLessOrEqual, vcoEqual, vcoGreaterOrEqual, vcoGreaterThan, vcoNotEqual);
@@ -549,6 +551,12 @@ end;
 
 //=== { TJvRequiredFieldValidator } ==========================================
 
+constructor TJvRequiredFieldValidator.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FAllowBlank := True;
+end;
+
 procedure TJvRequiredFieldValidator.Validate;
 var
   R: Variant;
@@ -800,9 +808,9 @@ begin
       if FErrorIndicator <> nil then
         for I := 0 to Count - 1 do
         begin
-          ErrCtrl := Items[i].ErrorControl;
+          ErrCtrl := Items[I].ErrorControl;
           if ErrCtrl = nil then
-            ErrCtrl := Items[i].ControlToValidate;
+            ErrCtrl := Items[I].ControlToValidate;
           if ErrCtrl <> nil then
             if Controls.IndexOf(ErrCtrl) = -1 then
               Controls.Add(ErrCtrl);
@@ -819,7 +827,7 @@ begin
             begin
               ErrCtrl := Items[I].ErrorControl;
               if ErrCtrl = nil then
-                ErrCtrl := Items[i].ControlToValidate;
+                ErrCtrl := Items[I].ControlToValidate;
 
               if ValidationSummary <> nil then
                 FValidationSummary.AddError(Items[I].ErrorMessage);

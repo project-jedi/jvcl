@@ -189,6 +189,7 @@ type
     procedure AcceptValue(const Value: Variant); override;
     function AcceptPopup(var Value: Variant): Boolean; override;
     procedure ResetPopupValue; override;
+    function ConvertStrToDate(const AText: string; var ADate: TDateTime; ARaise: Boolean): Boolean; virtual;
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
     function IsNoDateValueStored: Boolean;
@@ -451,11 +452,33 @@ begin
     FOnGetValidDateString(Self, Result);
 end;
 
+function TJvCustomDatePickerEdit.ConvertStrToDate(const AText: string; var ADate: TDateTime;
+  ARaise: Boolean): Boolean;
+var
+  OldSeparator: Char;
+  OldFormat: string;
+begin
+  OldFormat := JclFormatSettings.ShortDateFormat;
+  OldSeparator := JclFormatSettings.DateSeparator;
+  try
+    JclFormatSettings.DateSeparator := FDateSeparator;
+    JclFormatSettings.ShortDateFormat := FInternalDateFormat;
+    if ARaise then
+    begin
+      ADate := StrToDate(AText);
+      Result := True;
+    end
+    else
+      Result := TryStrToDate(AText, ADate);
+  finally
+    JclFormatSettings.DateSeparator := OldSeparator;
+    JclFormatSettings.ShortDateFormat := OldFormat;
+  end;
+end;
+
 function TJvCustomDatePickerEdit.AttemptTextToDate(const AText: string;
   var ADate: TDateTime; const AForce: Boolean; const ARaise: Boolean): Boolean;
 var
-  OldFormat: string;
-  OldSeparator: Char;
   OldDate: TDateTime;
   Dummy: Integer;
 begin
@@ -465,32 +488,18 @@ begin
   begin
     Result := True;
     OldDate := ADate;
-    OldFormat := JclFormatSettings.ShortDateFormat;
-    OldSeparator := JclFormatSettings.DateSeparator;
-    try
-      JclFormatSettings.DateSeparator := FDateSeparator;
-      JclFormatSettings.ShortDateFormat := FInternalDateFormat;
-      if AllowNoDate and ((Text = NoDateText) or IsEmptyMaskText(AText)) then
-        ADate := NoDateValue
-      else
+    if AllowNoDate and ((Text = NoDateText) or IsEmptyMaskText(AText)) then
+      ADate := NoDateValue
+    else
+    begin
+      if not ConvertStrToDate(StrRemoveChars(GetValidDateString(AText), [' ']), ADate, ARaise) then
       begin
-        if ARaise then
-          ADate := StrToDate(StrRemoveChars(GetValidDateString(AText), [' ']))
+        if AText = '' then
+          ADate := Now
         else
-        begin
-          if not TryStrToDate(StrRemoveChars(GetValidDateString(AText), [' ']), ADate) then
-          begin
-            if AText = '' then
-              ADate := Now
-            else
-              ADate := OldDate;
-            Result := False;
-          end;
-        end;
+          ADate := OldDate;
+        Result := False;
       end;
-    finally
-      JclFormatSettings.DateSeparator := OldSeparator;
-      JclFormatSettings.ShortDateFormat := OldFormat;
     end;
   end
   else

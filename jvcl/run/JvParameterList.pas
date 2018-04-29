@@ -532,6 +532,14 @@ const
     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_');
 
+
+//=== { Support function for DPI Aware apps } ================================
+
+function PPIScale(Value: Integer): Integer;
+begin
+  Result := MulDiv(Value, Screen.PixelsPerInch, 96);
+end;
+
 //=== { TJvParameterListMessages } ===========================================
 
 constructor TJvParameterListMessages.Create;
@@ -1241,15 +1249,15 @@ begin
   FArrangeSettings.AutoArrange := True;
   FArrangeSettings.WrapControls := True;
   FArrangeSettings.AutoSize := asBoth;
-  FArrangeSettings.DistanceVertical := 3;
-  FArrangeSettings.DistanceHorizontal := 3;
-  FArrangeSettings.BorderLeft := 5;
-  FArrangeSettings.BorderTop := 5;
+  FArrangeSettings.DistanceVertical := PPIScale(3);
+  FArrangeSettings.DistanceHorizontal := PPIScale(3);
+  FArrangeSettings.BorderLeft := PPIScale(5);
+  FArrangeSettings.BorderTop := PPIScale(5);
   ScrollBox := nil;
   RightPanel := nil;
   ArrangePanel := nil;
-  FMaxWidth := 600;
-  FMaxHeight := 400;
+  FMaxWidth := PPIScale(600);
+  FMaxHeight := PPIScale(400);
   FDefaultParameterHeight := 0;
   FDefaultParameterWidth := 0;
   FDefaultParameterLabelWidth := 0;
@@ -1507,7 +1515,7 @@ begin
   TForm(ParameterDialog).Position := poOwnerFormCenter;
   {$ELSE}
   TForm(ParameterDialog).Position := poScreenCenter;
-  {$ENDIF COMPILER7_UP};  
+  {$ENDIF COMPILER7_UP};
   TForm(ParameterDialog).ShowHint := True;
   TForm(ParameterDialog).OnShow := DialogShow;
 
@@ -1524,7 +1532,7 @@ begin
   MainPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'MainPanel', '', alClient);
   if not Supports(MainPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  ITmpPanel.ControlSetBorder(bvNone, bvRaised, 1, bsNone, 3);
+  ITmpPanel.ControlSetBorder(bvNone, bvRaised, 1, bsNone, PPIScale(3));
 
   ButtonPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'BottonPanel', '',
     alRight);
@@ -1538,26 +1546,28 @@ begin
     Messages.CancelButton, '',
     OnCancelButtonClick, False, True);
 
-  BottomPanel.Height := OkButton.Height + 6 + 2;
+  BottomPanel.Height := PPIScale(22) + PPIScale(6 + 2);
 
-  OkButton.Top := 3;
-  OkButton.Left := 3;
+  OkButton.Top := PPIScale(3);
+  OkButton.Left := PPIScale(3);
   OkButton.Visible := OkButtonVisible;
   OkButton.Enabled := OkButtonVisible;
+  OkButton.Height := PPIScale(22);
   if OkButton.Visible then
-    ButtonLeft := OkButton.Left + OkButton.Width + 3
+    ButtonLeft := OkButton.Left + OkButton.Width + PPIScale(3)
   else
     ButtonLeft := 0;
 
-  CancelButton.Top := 3;
-  CancelButton.Left := ButtonLeft + 3;
+  CancelButton.Top := PPIScale(3);
+  CancelButton.Left := ButtonLeft + PPIScale(3);
   CancelButton.Visible := CancelButtonVisible;
   CancelButton.Enabled := CancelButtonVisible;
+  CancelButton.Height := PPIScale(22);
   if CancelButton.Visible then
-    ButtonLeft := ButtonLeft + 3 + CancelButton.Width + 3;
+    ButtonLeft := ButtonLeft + PPIScale(3) + CancelButton.Width + PPIScale(3);
 
-  ButtonPanel.Width := ButtonLeft + 3;
-  OrgButtonPanelWidth := ButtonLeft + 3;
+  ButtonPanel.Width := ButtonLeft + PPIScale(3);
+  OrgButtonPanelWidth := ButtonLeft + PPIScale(3);
 
   OkButton.Anchors := [akTop, akRight];
   CancelButton.Anchors := [akTop, akRight];
@@ -1569,13 +1579,13 @@ begin
     if not Supports(HistoryPanel, IJvDynControlPanel, ITmpPanel) then
       raise EIntfCastError.CreateRes(@RsEIntfCastError);
     ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
-    HistoryPanel.Height := 25;
+    HistoryPanel.Height := PPIScale(25);
     LoadButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'LoadButton',
       Messages.HistoryLoadButton, '',
       HistoryLoadClick, False, False);
-    LoadButton.Left := 6;
-    LoadButton.Top := 5;
-    LoadButton.Height := 20;
+    LoadButton.Left := PPIScale(6);
+    LoadButton.Top := PPIScale(5);
+    LoadButton.Height := PPIScale(20);
     LoadButton.Width :=
         TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryLoadButton) + 5;
     ButtonLeft := LoadButton.Left + LoadButton.Width + 5;
@@ -1583,8 +1593,8 @@ begin
     Messages.HistorySaveButton, '',
     HistorySaveClick, False, False);
     SaveButton.Left := ButtonLeft;
-    SaveButton.Top := 5;
-    SaveButton.Height := 20;
+    SaveButton.Top := PPIScale(5);
+    SaveButton.Height := PPIScale(20);
     SaveButton.Width :=
       TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistorySaveButton) + 5;
     ButtonLeft := SaveButton.Left + SaveButton.Width + 5;
@@ -1592,12 +1602,12 @@ begin
       Messages.HistoryClearButton, '',
       HistoryClearClick, False, False);
     ClearButton.Left := ButtonLeft;
-    ClearButton.Top := 5;
-    ClearButton.Height := 20;
+    ClearButton.Top := PPIScale(5);
+    ClearButton.Height := PPIScale(20);
     ClearButton.Width :=
       TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryClearButton) +
-      5;
-    ButtonLeft := ClearButton.Left + ClearButton.Width + 5;
+      PPIScale(5);
+    ButtonLeft := ClearButton.Left + ClearButton.Width + PPIScale(5);
     HistoryPanel.Width := ButtonLeft;
     OrgHistoryPanelWidth := ButtonLeft;
   end
@@ -1618,9 +1628,9 @@ begin
         if ArrangePanel.Width > MaxWidth then
           TForm(ParameterDialog).ClientWidth := MaxWidth
         else
-          TForm(ParameterDialog).ClientWidth := ArrangePanel.Width + 5
+          TForm(ParameterDialog).ClientWidth := ArrangePanel.Width + PPIScale(5)
       else
-        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width + 5;
+        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width + PPIScale(5);
     if Assigned(HistoryPanel) and
       (TForm(ParameterDialog).ClientWidth < HistoryPanel.Width) then
       TForm(ParameterDialog).ClientWidth := HistoryPanel.Width
@@ -1631,17 +1641,17 @@ begin
         if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
           TForm(ParameterDialog).ClientHeight := MaxHeight + 10
         else
-          TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 10
+          TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + PPIScale(10)
       else
-        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 10;
+        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + PPIScale(10);
   end;
 
   if Assigned(HistoryPanel) then
     if (OrgButtonPanelWidth + OrgHistoryPanelWidth) > BottomPanel.Width then
     begin
       ButtonPanel.Align := alBottom;
-      ButtonPanel.Height := OkButton.Height + 6 + 2;
-      BottomPanel.Height := ButtonPanel.Height * 2 + 1;
+      ButtonPanel.Height := OkButton.Height + PPIScale(6 + 2);
+      BottomPanel.Height := ButtonPanel.Height * 2 + PPIScale(1);
       HistoryPanel.Align := alClient;
     end
     else
@@ -1650,7 +1660,7 @@ begin
       ButtonPanel.Width := OrgButtonPanelWidth;
       HistoryPanel.Align := alLeft;
       HistoryPanel.Width := OrgHistoryPanelWidth;
-      BottomPanel.Height := OkButton.Height + 6 + 2;
+      BottomPanel.Height := OkButton.Height + PPIScale(6 + 2);
     end;
   CheckScrollBoxAutoScroll;
 end;

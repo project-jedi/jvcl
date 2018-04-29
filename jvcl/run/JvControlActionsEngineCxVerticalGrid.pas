@@ -101,7 +101,7 @@ begin
   SaveDialog := TSaveDialog.Create(Self);
   try
     SaveDialog.Name    := 'SaveDialog';
-    SaveDialog.DefaultExt := 'XLS';
+    SaveDialog.DefaultExt := 'XLSX';
     SaveDialog.Filter  := 'MS-Excel-Files (*.XLS;*.XLSX)|*.XLS;*.XLSX|XML-Files (*.XML)|*.HTM|HTML-Files (*.HTM)|*.HTM|Text-Files (*.TXT)|*.TXT|All Files (*.*)|*.*';
     SaveDialog.Options := [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist];
     if SaveDialog.Execute then

@@ -697,7 +697,7 @@ var
       if UpperCase(AVal2) = 'TRUE' then
         AVal2 := 1
       else
-        AVal1 := 0;
+        AVal2 := 0;
     end;
   end;
 

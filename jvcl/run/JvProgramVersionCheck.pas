@@ -661,6 +661,13 @@ begin
   until (AVersion1 = '') and (AVersion2 = '');
 end;
 
+//=== { Support function for DPI Aware apps } ================================
+
+function PPIScale(Value: Integer): Integer;
+begin
+  Result := MulDiv(Value, Screen.PixelsPerInch, 96);
+end;
+
 //=== { TJvProgramVersionsStringList } =======================================
 
 function VersionNumberSortCompare(List: TStringList; Index1, Index2: Integer): Integer;
@@ -1384,8 +1391,9 @@ end;
 
 procedure TJvProgramVersionCheck.DownloadThreadOnFinishAll(Sender: TObject);
 begin
+  Application.ProcessMessages;
   if Assigned(FThreadExceptionClass) then
-    exit;
+    Exit;
   if DownloadError <> '' then
     JvDSADialogs.MessageDlg(DownloadError, mtError, [mbOK], 0)
   else
@@ -1396,8 +1404,7 @@ begin
     JvDSADialogs.MessageDlg(Format(RsPVCDownloadSuccessfulInstallManually,
       [FExecuteDownloadInstallFileName]), mtInformation, [mbOK], 0)
   else
-  if JvDSADialogs.MessageDlg(RsPVCDownloadSuccessfullInstallNow,
-    mtWarning, [mbYes, mbNo], 0) = mrYes then
+  if JvDSADialogs.MessageDlg(RsPVCDownloadSuccessfullInstallNow, mtWarning, [mbYes, mbNo], 0) = mrYes then
     if ShellExecEx(FExecuteDownloadInstallFileName, FExecuteVersionInfo.LocalInstallerParams) then
       PostMessage(Application.Handle, WM_CLOSE, 0, 0)
     else
@@ -1484,7 +1491,7 @@ begin
   Result := rvoIgnore;
   ParameterList := TJvParameterList.Create(Self);
   try
-    ParameterList.MaxWidth := 460;
+    ParameterList.MaxWidth := PPIScale(460);
     ParameterList.Messages.Caption :=
       Format(RsPVCDialogCaption, [CurrentApplicationName]);
     ParameterList.Messages.OkButton := RsPVCDialogExecuteButton;
@@ -1493,15 +1500,15 @@ begin
     Parameter.SearchName := SParamNameNewVersionLabel;
     Parameter.Caption := Format(RsPVCNewVersionAvailable,
       [GetAllowedRemoteProgramVersionReleaseType, CurrentApplicationName]);
-    Parameter.Width := 350;
-    Parameter.Height := 45;
+    Parameter.Width := PPIScale(350);
+    Parameter.Height := PPIScale(45);
     ParameterList.AddParameter(Parameter);
 
     GroupParameter := TJvGroupBoxParameter.Create(ParameterList);
     GroupParameter.SearchName := SParamNameGroupBox;
     GroupParameter.Caption := RsPVCChooseWhichVersion;
-    GroupParameter.Width := 350;
-    GroupParameter.Height := 10;
+    GroupParameter.Width := PPIScale(350);
+    GroupParameter.Height := PPIScale(10);
     ParameterList.AddParameter(GroupParameter);
 
     for I := High(I) downto Low(I) do
@@ -1514,20 +1521,20 @@ begin
           Parameter.ParentParameterName := SParamNameGroupBox;
           Parameter.SearchName := SParamNameRadioButton + IntToStr(Ord(I));
           Parameter.Caption := RemoteProgramVersionHistory.CurrentProgramVersion[I].ProgramVersionInfo;
-          Parameter.Width := 250;
-          Parameter.AsBoolean := GroupParameter.Height <= 10;
+          Parameter.Width := PPIScale(250);
+          Parameter.AsBoolean := GroupParameter.Height <= PPIScale(10);
           ParameterList.AddParameter(Parameter);
 
           Parameter := TJvBaseParameter(TJvButtonParameter.Create(ParameterList));
           Parameter.ParentParameterName := SParamNameGroupBox;
           Parameter.SearchName := SParamNameVersionButtonInfo + IntToStr(Ord(I));
           Parameter.Caption := RsPVInfoButtonCaption;
-          Parameter.Width := 80;
+          Parameter.Width := PPIScale(80);
           Parameter.Tag := Ord(I);
           TJvButtonParameter(Parameter).OnClick := VersionInfoButtonClick;
           ParameterList.AddParameter(Parameter);
 
-          GroupParameter.Height := GroupParameter.Height + 25;
+          GroupParameter.Height := GroupParameter.Height + PPIScale(25);
         end;
     Parameter := TJvBaseParameter(TJvRadioGroupParameter.Create(ParameterList));
     Parameter.SearchName := SParamNameOperation;
@@ -1536,8 +1543,8 @@ begin
     TJvRadioGroupParameter(Parameter).ItemList.Add(RsPVCOperationDownloadOnly);
     TJvRadioGroupParameter(Parameter).ItemList.Add(RsPVCOperationDownloadInstall);
     TJvRadioGroupParameter(Parameter).ItemIndex := 2;
-    Parameter.Width := 350;
-    Parameter.Height := 79;
+    Parameter.Width := PPIScale(350);
+    Parameter.Height := PPIScale(79);
     ParameterList.AddParameter(Parameter);
 
     if ParameterList.ShowParameterDialog then
@@ -1685,8 +1692,8 @@ begin
     Parameter := TJvMemoParameter.Create(ParameterList);
     Parameter.SearchName := SParamNameMemo;
     Parameter.Caption := Format(RsPVCChangesBetween, [AFromVersion, AToVersion]);
-    Parameter.Width := 340;
-    Parameter.Height := 200;
+    Parameter.Width := PPIScale(340);
+    Parameter.Height := PPIScale(200);
     Parameter.AsString := RemoteProgramVersionHistory.GetVersionsDescription(AFromVersion, AToVersion);
     Parameter.Scrollbars := ssBoth;
     Parameter.ReadOnly := True;

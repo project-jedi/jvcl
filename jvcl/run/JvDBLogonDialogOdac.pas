@@ -149,11 +149,13 @@ const
 
 implementation
 
+{$DEFINE ODAC_V10}
+
 {$IFDEF USE_3RDPARTY_DEVART_ODAC}
 uses
   SysUtils, StdCtrls, Dialogs,
   OraClasses, OraError, OraCall, OraServices,
-  JvDSADialogs, JvDBPasswordDialogOdac, JvResources;
+  {$IFDEF ODAC_V10}OraServerEnumerator, {$ENDIF ODAC_V10}JvDSADialogs, JvDBPasswordDialogOdac, JvResources;
 
 //=== { TJvDBOdacLogonDialogOptions } ========================================
 
