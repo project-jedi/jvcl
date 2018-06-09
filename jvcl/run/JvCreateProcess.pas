@@ -196,11 +196,11 @@ type
     procedure WndProc(var Msg: TMessage);
     property Handle: THandle read GetHandle;
     procedure CloseRead;
-    procedure CloseWrite;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function CloseApplication(SendQuit: Boolean = False): Boolean;
+    procedure CloseWrite;
     procedure Run;
     procedure StopWaiting;
     procedure Terminate;
