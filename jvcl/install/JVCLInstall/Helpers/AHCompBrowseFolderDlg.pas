@@ -271,7 +271,7 @@ end;
 procedure TBrowseFolderDialog.SetSelPath(const Path: string);
 begin
   if FHandle <> 0 then
-    SendMessage(FHandle, BFFM_SETSELECTION, 1, Longint(PChar(Path)));
+    SendMessage(FHandle, BFFM_SETSELECTION, 1, LPARAM(PChar(Path)));
 end;
 
 procedure TBrowseFolderDialog.SetOkEnable(Value: Boolean);
@@ -324,19 +324,18 @@ begin
   end;
   try
     SetLength(FDisplayName, MAX_PATH);
-    with BrowseInfo do
-    begin
-      pszDisplayName := PChar(DisplayName);
-      if DialogText <> '' then lpszTitle := PChar(DialogText) else lpszTitle := nil;
-      if FBrowseKind = bfComputers then
-        ulFlags := BIF_BROWSEFORCOMPUTER
-      else
-        ulFlags := BIF_RETURNONLYFSDIRS or BIF_RETURNFSANCESTORS;
-      lpfn := ExplorerHook;
-      lParam := Longint(Self);
-      hWndOwner := Application.Handle;
-      iImage := 0;
-    end;
+
+    BrowseInfo.pszDisplayName := PChar(DisplayName);
+    if DialogText <> '' then BrowseInfo.lpszTitle := PChar(DialogText) else BrowseInfo.lpszTitle := nil;
+    if FBrowseKind = bfComputers then
+      BrowseInfo.ulFlags := BIF_BROWSEFORCOMPUTER
+    else
+      BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS or BIF_RETURNFSANCESTORS;
+    BrowseInfo.lpfn := ExplorerHook;
+    BrowseInfo.lParam := LPARAM(Self);
+    BrowseInfo.hWndOwner := Application.Handle;
+    BrowseInfo.iImage := 0;
+
     ItemIDList := TaskModalDialog2(BrowseInfo);
     Result := ItemIDList <> nil;
     if Result then

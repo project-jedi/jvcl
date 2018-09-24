@@ -195,7 +195,7 @@ var
   function CheckAddressForOffset(Offset: Cardinal): Boolean;
   begin
     try
-      CallAddress := Pointer(Cardinal(TApplicationHandleExceptionAddr) + Offset);
+      CallAddress := Pointer(PAnsiChar(TApplicationHandleExceptionAddr) + Offset);
       CALLInstruction.Call := $E8;
       Result := PCALLInstruction(CallAddress)^.Call = CALLInstruction.Call;
       if Result then

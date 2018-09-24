@@ -2065,6 +2065,7 @@ begin
   P := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
   if Assigned(P) then
   begin
+    // Pointer(Cardinal(@P): Delphi 5 and 6 are 32bit only, so no problem here with 64bit code
     if VirtualProtect(Pointer(Cardinal(@P) + 1), SizeOf(SavedWinControlCode), PAGE_EXECUTE_READWRITE,
                       OldProtect) then
     try

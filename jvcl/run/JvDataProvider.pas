@@ -1743,7 +1743,7 @@ begin
   RAPI := GetPropInfo(THackWriter, 'RootAncestor');
   if RAPI = nil then // Should never happen
     raise EJVCLException.CreateRes(@RsEInternalError);
-  Result := Pointer(Cardinal(RAPI.GetProc) and $00FFFFFF + Cardinal(Self) + 4);
+  Result := Pointer(UINT_PTR(RAPI.GetProc) and $00FFFFFF + UINT_PTR(Self) + 4);
 end;
 
 procedure THackWriter.SetPropPath(const NewPath: string);

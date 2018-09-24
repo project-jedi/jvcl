@@ -48,14 +48,14 @@ type
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
   TJvPropertyStoreEditorControl = class(TJvCustomControl)
-    procedure JvInspectorAfterItemCreate(Sender: TObject; Item:
-        TJvCustomInspectorItem);
-    procedure JvInspectorBeforeItemCreate(Sender: TObject; Data:
-      TJvCustomInspectorData; var ItemClass: TJvInspectorItemClass);
+    procedure JvInspectorAfterItemCreate(Sender: TObject; Item: TJvCustomInspectorItem);
+    procedure JvInspectorBeforeItemCreate(Sender: TObject; Data: TJvCustomInspectorData;
+      var ItemClass: TJvInspectorItemClass);
     procedure ListBoxOnClick(Sender: TObject);
     procedure ListBoxOnEnter(Sender: TObject);
     procedure ListBoxOnKeyPress(Sender: TObject; var Key: Char);
-    procedure ListBoxOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure ListBoxOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer);
     procedure ListCopyActionExecute(Sender: TObject);
     procedure ListDeleteActionExecute(Sender: TObject);
     procedure ListDownActionExecute(Sender: TObject);
@@ -72,8 +72,8 @@ type
     procedure ParentListSortUpActionExecute(Sender: TObject);
     procedure ParentListUpActionExecute(Sender: TObject);
     procedure PropertyStoreTreeViewChange(Sender: TObject; Node: TTreeNode);
-    procedure PropertyStoreTreeViewChanging(Sender: TObject; Node: TTreeNode; var
-        AllowChange: Boolean);
+    procedure PropertyStoreTreeViewChanging(Sender: TObject; Node: TTreeNode;
+      var AllowChange: Boolean);
     procedure PropertyStoreTreeViewEnter(Sender: TObject);
     procedure RTTIInspectorEnter(Sender: TObject);
   private
@@ -130,7 +130,8 @@ type
     procedure FillListBox;
     function GetPropCount(Instance: TPersistent): Integer;
     function GetPropName(Instance: TPersistent; Index: Integer): string;
-    procedure RTTIInspectorOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
+    procedure RTTIInspectorOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+      var Resize: Boolean);
     procedure SetActionsEnabled;
     procedure SetInspectedObject(const Value: TPersistent);
     procedure SetInspectedObjectListEditorHandlerIntf(const Value: IJvPropertyListEditorHandler);
@@ -141,22 +142,23 @@ type
     function ShowPropertyInTreeView(PropObject: TObject; const PropertyName: string): Boolean;
     property InspectedObject: TPersistent read FInspectedObject write SetInspectedObject;
     property InspectedObjectEditorHandlerIntf: IJvPropertyEditorHandler read FInspectedObjectEditorHandlerIntf;
-    property InspectedObjectListEditorHandlerIntf: IJvPropertyListEditorHandler read FInspectedObjectListEditorHandlerIntf
-        write SetInspectedObjectListEditorHandlerIntf;
+    property InspectedObjectListEditorHandlerIntf: IJvPropertyListEditorHandler
+      read FInspectedObjectListEditorHandlerIntf write SetInspectedObjectListEditorHandlerIntf;
     property InspectedObjectListItemIndex: Integer read FInspectedObjectListItemIndex write SetInspectedObjectListItemIndex;
     property InspectedParentObject: TPersistent read FInspectedParentObject write SetInspectedParentObject;
-    property InspectedParentObjectListEditorHandlerIntf: IJvPropertyListEditorHandler read
-      FInspectedParentObjectListEditorHandlerIntf write SetInspectedParentObjectListEditorHandlerIntf;
+    property InspectedParentObjectListEditorHandlerIntf: IJvPropertyListEditorHandler
+      read FInspectedParentObjectListEditorHandlerIntf write SetInspectedParentObjectListEditorHandlerIntf;
   protected
     procedure CreateControls;
     procedure DestroyControls;
     procedure FillTreeView(GotoNodeObject: TPersistent = nil);
-    procedure FillTreeViewByComponent(TreeNodes: TTreeNodes; Parent: TTreeNode; aPropertyStore: TPersistent);
+    procedure FillTreeViewByComponent(TreeNodes: TTreeNodes; Parent: TTreeNode;
+      aPropertyStore: TPersistent);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function OnDisplayProperty(const aPropertyName : String): Boolean;
-    function OnInspectorTranslatePropertyName(const aPropertyName : String): string;
-    procedure OnPropertyChange(var OldPropertyName, NewPropertyName : string);
-    function OnTranslatePropertyName(const aPropertyName : String): string;
+    function OnDisplayProperty(const aPropertyName: string): Boolean;
+    function OnInspectorTranslatePropertyName(const aPropertyName: string): string;
+    procedure OnPropertyChange(var OldPropertyName, NewPropertyName: string);
+    function OnTranslatePropertyName(const aPropertyName: string): string;
     procedure SetInformation(const iCaption, iInfo: string);
   public
     destructor Destroy; override;
@@ -202,7 +204,6 @@ type
     property Visible;
   end;
 
-type
   TJvPropertyStoreEditorForm = class(TJvForm)
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -240,13 +241,14 @@ uses
 
 {$R *.dfm}
 
-type tAccessControl = class(TControl);
-
+type
+  TAccessControl = class(TControl);
+  TAccessCustomPanel = class(TCustomPanel);
 
 function EditPropertyStore(PropertyStore: TJvCustomPropertyStore): Boolean;
 var
   JvPropertyStoreEditorForm: TJvPropertyStoreEditorForm;
-  SavePropertyStore : TJvCustomPropertyStore;
+  SavePropertyStore: TJvCustomPropertyStore;
 begin
   Result := false;
   if not Assigned(PropertyStore) then
@@ -270,29 +272,30 @@ begin
 end;
 
 procedure TJvPropertyStoreEditorForm.CreateFormControls;
-var BottomPanel: TWinControl;
+var
+  BottomPanel: TWinControl;
   Button: TButton;
-  ITmpBevelBorder: IJvDynControlBevelBorder;
+  TmpBevelBorder: IJvDynControlBevelBorder;
 begin
   BottomPanel := DefaultDynControlEngine.CreatePanelControl(Self, Self, 'BottomPanel', '', alBottom);
-  if Supports(BottomPanel, IJvDynControlBevelBorder, ITmpBevelBorder) then
-    ITmpBevelBorder.ControlSetBevelOuter(bvNone);
+  if Supports(BottomPanel, IJvDynControlBevelBorder, TmpBevelBorder) then
+    TmpBevelBorder.ControlSetBevelOuter(bvNone);
   BottomPanel.TabOrder := 0;
   Button := DefaultDynControlEngine.CreateButton(Self, BottomPanel, 'OKButton', RSPropertyStoreEditorDialogButtonOk, '', OkButtonClick);
   Button.Top := 3;
   Button.Width := 75;
   Button.Height := 25;
-  Button.Left := BottomPanel.Width-2*Button.Width-10;
+  Button.Left := BottomPanel.Width - 2 * Button.Width - 10;
   Button.Anchors := [akTop, akRight];
   Button.ModalResult := mrOk;
   Button := DefaultDynControlEngine.CreateButton(Self, BottomPanel, 'CancelButton', RSPropertyStoreEditorDialogButtonCancel, '', CancelButtonClick);
   Button.Top := 3;
   Button.Width := 75;
   Button.Height := 25;
-  Button.Left := BottomPanel.Width-Button.Width-5;
+  Button.Left := BottomPanel.Width - Button.Width - 5;
   Button.Anchors := [akTop, akRight];
   Button.ModalResult := mrCancel;
-  BottomPanel.Height := 2*Button.Top+Button.Height+1;
+  BottomPanel.Height := 2 * Button.Top + Button.Height + 1;
 
   FPropertyStoreEditorControl:= TJvPropertyStoreEditorControl.Create(self);
   FPropertyStoreEditorControl.Parent := Self;
@@ -304,7 +307,6 @@ begin
   {$ELSE}
   Position := poScreenCenter;
   {$ENDIF COMPILER7_UP};  
-
 end;
 
 procedure TJvPropertyStoreEditorForm.DestroyFormControls;
@@ -326,9 +328,7 @@ end;
 procedure TJvPropertyStoreEditorForm.IntOnShow(Sender: TObject);
 begin
   if Assigned(FPropertyStoreEditorControl) then
-  begin
     FPropertyStoreEditorControl.PropertyStore := PropertyStore;
-  end;
 end;
 
 procedure TJvPropertyStoreEditorForm.OkButtonClick(Sender: TObject);
@@ -342,9 +342,6 @@ begin
   if Assigned(FPropertyStoreEditorControl) then
     FPropertyStoreEditorControl.PropertyStore := PropertyStore;
 end;
-
-type tAccessCustomPanel = class(tCustomPanel);
-
 
 destructor TJvPropertyStoreEditorControl.Destroy;
 begin
@@ -370,7 +367,7 @@ procedure TJvPropertyStoreEditorControl.CreateControls;
 var
   TreeView: TWinControl;
   EditPanel: TWinControl;
-  DynControlDblClick : IJvDynControlDblClick;
+  DynControlDblClick: IJvDynControlDblClick;
   ListBox: TWinControl;
   InfoGroupBox: TWinControl;
   InfoMemoPanel: TWinControl;
@@ -379,16 +376,17 @@ var
   DynControlKey: IJvDynControlKey;
   DynControlMouse: IJvDynControlMouse;
   DynControl: IJvDynControl;
-  BtnLeft : Integer;
+  BtnLeft: Integer;
 
-  function CreateBtn(AOwner: TComponent; AParentControl: TWinControl; const AButtonName, ACaption, AHint: string; AOnClick:
-    TNotifyEvent; AAction : TAction;var ALeft : Integer; AWidth:Integer): TButton;
+  function CreateBtn(AOwner: TComponent; AParentControl: TWinControl;
+    const AButtonName, ACaption, AHint: string; AOnClick: TNotifyEvent; AAction: TAction;
+    var ALeft: Integer; AWidth: Integer): TButton;
   begin
     Result := DefaultDynControlEngine.CreateButton(AOwner, AParentControl, AButtonName, ACaption, AHint, AOnClick);
-    Result.Action := aAction;
-    Result.Left := aLeft;
-    Result.Width := aWidth;
-    aLeft := aLeft + aWidth;
+    Result.Action := AAction;
+    Result.Left := ALeft;
+    Result.Width := AWidth;
+    ALeft := ALeft + AWidth;
   end;
 
 begin
@@ -396,8 +394,8 @@ begin
   TreePanel.Width := 250;
   if TreePanel is TCustomPanel then
   begin
-    tAccessCustomPanel(TreePanel).BevelOuter := bvNone;
-    tAccessCustomPanel(TreePanel).BorderWidth := 3;
+    TAccessCustomPanel(TreePanel).BevelOuter := bvNone;
+    TAccessCustomPanel(TreePanel).BorderWidth := 3;
   end;
 
   TreeView := DefaultDynControlEngine.CreateTreeViewControl(Self, TreePanel, 'PropertyStoreTreeViewIntf');
@@ -426,7 +424,7 @@ begin
   InfoPanel  := DefaultDynControlEngine.CreatePanelControl(Self, Self, 'InfoPanel', '', alBottom);
   if InfoPanel is TCustomPanel then
   begin
-    tAccessCustomPanel(InfoPanel).BevelOuter := bvNone;
+    TAccessCustomPanel(InfoPanel).BevelOuter := bvNone;
   end;
   InfoPanel.Height := 100;
   InfoGroupBox := DefaultDynControlEngine.CreateGroupBoxControl(Self, InfoPanel, 'InfoGroupBox', 'Info');
@@ -435,8 +433,8 @@ begin
   InfoMemoPanel  := DefaultDynControlEngine.CreatePanelControl(Self, InfoGroupBox, 'InfoMemoPanel', '', alClient);
   if InfoMemoPanel is TCustomPanel then
   begin
-    tAccessCustomPanel(InfoMemoPanel).BevelOuter := bvNone;
-    tAccessCustomPanel(InfoMemoPanel).BorderWidth := 3;
+    TAccessCustomPanel(InfoMemoPanel).BevelOuter := bvNone;
+    TAccessCustomPanel(InfoMemoPanel).BorderWidth := 3;
   end;
   InfoMemo := DefaultDynControlEngine.CreateMemoControl(Self, InfoGroupbox, 'InfoMemo');
   InfoMemo.Align := alClient;
@@ -578,7 +576,7 @@ begin
 
   InspectorPanel  := DefaultDynControlEngine.CreatePanelControl(Self, EditPanel, 'InspectorPanel', '', alClient);
   if InspectorPanel is TCustomPanel then
-    tAccessCustomPanel(InspectorPanel).BevelOuter := bvNone;
+    TAccessCustomPanel(InspectorPanel).BevelOuter := bvNone;
 
   Inspector := DefaultDynControlEngine.CreateRTTIInspectorControl(self, InspectorPanel,
       'Inspector', OnDisplayProperty, OnTranslatePropertyName);
@@ -586,7 +584,7 @@ begin
   RTTIInspectorControlIntf.ControlOnPropertyChange := OnPropertyChange;
   RTTIInspectorControlIntf.ControlOnTranslatePropertyName := OnInspectorTranslatePropertyName;
   Inspector.Align := alClient;
-  tAccessControl(Inspector).OnCanResize := RTTIInspectorOnCanResize;
+  TAccessControl(Inspector).OnCanResize := RTTIInspectorOnCanResize;
   Supports(RTTIInspectorControlIntf, IJvDynControl, DynControl);
   RTTIInspectorControlIntf.ControlDividerWidth := 200;
 
@@ -662,7 +660,7 @@ end;
 procedure TJvPropertyStoreEditorControl.FillTreeView(GotoNodeObject: TPersistent =
     nil);
 begin
-  if (csDestroying in Componentstate) then
+  if csDestroying in Componentstate then
     Exit;
   if not Assigned(PropertyStoreTreeViewIntf) then
     CreateControls;
@@ -682,8 +680,8 @@ begin
     GotoEditObject(GotoNodeObject);
 end;
 
-procedure TJvPropertyStoreEditorControl.FillTreeViewByComponent(TreeNodes: TTreeNodes; Parent: TTreeNode; aPropertyStore:
-  TPersistent);
+procedure TJvPropertyStoreEditorControl.FillTreeViewByComponent(TreeNodes: TTreeNodes;
+  Parent: TTreeNode; aPropertyStore: TPersistent);
 var
   I: Integer;
   SubObj: TObject;
@@ -692,9 +690,8 @@ var
   PropertyEditorHandler: IJvPropertyEditorHandler;
   DetailPropertyEditorHandler: IJvPropertyEditorHandler;
   PropertyListEditorHandler: IJvPropertyListEditorHandler;
-
 begin
-  if not assigned(aPropertyStore) or
+  if not Assigned(aPropertyStore) or
     not Supports(aPropertyStore, IJvPropertyEditorHandler, PropertyEditorHandler) then
     Exit;
   if not Assigned(Parent) then
@@ -740,8 +737,7 @@ begin
   end;
 end;
 
-function TJvPropertyStoreEditorControl.GetPropCount(Instance: TPersistent):
-    Integer;
+function TJvPropertyStoreEditorControl.GetPropCount(Instance: TPersistent): Integer;
 var
   Data: PTypeData;
 begin
@@ -749,8 +745,7 @@ begin
   Result := Data.PropCount;
 end;
 
-function TJvPropertyStoreEditorControl.GetPropName(Instance: TPersistent; Index:
-    Integer): string;
+function TJvPropertyStoreEditorControl.GetPropName(Instance: TPersistent; Index: Integer): string;
 var
   PropList: PPropList;
   PropInfo: PPropInfo;
@@ -792,16 +787,15 @@ begin
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.JvInspectorAfterItemCreate(Sender:
-    TObject; Item: TJvCustomInspectorItem);
+procedure TJvPropertyStoreEditorControl.JvInspectorAfterItemCreate(Sender: TObject;
+  Item: TJvCustomInspectorItem);
 begin
   if Assigned(Item) and Assigned(InspectedObjectEditorHandlerIntf) then
     Item.DisplayName := InspectedObjectEditorHandlerIntf.EditIntf_TranslatePropertyName(Item.Name);
 end;
 
-procedure TJvPropertyStoreEditorControl.JvInspectorBeforeItemCreate(Sender:
-  TObject; Data: TJvCustomInspectorData; var ItemClass:
-  TJvInspectorItemClass);
+procedure TJvPropertyStoreEditorControl.JvInspectorBeforeItemCreate(Sender: TObject;
+  Data: TJvCustomInspectorData; var ItemClass: TJvInspectorItemClass);
 var
   PropertyEditorHandler: IJvPropertyEditorHandler;
 begin
@@ -841,15 +835,16 @@ begin
     InspectedObjectListItemIndex := -1;
 end;
 
-procedure TJvPropertyStoreEditorControl.ListBoxOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
-    X, Y: Integer);
-var aPos:TPoint;
+procedure TJvPropertyStoreEditorControl.ListBoxOnMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  LPos: TPoint;
 begin
   if (Button = mbRight) and Assigned(InspectedObjectListEditorHandlerIntf) and
     Assigned(Sender) and (Sender is TWinControl) then
   begin
-    aPos := TWinControl(Sender).ClientToScreen(Point(X, Y));
-    ListPopupMenu.Popup(aPos.x,aPos.y);
+    LPos := TWinControl(Sender).ClientToScreen(Point(X, Y));
+    ListPopupMenu.Popup(LPos.X, LPos.Y);
   end;
 end;
 
@@ -891,7 +886,7 @@ end;
 procedure TJvPropertyStoreEditorControl.ListDownActionExecute(Sender: TObject);
 var
   EditObject: TPersistent;
-  Ind : Integer;
+  Ind: Integer;
 begin
   if Assigned(InspectedObjectListEditorHandlerIntf) and (InspectedObjectListItemIndex < ListBoxControlItemsIntf.ControlItems.Count) then
   begin
@@ -926,8 +921,7 @@ begin
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.ListSortDownActionExecute(Sender:
-    TObject);
+procedure TJvPropertyStoreEditorControl.ListSortDownActionExecute(Sender: TObject);
 var
   EditObject: TPersistent;
 begin
@@ -956,7 +950,7 @@ end;
 procedure TJvPropertyStoreEditorControl.ListUpActionExecute(Sender: TObject);
 var
   EditObject: TPersistent;
-  Ind : Integer;
+  Ind: Integer;
 begin
   if Assigned(InspectedObjectListEditorHandlerIntf) and (InspectedObjectListItemIndex > 0) then
   begin
@@ -968,8 +962,7 @@ begin
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.Notification(AComponent: TComponent;
-    Operation: TOperation);
+procedure TJvPropertyStoreEditorControl.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FPropertyStore) then
@@ -979,8 +972,7 @@ begin
   end;
 end;
 
-function TJvPropertyStoreEditorControl.OnDisplayProperty(const aPropertyName :
-    String): Boolean;
+function TJvPropertyStoreEditorControl.OnDisplayProperty(const aPropertyName: string): Boolean;
 begin
   if Assigned(InspectedObjectEditorHandlerIntf) then
     Result := InspectedObjectEditorHandlerIntf.EditIntf_DisplayProperty(aPropertyName)
@@ -989,8 +981,7 @@ begin
     Result := False;
 end;
 
-function TJvPropertyStoreEditorControl.OnInspectorTranslatePropertyName(const
-    aPropertyName : String): string;
+function TJvPropertyStoreEditorControl.OnInspectorTranslatePropertyName(const aPropertyName: string): string;
 begin
   if Assigned(InspectedObjectEditorHandlerIntf) then
     Result := InspectedObjectEditorHandlerIntf.EditIntf_TranslatePropertyName(aPropertyName)
@@ -998,16 +989,14 @@ begin
     Result := aPropertyName;
 end;
 
-procedure TJvPropertyStoreEditorControl.OnPropertyChange(var OldPropertyName,
-    NewPropertyName : string);
+procedure TJvPropertyStoreEditorControl.OnPropertyChange(var OldPropertyName, NewPropertyName: string);
 begin
   if Assigned(InspectedObjectEditorHandlerIntf) then
     SetInformation (InspectedObjectEditorHandlerIntf.EditIntf_TranslatePropertyName(NewPropertyName),
                     InspectedObjectEditorHandlerIntf.EditIntf_GetPropertyHint(NewPropertyName));
 end;
 
-function TJvPropertyStoreEditorControl.OnTranslatePropertyName(const aPropertyName :
-    String): string;
+function TJvPropertyStoreEditorControl.OnTranslatePropertyName(const aPropertyName: string): string;
 begin
   Result := aPropertyName;
 end;
@@ -1015,7 +1004,7 @@ end;
 procedure TJvPropertyStoreEditorControl.ParentListCopyActionExecute(Sender: TObject);
 var
   NewObject: TPersistent;
-  Index : Integer;
+  Index: Integer;
 begin
   if Assigned(InspectedParentObjectListEditorHandlerIntf) and Assigned(InspectedObject) then
   begin
@@ -1031,7 +1020,7 @@ end;
 procedure TJvPropertyStoreEditorControl.ParentListDeleteActionExecute(Sender: TObject);
 //var
 //  EditObject: TPersistent;
-//  Index : Integer;
+//  Index: Integer;
 begin
 //  if Assigned(InspectedParentObjectListEditorHandlerIntf) and Assigned(InspectedObject) then
 //    if (MessageDlg(RSPropertyStoreEditorDeleteEntry, mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
@@ -1051,7 +1040,7 @@ end;
 procedure TJvPropertyStoreEditorControl.ParentListDownActionExecute(Sender: TObject);
 var
   EditObject: TPersistent;
-  Ind : Integer;
+  Ind: Integer;
 begin
   if Assigned(InspectedParentObjectListEditorHandlerIntf) then
   begin
@@ -1103,7 +1092,7 @@ end;
 procedure TJvPropertyStoreEditorControl.ParentListUpActionExecute(Sender: TObject);
 var
   EditObject: TPersistent;
-  Ind : Integer;
+  Ind: Integer;
 begin
   if Assigned(InspectedParentObjectListEditorHandlerIntf) then
   begin
@@ -1117,8 +1106,8 @@ begin
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.PropertyStoreTreeViewChange(Sender:
-    TObject; Node: TTreeNode);
+procedure TJvPropertyStoreEditorControl.PropertyStoreTreeViewChange(Sender: TObject;
+  Node: TTreeNode);
 begin
   if csDestroying in Componentstate then
     Exit;
@@ -1144,9 +1133,10 @@ begin
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.PropertyStoreTreeViewChanging(Sender:
-    TObject; Node: TTreeNode; var AllowChange: Boolean);
-var JvPropertyEditorHandler : IJvPropertyEditorHandler;
+procedure TJvPropertyStoreEditorControl.PropertyStoreTreeViewChanging(Sender: TObject;
+  Node: TTreeNode; var AllowChange: Boolean);
+var
+  JvPropertyEditorHandler: IJvPropertyEditorHandler;
 begin
   if csDestroying in Componentstate then
     Exit;
@@ -1166,8 +1156,7 @@ begin
     SetInformation (InspectedObjectEditorHandlerIntf.EditIntf_GetVisibleObjectName, InspectedObjectEditorHandlerIntf.EditIntf_GetObjectHint);
 end;
 
-procedure TJvPropertyStoreEditorControl.RTTIInspectorEnter(Sender:
-    TObject);
+procedure TJvPropertyStoreEditorControl.RTTIInspectorEnter(Sender: TObject);
 begin
   if csDestroying in Componentstate then
     Exit;
@@ -1176,8 +1165,8 @@ begin
                     InspectedObjectEditorHandlerIntf.EditIntf_GetPropertyHint(RTTIInspectorControlIntf.ControlGetCurrentPropertyName));
 end;
 
-procedure TJvPropertyStoreEditorControl.RTTIInspectorOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer; var Resize:
-  Boolean);
+procedure TJvPropertyStoreEditorControl.RTTIInspectorOnCanResize(Sender: TObject;
+  var NewWidth, NewHeight: Integer; var Resize: Boolean);
 var
   Ratio: Double;
 begin
@@ -1199,8 +1188,7 @@ begin
   ListSortDownAction.Enabled := ListSortUpAction.Enabled ;
 end;
 
-procedure TJvPropertyStoreEditorControl.SetInformation(const iCaption, iInfo:
-    string);
+procedure TJvPropertyStoreEditorControl.SetInformation(const iCaption, iInfo: string);
 begin
   if csDestroying in Componentstate then
     Exit;
@@ -1230,27 +1218,28 @@ begin
   RTTIInspectorControlIntf.ControlInspectedObject := Value;
   if Assigned(InspectedObjectListEditorHandlerIntf) then
   begin
-    ListPanel.visible := True;
+    ListPanel.Visible := True;
     Inspector.Parent := ListInspectorPanel;
-    InspectorPanel.visible := False;
-    ListInspectorPanel.visible := RTTIInspectorControlIntf.ControlGetVisibleItemsCount > 0;
-    ListSplitter.visible := ListInspectorPanel.visible;
-    ListButtonPanel.Top := ListInspectorPanel.Top+ListInspectorPanel.Height+1;
-    ListSplitter.Top := ListButtonPanel.Top-1;
+    InspectorPanel.Visible := False;
+    ListInspectorPanel.Visible := RTTIInspectorControlIntf.ControlGetVisibleItemsCount > 0;
+    ListSplitter.Visible := ListInspectorPanel.Visible;
+    ListButtonPanel.Top := ListInspectorPanel.Top + ListInspectorPanel.Height + 1;
+    ListSplitter.Top := ListButtonPanel.Top - 1;
     FillListBox;
   end
   else
   begin
-    InspectorPanel.visible := True;
-    ListPanel.visible := False;
+    InspectorPanel.Visible := True;
+    ListPanel.Visible := False;
     Inspector.Parent := InspectorPanel;
   end;
   if Assigned(InspectedObjectEditorHandlerIntf) then
-    SetInformation (InspectedObjectEditorHandlerIntf.EditIntf_GetVisibleObjectName, InspectedObjectEditorHandlerIntf.EditIntf_GetObjectHint);
+    SetInformation(InspectedObjectEditorHandlerIntf.EditIntf_GetVisibleObjectName,
+      InspectedObjectEditorHandlerIntf.EditIntf_GetObjectHint);
 end;
 
-procedure TJvPropertyStoreEditorControl.SetInspectedObjectListEditorHandlerIntf(const Value:
-    IJvPropertyListEditorHandler);
+procedure TJvPropertyStoreEditorControl.SetInspectedObjectListEditorHandlerIntf(
+  const Value: IJvPropertyListEditorHandler);
 begin
   FInspectedObjectListEditorHandlerIntf := Value;
   InspectedObjectListItemIndex := -1;
@@ -1277,20 +1266,25 @@ begin
     ParentListButtonPanel.Visible := False;
 end;
 
-procedure TJvPropertyStoreEditorControl.SetInspectedParentObjectListEditorHandlerIntf(const Value: IJvPropertyListEditorHandler);
+procedure TJvPropertyStoreEditorControl.SetInspectedParentObjectListEditorHandlerIntf(
+  const Value: IJvPropertyListEditorHandler);
 begin
   FInspectedParentObjectListEditorHandlerIntf := Value;
 end;
 
 procedure TJvPropertyStoreEditorControl.SetPropertyStore(const Value: TComponent);
 begin
+  if csDestroying in Componentstate then
+    Exit;
+
   if Assigned(Value) and not Supports(Value, IJvPropertyEditorHandler) then
-    Raise Exception.Create ('TJvPropertyStoreEditorControl.SetPropertyStore : PropertyStore must support IJvPropertyEditorHandler');
+    raise Exception.Create('TJvPropertyStoreEditorControl.SetPropertyStore : PropertyStore must support IJvPropertyEditorHandler');
   ReplaceComponentReference(Self, Value, TComponent(FPropertyStore));
   FillTreeView(Value);
 end;
 
-function TJvPropertyStoreEditorControl.ShowPropertyInTreeView(PropObject: TObject; const PropertyName: string): Boolean;
+function TJvPropertyStoreEditorControl.ShowPropertyInTreeView(PropObject: TObject;
+  const PropertyName: string): Boolean;
 var
   PropertyEditorHandler: IJvPropertyEditorHandler;
 begin
