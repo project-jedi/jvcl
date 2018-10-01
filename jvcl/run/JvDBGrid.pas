@@ -204,8 +204,6 @@ type
     property Items[Index: Integer]: TJvDBGridControl read GetItem write SetItem; default;
   end;
 
-  TCharList = TCharSet;
-
   TJvGridPaintInfo = record
     MouseInCol: Integer; // the column that the mouse is in
     ColPressed: Boolean; // a column has been pressed
@@ -271,7 +269,6 @@ type
     FSortMarker: TSortMarker;
     FShowCellHint: Boolean;
     FOnShowCellHint: TJvCellHintEvent;
-    FCharList: TCharList;
     {$IFDEF COMPILER9_UP}
     FScrollBars: TScrollStyle;
     {$ENDIF COMPILER9_UP}
@@ -420,6 +417,7 @@ type
     procedure DblClick; override;
     function DoTitleBtnDblClick: Boolean; dynamic;
     procedure ShowSelectColumnClick; dynamic;
+    function IsInLookupCharList(Key: Char): Boolean; virtual;
 
     procedure DoTitleClick(ACol: Longint; AField: TField); dynamic;
     procedure CheckTitleButton(ACol, ARow: Longint; var Enabled: Boolean); dynamic;
@@ -548,7 +546,6 @@ type
     property VisibleColCount;
     property IndicatorOffset;
     property TitleOffset: Integer read GetTitleOffset;
-    property CharList: TCharList read FCharList write FCharList;
   published
     property AutoAppend: Boolean read FAutoAppend write FAutoAppend default True;
     property SortMarker: TSortMarker read FSortMarker write SetSortMarker default smNone;
@@ -692,6 +689,9 @@ uses
   {$IFDEF COMPILER7_UP}
   // => TScrollDirection, DrawArray(must be after JvJVCLUtils)
   {$ENDIF COMPILER7_UP}
+  {$IFDEF HAS_UNIT_CHARACTER}
+  Character,
+  {$ENDIF HAS_UNIT_CHARACTER}
   JvDBGridSelectColumnForm, JclSysUtils;
 
 {$R JvDBGrid.res}
@@ -1108,11 +1108,6 @@ begin
   FSelectColumn := scDataBase;
   FAutoSizeColumnIndex := JvGridResizeProportionally;
   FSelectColumnsDialogStrings := TJvSelectDialogColumnStrings.Create;
-  // Note to users: the second line may not compile on non western european
-  // systems, in which case you should simply remove it and recompile.
-  FCharList :=
-    ['A'..'Z', 'a'..'z', ' ', '-', '+', '0'..'9', '.', ',', Backspace,
-     'é', 'è', 'ê', 'ë', 'ô', 'ö', 'û', 'ù', 'â', 'à', 'ä', 'î', 'ï', 'ç'];
 
   FControls := TJvDBGridControls.Create(Self);
   FBooleanEditor := True;
@@ -2924,7 +2919,7 @@ begin
     if DataSource.DataSet.CanModify and not (ReadOnly or
       Columns[SelectedIndex].ReadOnly or Columns[SelectedIndex].Field.ReadOnly) then
     with Columns[SelectedIndex].Field do
-      if (FieldKind = fkLookup) and CharInSet(Key, CharList) then
+      if (FieldKind = fkLookup) and IsInLookupCharList(Key) then
       begin
         CharsToFind;
         LookupDataSet.DisableControls;
@@ -2957,7 +2952,7 @@ begin
           if CharInSet(Key, ['.', ',']) then
             Key := JclFormatSettings.DecimalSeparator;
 
-        if CharInSet(Key, CharList) and (Columns[SelectedIndex].PickList.Count <> 0) then
+        if IsInLookupCharList(Key) and (Columns[SelectedIndex].PickList.Count <> 0) then
         begin
           FWord := InplaceEditor.EditText;
           deb := InplaceEditor.SelStart + InplaceEditor.SelLength;
@@ -5319,6 +5314,20 @@ begin
   begin
     FCurrentControl.RemoveFreeNotification(Self);
     FCurrentControl := nil;
+  end;
+end;
+
+function TJvDBGrid.IsInLookupCharList(Key: Char): Boolean;
+begin
+  case Key of
+    'A'..'Z', 'a'..'z', '0'..'9', ' ', '-', '+', '.', ',', Backspace:
+      Result := True;
+  else
+    {$IFDEF HAS_UNIT_CHARACTER}
+    Result := TCharacter.IsLetterOrDigit(Key);
+    {$ELSE}
+    Result := Ord(Key) >= 128;
+    {$ENDIF HAS_UNIT_CHARACTER}
   end;
 end;
 
