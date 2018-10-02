@@ -6596,7 +6596,11 @@ begin
   LastError := GetLastError;
   if LastError <> 0 then
   begin
+    {$IFDEF RTL240_UP} // XE3+
+    St := SysUtils.Format(SOSError, [LastError, SysErrorMessage(LastError), '']);
+    {$ELSE}
     St := SysUtils.Format(SOSError, [LastError, SysErrorMessage(LastError)]);
+    {$ENDIF RTL_UP}
     if Text <> '' then
       St := Text + ':' + St;
     raise EOSError.Create(St);
