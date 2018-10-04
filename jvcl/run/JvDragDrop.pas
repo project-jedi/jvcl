@@ -57,18 +57,20 @@ type
   TJvDropTarget = class(TJvComponent, IDropTarget)
   private
     FDataObject: IDataObject;
-    FStreamedAcceptDrag: Boolean;
     FControl: TWinControl;
+    FAcceptDrag: Boolean;
+    FStreamedAcceptDrag: Boolean;
+    //FAllowDropElevation: Boolean;
     FOnDragDrop: TJvDragDropEvent;
     FOnDragAccept: TJvDragAcceptEvent;
     FOnDragEnter: TJvDragEvent;
     FOnDragOver: TJvDragEvent;
     FOnDragLeave: TJvDragLeaveEvent;
-    FAcceptDrag: Boolean;
     procedure SetControl(Value: TWinControl);
     procedure SetAcceptDrag(Value: Boolean);
     procedure RegisterControl;
     procedure UnregisterControl;
+    //procedure SetAllowDropElevation(const Value: Boolean);
   protected
     function DragEnter(const dataObj: IDataObject; grfKeyState: Longint;
       pt: TPoint; var dwEffect: Longint): HRESULT; stdcall;
@@ -101,7 +103,8 @@ type
     function GetFileContent(Index: Integer; Stream: TStream): Boolean;
     property DataObject: IDataObject read FDataObject;
   published
-    property AcceptDrag: Boolean read FAcceptDrag write SetAcceptDrag default True;
+    property AcceptDrag: Boolean read FAcceptDrag write SetAcceptDrag default True; // should have be named 'AllowDrop'
+    //property AllowDropElevation: Boolean read FAllowDropElevation write SetAllowDropElevation default False; // Windows 7 and newer
     property Control: TWinControl read FControl write SetControl;
     property OnDragDrop: TJvDragDropEvent read FOnDragDrop write FOnDragDrop;
     property OnDragAccept: TJvDragAcceptEvent read FOnDragAccept write FOnDragAccept;
@@ -117,9 +120,10 @@ type
   private
     FAcceptDrag: Boolean;
     FStreamedAcceptDrag: Boolean;
+    FAllowDropElevation: Boolean;
+    FIsHooked: Boolean;
     FFiles: TStringList;
     FOnDrop: TJvDropEvent;
-    FIsHooked: Boolean;
     FTargetStrings: TStrings;
     FDropTarget: TWinControl;
     procedure DropFiles(Handle: HDROP);
@@ -127,6 +131,7 @@ type
     procedure SetAcceptDrag(Value: Boolean);
     procedure SetDropTarget(const Value: TWinControl);
     function WndProc(var Msg: TMessage): Boolean;
+    procedure SetAllowDropElevation(const Value: Boolean);
   protected
     procedure HookControl;
     procedure UnHookControl;
@@ -138,7 +143,8 @@ type
     property Files: TStrings read GetFiles;
     property TargetStrings: TStrings read FTargetStrings write FTargetStrings;
   published
-    property AcceptDrag: Boolean read FAcceptDrag write SetAcceptDrag default True;
+    property AcceptDrag: Boolean read FAcceptDrag write SetAcceptDrag default True; // should have be named 'AllowDrop'
+    property AllowDropElevation: Boolean read FAllowDropElevation write SetAllowDropElevation default False; // Windows 7 and newer
     property DropTarget: TWinControl read FDropTarget write SetDropTarget;
     property OnDrop: TJvDropEvent read FOnDrop write FOnDrop;
   end;
@@ -146,6 +152,13 @@ type
 function CF_FILEDESCRIPTOR: UINT;
 function CF_FILECONTENTS: UINT;
 function Malloc: IMalloc;
+
+// EnableElevatedDragDrop enables files Drag&Drop from applications with a lower privilege (user->admin)
+// process wide.
+function EnableDragDropElevation(Enable: Boolean = True): Boolean; overload;
+// EnableElevatedDragDrop enables files Drag&Drop from applications with a lower privilege (user->admin)
+// for the specified window.
+function EnableDragDropElevation(Wnd: HWND; Enable: Boolean): Boolean; overload;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -192,6 +205,72 @@ begin
   if not Assigned(GlobalMalloc) then
     ShGetMalloc(GlobalMalloc);
   Result := GlobalMalloc;
+end;
+
+const
+  MSGFLT_ADD = 1;
+  MSGFLT_REMOVE = 2;
+
+  MSGFLT_RESET = 0;
+  MSGFLT_ALLOW = 1;
+  MSGFLT_DISALLOW = 2;
+
+  MSGFLTINFO_NONE = 0;
+  MSGFLTINFO_ALREADYALLOWED_FORWND = 1;
+  MSGFLTINFO_ALREADYDISALLOWED_FORWND = 2;
+  MSGFLTINFO_ALLOWED_HIGHER = 3;
+
+  WM_COPYGLOBALDATA = $0049;
+
+type
+  PChangeFilterStruct = ^TChangeFilterStruct;
+  TChangeFilterStruct = record
+    cbSize: DWORD;
+    ExtStatus: DWORD;
+  end;
+
+var
+  ChangeWindowMessageFilter: function(message: UINT; dwFlag: DWORD): BOOL; stdcall;
+  ChangeWindowMessageFilterEx: function(hWnd: HWND; message: UINT; action: DWORD; pChangeFilterStruct: PChangeFilterStruct): BOOL; stdcall;
+
+function EnableDragDropElevation(Enable: Boolean): Boolean;
+const
+  Mode: array[Boolean] of DWORD = (MSGFLT_REMOVE, MSGFLT_ADD);
+begin
+  if not Assigned(ChangeWindowMessageFilter) then // Supported under Vista and newer
+    ChangeWindowMessageFilter := GetProcAddress(GetModuleHandle(user32), PAnsiChar('ChangeWindowMessageFilter'));
+
+  if Assigned(ChangeWindowMessageFilter) then
+  begin
+    Result := ChangeWindowMessageFilter(WM_DROPFILES, Mode[Enable]);
+    if Result or not Enable then
+    begin
+      ChangeWindowMessageFilter(WM_COPYDATA, Mode[Enable]);
+      ChangeWindowMessageFilter(WM_COPYGLOBALDATA, Mode[Enable]);
+    end;
+  end
+  else
+    Result := True; // if there is no limitation then we can always return True
+end;
+
+function EnableDragDropElevation(Wnd: HWND; Enable: Boolean): Boolean;
+const
+  Mode: array[Boolean] of DWORD = (MSGFLT_DISALLOW, MSGFLT_ALLOW);
+begin
+  if not Assigned(ChangeWindowMessageFilterEx) then // Supported under Windows 7 and newer
+    ChangeWindowMessageFilterEx := GetProcAddress(GetModuleHandle(user32), PAnsiChar('ChangeWindowMessageFilterEx'));
+
+  if Assigned(ChangeWindowMessageFilterEx) then
+  begin
+    Result := ChangeWindowMessageFilterEx(Wnd, WM_DROPFILES, Mode[Enable], nil);
+    if Result or not Enable then
+    begin
+      ChangeWindowMessageFilterEx(Wnd, WM_COPYDATA, Mode[Enable], nil);
+      ChangeWindowMessageFilterEx(Wnd, WM_COPYGLOBALDATA, Mode[Enable], nil);
+    end;
+  end
+  else
+    Result := True; // if there is no limitation then we can always return True
 end;
 
 //=== { TJvDragDrop } ========================================================
@@ -271,9 +350,16 @@ end;
 procedure TJvDragDrop.HookControl;
 begin
   if not FIsHooked then
+  begin
     { Paranoia checks }
     if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
+    begin
       FIsHooked := RegisterWndProcHook(FDropTarget, WndProc, hoBeforeMsg);
+      if FIsHooked then
+        if AllowDropElevation and FDropTarget.HandleAllocated then
+          EnableDragDropElevation(FDropTarget.Handle, True)
+    end;
+  end;
 end;
 
 procedure TJvDragDrop.UnHookControl;
@@ -283,7 +369,11 @@ begin
     FIsHooked := False;
     { Paranoia checks }
     if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
+    begin
       UnRegisterWndProcHook(FDropTarget, WndProc, hoBeforeMsg);
+      if AllowDropElevation and FDropTarget.HandleAllocated then
+        EnableDragDropElevation(FDropTarget.Handle, False);
+    end;
   end;
 end;
 
@@ -317,6 +407,18 @@ begin
       else
         UnHookControl;
     end;
+  end;
+end;
+
+procedure TJvDragDrop.SetAllowDropElevation(const Value: Boolean);
+begin
+  if Value <> FAllowDropElevation then
+  begin
+    FAllowDropElevation := Value;
+    if not (csLoading in ComponentState) then
+      if FAcceptDrag and Assigned(FDropTarget) and not (csDesigning in ComponentState) then
+        if FDropTarget.HandleAllocated then
+          EnableDragDropElevation(FDropTarget.Handle, Value);
   end;
 end;
 
@@ -577,14 +679,20 @@ begin
   begin
     if RegisterDragDrop(FControl.Handle, Self) <> S_OK then
       RaiseLastOSError;
+    //if AllowDropElevation then
+    //  EnableDragDropElevation(FControl.Handle, True);
   end;
 end;
 
 procedure TJvDropTarget.UnregisterControl;
 begin
-  if FAcceptDrag and Assigned(FControl) and not (csDesigning in ComponentState) then
-    if FControl.HandleAllocated then
-      RevokeDragDrop(FControl.Handle);
+  if FAcceptDrag and Assigned(FControl) and not (csDesigning in ComponentState) and
+    FControl.HandleAllocated then
+  begin
+    //if AllowDropElevation then
+    //  EnableDragDropElevation(FControl.Handle, False);
+    RevokeDragDrop(FControl.Handle);
+  end;
 end;
 
 procedure TJvDropTarget.SetAcceptDrag(Value: Boolean);
@@ -599,6 +707,20 @@ begin
     RegisterControl;
   end;
 end;
+
+{procedure TJvDropTarget.SetAllowDropElevation(const Value: Boolean);
+begin
+  Doesn't work because we cannot allow the "WM_USER+0" message for the "OleMainThreadWndClass" window
+
+  if Value <> FAllowDropElevation then
+  begin
+    FAllowDropElevation := Value;
+    if not (csLoading in ComponentState) then
+      if FAcceptDrag and Assigned(FControl) and not (csDesigning in ComponentState) then
+        if FControl.HandleAllocated then
+          EnableDragDropElevation(FControl.Handle, Value);
+  end;
+end;}
 
 procedure TJvDropTarget.Loaded;
 begin

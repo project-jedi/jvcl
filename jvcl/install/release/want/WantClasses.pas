@@ -1561,9 +1561,9 @@ end;
 
 function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry;
 begin
-  Result := Pointer(Cardinal(MethodTable) + 2);
+  Result := PMethodEntry(PAnsiChar(MethodTable) + 2);
   for Index := Index downto 1 do
-    Inc(Cardinal(Result), Result^.EntrySize);
+    Inc(PAnsiChar(Result), Result^.EntrySize);
 end;
 
 class procedure TScriptElement.EnumElements(Strings:TStrings);

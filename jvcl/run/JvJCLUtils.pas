@@ -1465,7 +1465,7 @@ end;
 function GetWordOnPos2(const S: string; P: Integer; var iBeg, iEnd: Integer): string;
 begin
   Result := '';
-  if P < 1 then
+  if (P > Length(S)) or (P < 1) then
     Exit;
   if CharInSet(S[P], Separators) and ((P < 1) or CharInSet(S[P - 1], Separators)) then
     Inc(P);
@@ -1491,7 +1491,7 @@ end;
 function GetWordOnPos2W(const S: WideString; P: Integer; var iBeg, iEnd: Integer): WideString;
 begin
   Result := '';
-  if P < 1 then
+  if (P > Length(S)) or (P < 1) then
     Exit;
   if CharInSetW(S[P], Separators) and
     ((P < 1) or (CharInSetW(S[P - 1], Separators))) then
@@ -6596,7 +6596,11 @@ begin
   LastError := GetLastError;
   if LastError <> 0 then
   begin
+    {$IFDEF RTL240_UP} // XE3+
+    St := SysUtils.Format(SOSError, [LastError, SysErrorMessage(LastError), '']);
+    {$ELSE}
     St := SysUtils.Format(SOSError, [LastError, SysErrorMessage(LastError)]);
+    {$ENDIF RTL_UP}
     if Text <> '' then
       St := Text + ':' + St;
     raise EOSError.Create(St);
