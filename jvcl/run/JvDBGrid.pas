@@ -5323,11 +5323,15 @@ begin
     'A'..'Z', 'a'..'z', '0'..'9', ' ', '-', '+', '.', ',', Backspace:
       Result := True;
   else
+    {$IFDEF DEPRECATED_TCHARACTER}
+    Result := Key.IsLetterOrDigit;
+    {$ELSE}
     {$IFDEF HAS_UNIT_CHARACTER}
     Result := TCharacter.IsLetterOrDigit(Key);
     {$ELSE}
     Result := Ord(Key) >= 128;
     {$ENDIF HAS_UNIT_CHARACTER}
+    {$ENDIF DEPRECATED_TCHARACTER}
   end;
 end;
 
