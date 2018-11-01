@@ -139,6 +139,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure SetAllCheckStates(CheckState: Boolean);
+    procedure CheckAll;
+    procedure UncheckAll;
 
     // get / set whether Node is checked
     property Checked[Node: TTreeNode]: Boolean read GetChecked write SetChecked;
@@ -605,6 +608,29 @@ begin
       TreeView_SetItem(Handle, Item);
     end;
   end;
+end;
+
+procedure TJvCheckTreeView.SetAllCheckStates(CheckState: Boolean);
+var
+  I: Integer;
+begin
+  Items.BeginUpdate;
+  try
+    for I := 0 to Items.Count - 1 do
+      TJvTreeNode(Items[i]).Checked := CheckState;
+  finally
+    Items.EndUpdate;
+  end;
+end;
+
+procedure TJvCheckTreeView.CheckAll;
+begin
+  SetAllCheckStates(True);
+end;
+
+procedure TJvCheckTreeView.UncheckAll;
+begin
+  SetAllCheckStates(False);
 end;
 
 {$IFDEF UNITVERSIONING}

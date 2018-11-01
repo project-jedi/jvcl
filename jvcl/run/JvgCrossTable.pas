@@ -791,7 +791,7 @@ end;
 
 procedure TJvgPrintCrossTable.PrintTable(Canvas: TCanvas);
 var
-  I, J: Integer;
+  I, J, R: Integer;
   fPrint, CanPrint, fUseDuplicateValue: Boolean;
   ClientSize: TSize;
   PrintingStatus: TglPrintingStatus;
@@ -1036,7 +1036,7 @@ begin
               First;
 
               FillChar(FilledRowNo, SizeOf(FilledRowNo), 0);
-              for I := 0 to RecordCount - 1 do
+              for R := 0 to RecordCount - 1 do
               begin
 
                 if not RowsList.Find(RowField.AsString, RowNo) then

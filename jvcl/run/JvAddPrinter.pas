@@ -111,7 +111,7 @@ begin
   begin
     if List1 <> nil then
       CopyMemory(NewItemIDList, List1, List1Length);
-    CopyMemory(Pointer(Cardinal(NewItemIDList) + List1Length), List2, List2Length);
+    CopyMemory(PAnsiChar(NewItemIDList) + List1Length, List2, List2Length);
   end;
   Result := NewItemIDList;
 end;

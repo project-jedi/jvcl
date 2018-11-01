@@ -164,7 +164,7 @@ begin
           and (MemInfo.AllocationBase = Start) do
     begin
       Start := Stop;
-      Stop := Pointer(Cardinal(Stop) + MemInfo.RegionSize);
+      Stop := Pointer(PAnsiChar(Stop) + MemInfo.RegionSize);
 
       if (MemInfo.RegionSize > 0) and
          ((MemInfo.AllocationProtect = PAGE_EXECUTE_READ) or

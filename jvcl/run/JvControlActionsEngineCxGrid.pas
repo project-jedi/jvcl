@@ -163,7 +163,7 @@ begin
   SaveDialog := TSaveDialog.Create(Self);
   try
     SaveDialog.Name := 'SaveDialog';
-    SaveDialog.DefaultExt := 'XLS';
+    SaveDialog.DefaultExt := 'XLSX';
     SaveDialog.Filter :=
       'MS-Excel-Files (*.XLS;*.XLSX)|*.XLS;*.XLSX|XML-Files (*.XML)|*.XML|HTML-Files (*.HTM;*.HTML)|*.HTM;*.HTML|Text-Files (*.TXT)|*.TXT';
     if GetGridView(aGrid) is TcxGridChartView then

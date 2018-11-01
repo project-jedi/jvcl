@@ -739,8 +739,16 @@ begin
     FRunOnCreate := B;
   end;
   if Assigned(Thread) then
-    while (not Thread.Finished) do  // wait for this thread
-      Application.HandleMessage;
+  begin
+    if GetCurrentThreadId = MainThreadID then
+    begin
+      while not Thread.Finished do  // wait for this thread
+        Application.HandleMessage;
+    end
+    else
+      while not Thread.Finished do  // wait for this thread
+        Sleep(5);
+  end;
 end;
 
 procedure TJvThread.Resume(BaseThread: TJvBaseThread);
@@ -922,8 +930,14 @@ end;
 
 procedure TJvThread.WaitFor;
 begin
-  while OneThreadIsRunning do
-    Application.HandleMessage;
+  if GetCurrentThreadId = MainThreadID then
+  begin
+    while OneThreadIsRunning do
+      Application.HandleMessage;
+  end
+  else
+    while OneThreadIsRunning do
+      Sleep(5);
 end;
 
 procedure TJvThread.SetReturnValue(RetVal: Integer);
