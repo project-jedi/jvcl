@@ -376,9 +376,11 @@ type
     Position: Integer;
     FHour24: Boolean;
     FShowSeconds: Boolean;
+    FShowMilliseconds: Boolean;
     FTime: TDateTime;
     FDataConnector: TJvCustomTimeEditDataConnector;
     procedure SetShowSeconds(Value: Boolean);
+    procedure SetShowMilliseconds(Value: Boolean);
     procedure SetHour24(Value: Boolean);
     procedure SetDataConnector(const Value: TJvCustomTimeEditDataConnector);
   protected
@@ -403,6 +405,7 @@ type
 
     property ButtonKind default bkDiagonal;
     property ShowSeconds: Boolean read FShowSeconds write SetShowSeconds default False;
+    property ShowMilliseconds: Boolean read FShowMilliseconds write SetShowMilliseconds default False;
     property Hour24: Boolean read FHour24 write SetHour24 default True;
     property DataConnector: TJvCustomTimeEditDataConnector read FDataConnector write SetDataConnector;
   public
@@ -419,6 +422,7 @@ type
   published
     property ButtonKind default bkDiagonal;
     property ShowSeconds default False;
+    property ShowMilliseconds default False;
     property Hour24 default True;
     property DataConnector;
     property ShowButton;
@@ -513,9 +517,13 @@ const
   sSpinUpBtnPole = 'JvSpinUPPOLE';
   sSpinDownBtnPole = 'JvSpinDOWNPOLE';
 
-  sTimeFormats: array [{Hour24}Boolean, {ShowSeconds}Boolean] of string = (
-    ('HH:mm AM/PM', 'HH:mm:ss AM/PM'),
-    ('HH:mm', 'HH:mm:ss')
+  sTimeFormats: array [{Hour24}Boolean, {ShowSeconds}Boolean, {ShowMilliseconds}Boolean] of string = (
+    (('HH:mm AM/PM', ''), {FFF FFT}
+     ('HH:mm:ss AM/PM', 'HH:mm:ss.zzz AM/PM')  {FTF FTT}
+    ),
+    (('HH:mm', ''), {TFF TFT}
+     ('HH:mm:ss', 'HH:mm:ss.zzz') {TTF TTT}
+    )
   );
 
 type
@@ -2722,7 +2730,7 @@ begin
   if FTime <> Value then
   begin
     FTime := Value;
-    Text := FormatDateTime(sTimeFormats[Hour24, ShowSeconds], FTime);
+    Text := FormatDateTime(sTimeFormats[Hour24, ShowSeconds, ShowMilliseconds], FTime);
   end;
 end;
 
@@ -2738,7 +2746,7 @@ begin
   if Value <> FHour24 then
   begin
     FHour24 := Value;
-    Text := FormatDateTime(sTimeFormats[Hour24, ShowSeconds], Time);
+    Text := FormatDateTime(sTimeFormats[Hour24, ShowSeconds, ShowMilliseconds], Time);
   end;
 end;
 
@@ -2746,8 +2754,21 @@ procedure TJvCustomTimeEdit.SetShowSeconds(Value: Boolean);
 begin
   if Value <> FShowSeconds then
   begin
+    if not Value then
+      FShowMilliseconds := False;
     FShowSeconds := Value;
-    Text := FormatDateTime(sTimeFormats[Hour24, ShowSeconds], Time);
+    Text := FormatDateTime(sTimeFormats[Hour24, ShowSeconds, ShowMilliseconds], Time);
+  end;
+end;
+
+procedure TJvCustomTimeEdit.SetShowMilliseconds(Value: Boolean);
+begin
+  if Value <> FShowMilliseconds then
+  begin
+    if Value then
+      FShowSeconds := True;
+    FShowMilliseconds := Value;
+    Text := FormatDateTime(sTimeFormats[Hour24, ShowSeconds, ShowMilliseconds], Time);
   end;
 end;
 
@@ -2769,7 +2790,7 @@ procedure TJvCustomTimeEdit.UpdateTimeDigits(Increment: Boolean);
   end;
 
 var
-  Offset, AMPMOffset: Integer;
+  Offset, AMPMOffset, MSOffset: Integer;
   NewValue: string;
 begin
   if ReadOnly then
@@ -2782,9 +2803,15 @@ begin
 
   NewValue := Text;
 
-  AMPMOffset := 10;
+  MSOffset := 10;
+  AMPMOffset := 14;
   if not FShowSeconds then
+  begin
     AMPMOffset := 7;
+    MSOffset := 7;
+  end
+  else if not FShowMilliseconds then
+    AMPMOffset := 10;
 
   Position := SelStart;
   // Hours
@@ -2871,9 +2898,9 @@ begin
     end;
   end
 
-  // Minutes
+  // Minutes/Seconds
   else
-  if (SelStart >= 3) and (SelStart <= AMPMOffset - 2) then
+  if (SelStart >= 3) and (SelStart <= MSOffset - 2) then
   begin
     Offset := 7;
     if (SelStart <= 5) then
@@ -2910,6 +2937,62 @@ begin
       end
       else
         DecNumberChar(NewValue, Offset + 1);
+    end;
+  end
+
+  // Milliseconds
+  else
+  if (SelStart >= 9) and (SelStart <= AMPMOffset - 2) then
+  begin
+    Offset := 10;
+
+    if Increment then
+    begin
+      if (NewValue[Offset] = '9') and (NewValue[Offset + 1] = '9') and (NewValue[Offset + 2] = '9') then
+      begin
+        SetNumberChar(NewValue, Offset, '0');
+        SetNumberChar(NewValue, Offset + 1, '0');
+        SetNumberChar(NewValue, Offset + 2, '0');
+      end
+      else
+      if (NewValue[Offset + 1] = '9') and (NewValue[Offset + 2] = '9') then
+      begin
+        IncNumberChar(NewValue, Offset);
+        SetNumberChar(NewValue, Offset + 1, '0');
+        SetNumberChar(NewValue, Offset + 2, '0');
+      end
+      else
+      if NewValue[Offset + 2] = '9' then
+      begin
+        IncNumberChar(NewValue, Offset + 1);
+        SetNumberChar(NewValue, Offset + 2, '0');
+      end
+      else
+        IncNumberChar(NewValue, Offset + 2);
+    end
+    else // decrement
+    begin
+      if (NewValue[Offset] = '0') and (NewValue[Offset + 1] = '0') and (NewValue[Offset + 2] = '0') then
+      begin
+        SetNumberChar(NewValue, Offset, '9');
+        SetNumberChar(NewValue, Offset + 1, '9');
+        SetNumberChar(NewValue, Offset + 2, '9');
+      end
+      else
+      if (NewValue[Offset + 1] = '0') and (NewValue[Offset + 2] = '0') then
+      begin
+        DecNumberChar(NewValue, Offset);
+        SetNumberChar(NewValue, Offset + 1, '9');
+        SetNumberChar(NewValue, Offset + 2, '9');
+      end
+      else
+      if NewValue[Offset + 2] = '0' then
+      begin
+        DecNumberChar(NewValue, Offset + 1);
+        SetNumberChar(NewValue, Offset + 2, '9');
+      end
+      else
+        DecNumberChar(NewValue, Offset + 2);
     end;
   end
 
@@ -3008,7 +3091,11 @@ var
 begin
   MaxLen := 5; // '00:00'
   if ShowSeconds then
+  begin
     Inc(MaxLen, 3); // ':00'
+    if ShowMilliseconds then
+      Inc(MaxLen,4); // '.000';
+  end;
   if not Hour24 then
     Inc(MaxLen, 3); // ' AM'
 
@@ -3025,7 +3112,12 @@ begin
   if SelStart >= 5 then
   begin
     TimePos := SelStart;
-    if not FShowSeconds then
+    if FShowSeconds then
+    begin
+      if (SelStart>=8) and not FShowMilliseconds then
+        Inc(TimePos,4);
+    end
+    else
       Inc(TimePos, 3);
     if SelStart < MaxLen then
     begin
@@ -3036,11 +3128,18 @@ begin
              Key := ':';
         6: if not CharInSet(Key, ['0'..'5']) then Key := #0;
         7: if not CharInSet(Key, ['0'..'9']) then Key := #0;
-        8: Key := ' ';
-        9: if (Key = 'a') or (Key = 'A') then Key := 'A'
+        8: if CharInSet(Key, ['0'..'9']) then
+             SelStart := SelStart + 1 // allow the user to skip the '.'
+           else
+             Key := '.';
+        9: if not CharInSet(Key, ['0'..'9']) then Key := #0;
+       10: if not CharInSet(Key, ['0'..'9']) then Key := #0;
+       11: if not CharInSet(Key, ['0'..'9']) then Key := #0;
+       12: Key := ' ';
+       13: if (Key = 'a') or (Key = 'A') then Key := 'A'
            else if (Key = 'p') or (Key = 'P') then Key := 'P'
            else Key := #0;
-       10: if (Key = 'm') or (Key = 'M') then Key := 'M'
+       14: if (Key = 'm') or (Key = 'M') then Key := 'M'
            else Key := #0;
       end;
     end
