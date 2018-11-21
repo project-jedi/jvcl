@@ -49,6 +49,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF RTL260_UP}
+  System.Generics.Collections,
+  {$ENDIF RTL260_UP}
   Windows, Messages, SysUtils, Classes,
   Graphics, Controls, Forms, ExtCtrls;
 

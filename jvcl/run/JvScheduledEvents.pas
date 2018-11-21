@@ -35,6 +35,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF RTL260_UP}
+  System.Generics.Collections,
+  {$ENDIF RTL260_UP}
   SysUtils, Classes, Contnrs, SyncObjs,
   {$IFDEF MSWINDOWS}
   Windows,
