@@ -235,7 +235,7 @@ end;
   Note that this is a dirty hack, a better way would be to rewrite TMemIniFile;
   especially expose FSections. }
 {$IFDEF DELPHI2009_UP}
-{$if CompilerVersion <= 32}
+{$IFNDEF RTL330_UP}
 { with Delphi 10.3 Rio TMemIniFile was rewritten, so there is no need for
   optimization any more as dictionaries are used now }
 type
@@ -267,7 +267,7 @@ begin
   end else
     Result := False;
 end;
-{$ifend}
+{$ENDIF RTL330_UP}
 {$ELSE}
 type
   TJvMemIniFile = class(TMemIniFile)
