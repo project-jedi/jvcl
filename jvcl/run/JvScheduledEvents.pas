@@ -35,9 +35,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF RTL260_UP}
-  System.Generics.Collections,
-  {$ENDIF RTL260_UP}
   SysUtils, Classes, Contnrs, SyncObjs,
   {$IFDEF MSWINDOWS}
   Windows,
@@ -285,6 +282,9 @@ implementation
 
 uses
   TypInfo,
+  {$IFDEF RTL330_UP}
+  System.Generics.Collections, // for TCollectionNotification items
+  {$ENDIF RTL330_UP}
   JclDateTime, JclRTTI,
   JvJVCLUtils, JvResources, JvTypes;
 
