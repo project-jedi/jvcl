@@ -565,7 +565,11 @@ begin
             if Assigned(FOnShareViolation) then
             begin
               Result := ShareViolResult[DoShareViolation];
+              {$IFDEF RTL330_UP}
+              SetWindowLongPtr(Handle, DWLP_MSGRESULT, Result);
+              {$ELSE}
               SetWindowLong(Handle, DWL_MSGRESULT, Result);
+              {$ENDIF RTL330_UP}
               Exit;
             end;
         end;

@@ -35,7 +35,7 @@ uses
   Windows, SysUtils, Classes, Contnrs, Registry, PackageInformation;
 
 const
-  BDSVersions: array[1..19] of record
+  BDSVersions: array[1..20] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -61,7 +61,8 @@ const
     (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE8'; Version: 22; CIV: '220'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: '10'; Version: 23; CIV: '230'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: '10.1'; Version: 24; CIV: '240'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.2'; Version: 25; CIV: '250'; Supported: True)
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.2'; Version: 25; CIV: '250'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.3'; Version: 26; CIV: '260'; Supported: True)
   );
 
 type

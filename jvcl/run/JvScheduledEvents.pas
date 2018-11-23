@@ -282,6 +282,9 @@ implementation
 
 uses
   TypInfo,
+  {$IFDEF RTL330_UP}
+  System.Generics.Collections, // for TCollectionNotification items
+  {$ENDIF RTL330_UP}
   JclDateTime, JclRTTI,
   JvJVCLUtils, JvResources, JvTypes;
 

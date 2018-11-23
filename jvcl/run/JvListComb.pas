@@ -406,6 +406,9 @@ const
 implementation
 
 uses
+  {$IFDEF RTL330_UP}
+  System.Generics.Collections, // for TCollectionNotification items
+  {$ENDIF RTL330_UP}
   Math, JvJVCLUtils;
 
 type
