@@ -561,6 +561,7 @@ constructor TJvDatabaseBaseAction.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDatabaseControlEngine := Nil;
+  UpdateTarget(nil);
 end;
 
 //=== { TJvActionEngineBaseAction } ========================================
@@ -571,7 +572,10 @@ begin
   if Assigned(ControlEngine) and (ControlEngine is TJvDatabaseActionBaseControlEngine) then
     FDatabaseControlEngine := TJvDatabaseActionBaseControlEngine(ControlEngine)
   else
+  begin
     FDatabaseControlEngine := Nil;
+    UpdateTarget(nil);
+  end;
   if Assigned(Dataset) then
   begin
     if Assigned(EngineList) and (EngineList is TJvDatabaseActionEngineList) then
@@ -1032,34 +1036,30 @@ begin
 end;
 
 procedure TJvDatabasePositionAction.UpdateTarget(Target: TObject);
-const
-  cFormat = ' %3d / %3d ';
-  cFormatSelected = ' %3d / %3d (%d)';
 var
   RecCount : Integer;
   SelCount : Integer;
 begin
-  SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and
-    EngineIsActive and EngineHasData and EngineCanNavigate);
+  SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and EngineHasData and EngineCanNavigate);
   try
     if not EngineIsActive then
-      SetCaption(Format(cFormat, [0, 0]))
+      SetCaption(RsDBPosPositionInactive)
     else
     begin
       RecCount := EngineRecordCount;
       if RecCount = 0 then
-        SetCaption(Format(cFormat, [0, 0]))
+        SetCaption(Format(RsDBPosPositionNormal, [0, 0]))
       else
       begin
         SelCount := EngineSelectedRowsCount;
         if ShowSelectedRows and (SelCount >= MinCountSelectedRows) then
-          SetCaption(Format(cFormatSelected, [EngineRecNo, RecCount, SelCount]))
+          SetCaption(Format(RsDBPosPositionSelected, [EngineRecNo, RecCount, SelCount]))
         else
-          SetCaption(Format(cFormat, [EngineRecNo, RecCount]));
+          SetCaption(Format(RsDBPosPositionNormal, [EngineRecNo, RecCount]));
       end;
     end;
   except
-    SetCaption(Format(cFormat, [0, 0]));
+    SetCaption(RsDBPosPositionInactive);
   end;
 end;
 
