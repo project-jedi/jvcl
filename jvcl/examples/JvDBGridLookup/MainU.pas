@@ -35,11 +35,10 @@ type
     procedure cdsList1AfterOpen(DataSet: TDataSet);
     procedure cdsList2AfterOpen(DataSet: TDataSet);
     procedure cdsListTypesAfterOpen(DataSet: TDataSet);
-    procedure DoGetColumnLookupInfo(Sender: TObject; Column: TColumn; var
-        LookupInfo: TJvDBGridColumnLookupInfo);
     procedure dsItemsDataChange(Sender: TObject; Field: TField);
-    procedure FormCreate(Sender: TObject);
     function GetLookupDsByType(aType: Integer): TDataset;
+    procedure JvDBGrid1GetColumnLookupInfo(Sender: TObject; Column: TColumn; var
+        LookupInfo: TJvDBGridColumnLookupInfo);
   end;
 
 var
@@ -106,26 +105,10 @@ begin
   DataSet.AppendRecord([2, 'List 2']);
 end;
 
-procedure TForm1.DoGetColumnLookupInfo(Sender: TObject; Column: TColumn; var
-    LookupInfo: TJvDBGridColumnLookupInfo);
-begin
-  if Column.Field = cdsItemsLISTID then
-  begin
-    LookupInfo.IsLookup := True;
-    LookupInfo.LookupDataSet := GetLookupDsByType(cdsItemsLISTTYPE.AsInteger);
-  end else
-    LookupInfo.IsLookup := Column.Field.KeyFields > '';
-end;
-
 procedure TForm1.dsItemsDataChange(Sender: TObject; Field: TField);
 begin
   if (Field = cdsItemsLISTTYPE) and (not cdsItemsLISTID.IsNull) then
     cdsItemsLISTID.Clear;
-end;
-
-procedure TForm1.FormCreate(Sender: TObject);
-begin
-  JvDBGrid1.OnGetColumnLookupInfo := DoGetColumnLookupInfo;
 end;
 
 function TForm1.GetLookupDsByType(aType: Integer): TDataset;
@@ -136,6 +119,17 @@ begin
   else
     Result := nil;
   end;
+end;
+
+procedure TForm1.JvDBGrid1GetColumnLookupInfo(Sender: TObject; Column: TColumn;
+    var LookupInfo: TJvDBGridColumnLookupInfo);
+begin
+  if Column.Field = cdsItemsLISTID then
+  begin
+    LookupInfo.IsLookup := True;
+    LookupInfo.LookupDataSet := GetLookupDsByType(cdsItemsLISTTYPE.AsInteger);
+  end else
+    LookupInfo.IsLookup := Column.Field.KeyFields > '';
 end;
 
 end.

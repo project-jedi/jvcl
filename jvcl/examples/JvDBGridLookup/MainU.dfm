@@ -11,7 +11,6 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object JvDBGrid1: TJvDBGrid
@@ -34,6 +33,7 @@ object Form1: TForm1
     EditControls = <>
     RowsHeight = 17
     TitleRowHeight = 17
+    OnGetColumnLookupInfo = JvDBGrid1GetColumnLookupInfo
   end
   object cdsItems: TClientDataSet
     Active = True
