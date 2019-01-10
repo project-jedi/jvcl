@@ -53,6 +53,8 @@ type
     procedure SetConstraints(Index: Integer; Value: TConstraintSize);
   protected
     procedure AssignTo(Dest: TPersistent); override;
+  public
+    procedure Assign(Source: TPersistent); override;
   published
     property MaxHeight: TConstraintSize index 0 read FMaxHeight write SetConstraints default 0;
     property MaxWidth: TConstraintSize index 1 read FMaxWidth write SetConstraints default 0;
@@ -498,6 +500,21 @@ begin
   finally
     Dialog.Free;
   end;
+end;
+
+procedure TJvDynControlSizeConstraints.Assign(Source: TPersistent);
+begin
+  if (Source = Self) then
+    Exit;
+  if Source is TJvDynControlSizeConstraints then
+  begin
+    TJvDynControlSizeConstraints(Source).MinWidth := MinWidth;
+    TJvDynControlSizeConstraints(Source).MinHeight := MinHeight;
+    TJvDynControlSizeConstraints(Source).MaxWidth := MaxWidth;
+    TJvDynControlSizeConstraints(Source).MaxHeight := MaxHeight;
+  end
+  else
+    inherited assign(Source);
 end;
 
 procedure TJvDynControlSizeConstraints.AssignTo(Dest: TPersistent);
