@@ -90,6 +90,8 @@ type
     procedure btnAddClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure chkShowImageClick(Sender: TObject);
+  private
+    procedure ResetButtons;
   end;
 
 var
@@ -199,6 +201,7 @@ begin
     BorderIcons := BorderIcons + [biSystemMenu]
   else
     BorderIcons := BorderIcons - [biSystemMenu];
+  ResetButtons;
 end;
 
 procedure TCaptionBtnMainForm.chkMaxClick(Sender: TObject);
@@ -207,6 +210,7 @@ begin
     BorderIcons := BorderIcons + [biMaximize]
   else
     BorderIcons := BorderIcons - [biMaximize];
+  ResetButtons;
 end;
 
 procedure TCaptionBtnMainForm.chkMinClick(Sender: TObject);
@@ -215,6 +219,7 @@ begin
     BorderIcons := BorderIcons + [biMinimize]
   else
     BorderIcons := BorderIcons - [biMinimize];
+  ResetButtons;
 end;
 
 procedure TCaptionBtnMainForm.chkHelpClick(Sender: TObject);
@@ -223,11 +228,13 @@ begin
     BorderIcons := BorderIcons + [biHelp]
   else
     BorderIcons := BorderIcons - [biHelp];
+  ResetButtons;
 end;
 
 procedure TCaptionBtnMainForm.cbBorderStyleChange(Sender: TObject);
 begin
   BorderStyle := TBorderStyle(cbBorderStyle.ItemIndex);
+  ResetButtons;
 end;
 
 procedure TCaptionBtnMainForm.chkShowHintsClick(Sender: TObject);
@@ -297,6 +304,15 @@ begin
     JvCaptionButton1.Caption := edCaption.Text;
     JvCaptionButton1.ImageIndex := -1;
   end;
+end;
+
+procedure TCaptionBtnMainForm.ResetButtons;
+var
+  i: Integer;
+begin
+  for i := 0 to ComponentCount - 1 do
+    if Components[i] is TJvCaptionButton then
+      TJvCaptionButton(Components[i]).ResetButton;
 end;
 
 end.
