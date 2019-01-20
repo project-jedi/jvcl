@@ -37,10 +37,10 @@
     <Package Name="SMExportXE6r" Targets="d20" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportXE7r" Targets="d21" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportXE8r" Targets="d22" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExport10r" Targets="d23" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExport101r" Targets="d24" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExport102r" Targets="d25" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExport103r" Targets="d26" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportRX10r" Targets="d23" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportRX101r" Targets="d24" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportRX102r" Targets="d25" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportRX103r" Targets="d26" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMImportC6" Targets="c6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD6" Targets="d6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD7" Targets="d7" Condition="USE_3RDPARTY_SMIMPORT"/>
@@ -57,10 +57,10 @@
     <Package Name="SMImportXE6r" Targets="d20" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportXE7r" Targets="d21" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportXE8r" Targets="d22" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImport10r" Targets="d23" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImport101r" Targets="d24" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImport102r" Targets="d25" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImport103r" Targets="d26" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportRX10r" Targets="d23" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportRX101r" Targets="d24" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportRX102r" Targets="d25" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportRX103r" Targets="d26" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="DOA41C6" Targets="c6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D6" Targets="d6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D7" Targets="d7" Condition="USE_3RDPARTY_DOA"/>
@@ -228,13 +228,9 @@
     <Package Name="cxGridd24" Targets="d24_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
     <Package Name="cxTreeListd24" Targets="d24_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
     <Package Name="cxPivotGridd24" Targets="d24_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
-    <Package Name="cxEditorsd25" Targets="d25_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
-    <Package Name="cxDatad25" Targets="d25_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
     <Package Name="cxGridd25" Targets="d25_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
     <Package Name="cxTreeListd25" Targets="d25_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
     <Package Name="cxPivotGridd25" Targets="d25_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
-    <Package Name="cxEditorsd26" Targets="d26_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
-    <Package Name="cxDatad26" Targets="d26_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
     <Package Name="cxGridd26" Targets="d26_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
     <Package Name="cxTreeListd26" Targets="d26_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
     <Package Name="cxPivotGridd26" Targets="d26_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
@@ -322,13 +318,9 @@
     <Package Name="cxGridRS24" Targets="d24_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
     <Package Name="cxTreeListRS24" Targets="d24_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
     <Package Name="cxPivotGridRS24" Targets="d24_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
-    <Package Name="cxEditorsRS25" Targets="d25_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
-    <Package Name="cxDataRS25" Targets="d25_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
     <Package Name="cxGridRS25" Targets="d25_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
     <Package Name="cxTreeListRS25" Targets="d25_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
     <Package Name="cxPivotGridRS25" Targets="d25_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
-    <Package Name="cxEditorsRS26" Targets="d26_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
-    <Package Name="cxDataRS26" Targets="d26_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
     <Package Name="cxGridRS26" Targets="d26_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
     <Package Name="cxTreeListRS26" Targets="d26_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
     <Package Name="cxPivotGridRS26" Targets="d26_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
