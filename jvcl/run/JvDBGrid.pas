@@ -21,6 +21,7 @@ Contributor(s):
   Flemming Brandt Clausen
   Frédéric Leneuf-Magaud
   Andreas Hausladen
+  Ronald Hoek
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.delphi-jedi.org
@@ -136,6 +137,16 @@ type
     var StringForTrue: string; var StringForFalse: string): Boolean of object;
   TJvDBCanEditCellEvent = procedure(Grid: TJvDBGrid; Field: TField; var AllowEdit: Boolean) of object;
   TJvDBSelectColumnsEvent = procedure(Grid: TJvDBGrid; var DefaultDialog: Boolean) of object;
+
+  TJvDBGridColumnLookupInfo = record
+    IsLookup: Boolean;
+    KeyFields: string;
+    LookupDataSet: TDataSet;
+    LookupKeyFields: string;
+    LookupResultField: string;
+  end;
+  TJvDBGridGetColumnLookupInfo = procedure(Sender: TObject; Column: TColumn; var
+      LookupInfo: TJvDBGridColumnLookupInfo) of object;
 
   TJvDBGridLayoutChangeKind = (lcLayoutChanged, lcSizeChanged, lcTopLeftChanged);
   TJvDBGridLayoutChangeEvent = procedure(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind) of object;
@@ -279,6 +290,8 @@ type
     FOnShowEditor: TJvDBEditShowEvent;
     FAlwaysShowEditor: Boolean;
 
+    FOnGetColumnLookupInfo: TJvDBGridGetColumnLookupInfo;
+
     FControls: TJvDBGridControls;
     FCurrentControl: TWinControl;
     FOldControlWndProc: TWndMethod;
@@ -418,6 +431,12 @@ type
     function DoTitleBtnDblClick: Boolean; dynamic;
     procedure ShowSelectColumnClick; dynamic;
     function IsInLookupCharList(Key: Char): Boolean; virtual;
+
+    // Custom lookup dataset
+    function GetColumnLookupInfo(Column: TColumn): TJvDBGridColumnLookupInfo;
+        virtual;
+    function CanEditModify: Boolean; override;
+    function GetEditStyle(ACol: Integer; ARow: Integer): TEditStyle; override;
 
     procedure DoTitleClick(ACol: Longint; AField: TField); dynamic;
     procedure CheckTitleButton(ACol, ARow: Longint; var Enabled: Boolean); dynamic;
@@ -660,6 +679,10 @@ type
     property OnBeforeMouseDown: TMouseEvent read FOnBeforeMouseDown write FOnBeforeMouseDown;
     { OnBeforeMouseDown is called after handing MouseDown }
     property OnAfterMouseDown: TMouseEvent read FOnAfterMouseDown write FOnAfterMouseDown;
+
+    { OnGetColumnLookupInfo is called whenever lookupinfo might be needed }
+    property OnGetColumnLookupInfo: TJvDBGridGetColumnLookupInfo read
+        FOnGetColumnLookupInfo write FOnGetColumnLookupInfo;
   end;
 
 var
@@ -764,6 +787,13 @@ begin
   Result := AField.DataType in [ftMemo {$IFDEF COMPILER10_UP}, ftWideMemo {$ENDIF}];
 end;
 
+function LookupInfoValid(const LookupInfo: TJvDBGridColumnLookupInfo): Boolean;
+begin
+ Result :=
+  (LookupInfo.LookupDataSet <> nil) and (LookupInfo.LookupResultField <> '') and
+  (LookupInfo.LookupKeyFields <> '') and (LookupInfo.KeyFields <> '');
+end;
+
 //=== { TInternalInplaceEdit } ===============================================
 
 type
@@ -794,6 +824,7 @@ end;
 
 procedure TInternalInplaceEdit.CloseUp(Accept: Boolean);
 var
+  Column: TColumn;
   MasterField: TField;
   ListValue: Variant;
 begin
@@ -817,16 +848,15 @@ begin
     Invalidate;
     if Accept then
       if ActiveList = DataList then
-        with TCustomDBGrid(Grid), TDBGrid(Grid).Columns[SelectedIndex].Field do
         begin
-          MasterField := DataSet.FieldByName(KeyFields);
+          Column := TDBGrid(Grid).Columns[TCustomDBGrid(Grid).SelectedIndex];
+          MasterField := Column.Field.DataSet.FieldByName(TJvDBGrid(Grid).GetColumnLookupInfo(Column).KeyFields);
           if MasterField.CanModify and (Grid as IJvDataControl).GetDataLink.Edit then
             MasterField.Value := ListValue;
         end
       else
       if (not VarIsNull(ListValue)) and EditCanModify then
-        with TCustomDBGrid(Grid), TDBGrid(Grid).Columns[SelectedIndex].Field do
-          Text := ListValue;
+        TDBGrid(Grid).Columns[TCustomDBGrid(Grid).SelectedIndex].Field.Text := ListValue;
   end;
 end;
 
@@ -838,23 +868,24 @@ end;
 procedure TInternalInplaceEdit.DropDown;
 var
   Column: TColumn;
+  LookupInfo: TJvDBGridColumnLookupInfo;
 begin
   if not ListVisible then
   begin
     with TDBGrid(Grid) do
       Column := Columns[SelectedIndex];
     if ActiveList = FDataList then
-      with Column.Field do
-      begin
-        FDataList.Color := Color;
-        FDataList.Font := Font;
-        FDataList.RowCount := Column.DropDownRows;
-        FLookupSource.DataSet := LookupDataSet;
-        FDataList.LookupField := LookupKeyFields; //  KeyField
-        FDataList.LookupDisplay := LookupResultField; //  ListField
-        FDataList.LookupSource := FLookupSource; //  ListSource
-        FDataList.KeyValue := DataSet.FieldByName(KeyFields).Value;
-      end
+    begin
+      FDataList.Color := Color;
+      FDataList.Font := Font;
+      FDataList.RowCount := Column.DropDownRows;
+      LookupInfo := TJvDBGrid(Grid).GetColumnLookupInfo(Column);
+      FLookupSource.DataSet := LookupInfo.LookupDataSet;
+      FDataList.LookupField := LookupInfo.LookupKeyFields; //  KeyField
+      FDataList.LookupDisplay := LookupInfo.LookupResultField; //  ListField
+      FDataList.LookupSource := FLookupSource; //  ListSource
+      FDataList.KeyValue := Column.Field.DataSet.FieldByName(LookupInfo.KeyFields).Value;
+    end
     else
     if ActiveList = PickList then
     begin
@@ -1476,6 +1507,27 @@ begin
   FFixedCols := FixCount - IndicatorOffset;
 end;
 
+function TJvDBGrid.GetColumnLookupInfo(Column: TColumn):
+    TJvDBGridColumnLookupInfo;
+var
+  Field: TField;
+begin
+  Field := Column.Field;
+  if Field <> nil then
+  begin
+    // Copy from field definition
+    Result.IsLookup := Field.FieldKind = fkLookup;
+    Result.KeyFields := Field.KeyFields;
+    Result.LookupDataSet := Field.LookupDataSet;
+    Result.LookupKeyFields := Field.LookupKeyFields;
+    Result.LookupResultField := Field.LookupResultField;
+  end else
+    FillChar(Result, SizeOf(Result), 0);
+
+  if Assigned(FOnGetColumnLookupInfo) then
+    FOnGetColumnLookupInfo(Self, Column, Result);
+end;
+
 function TJvDBGrid.GetFixedCols: Integer;
 begin
   if DataLink.Active then
@@ -1779,6 +1831,39 @@ begin
   Result := DataLink;
 end;
 
+function TJvDBGrid.GetEditStyle(ACol, ARow: Integer): TEditStyle;
+var
+  Column: TColumn;
+  Field, MasterField: TField;
+  LookupInfo: TJvDBGridColumnLookupInfo;
+begin
+  // RH 2019-1-10: set picklist style for (custom) lookups
+  Column := Columns[SelectedIndex];
+  Field := Column.Field;
+  if (Column.ButtonStyle = cbsAuto) and (Field <> nil) then
+  begin
+    LookupInfo := GetColumnLookupInfo(Column);
+    if LookupInfo.IsLookup then
+    begin
+      // RH 2019-1-9: copied from 'TCustomDBGrid.GetEditStyle' (FieldKind = fkLookup)
+      MasterField := Field.Dataset.FieldByName(LookupInfo.KeyFields);
+      { Column.DefaultReadonly will always be True for a lookup field.
+        Test if Column.ReadOnly has been assigned a value of True }
+      if Assigned(MasterField) and MasterField.CanModify and
+        not ((cvReadOnly in Column.AssignedValues) and Column.ReadOnly) then
+        if not ReadOnly and DataLink.Active and not Datalink.ReadOnly then
+        begin
+          Result := esPickList;
+          TInternalInplaceEdit(InplaceEditor).FUseDataList := True;
+          Exit; // Done
+        end;
+    end;
+  end;
+
+  // Normal way!
+  Result := inherited GetEditStyle(ACol, ARow);
+end;
+
 function TJvDBGrid.GetPaintInfo: TJvGridPaintInfo;
 begin
   Result := FPaintInfo;
@@ -2058,6 +2143,14 @@ begin
   Result := True;
   if Assigned(FOnCanEditCell) then
     FOnCanEditCell(Self, AField, Result);
+end;
+
+function TJvDBGrid.CanEditModify: Boolean;
+begin
+  Result := inherited CanEditModify;
+  // RH 2019-1-10 - make editor act the same as when 'Field.FieldKind = fkLookup'
+  if Result and GetColumnLookupInfo(Columns[SelectedIndex]).IsLookup then
+    Result := False;
 end;
 
 procedure TJvDBGrid.GetCellProps(Column: TColumn; AFont: TFont;
@@ -2904,6 +2997,10 @@ var
       lWord := FWord + Key;
   end;
 
+var
+  Column: TColumn;
+  Field: TField;
+  LookupInfo: TJvDBGridColumnLookupInfo;
 begin
   if (Key = Cr) and PostOnEnterKey and not ReadOnly then
     DataSource.DataSet.CheckBrowseMode;
@@ -2918,37 +3015,43 @@ begin
     // Remark: InplaceEditor is protected in TCustomGrid, published in TJvDBGrid.
     if DataSource.DataSet.CanModify and not (ReadOnly or
       Columns[SelectedIndex].ReadOnly or Columns[SelectedIndex].Field.ReadOnly) then
-    with Columns[SelectedIndex].Field do
-      if (FieldKind = fkLookup) and IsInLookupCharList(Key) then
+    begin
+      Column := Columns[SelectedIndex];
+      Field := Column.Field;
+      LookupInfo := GetColumnLookupInfo(Column);
+      if LookupInfo.IsLookup then
       begin
-        CharsToFind;
-        LookupDataSet.DisableControls;
-        try
+        if LookupInfoValid(LookupInfo) and IsInLookupCharList(Key) then
+        begin
+          CharsToFind;
+          LookupInfo.LookupDataSet.DisableControls;
           try
-            if LookupDataSet.Locate(LookupResultField, lWord, [loCaseInsensitive, loPartialKey]) then
-            begin
-              DataSet.Edit;
-              lMasterField := DataSet.FieldByName(KeyFields);
-              if lMasterField.CanModify then
+            try
+              if LookupInfo.LookupDataSet.Locate(LookupInfo.LookupResultField, lWord, [loCaseInsensitive, loPartialKey]) then
               begin
-                lMasterField.Value := LookupDataSet.FieldValues[LookupKeyFields];
-                FWord := lWord;
-                InplaceEditor.SelStart := Length(FWord);
-                InplaceEditor.SelLength := Length(InplaceEditor.EditText) - Length(FWord);
+                Field.DataSet.Edit;
+                lMasterField := Field.DataSet.FieldByName(LookupInfo.KeyFields);
+                if lMasterField.CanModify then
+                begin
+                  lMasterField.Value := LookupInfo.LookupDataSet.FieldValues[LookupInfo.LookupKeyFields];
+                  FWord := lWord;
+                  InplaceEditor.SelStart := Length(FWord);
+                  InplaceEditor.SelLength := Length(InplaceEditor.EditText) - Length(FWord);
+                end;
               end;
+            except
+             { If you attempt to search for a string larger than what the field
+               can hold, and exception will be raised. Just trap it. }
             end;
-          except
-           { If you attempt to search for a string larger than what the field
-             can hold, and exception will be raised. Just trap it. }
+          finally
+            LookupInfo.LookupDataSet.EnableControls;
           end;
-        finally
-          LookupDataSet.EnableControls;
         end;
       end
       else
-      if FieldKind = fkData then
+      if Field.FieldKind = fkData then
       begin
-        if DataType in [DB.ftFloat{$IFDEF COMPILER12_UP},DB.ftExtended{$ENDIF COMPILER12_UP}] then
+        if Field.DataType in [DB.ftFloat{$IFDEF COMPILER12_UP},DB.ftExtended{$ENDIF COMPILER12_UP}] then
           if CharInSet(Key, ['.', ',']) then
             Key := JclFormatSettings.DecimalSeparator;
 
@@ -2984,7 +3087,7 @@ begin
             begin
               if AnsiStartsText(lWord, Strings[I]) then
               begin
-                DataSet.Edit;
+                Field.DataSet.Edit;
 
                 InplaceEditor.EditText := Strings[I];
                 Columns[SelectedIndex].Field.Text := Strings[I];
@@ -3000,6 +3103,7 @@ begin
             Key := #0;
         end;
       end;
+    end;
   end
   else
     // This fixes a bug coming from DBGrids.pas when a field is not editable.
@@ -3678,6 +3782,7 @@ var
   Highlight: Boolean;
   Bmp: TBitmap;
   Field, ReadOnlyTestField: TField;
+  LookupInfo: TJvDBGridColumnLookupInfo;
   R: TRect;
 begin
   Field := Column.Field;
@@ -3695,13 +3800,14 @@ begin
     else
     begin
       Canvas.Brush.Color := ReadOnlyCellColor;
+      LookupInfo := GetColumnLookupInfo(Column);
 
-      { Lookup fields do not have a FieldNo. In this case CanModify returns False } 
-      if Field.Lookup and (Field.LookupDataSet <> nil) and (Field.LookupResultField <> '')
-         and (Field.LookupKeyFields <> '') and (Field.KeyFields <> '') then
+      { When column works as a lookup, check the 'keyfield' }
+      if LookupInfo.IsLookup and LookupInfoValid(LookupInfo) then
       begin
         I := 1;
-        ReadOnlyTestField := Field.DataSet.FieldByName(ExtractFieldName(Field.KeyFields, I));
+        ReadOnlyTestField := Field.DataSet.FieldByName(ExtractFieldName(LookupInfo.KeyFields, I));
+        { Lookup fields do not have a FieldNo. In this case CanModify returns False }
         if ReadOnlyTestField.CanModify and CanEditCell(ReadOnlyTestField) then
           Canvas.Brush.Color := NewBackgrnd
       end;

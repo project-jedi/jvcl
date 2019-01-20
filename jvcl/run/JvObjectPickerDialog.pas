@@ -59,7 +59,11 @@ type
     sfProviderLDAP, // ADSPath is converted to use the LDAP provider
     sfProviderGC, // ADSPath is converted to use the GC provider
     sfSidPath, // ADSPath with an objectSID attribute are converted to the form LDAP://<SID=x>
-    sfDownLevelBuiltInPath); // If not specified, ADSPath for downlevel, well-known objects are empty
+    sfDownLevelBuiltInPath, // If not specified, ADSPath for downlevel, well-known objects are empty
+    sfDefaultFilterUsers, // select "Users" if the filter includes some
+    sfDefaultFilterGroups, // select "Groups" if the filter includes some
+    sfDefaultFilterComputers, // select "Computers" if the filter includes some
+    sfDefaultFilterContacts); // select "Contacts" if the filter includes some
   TScopeFlags = set of TScopeFlag;
 
   // up level filter flags. if a flag is set, the object picker includes the specified object when the scope is
@@ -346,10 +350,14 @@ begin
     Result := Result or DSOP_SCOPE_FLAG_WANT_SID_PATH;
   if sfDownLevelBuiltInPath in ScopeFlags then
     Result := Result or DSOP_SCOPE_FLAG_WANT_DOWNLEVEL_BUILTIN_PATH;
-  //DSOP_SCOPE_FLAG_DEFAULT_FILTER_USERS        = $00000040;
-  //DSOP_SCOPE_FLAG_DEFAULT_FILTER_GROUPS       = $00000080;
-  //DSOP_SCOPE_FLAG_DEFAULT_FILTER_COMPUTERS    = $00000100;
-  //DSOP_SCOPE_FLAG_DEFAULT_FILTER_CONTACTS     = $00000200;
+  if sfDefaultFilterUsers in ScopeFlags then
+    Result := Result or DSOP_SCOPE_FLAG_DEFAULT_FILTER_USERS;
+  if sfDefaultFilterGroups in ScopeFlags then
+    Result := Result or DSOP_SCOPE_FLAG_DEFAULT_FILTER_GROUPS;
+  if sfDefaultFilterComputers in ScopeFlags then
+    Result := Result or DSOP_SCOPE_FLAG_DEFAULT_FILTER_COMPUTERS;
+  if sfDefaultFilterContacts in ScopeFlags then
+    Result := Result or DSOP_SCOPE_FLAG_DEFAULT_FILTER_CONTACTS;
 end;
 
 function UpLevelFilterToOrdinal(const Filter: TUpLevelFilters): Cardinal;

@@ -2300,6 +2300,7 @@ end;
 procedure TJvCaptionButton.ResetButton;
 begin
   UnHook;
+  FNeedRecalculate := True;
   Hook;
   Redraw(rkTotalCaptionBar);
 end;
