@@ -155,9 +155,9 @@ uses
   CommDlg, CommCtrl, Dlgs,
   Types, SysUtils, Math,
   JclSysInfo,
-  {$IFNDEF COMPILER12_UP}
+  {.$IFNDEF COMPILER12_UP}
   JvJCLUtils, // SetWindowLongPtr
-  {$ENDIF ~COMPILER12_UP}
+  {.$ENDIF ~COMPILER12_UP}
   JvJVCLUtils;
 
 const
