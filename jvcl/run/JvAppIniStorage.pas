@@ -235,18 +235,11 @@ end;
   Note that this is a dirty hack, a better way would be to rewrite TMemIniFile;
   especially expose FSections. }
 {$IFDEF DELPHI2009_UP}
+{$IFNDEF RTL330_UP}
+{ with Delphi 10.3 Rio TMemIniFile was rewritten, so there is no need for
+  optimization any more as dictionaries are used now }
 type
-  TMemIniFileAccess = class(TCustomIniFile)
-  {$IFDEF RTL310_UP} // 10.1 Berlin removed the access to private fields
-    {$IFDEF RTL330_UP}
-      {$MESSAGE WARN 'Check that the new RTL still has FSections as the first member of TMemIniFile'}
-    {$ENDIF RTL320_UP}
-  private
-    FSections: TStringList;
-  {$ENDIF RTL310_UP}
-  end;
-
-  /// Optimization: TMemIniFile should overwrite this methods by itself
+  /// Optimization: TMemIniFile should overwrite these methods by itself
   TMemIniFileHelper = class helper for TMemIniFile
   public
     function SectionExists(const Section: string): Boolean;
@@ -255,11 +248,7 @@ type
 
 function TMemIniFileHelper.SectionExists(const Section: string): Boolean;
 begin
-  {$IFDEF RTL310_UP} // 10.1 Berlin removed the access to private fields
-  Result := TMemIniFileAccess(Self).FSections.IndexOf(Section) >= 0;
-  {$ELSE}
-  Result := Self.FSections.IndexOf(Section) >= 0;
-  {$ENDIF RTL310_UP}
+  with Self do Result := FSections.IndexOf(Section) >= 0;
 end;
 
 function TMemIniFileHelper.ValueExists(const Section, Ident: string): Boolean;
@@ -268,11 +257,7 @@ var
   Strings: TStrings;
   Sections: TStringList;
 begin
-  {$IFDEF RTL310_UP} // 10.1 Berlin removed the access to private fields
-  Sections := TMemIniFileAccess(Self).FSections;
-  {$ELSE}
-  Sections := Self.FSections;
-  {$ENDIF RTL310_UP}
+  with Self do Sections := FSections;
   I := Sections.IndexOf(Section);
   if I >= 0 then
   begin
@@ -282,6 +267,7 @@ begin
   end else
     Result := False;
 end;
+{$ENDIF RTL330_UP}
 {$ELSE}
 type
   TJvMemIniFile = class(TMemIniFile)

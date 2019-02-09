@@ -192,10 +192,16 @@ DSOP_SCOPE_FLAG_DEFAULT_FILTER_USERS
     default in the Look For dialog.
 
 DSOP_SCOPE_FLAG_DEFAULT_FILTER_GROUPS
+    If the scope filter contains group related flags, then check the Groups
+    checkbox by default in the Look For dialog.
 
 DSOP_SCOPE_FLAG_DEFAULT_FILTER_COMPUTERS
+    If the scope filter contains the DSOP_FILTER_COMPUTERS flag, then check
+    the Computers checkbox by default in the Look For dialog.
 
 DSOP_SCOPE_FLAG_DEFAULT_FILTER_CONTACTS
+    If the scope filter contains the DSOP_FILTER_CONTACTS flag, then check
+    the Contacts checkbox by default in the Look For dialog.
 }
 
 const
