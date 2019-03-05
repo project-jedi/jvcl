@@ -775,6 +775,8 @@ end;
 // internally
 
 constructor TJvHidDevice.CtlCreate(const APnPInfo: TJvHidPnPInfo; const Controller: TJvHidDeviceController);
+var
+  LDevicePath: string; 
 begin
   inherited Create;
 
@@ -807,12 +809,19 @@ begin
   OnData := Controller.OnDeviceData;
   OnUnplug := Controller.OnDeviceUnplug;
 
-  FHidFileHandle := CreateFile(PChar(APnPInfo.DevicePath), GENERIC_READ or GENERIC_WRITE,
+  // https://stackoverflow.com/questions/53761417/createfile-over-usb-hid-device-fails-with-access-denied-5-since-windows-10-180
+  if APnPInfo.DevicePath.EndsWith('\kbd') then
+  begin
+    LDevicePath := APnPInfo.DevicePath.Remove(APnPInfo.DevicePath.IndexOf('\kbd'));
+  end else
+    LDevicePath := APnPInfo.DevicePath;
+
+  FHidFileHandle := CreateFile(PChar(LDevicePath), GENERIC_READ or GENERIC_WRITE,
     FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
   FHasReadWriteAccess := HidFileHandle <> INVALID_HANDLE_VALUE;
   // Win2000 hack
   if not HasReadWriteAccess then
-    FHidFileHandle := CreateFile(PChar(APnPInfo.DevicePath), 0,
+    FHidFileHandle := CreateFile(PChar(LDevicePath), 0,
       FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
   if HidFileHandle <> INVALID_HANDLE_VALUE then
   begin
