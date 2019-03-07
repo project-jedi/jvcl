@@ -199,7 +199,7 @@ type
   end;
 
   IJvDynControlPanel = interface
-    ['{EB2435FE-D9A6-4D33-9F01-589D0C93C6AC}']
+    ['{8879D09E-9519-47B9-A1E5-3605D8FA85C6}']
     procedure ControlSetBorder(ABevelInner: TPanelBevel;
       ABevelOuter: TPanelBevel; ABevelWidth: Integer; ABorderStyle: TBorderStyle;
       ABorderWidth: Integer);
