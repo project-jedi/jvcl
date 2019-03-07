@@ -3481,6 +3481,7 @@ begin
   inherited Create(AOwner);
   FRepeatGrouped := True;
   FShowSchedNamesInHint := True;
+  FShowStartEndTimeInHint := True;
   FInplaceEdit := True;
 end;
 
