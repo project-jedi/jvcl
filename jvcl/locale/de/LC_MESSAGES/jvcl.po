@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
 "POT-Creation-Date: 2010-06-14 11:29\n"
-"PO-Revision-Date: 2019-03-07 20:51+0100\n"
+"PO-Revision-Date: 2019-03-08 19:43+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx.de>\n"
 "Language-Team: <>\n"
 "MIME-Version: 1.0\n"
@@ -6831,7 +6831,7 @@ msgstr ""
 #. Programmer's name for it: RsEJvInspPaintOnlyUsedOnce
 #: JvResources.pas:1247
 msgid "Inspector painter can only be linked to one inspector"
-msgstr ""
+msgstr "Inspektor Zeichner kann nur mit einem Inspektor verbunden sein"
 
 #  Programmer's name for it: RsEInspectorInternalError
 #  Programmer's name for it: RsEInspectorInternalError
@@ -9004,7 +9004,7 @@ msgstr "Ungültiges Dokument"
 #. Programmer's name for it: RsEInvalidFile
 #: JvResources.pas:1789
 msgid "Invalid data in conversion file"
-msgstr ""
+msgstr "Ungültige Daten in zu konvertierender Datei"
 
 #  Programmer's name for it: RsENoMemory
 #. Programmer's name for it: RsENoMemory
@@ -9227,14 +9227,14 @@ msgstr ""
 #. Programmer's name for it: RsEIncorrectIdentifierFound
 #: JvResources.pas:1834
 msgid "Incorrect identifier found"
-msgstr ""
+msgstr "Ungültiger Bezeichner gefunden"
 
 #  Programmer's name for it: RsEIncorrectStructure
 #  Programmer's name for it: RsEIncorrectStructure
 #. Programmer's name for it: RsEIncorrectStructure
 #: JvResources.pas:1835
 msgid "Incorrect structure found"
-msgstr ""
+msgstr "Ungültige Struktur gefunden"
 
 #  === JvScheduledEvents.pas ==================================================
 #  Programmer's name for it: RsECannotRestart
@@ -9631,7 +9631,7 @@ msgstr ""
 #. Programmer's name for it: RsEGridGranularityCannotBeGreater
 #: JvResources.pas:1948
 msgid "Grid granularity cannot be greater than the time block granularity"
-msgstr ""
+msgstr "Gitter-Granularität kann nicht größer sein als die Granularität der Zeitblöcke"
 
 #  Programmer's name for it: RsETimeBlockGranularityMustBeEvenly
 #  Programmer's name for it: RsETimeBlockGranularityMustBeEvenly
@@ -9660,7 +9660,7 @@ msgstr ""
 #. Programmer's name for it: RsEGridEndTimeCannotBePriorToGridStart
 #: JvResources.pas:1953
 msgid "GridEndTime cannot be prior to GridStartTime"
-msgstr ""
+msgstr "GridEndTime kann nicht vor GridStartTime liegen"
 
 #  Programmer's name for it: RsEGridStartTimeCannotBeAfterGridEndTi
 #  Programmer's name for it: RsEGridStartTimeCannotBeAfterGridEndTi
@@ -9669,7 +9669,7 @@ msgstr ""
 #. Programmer's name for it: RsEGridStartTimeCannotBeAfterGridEndTi
 #: JvResources.pas:1954
 msgid "GridStartTime cannot be after GridEndTime"
-msgstr ""
+msgstr "GridStartTime kann nicht nach GridEndTime liegen"
 
 #  Programmer's name for it: RsEInvalidRowd
 #  Programmer's name for it: RsEInvalidRowd
@@ -9854,7 +9854,7 @@ msgstr "(Titel)"
 #. Programmer's name for it: RsEGlanceControlNotAssigned
 #: JvResources.pas:1982
 msgid "GlanceControl not assigned"
-msgstr ""
+msgstr "GlanceControl nicht zugewiesen"
 
 #  === JvTFManager.pas ========================================================
 #  Programmer's name for it: RsECouldNotCreateCustomImageMap
@@ -10544,7 +10544,7 @@ msgstr ""
 #. Programmer's name for it: RsClFuchsia
 #: JvResources.pas:2135
 msgid "Fuchsia"
-msgstr ""
+msgstr "Fuchsia"
 
 #  Programmer's name for it: RsClAqua
 #  Programmer's name for it: RsClAqua
@@ -10832,7 +10832,7 @@ msgstr ""
 #. Programmer's name for it: RsClInactiveCaption
 #: JvResources.pas:2183
 msgid "Inactive window title bar"
-msgstr ""
+msgstr "Titelleiste inaktiver Fenster"
 
 #  Programmer's name for it: RsClMenu
 #  Programmer's name for it: RsClMenu
@@ -10978,7 +10978,7 @@ msgstr "Button Text"
 #. Programmer's name for it: RsClInactiveCaptionText
 #: JvResources.pas:2199
 msgid "Inactive window title bar text"
-msgstr ""
+msgstr "Titelleisten Text inaktiver Fenster"
 
 #  Programmer's name for it: RsClBtnHighlight
 #  Programmer's name for it: RsClBtnHighlight
@@ -11026,12 +11026,12 @@ msgstr ""
 #. Programmer's name for it: RsGradientActiveCaption
 #: JvResources.pas:2205
 msgid "Gradient Active Caption"
-msgstr ""
+msgstr "Farbverlauf aktiver Titel"
 
 #. Programmer's name for it: RsGradientInactiveCaption
 #: JvResources.pas:2206
 msgid "Gradient Inactive Caption"
-msgstr ""
+msgstr "Farbverlauf inaktiver Titel"
 
 #  Programmer's name for it: RsHigh
 #. Programmer's name for it: RsHotLight
