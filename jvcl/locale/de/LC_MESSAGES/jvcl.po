@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
 "POT-Creation-Date: 2010-06-14 11:29\n"
-"PO-Revision-Date: 2019-03-09 12:28+0100\n"
+"PO-Revision-Date: 2019-03-09 12:34+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx.de>\n"
 "Language-Team: <>\n"
 "MIME-Version: 1.0\n"
@@ -4972,7 +4972,7 @@ msgstr "fehlendes \"}\" Kommentarende in der Nähe von %s"
 #. Programmer's name for it: RsEMissingXmlMethodSpecifierNears
 #: JvResources.pas:812
 msgid "missing XML method specifier near %s"
-msgstr "fehlender XML method specifier bei %s"
+msgstr "fehlender XML-Methodenbezeichner bei %s"
 
 #  Programmer's name for it: RsEMissingDataSourceMethodSpecifierNea
 #  Programmer's name for it: RsEMissingDataSourceMethodSpecifierNea
@@ -5100,28 +5100,28 @@ msgstr "Fehler beim Speichern der Datei %s"
 #. Programmer's name for it: RsEXMLSelectionIsEmpty
 #: JvResources.pas:830
 msgid "XML selection is empty"
-msgstr "XML Selektion ist leer"
+msgstr "XML-Selektion ist leer"
 
 #  Programmer's name for it: RsENoXMLSelectionSelected
 #  Programmer's name for it: RsENoXMLSelectionSelected
 #. Programmer's name for it: RsENoXMLSelectionSelected
 #: JvResources.pas:831
 msgid "no XML selection selected"
-msgstr "keine XML Selektion ausgewählt"
+msgstr "keine XML-Selektion ausgewählt"
 
 #  Programmer's name for it: RsEXMLSelectionOutOfRange
 #  Programmer's name for it: RsEXMLSelectionOutOfRange
 #. Programmer's name for it: RsEXMLSelectionOutOfRange
 #: JvResources.pas:832
 msgid "XML selection out of range"
-msgstr "XML Selektion ausserhalb des Bereichs"
+msgstr "XML-Selektion ausserhalb des Bereichs"
 
 #  Programmer's name for it: RsEInvalidXmlMethodSpecifiers
 #  Programmer's name for it: RsEInvalidXmlMethodSpecifiers
 #. Programmer's name for it: RsEInvalidXmlMethodSpecifiers
 #: JvResources.pas:833
 msgid "invalid XML method specifier %s"
-msgstr "ungültiger XML method specifier %s"
+msgstr "ungültiger XML-Methodenbezeichner %s"
 
 #  Programmer's name for it: RsEIncrementIndexExpectedIns
 #  Programmer's name for it: RsEIncrementIndexExpectedIns
