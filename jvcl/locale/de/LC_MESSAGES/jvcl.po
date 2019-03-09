@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
 "POT-Creation-Date: 2010-06-14 11:29\n"
-"PO-Revision-Date: 2019-03-09 13:16+0100\n"
+"PO-Revision-Date: 2019-03-09 14:29+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx.de>\n"
 "Language-Team: <>\n"
 "MIME-Version: 1.0\n"
@@ -1887,9 +1887,8 @@ msgstr "DockStyle kann zur Laufzeit nicht geändert werden"
 #  Programmer's name for it: RsDockCannotLayAnother
 #. Programmer's name for it: RsEDockCannotLayAnother
 #: JvDockGlobals.pas:113
-#, fuzzy
 msgid "Only one %s allowed on each form. Cannot add another %s"
-msgstr "Nur ein %s pro Form erlaubt. Es kann kein %s hinzugefügt werden"
+msgstr "Nur ein %s pro Form erlaubt. Es kann kein weiteres %s hinzugefügt werden"
 
 #  Programmer's name for it: RsDockCannotSetTabPosition
 #  Programmer's name for it: RsDockCannotSetTabPosition
@@ -2495,9 +2494,8 @@ msgstr "Das neue und das bestätigte Passwort stimmen nicht überein"
 #. === JvBaseDBPasswordDialog.pas  ============================================
 #. Programmer's name for it: RsOldPasswordsMismatch
 #: JvResources.pas:215
-#, fuzzy
 msgid "The current and old passwords do not match"
-msgstr "Das neue und das bestätigte Passwort stimmen nicht überein"
+msgstr "Das neue und das alte Passwort stimmen nicht überein"
 
 #  JvSpellerForm..ButtonPanel..BtnChange..Caption
 #  JvSpellerForm..ButtonPanel..BtnChange..Caption
@@ -2692,7 +2690,7 @@ msgstr "Nach Datenbank gruppieren"
 #. Programmer's name for it: RsOracleHome
 #: JvResources.pas:257
 msgid "Oracle Home"
-msgstr ""
+msgstr "Oracle Home"
 
 #. Programmer's name for it: RsUseNetOptionForDirectConnect
 #: JvResources.pas:258
@@ -6662,9 +6660,8 @@ msgstr "Bildbetrachter"
 #. === JvImageList.pas ========================================================
 #. Programmer's name for it: RsResource
 #: JvResources.pas:1214
-#, fuzzy
 msgid "Resource %s"
-msgstr "Resource wurde nicht gefunden: %s"
+msgstr "Resource %s"
 
 #  === JvStrings.pas ==========================================================
 #  Programmer's name for it: RsECannotLoadResource
@@ -7450,9 +7447,8 @@ msgstr "Integerwert"
 #  Programmer's name for it: RsStringListEditorCaption
 #. Programmer's name for it: RsEInterpreter308
 #: JvResources.pas:1366
-#, fuzzy
 msgid "String Constant"
-msgstr "Stringlisten Editor"
+msgstr "Stringkonstante"
 
 #  Programmer's name for it: RsEInterpreter401
 #. Programmer's name for it: RsEInterpreter401
@@ -7478,14 +7474,14 @@ msgstr ""
 #. Programmer's name for it: RsENoReportProc
 #: JvResources.pas:1376
 msgid "Procedure \"JvInterpreterRunReportPreview\" not found"
-msgstr ""
+msgstr "Prozedur \"JvInterpreterRunReportPreview\" nicht gefunden"
 
 #  Programmer's name for it: RsENoReportProc2
 #  Programmer's name for it: RsENoReportProc2
 #. Programmer's name for it: RsENoReportProc2
 #: JvResources.pas:1377
 msgid "Procedure \"JvInterpreterRunReportPreview2\" not found"
-msgstr ""
+msgstr "Prozedur \"JvInterpreterRunReportPreview2\" nicht gefunden"
 
 #  === JvJanTreeView.pas ======================================================
 #  Programmer's name for it: RsSaveCurrentTree
@@ -7662,7 +7658,7 @@ msgstr "TJvCustomLinkLabel.UpdateDynamicTag: Tag nicht gefunden"
 #. Programmer's name for it: RsENoMoreElementsToReturn
 #: JvResources.pas:1422
 msgid "TElementEnumerator.GetNextElement: No more elements to return"
-msgstr ""
+msgstr "TElementEnumerator.GetNextElement: keine weiteren Elemente zurückzuliefern"
 
 #  Programmer's name for it: RsEUnsupportedState
 #  Programmer's name for it: RsEUnsupportedState
@@ -7824,9 +7820,8 @@ msgstr "Knoten existiert bereits."
 #. 'Registro no encontrado.';
 #. Programmer's name for it: RsERecordInexistent
 #: JvResources.pas:1468
-#, fuzzy
 msgid "Record not found."
-msgstr "Feld nicht gefunden."
+msgstr "Datensatz nicht gefunden."
 
 #. 'No se pudo agregar el registro.';
 #. Programmer's name for it: RsEInsertError
@@ -8750,6 +8745,9 @@ msgid ""
 "In the update dialog there are only the highest version numbers for each type visible.\n"
 "The type must be higher then AllowedReleaseType property of the TJvProgramVersionCheck component"
 msgstr ""
+"Releasetyp der Version.\n"
+"Im Aktualisierungsdialog sind nur die höchsten Versionsnummern für jeden Typ sichtbar.\n"
+"Der Typ muss höher als die AllowedReleaseType Eigenschaft der TJvProgramVersionCheck Komponente sein"
 
 #. Programmer's name for it: RSProgramVersionInfo_PropertyHint_VersionDescription
 #: JvResources.pas:1719
@@ -8769,7 +8767,7 @@ msgstr "Dateiname der Installer Datei "
 #. Programmer's name for it: RSProgramVersionInfo_PropertyHint_ProgramLocationPath
 #: JvResources.pas:1722
 msgid "Path where the installer of the version could be found. This could be a absolute path or a relative path to the location of the version list"
-msgstr ""
+msgstr "Pfad unter dem der Installer der Version gefunden werden kann. Das kann ein absoluter oder relativer Pfad zum Speicherort der Versionsliste sein"
 
 #. Programmer's name for it: RSProgramVersionInfo_PropertyHint_LocalInstallerParams
 #: JvResources.pas:1723
@@ -8813,7 +8811,7 @@ msgstr "Klasse zur Definition einer Liste von Programmversionsinformationen. Die
 #. Programmer's name for it: RSProgramVersionHistory
 #: JvResources.pas:1733
 msgid "Program Version History"
-msgstr ""
+msgstr "Programmversionshistorie"
 
 #  AlignForm..B_Ok..Caption
 #  FoPatch..OkBtn..Caption
@@ -9183,7 +9181,7 @@ msgstr ""
 #. Programmer's name for it: RsEStructureStackIsEmpty
 #: JvResources.pas:1825
 msgid "Structure stack is empty"
-msgstr ""
+msgstr "Strukturstapel ist leer"
 
 #  Programmer's name for it: RsEStructureStackIsEmpty
 #  Programmer's name for it: RsEStructureStackIsEmpty
@@ -9252,7 +9250,7 @@ msgstr "Kann nicht neu starten: Event wird gerade ausgelöst oder ausgeführt"
 #. Programmer's name for it: RsRightClickAndChooseAddBand
 #: JvResources.pas:1843
 msgid "Right click and choose \"Add band\""
-msgstr ""
+msgstr "Rechtsklicken und \"Band hinzufügen\" wählen"
 
 #  Programmer's name for it: RsETJvScrollMaxBandCanBePutOnlyIntoTJv
 #  Programmer's name for it: RsETJvScrollMaxBandCanBePutOnlyIntoTJv
@@ -9305,7 +9303,7 @@ msgstr "Doppelte DigitClass registriert"
 #. Programmer's name for it: RsTheCurrentCharacterHasBeenModifiedA
 #: JvResources.pas:1861
 msgid "The current character has been modified. Apply changes?"
-msgstr ""
+msgstr "Das aktuelle Zeichen wurde geändert. Änderungen anwenden?"
 
 #  Programmer's name for it: RsTheCurrentMappingHasBeenModifiedSav
 #  Programmer's name for it: RsTheCurrentMappingHasBeenModifiedSav
@@ -9313,7 +9311,7 @@ msgstr ""
 #. Programmer's name for it: RsTheCurrentMappingHasBeenModifiedSav
 #: JvResources.pas:1862
 msgid "The current mapping has been modified. Save changes to file?"
-msgstr ""
+msgstr "Die aktuelle Zuordnung wurde geändert. Änderungen in Datei speichern?"
 
 #  Programmer's name for it: RsSegmentedLEDDisplayMappingFilessdms
 #  Programmer's name for it: RsSegmentedLEDDisplayMappingFilessdms
@@ -9321,7 +9319,7 @@ msgstr ""
 #. Programmer's name for it: RsSegmentedLEDDisplayMappingFilessdms
 #: JvResources.pas:1863
 msgid "Segmented LED display mapping files (*.sdm)|*.sdm|All files (*.*)|*.*"
-msgstr ""
+msgstr "Segmentierte LED Display Mapping Dateien (*.sdm)|*.sdm|Alle Dateien (*.*)|*.*"
 
 #  Programmer's name for it: RsSelectCharacter
 #  Programmer's name for it: RsSelectCharacter
@@ -9475,17 +9473,17 @@ msgstr "Systemanforderungen für %s"
 #. Programmer's name for it: RsMinColorDepthReq
 #: JvResources.pas:1919
 msgid "The color depth must be at least %1:d bits per pixel, but is only %0:d bits per pixel."
-msgstr ""
+msgstr "Die Farbtiefe muss mindestens %1:d Bit pro Pixel betragen, beträgt jedoch nur %0:d Bit pro Pixel."
 
 #. Programmer's name for it: RsMaxColorDepthReq
 #: JvResources.pas:1920
 msgid "The color depth cannot be more than %1:d bits per pixel, but is %0:d bits per pixel."
-msgstr ""
+msgstr "Die Farbtiefe kann nicht mehr als %1:d Bit pro Pixel betragen, beträgt jedoch %0:d Bit pro Pixel."
 
 #. Programmer's name for it: RsBetweenColorDepthReq
 #: JvResources.pas:1921
 msgid "The color depth must be between %1:d and %2:d bits per pixel, but is %0:d bits per pixel."
-msgstr ""
+msgstr "Die Farbtiefe muss zwischen %1:d und %2:d Bit pro Pixel liegen, beträgt jedoch %0:d Bit pro Pixel."
 
 #. Programmer's name for it: RsMinScreenXReq
 #: JvResources.pas:1922
@@ -10486,7 +10484,7 @@ msgstr "Kastanienbraun"
 #. Programmer's name for it: RsClOlive
 #: JvResources.pas:2125
 msgid "Olive green"
-msgstr "Olivengrün"
+msgstr "Olivgrün"
 
 #  Programmer's name for it: RsClNavy
 #  Programmer's name for it: RsClNavy
@@ -10502,7 +10500,7 @@ msgstr "Navyblau"
 #. Programmer's name for it: RsClPurple
 #: JvResources.pas:2127
 msgid "Purple"
-msgstr ""
+msgstr "Purpur"
 
 #  Programmer's name for it: RsClTeal
 #  Programmer's name for it: RsClTeal
@@ -10510,7 +10508,7 @@ msgstr ""
 #. Programmer's name for it: RsClTeal
 #: JvResources.pas:2128
 msgid "Teal"
-msgstr ""
+msgstr "Smaragdgrün"
 
 #  Programmer's name for it: RsClGray
 #  Programmer's name for it: RsClGray
@@ -10607,7 +10605,7 @@ msgstr "Braun"
 #. Programmer's name for it: RsClOliveGreen
 #: JvResources.pas:2145
 msgid "Olive Green"
-msgstr "Olivengrün"
+msgstr "Olivgrün"
 
 #  Programmer's name for it: RsClGreen
 #  Programmer's name for it: RsClGreen
@@ -10781,9 +10779,8 @@ msgstr "Hell-Türkis"
 #  Programmer's name for it: RsClBlue
 #. Programmer's name for it: RsClPaleBlue
 #: JvResources.pas:2176
-#, fuzzy
 msgid "Pale Blue"
-msgstr "Blau"
+msgstr "Blassblau"
 
 #. Programmer's name for it: RsClLavender
 #: JvResources.pas:2177
@@ -10800,7 +10797,7 @@ msgstr "Lavendel"
 #. Programmer's name for it: RsClScrollBar
 #: JvResources.pas:2180
 msgid "Scrollbar"
-msgstr ""
+msgstr "Bildlaufleiste"
 
 #  Programmer's name for it: RsClBackground
 #  non standard colors introduced in QWindows.pas
