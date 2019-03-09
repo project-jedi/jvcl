@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
 "POT-Creation-Date: 2010-06-14 11:29\n"
-"PO-Revision-Date: 2019-03-08 19:43+0100\n"
+"PO-Revision-Date: 2019-03-09 12:28+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx.de>\n"
 "Language-Team: <>\n"
 "MIME-Version: 1.0\n"
@@ -1150,7 +1150,9 @@ msgstr ""
 msgid ""
 "Tell the component\n"
 "which part you want of the string"
-msgstr "Hier der Komponente mitteilen welcher String-Teil gewünscht ist"
+msgstr ""
+"Hier der Komponente mitteilen,\n"
+" welcher String-Teil gewünscht ist"
 
 #  FormParsers..GroupBox1..ComboBox1..Text
 #  FormParsers..GroupBox1..ComboBox1....Items.Strings
@@ -1181,7 +1183,7 @@ msgstr "Alles nach dem Start-Tag"
 #. JvHTMLParserForm..GroupBox1..cbTakeText....Items.Strings
 #: JvParserForm.dfm:130
 msgid "The whole line if respecting the condition"
-msgstr "Die ganze Zeile wenn die Bedingung erfüllt ist"
+msgstr "Die ganze Zeile, wenn die Bedingung erfüllt ist"
 
 #  FormParsers..GroupBox1..Edit4....Height
 #  FormParsers..GroupBox1..Edit4....Height
@@ -1200,10 +1202,10 @@ msgid ""
 "2 if you want it in the second position\n"
 "...."
 msgstr ""
-"Hier die Position des Start Tags definieren\n"
+"Hier die Position des Start-Tags definieren\n"
 "\n"
 "1 wenn es egal ist\n"
-"0 wenn er nicht im string sein kann\n"
+"0 wenn er nicht im String sein kann\n"
 "1 wenn er an der ersten Stelle stehen soll\n"
 "2 wenn er an der zweiten Stelle stehen soll\n"
 "…."
@@ -1519,7 +1521,7 @@ msgstr "&Einfügen"
 #. frmSLDMappingEditorDialog..EditorFrame..alCharMapEditor..aiEditClear..Caption
 #: JvSegmentedLEDDisplayMapperFrame.dfm:135 JvSLDMappingEditorDialog.dfm:251
 msgid "&Empty segments"
-msgstr "&Leere segmente"
+msgstr "&Leere Segmente"
 
 #  fmeJvSegmentedLEDDisplayMapper..alCharMapEditor..aiEditSetAll..Caption
 #  fmeJvSegmentedLEDDisplayMapper..alCharMapEditor..aiEditSetAll..Caption
@@ -1573,7 +1575,7 @@ msgstr ""
 #. frmSLDMappingEditorDialog..lblDigitClassCaption..Caption
 #: JvSLDMappingEditorDialog.dfm:26
 msgid "Digit class:"
-msgstr "Ziffern Klasse:"
+msgstr "Ziffernklasse:"
 
 #  frmSLDMappingEditorDialog..lblSegmentCountCaption..Caption
 #  frmSLDMappingEditorDialog..lblSegmentCountCaption..Caption
@@ -2233,7 +2235,7 @@ msgid ""
 "The Default Root Value \"%0:s\" has been replaced with \"%1:s\".\n"
 "Please change the value in the FileVersionInfo Project Properties."
 msgstr ""
-"Der Standard Wurzel Wert \"%0:s\" wurde durch \"%1:s\" ersetzt.\n"
+"Der standard Wurzel Wert \"%0:s\" wurde durch \"%1:s\" ersetzt.\n"
 "Bitte Wert in Datei Versionsinfo Projekteinstellungen ändern."
 
 #  === JvAppRegistryStorage.pas =================================================
@@ -2360,7 +2362,7 @@ msgstr "'%s' ist kein gültiger boolescher Wert"
 #. Programmer's name for it: RsENotABooleanValue
 #: JvResources.pas:170
 msgid "XML Node names cannot contain white space and the WhiteSpaceReplacement property is empty. Please set the WhiteSpaceReplacementProperty to a non empty value."
-msgstr "XML Konten Namen können keine Leerzeichen enthalten und die WhiteSpaceReplacement Eigenschaft ist leer. Bitte WhiteSpaceReplacement Eigenschaft auf einen nicht leeren Wert setzen."
+msgstr "XML-Knoten Namen können keine Leerzeichen enthalten und die WhiteSpaceReplacement Eigenschaft ist leer. Bitte WhiteSpaceReplacement Eigenschaft auf einen nicht leeren Wert setzen."
 
 #. Programmer's name for it: RsENotABooleanValue
 #: JvResources.pas:172
@@ -2370,7 +2372,7 @@ msgstr "Die WhiteSpaceReplacement-Property darf selbst keinen Whitespace enthalt
 #. Programmer's name for it: RsENotABooleanValue
 #: JvResources.pas:174
 msgid "XML Node names cannot contain invalid chars (\"%s\") and the InvalidCharReplacement property is empty. Please set the InvalidCharReplacement to a non empty value."
-msgstr "XML Knoten dürfen keine ungültigen zeichen enthalten (\"%s\") und die InvalidCharReplacement Eigenschaft ist leer. Bitte InvalidCharReplacement  Eigenschaft auf einen nicht leeren Wert setzen."
+msgstr "XML-Knoten dürfen keine ungültigen Zeichen enthalten (\"%s\") und die InvalidCharReplacement Eigenschaft ist leer. Bitte InvalidCharReplacement  Eigenschaft auf einen nicht leeren Wert setzen."
 
 #. Programmer's name for it: RsENotAllowedCharacterForProperty
 #: JvResources.pas:175
@@ -2639,7 +2641,7 @@ msgstr "Anhängen"
 #. Programmer's name for it: RsConnectionListImportAppendOverwriteExistingEntries
 #: JvResources.pas:246
 msgid "Append/Overwrite existing entries?"
-msgstr "Anhängen/überschreiben existierender Einträge?"
+msgstr "Anhängen/Überschreiben existierender Einträge?"
 
 #. Programmer's name for it: RsNoConnectionEntriesFound
 #: JvResources.pas:247
@@ -9935,7 +9937,7 @@ msgstr ""
 #. Programmer's name for it: RsEAppointmentNotificationFailed
 #: JvResources.pas:1996
 msgid "Appointment notification failed.  Appointment not assigned"
-msgstr "Terminbenachrichtigung fehlgeschlagen. Termin nicht zugewiesen."
+msgstr "Terminbenachrichtigung fehlgeschlagen. Termin nicht zugewiesen"
 
 #  Programmer's name for it: RsECouldNotCreateNewAppointment
 #  Programmer's name for it: RsECouldNotCreateNewAppointment
