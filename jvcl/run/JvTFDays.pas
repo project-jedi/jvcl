@@ -2526,7 +2526,7 @@ begin
     while (ApptsExamined < FData[MapRow, -1]) and not Result do
     begin
       Test := FData[MapRow, MapCol];
-      if Test > 0 then
+      if Test <> 0 then
       begin
         Inc(ApptsExamined);
         if Test = NativeInt(Appt) then
