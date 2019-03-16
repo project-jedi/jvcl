@@ -1507,8 +1507,7 @@ begin
   FFixedCols := FixCount - IndicatorOffset;
 end;
 
-function TJvDBGrid.GetColumnLookupInfo(Column: TColumn):
-    TJvDBGridColumnLookupInfo;
+function TJvDBGrid.GetColumnLookupInfo(Column: TColumn): TJvDBGridColumnLookupInfo;
 var
   Field: TField;
 begin
