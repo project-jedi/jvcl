@@ -689,6 +689,8 @@ procedure TJvCustomAppIniStorage.DeleteSubTreeInt(const Path: string);
 var
   TopSection: string;
   Sections: TStringList;
+  Section: string;
+  s: string;
   I: Integer;
 begin
   if IniFile <> nil then
@@ -704,8 +706,21 @@ begin
           IniFile.EraseSection(Sections[I])
       else
         for I := 0 to Sections.Count - 1 do
-          if Pos(TopSection, Sections[I]) = 1 then
-            IniFile.EraseSection(Sections[I]);
+        begin
+          // --- start bugfix ---
+          // What if the section name is a prefix to another unrelated section?
+          // [bla/blub]
+          // [bla/blubber]
+          // I now delete [bla/blub] which would also delete [bla/blubber] which is a bug.
+          // -- 2019-03-26 twm
+          Section := Sections[I];
+          if Pos(TopSection, Section) = 1 then begin
+            s := Copy(Section, 1, Length(TopSection) + 1);
+            if SameText(TopSection, Section) or SameText(s, TopSection + '\') then
+              IniFile.EraseSection(Sections[I]);
+          end;
+        end;
+          // --- end bugfix ---
       FlushIfNeeded;
     finally
       Sections.Free;
