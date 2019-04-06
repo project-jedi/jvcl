@@ -3124,10 +3124,16 @@ begin
 end;
 
 procedure TJvCustomComboEdit.SetShowCaret;
-const
-  CaretWidth: array [Boolean] of Integer = (1, 2);
+var
+  CaretWidth : Integer;
 begin
-  CreateCaret(Handle, 0, CaretWidth[fsBold in Font.Style], GetTextHeight);
+  if not SystemParametersInfo(SPI_GETCARETWIDTH, 0, @CaretWidth, 0) then
+  begin
+    CaretWidth := 1;
+    if fsBold in Font.Style then
+      Inc(CaretWidth);
+  end;
+  CreateCaret(Handle, 0, CaretWidth, GetTextHeight);
   ShowCaret(Handle);
 end;
 
