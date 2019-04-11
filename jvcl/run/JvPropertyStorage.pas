@@ -267,6 +267,12 @@ procedure TJvPropertyStorage.LoadAnyProperty(PropInfo: PPropInfo);
 begin
   try
     if (PropInfo <> nil) and (PropInfo.SetProc <> nil) then
+    // --- begin bugfix ---
+    // Even if is is a readonly property, it might be an object with read/write properties.
+    // So we need to load it anyway.
+    // if (PropInfo <> nil) and (PropInfo.SetProc <> nil) then
+    if (PropInfo <> nil) then
+    // --- end bugfix ---
       ReadProperty(AppStoragePath, GetItemName(PropInfo.Name), TPersistent(FObject), PropInfo.Name);
   except
     { ignore any exception }
