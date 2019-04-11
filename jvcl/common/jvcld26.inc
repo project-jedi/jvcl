@@ -29,7 +29,7 @@ Known Issues:
 {%hidden%}
 { The installer enables this define if you compile JVCL for Delphi and C++ Builder. It disables
   the class constructor/destructor support that is not supported by C++Builder. }
-{$DEFINE JVCL_GENERATE_CPP_PACKAGE_FILES}
+{.$DEFINE JVCL_GENERATE_CPP_PACKAGE_FILES}
 
 {%hidden%}
 { The installer enables this define if you compile JVCL for a Delphi edition that has
