@@ -1,4 +1,4 @@
-п»ї{-----------------------------------------------------------------------------
+{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -56,7 +56,7 @@ resourcestring
   RsSelectAllItem = 'Select &All';
   {
   SWEDISH:
-  RsUndoItem = '&Г…ngra';
+  RsUndoItem = '&Еngra';
   RsCutItem = '&Klipp ut';
   RsCopyItem = 'K&opiera';
   RsPasteItem = 'Kl&istra in';
@@ -64,17 +64,17 @@ resourcestring
   RsSelectAllItem = '&Markera allt';
 
   GERMAN:
-  RsUndoItem = '&RГјckgГ¤ngig';
+  RsUndoItem = '&Rьckgдngig';
   RsCutItem = '&Ausschneiden';
   RsCopyItem = '&Kopieren';
-  RsPasteItem = 'E&infГјgen';
-  RsDeleteItem = '&LГ¶schen';
+  RsPasteItem = 'E&infьgen';
+  RsDeleteItem = '&Lцschen';
   RsSelectAllItem = 'Alles &markieren';
 
   DUTCH:
   RsUndoItem = '&Ongedaan maken';
   RsCutItem = 'K&nippen';
-  RsCopyItem = '&KopiГ«ren';
+  RsCopyItem = '&Kopiлren';
   RsPasteItem = '&Plakken';
   RsDeleteItem = '&Wissen';
   RsSelectAllItem = '&Alles selecteren';
@@ -1076,8 +1076,8 @@ resourcestring
 //=== JvgXMLSerializer.pas ===================================================
 resourcestring
   { RUSSIAN
-  RsOpenXMLTagNotFound = 'ГЋГІГЄГ°Г»ГўГ ГѕГ№ГЁГ© ГІГҐГЈ Г­ГҐ Г­Г Г©Г¤ГҐГ­: <%s>';
-  RsCloseXMLTagNotFound = 'Г‡Г ГЄГ°Г»ГўГ ГѕГ№ГЁГ© ГІГҐГЈ Г­ГҐ Г­Г Г©Г¤ГҐГ­: </%s>';
+  RsOpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
+  RsCloseXMLTagNotFound = 'Закрывающий тег не найден: </%s>';
   RsUncknownProperty = 'Uncknown property: %s'
   }
   RsOpenXMLTagNotFound = 'Open tag not found: <%s>';
