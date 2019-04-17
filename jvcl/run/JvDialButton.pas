@@ -456,6 +456,7 @@ begin
   if APosition <> FPosition then
   begin
     FPosition := APosition;
+    BitmapNeeded;
     DrawPointer;
     Changed := True;
   end;
