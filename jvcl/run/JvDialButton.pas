@@ -456,7 +456,7 @@ begin
   if APosition <> FPosition then
   begin
     FPosition := APosition;
-    if assigned(FBitmap) then
+    if Assigned(FBitmap) then
       DrawPointer;
     Changed := True;
   end;
