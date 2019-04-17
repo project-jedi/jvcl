@@ -456,7 +456,8 @@ begin
   if APosition <> FPosition then
   begin
     FPosition := APosition;
-    DrawPointer;
+    if assigned(FBitmap) then
+      DrawPointer;
     Changed := True;
   end;
 
@@ -650,7 +651,8 @@ begin
   if Value <> FState then
   begin
     FState := Value;
-    DrawPointer;
+    if assigned(FBitmap) then
+      DrawPointer;
   end;
 end;
 
@@ -1186,7 +1188,7 @@ begin
   if Value <> FPointerColor then
   begin
     FPointerColor := Value;
-    if State then
+    if State and assigned(FBitmap) then
       DrawPointer;
   end;
 end;
@@ -1196,7 +1198,7 @@ begin
   if Value <> FPointerColorOff then
   begin
     FPointerColorOff := Value;
-    if not State then
+    if (not State) and assigned(FBitmap) then
       DrawPointer;
   end;
 end;
@@ -1280,7 +1282,8 @@ begin
   if Value <> FPointerSize then
   begin
     FPointerSize := Value;
-    DrawPointer;
+    if assigned(FBitmap) then
+      DrawPointer;
   end;
 end;
 
