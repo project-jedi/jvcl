@@ -155,9 +155,9 @@ uses
   CommDlg, CommCtrl, Dlgs,
   Types, SysUtils, Math,
   JclSysInfo,
-  {$IFNDEF COMPILER12_UP}
-  JvJCLUtils, // SetWindowLongPtr
-  {$ENDIF ~COMPILER12_UP}
+  {$IFDEF WIN64}
+  JvJCLUtils, // SetWindowLongPtr as in WinApi.Windows but const DWL_MSGRESULT = DWLP_MSGRESULT;
+  {$ENDIF ~WIN64}
   JvJVCLUtils;
 
 const

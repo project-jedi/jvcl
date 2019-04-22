@@ -104,6 +104,13 @@ function GetWindowLongPtr(hWnd: HWND; nIndex: Integer): LONG_PTR; stdcall;
 function SetWindowLongPtr(hWnd: HWND; nIndex: Integer; dwNewLong: LONG_PTR): LONG_PTR; stdcall;
 {$ENDIF ~COMPILER12_UP}
 
+{$IFDEF WIN64}
+  // Compatibility for 64 bit compiler
+  {$IF not declared(DWL_MSGRESULT) and declared(DWLP_MSGRESULT)}
+const DWL_MSGRESULT = DWLP_MSGRESULT;
+  {$IFEND}
+{$ENDIF}
+
 type
   EJvConvertError = Class(EConvertError);  { subclass EConvertError raised by some non-Def versions of floating point conversion routine }
   {$IFDEF UNIX}
