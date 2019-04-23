@@ -122,6 +122,14 @@ type
     OfficeXP                            // OfficeXP theme
    );
 
+  TJvXPAccelChar =
+   (
+     acNormal = 0,                      // default
+     acHidePrefix = DT_HIDEPREFIX,
+     acNoPrefix   = DT_NOPREFIX,
+     acOnlyPrefix = DT_PREFIXONLY
+   );
+
   { baseclass for non-focusable component descendants. }
   TJvXPCustomComponent = class(TJvComponent);
 
