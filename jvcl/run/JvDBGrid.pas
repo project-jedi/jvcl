@@ -2819,6 +2819,7 @@ var
   ACol: Longint;
   DoClick: Boolean;
   ALeftCol: Integer;
+  SI: TScrollInfo;
 begin
   Cell := MouseCoord(X, Y);
   if FTracking and (FPressedCol <> nil) then
@@ -2872,7 +2873,18 @@ begin
         ColWidths[FSizingIndex]);
   end
   else
-    inherited MouseUp(Button, Shift, X, Y);
+  begin
+    SI.cbSize := SizeOf(SI); //
+    SI.fMask := SIF_POS; // Store scrollbar position
+    GetScrollInfo(Handle, SB_HORZ, SI); //
+    LockWindowUpdate(Handle);
+    try
+      inherited MouseUp(Button, Shift, X, Y);
+      Perform(WM_HSCROLL, MakeWParam(SB_THUMBPOSITION, SI.nPos), 0); //Repos
+    finally
+      LockWindowUpdate(0);
+    end;
+  end;
   DoAutoSizeColumns;
 
   { XP Theming }
