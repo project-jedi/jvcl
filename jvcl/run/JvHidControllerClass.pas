@@ -499,11 +499,19 @@ const
 implementation
 
 uses
+  {$IFDEF SETUPAPI_LINKONREQUEST}
+  ModuleLoader,
+  {$ENDIF SETUPAPI_LINKONREQUEST}
   JvResources;
 
 type
   EControllerError = class(EJVCLException);
   EHidClientError = class(EJVCLException);
+
+{$IFDEF SETUPAPI_LINKONREQUEST}
+var
+  SetupApiLoadCount: Integer = 0;
+{$ENDIF SETUPAPI_LINKONREQUEST}
 
 //=== these are declared inconsistent in Windows.pas =========================
 
@@ -514,6 +522,34 @@ function ReadFileEx(hFile: THandle; var Buffer; nNumberOfBytesToRead: DWORD;
 function WriteFileEx(hFile: THandle; var Buffer; nNumberOfBytesToWrite: DWORD;
   var Overlapped: TOverlapped; lpCompletionRoutine: TPROverlappedCompletionRoutine): BOOL; stdcall;
   external kernel32 name 'WriteFileEx';
+
+function LoadSetupApiForHIDController: Boolean;
+begin
+  {$IFDEF SETUPAPI_LINKONREQUEST}
+  Result := True;
+  Inc(SetupApiLoadCount);
+  if SetupApiLoadCount > 1 then
+    Exit;
+  Result := ModuleLoader.LoadModule(SetupApiLib, SetupApiModuleName);
+  if Result then
+  begin
+    @SetupDiDestroyDeviceInfoList := GetModuleSymbolEx(SetupApiLib, 'SetupDiDestroyDeviceInfoList', Result);
+    @SetupDiEnumDeviceInterfaces := GetModuleSymbolEx(SetupApiLib, 'SetupDiEnumDeviceInterfaces', Result);
+    @SetupDiGetDeviceInterfaceDetailA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceInterfaceDetailA', Result);
+    @SetupDiGetDeviceInterfaceDetailW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceInterfaceDetailW', Result);
+    @SetupDiGetClassDevsA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetClassDevsA', Result);
+    @SetupDiGetClassDevsW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetClassDevsW', Result);
+    @SetupDiGetClassDevs := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetClassDevs' + NameSuffix, Result);
+    @SetupDiGetDeviceRegistryPropertyA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceRegistryPropertyA', Result);
+    @SetupDiGetDeviceRegistryPropertyW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceRegistryPropertyW', Result);
+    @SetupDiGetDeviceRegistryProperty := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceRegistryProperty' + NameSuffix, Result);
+    if not Result then
+      UnloadSetupApi;
+  end;
+  {$ELSE}
+  Result := True;
+  {$ENDIF SETUPAPI_LINKONREQUEST}
+end;
 
 //=== { TJvHidDeviceReadThread } =============================================
 
@@ -1677,7 +1713,7 @@ begin
 
   FList := TList.Create;
 
-  if LoadSetupApi then
+  if LoadSetupApiForHIDController then
     LoadHid;
 
   SetOnDeviceChange(AOnDeviceChange);
