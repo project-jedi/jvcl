@@ -1352,7 +1352,10 @@ procedure TJvCustomSpinEdit.SetItems(const AValue: TStrings);
 begin
   FItems.Assign(AValue);
   Value := 0;
-  Text := FItems[0];
+  if FItems.Count = 0 then
+    Text := ''
+  else
+    Text := FItems[0];
 end;
 
 procedure TJvCustomSpinEdit.SetMaxValue(NewValue: Extended);
