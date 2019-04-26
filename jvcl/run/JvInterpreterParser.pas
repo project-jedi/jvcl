@@ -433,6 +433,7 @@ var
   T1: Char;
   Ci: Char;
   Point: Boolean;
+  sci_nota:Boolean;
 label { Sorry about labels and gotos - for speed-ups only }
   Any, NotNumber;
 begin
@@ -499,19 +500,23 @@ begin
         Any: { !!LABEL!! }
 
         Point := False;
+        sci_nota := False;
         for I := 1 to L1 do
         begin
           Ci := Token[I];
+          if CharInSet(Ci,StConstE) then 
+            sci_nota := True;
+
           if Ci = '.' then
             if Point then
               goto NotNumber {two Points in lexem}
             else
               Point := True
           else
-          if not CharInSet(Ci, StConstSymbols10) then
+          if not CharInSet(Ci, StConstSymbols10e) then   
             goto NotNumber { not number }
         end;
-        if Point then
+        if Point or sci_nota then
           Result := ttDouble
         else
           Result := ttInteger;
@@ -587,7 +592,7 @@ var
   F1: PChar;
   I: Integer;
   PrevPoint:boolean;
-//  PointCount: Integer;
+  point_occur, e_occur:Boolean; 
 
   procedure Skip;
   begin
@@ -632,6 +637,9 @@ var
   end;
 
 begin
+  point_occur := False;
+  e_occur := False;
+
   { New Token }
   F := FPCPos;
   P := FPCPos;
@@ -658,10 +666,28 @@ begin
   if CharInSet(P[0], StConstSymbols10) then
   { number }
   begin
-    while CharInSet(P[0], StConstSymbols10) or (P[0] = '.') do
+    while CharInSet(P[0], StConstSymbols10e) do  
     begin
-      if (P[0] = '.') and (P[1] = '.') then
-        Break;
+      if P[0] = '.' then
+      begin
+        if point_occur //lht£ºradix point can occur zero or one time
+            or not CharInSet(P[-1],StConstSymbols10) //lht£ºa radix point must behind a number
+            or (P[1] = '.') then  
+          Break;
+        point_occur:=True;
+      end
+      else if CharInSet(P[0],StConstE)  then
+      begin
+        if e_occur  //lht£º only one time ,at most
+          or  not CharInSet(P[-1],StConstSymbols10)  then //lht£ºE must behind a number
+          Break;
+        e_occur := True;
+      end
+      else if CharInSet(P[0],StConstPlusSub) then
+      begin
+        if not CharInSet(P[-1],StConstE) then //lht: +/- must behind E
+          Break;
+      end;
       Inc(P);
     end;
     SetString(Result, F, P - F);
