@@ -6714,41 +6714,41 @@ begin
       AttrFlags[FType], LParam(@Format));
     with Format do
     begin
-      if (dwMask and CFM_BOLD) <> 0 then
+      if (dwEffects and CFM_BOLD) <> 0 then
         Include(Result, caBold);
-      if (dwMask and CFM_COLOR) <> 0 then
+      if (dwEffects and CFM_COLOR) <> 0 then
         Include(Result, caColor);
-      if (dwMask and CFM_FACE) <> 0 then
+      if (dwEffects and CFM_FACE) <> 0 then
         Include(Result, caFace);
-      if (dwMask and CFM_ITALIC) <> 0 then
+      if (dwEffects and CFM_ITALIC) <> 0 then
         Include(Result, caItalic);
-      if (dwMask and CFM_SIZE) <> 0 then
+      if (dwEffects and CFM_SIZE) <> 0 then
         Include(Result, caSize);
-      if (dwMask and CFM_STRIKEOUT) <> 0 then
+      if (dwEffects and CFM_STRIKEOUT) <> 0 then
         Include(Result, caStrikeOut);
-      if (dwMask and CFM_UNDERLINE) <> 0 then
+      if (dwEffects and CFM_UNDERLINE) <> 0 then
         Include(Result, caUnderline);
-      if (dwMask and CFM_PROTECTED) <> 0 then
+      if (dwEffects and CFM_PROTECTED) <> 0 then
         Include(Result, caProtected);
-      if (dwMask and CFM_OFFSET) <> 0 then
+      if (dwEffects and CFM_OFFSET) <> 0 then
         Include(Result, caOffset);
-      if (dwMask and CFM_HIDDEN) <> 0 then
+      if (dwEffects and CFM_HIDDEN) <> 0 then
         Include(Result, caHidden);
-      if (dwMask and CFM_CHARSET) <> 0 then
+      if (dwEffects and CFM_CHARSET) <> 0 then
         Include(Result, caCharset);
       if RichEditVersion >= 2 then
       begin
-        if (dwMask and CFM_LINK) <> 0 then
+        if (dwEffects and CFM_LINK) <> 0 then
           Include(Result, caLink);
-        if (dwMask and CFM_BACKCOLOR) <> 0 then
+        if (dwEffects and CFM_BACKCOLOR) <> 0 then
           Include(Result, caBackColor);
-        if (dwMask and CFM_DISABLED) <> 0 then
+        if (dwEffects and CFM_DISABLED) <> 0 then
           Include(Result, caDisabled);
-        if (dwMask and CFM_WEIGHT) <> 0 then
+        if (dwEffects and CFM_WEIGHT) <> 0 then
           Include(Result, caWeight);
-        if (dwMask and CFM_SUBSCRIPT) <> 0 then
+        if (dwEffects and CFM_SUBSCRIPT) <> 0 then
           Include(Result, caSubscript);
-        if (dwMask and CFM_REVAUTHOR) <> 0 then
+        if (dwEffects and CFM_REVAUTHOR) <> 0 then
           Include(Result, caRevAuthor);
       end;
     end;
