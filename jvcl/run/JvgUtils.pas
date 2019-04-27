@@ -153,6 +153,9 @@ implementation
 uses
   JvJCLUtils,
   ShlObj, Math,
+  {$IFDEF DELPHI2009_UP}
+  System.UITypes,
+  {$ENDIF}
   JvResources, JvConsts;
 
 { debug func }
