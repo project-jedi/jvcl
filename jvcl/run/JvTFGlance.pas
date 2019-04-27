@@ -2847,8 +2847,12 @@ var
   Handled: Boolean;
 begin
   if Assigned(FViewer) and FViewer.ShowSchedNamesInHint then
+  begin
     ExtraDesc := StringsToStr(SchedNames, ', ', False);
-  ExtraDesc := ExtraDesc + #13#10;
+    ExtraDesc := ExtraDesc + #13#10;
+  end
+  else
+    ExtraDesc := '';
 
   Handled := False;
   if Assigned(OnApptHint) then
