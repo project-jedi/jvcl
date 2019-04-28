@@ -109,6 +109,8 @@ type
       const DevData: TSPDevInfoData; Prop: DWORD): TStringList;
     function GetRegistryPropertyDWord(PnPHandle: HDEVINFO;
       const DevData: TSPDevInfoData; Prop: DWORD): DWORD;
+    function GetRegistryPropertyGuid(PnPHandle: HDEVINFO;
+      const DevData: TSPDevInfoData; Prop: DWORD): TGuid;
     function GetCompatibleIDs: TStrings;
     function GetHardwareID: TStrings;
     function GetLowerFilters: TStrings;
@@ -499,6 +501,7 @@ const
 implementation
 
 uses
+  Types,
   JvResources;
 
 type
@@ -618,7 +621,7 @@ begin
   // secondary information not all likely to exist for a HID device
   FAddress := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_ADDRESS);
   FBusNumber := GetRegistryPropertyDWord(APnPHandle, ADevData, SPDRP_BUSNUMBER);
-  FBusType := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_BUSTYPEGUID);
+  FBusType := GuidToString(GetRegistryPropertyGuid(APnPHandle, ADevData, SPDRP_BUSTYPEGUID));
   FCharacteristics := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_CHARACTERISTICS);
   FDevType := GetRegistryPropertyDWord(APnPHandle, ADevData, SPDRP_DEVTYPE);
   FEnumeratorName := GetRegistryPropertyString(APnPHandle, ADevData, SPDRP_ENUMERATOR_NAME);
@@ -753,6 +756,19 @@ begin
   Result := 0;
   SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
     RegDataType, PBYTE(@Result), SizeOf(Result), BytesReturned);
+end;
+
+function TJvHidPnPInfo.GetRegistryPropertyGuid(PnPHandle: HDEVINFO;
+  const DevData: TSPDevInfoData; Prop: DWORD): TGuid;
+var
+  BytesReturned: DWORD;
+  RegDataType: DWORD;
+begin
+  BytesReturned := 0;
+  RegDataType := 0;
+  Result := GUID_NULL;
+  SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop, RegDataType,
+                                   PByte(@Result), SizeOf(Result), BytesReturned);
 end;
 
 //=== { TJvHidDevice } =======================================================
