@@ -927,7 +927,7 @@ begin
     dfInteger, dfYear:
       Result := IntRangeValue(StrToIntDef(FEditText, 0));
     dfHex:
-      Result := IntRangeValue(StrToIntDef('$' + FEditText, 0));
+      Result := IntRangeValue(StrToUIntDef('$' + FEditText, 0));
     dfBcd:
       if TryStrToBcd(FEditText, Bcd) then
         Result := VarFMTBcdCreate(Bcd)
