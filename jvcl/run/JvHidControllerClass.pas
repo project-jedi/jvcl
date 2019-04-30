@@ -501,7 +501,11 @@ const
 implementation
 
 uses
+  {$IFDEF RTL230_UP}
   Types,
+  {$ELSE}
+  ActiveX,
+  {$ENDIF RTL230_UP}
   JvResources;
 
 type
