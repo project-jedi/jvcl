@@ -153,6 +153,9 @@ implementation
 uses
   JvJCLUtils,
   ShlObj, Math,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   JvResources, JvConsts;
 
 { debug func }
