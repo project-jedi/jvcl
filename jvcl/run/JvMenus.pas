@@ -1255,7 +1255,7 @@ begin
         SaveIndex := SaveDC(hDC);
         try
           Canvas.Handle := hDC;
-          SetDefaultMenuFont(Canvas.Font);
+          SetDefaultMenuFont(Screen.MenuFont);
           Canvas.Font.Color := clMenuText;
           Canvas.Brush.Color := clMenu;
           if mdDefault in State then
@@ -1836,7 +1836,7 @@ begin
         SaveIndex := SaveDC(hDC);
         try
           Canvas.Handle := hDC;
-          SetDefaultMenuFont(Canvas.Font);
+          SetDefaultMenuFont(Screen.MenuFont);
           Canvas.Font.Color := clMenuText;
           Canvas.Brush.Color := clMenu;
           if mdDefault in State then
