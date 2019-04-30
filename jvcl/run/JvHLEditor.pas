@@ -364,6 +364,7 @@ const
     ' external overload platform deprecated implements export contains' +
     ' requires resourcestring message dispid assembler asm abstract absolute' +
     ' dispinterface file threadvar library' +
+    ' array exports label asm packed in' +
     // TurboPascal
     ' interrupt inline near far' +
     // Delphi 8
