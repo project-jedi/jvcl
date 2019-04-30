@@ -822,6 +822,7 @@ begin
   FDataThread := nil;
   OnData := Controller.OnDeviceData;
   OnUnplug := Controller.OnDeviceUnplug;
+  OnDataError := Controller.OnDeviceDataError;
 
   FHidFileHandle := CreateFile(PChar(APnPInfo.DevicePath), GENERIC_READ or GENERIC_WRITE,
     FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
