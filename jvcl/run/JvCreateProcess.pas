@@ -183,7 +183,6 @@ type
 
     procedure GotoReadyState;
     procedure GotoWaitState(const AThreadCount: Integer);
-    procedure GotoRunningState;
     procedure SetCommandLine(const Value: string);
   protected
     procedure CheckReady;
@@ -1230,13 +1229,6 @@ begin
   FState := psReady;
   CloseProcessHandles;
   FRunningThreadCount := 0;
-end;
-
-procedure TJvCreateProcess.GotoRunningState;
-begin
-  CheckReady;
-  FState := psRunning;
-  CloseProcessHandles;
 end;
 
 procedure TJvCreateProcess.GotoWaitState(const AThreadCount: Integer);
