@@ -3820,7 +3820,10 @@ begin
     if I >= 0 then
     begin
       Bmp := GetGridBitmap(TGridPicture(I));
-      Canvas.FillRect(Rect);
+      if Highlight then
+        DrawThemedHighlighting(Canvas, Rect)
+      else
+        Canvas.FillRect(Rect);
       DrawBitmapTransparent(Canvas, (Rect.Left + Rect.Right + 1 - Bmp.Width) div 2,
         (Rect.Top + Rect.Bottom + 1 - Bmp.Height) div 2, Bmp, clOlive);
     end
