@@ -231,7 +231,7 @@ procedure TJvHTMLParser.AnalyseString(const Str: string);
 var
   Str2, Str3: string;
   StartTag1, StartTag2: string;
-  I, J, K, Index: Integer;
+  I, J, J1, K, Index: Integer;
   TagInfo: TTagInfo;
   AttributesList: TStringList;
 
@@ -334,7 +334,17 @@ begin
         while J <> 0 do
         begin
           // changed from StrSearch(case sensitive) to StrFind (case insensitive)
-          J := StrFind(StartTag1, Str, J);
+          if trim(StartTag2) = '' then
+          begin
+            J := StrFind(StartTag1, Str, J)
+          end
+          else
+          begin
+            J1 := J;
+            J := StrFind(StartTag1 + ' ', Str, J);
+            if J = 0 then
+             J := StrFind(StartTag1 + '>', Str, J1);
+          end;
           if J > 0 then
           begin
             // changed from StrSearch(case sensitive) to StrFind (case insensitive)
