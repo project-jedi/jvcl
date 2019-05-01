@@ -577,7 +577,7 @@ type
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
     property ShowGlyphs: Boolean read FShowGlyphs write SetShowGlyphs default True;
     property TitleButtons: Boolean read FTitleButtons write SetTitleButtons default False;
-    property TitleButtonAllowMove: Boolean read FTitleButtonAllowMove write FTitleButtonAllowMove default False; 
+    property TitleButtonAllowMove: Boolean read FTitleButtonAllowMove write FTitleButtonAllowMove default False;
     property OnCheckButton: TCheckTitleBtnEvent read FOnCheckButton write FOnCheckButton;
     property OnGetCellProps: TGetCellPropsEvent read FOnGetCellProps write FOnGetCellProps; { obsolete }
     property OnGetCellParams: TGetCellParamsEvent read FOnGetCellParams write FOnGetCellParams;
@@ -663,7 +663,7 @@ type
     { OnColumnResized: event triggered each time a column is resized with the mouse }
     property OnColumnResized: TJvDBColumnResizeEvent read FOnColumnResized write FOnColumnResized;
 
-    { ReadOnlyCellColor: The color of the cells that are read only => OnCanEditCell, not Field.CanModify }  
+    { ReadOnlyCellColor: The color of the cells that are read only => OnCanEditCell, not Field.CanModify }
     property ReadOnlyCellColor: TColor read FReadOnlyCellColor write FReadOnlyCellColor default clDefault;
     { OnCanEditCell: event used to control the appearance of editor and cell background }
     property OnCanEditCell: TJvDBCanEditCellEvent read FOnCanEditCell write FOnCanEditCell;
@@ -1407,7 +1407,7 @@ procedure TJvDBGrid.ColWidthsChanged;
     be triggered very often even if there was no actual change. This becomes worse
     when the assigned DataSet contains many visible fields (=>columns) and the DataChange
     event is used to update details data. }
-    
+
   procedure FixedInheritedColWidthsChanged;
   var
     I, ChangeCount: Integer;
@@ -1694,7 +1694,7 @@ begin
           else
           begin
             // Mantis 4231: Do not pass delete to inherited grid as it would
-            // allow deleting the row while having CanDelete set to False. 
+            // allow deleting the row while having CanDelete set to False.
             Exit;
           end;
       end;
@@ -2818,6 +2818,7 @@ var
   ACol: Longint;
   DoClick: Boolean;
   ALeftCol: Integer;
+  OriginalScrollInfo: TScrollInfo;
 begin
   Cell := MouseCoord(X, Y);
   if FTracking and (FPressedCol <> nil) then
@@ -2871,7 +2872,19 @@ begin
         ColWidths[FSizingIndex]);
   end
   else
-    inherited MouseUp(Button, Shift, X, Y);
+  begin
+    OriginalScrollInfo.cbSize := SizeOf(OriginalScrollInfo);
+    OriginalScrollInfo.fMask := SIF_POS;
+    // Store scrollbar position
+    GetScrollInfo(Handle, SB_HORZ, OriginalScrollInfo); //
+    LockWindowUpdate(Handle);
+    try
+      inherited MouseUp(Button, Shift, X, Y);
+      Perform(WM_HSCROLL, MakeWParam(SB_THUMBPOSITION, OriginalScrollInfo.nPos), 0); //Repos
+    finally
+      LockWindowUpdate(0);
+    end;
+  end;
   DoAutoSizeColumns;
 
   { XP Theming }
@@ -4712,7 +4725,7 @@ begin
   { When resize DO NOT trigger title click event }
   if FCanResizeColumn then
     Exit;
-  
+
   FTitleColumn := Column;
   inherited TitleClick(Column);
   if AllowTitleClick then
