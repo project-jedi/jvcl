@@ -1479,6 +1479,7 @@ resourcestring
   RsEUpdateError = 'Unable to modify the record.';
   // 'No se pudo eliminar el registro.';
   RsEDeleteError = 'Unable to erase the record.';
+  RsEFieldOffsetOverflow = 'Field offset overflow. Index: %0:d';
 
 //=== JvMouseGesture.pas =====================================================
 resourcestring
