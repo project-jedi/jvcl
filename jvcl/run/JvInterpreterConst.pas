@@ -43,6 +43,9 @@ const
   StIdFirstSymbols = ['_', 'A'..'Z', 'a'..'z'];
   StConstSymbols = ['0'..'9', 'A'..'F', 'a'..'f'];
   StConstSymbols10 = ['0'..'9'];
+  StConstE=['E','e'];
+  StConstPlusSub=['+','-'];
+  StConstSymbols10e = ['0'..'9','E','e','+','-','.'];
   StSeparators = ['(', ')', ',', '.', ';'];
 
 type
