@@ -53,16 +53,22 @@ procedure JvXPDrawBoundLines(const ACanvas: TCanvas; const BoundLines: TJvXPBoun
 
 procedure JvXPConvertToGray2(Bitmap: TBitmap);
 procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
+  ACaption: TCaption; const AFont: TFont; const AEnabled: Boolean; AShowAccelChar: Boolean;
+  var ARect: TRect; AFlags: Integer); overload;
+procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
   ACaption: TCaption; const AFont: TFont; const AEnabled: Boolean; const AAccelCharType: TJvXPAccelChar;
-  var ARect: TRect; AFlags: Integer);
+  var ARect: TRect; AFlags: Integer); overload;
 procedure JvXPFrame3D(const ACanvas: TCanvas; const Rect: TRect;
   const TopColor, BottomColor: TColor; const Swapped: Boolean = False);
 procedure JvXPColorizeBitmap(Bitmap: TBitmap; const AColor: TColor);
 procedure JvXPSetDrawFlags(const AAlignment: TAlignment; const AWordWrap: Boolean;
   var Flags: Integer);
 procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
+  const AText: TCaption; const AFont: TFont; const AEnabled: Boolean; AShowAccelChar: Boolean;
+  const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect); overload;
+procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
   const AText: TCaption; const AFont: TFont; const AEnabled: Boolean; const AAccelCharType: TJvXPAccelChar;
-  const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect);
+  const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect); overload;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -284,6 +290,13 @@ begin
 end;
 
 procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
+  ACaption: TCaption; const AFont: TFont; const AEnabled: Boolean; AShowAccelChar: Boolean;
+  var ARect: TRect; AFlags: Integer);
+begin
+  JvXPRenderText(AParent, ACanvas, ACaption, AFont, AEnabled, acNormal, ARect, AFlags);
+end;
+
+procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
   ACaption: TCaption; const AFont: TFont; const AEnabled: Boolean; const AAccelCharType: TJvXPAccelChar;
   var ARect: TRect; AFlags: Integer);
 
@@ -378,6 +391,13 @@ begin
     Flags := Flags or DT_SINGLELINE
   else
     Flags := Flags or DT_WORDBREAK;
+end;
+
+procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
+  const AText: TCaption; const AFont: TFont; const AEnabled: Boolean; AShowAccelChar: Boolean;
+  const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect);
+begin
+  JvXPPlaceText(AParent, ACanvas, AText, AFont, AEnabled, acNormal, AAlignment, AWordWrap, Rect);
 end;
 
 procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas; const AText: TCaption;
