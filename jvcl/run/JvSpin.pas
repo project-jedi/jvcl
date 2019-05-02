@@ -852,10 +852,10 @@ end;
 function TJvCustomSpinEdit.GetDefaultButtonWidth: Integer;
 begin
   Result := DefBtnWidth(Screen.
-  {$IFDEF RTL300_UP}
-  MonitorFromRect(TRect.Create(Left, Top, Left + Width, Top + Height)).
-  {$ENDIF RTL300_UP}
-  PixelsPerInch);
+    {$IFDEF RTL300_UP}
+    MonitorFromRect(TRect.Create(Left, Top, Left + Width, Top + Height)).
+    {$ENDIF RTL300_UP}
+    PixelsPerInch);
 end;
 
 procedure TJvCustomSpinEdit.BoundsChanged;
@@ -1944,10 +1944,10 @@ end;
 function TJvUpDown.GetDefaultButtonWidth: Integer;
 begin
   Result := DefBtnWidth(Screen.
-  {$IFDEF RTL300_UP}
-  MonitorFromRect(TRect.Create(Left, Top, Left + Width, Top + Height)).
-  {$ENDIF RTL300_UP}
-  PixelsPerInch);
+    {$IFDEF RTL300_UP}
+    MonitorFromRect(TRect.Create(Left, Top, Left + Width, Top + Height)).
+    {$ENDIF RTL300_UP}
+    PixelsPerInch);
 end;
 
 procedure TJvUpDown.Resize;
