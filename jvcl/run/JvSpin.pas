@@ -1952,8 +1952,8 @@ end;
 
 procedure TJvUpDown.Resize;
 begin
-  if Width <> DefBtnWidth then
-    Width := DefBtnWidth
+  if Width <> GetDefaultButtonWidth then
+    Width := GetDefaultButtonWidth
   else
     inherited Resize;
 end;
