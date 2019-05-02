@@ -104,6 +104,7 @@ type
     property Glyph: TJvPicture read FGlyph write SetGlyph;
     property Layout: TJvXPLayout read FLayout write SetLayout default blGlyphLeft;
     property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar stored False;
+    property AccelCharType: TJvXPAccelChar read FAccelCharType write SetAccelCharType default acNormal;
     property ShowFocusRect: Boolean read FShowFocusRect write SetShowFocusRect default False;
     property SmoothEdges: Boolean read FSmoothEdges write SetSmoothEdges default True;
     property Spacing: Byte read FSpacing write SetSpacing default 3;
