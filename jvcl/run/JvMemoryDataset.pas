@@ -839,7 +839,7 @@ begin
         if Offset + FieldLen + 1 <= high(Offset) then
           Inc(Offset, FieldLen + 1)
         else
-          raise ERangeError.CreateResFmt(RsEFieldOffsetOverflow, [I]);
+          raise ERangeError.CreateResFmt(@RsEFieldOffsetOverflow, [I]);
       end;
     end;
   finally
