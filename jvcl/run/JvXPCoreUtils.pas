@@ -305,11 +305,14 @@ procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
     DrawText(ACanvas, ACaption, -1, ARect, AFlags);
   end;
 
+const
+  JvXPAccelCharToFlags: array[TJvXPAccelChar] of Integer = (0, DT_HIDEPREFIX, DT_NOPREFIX, DT_PREFIXONLY);
+
 begin
   if (AFlags and DT_CALCRECT <> 0) and ((ACaption = '') or (((AAccelCharType = acNormal) or
      (AAccelCharType = acOnlyPrefix)) and (ACaption[1] = '&') and (ACaption[2] = #0))) then
     ACaption := ACaption + ' ';
-  AFlags := AFlags or Ord(AAccelCharType);
+  AFlags := AFlags or JvXPAccelCharToFlags[AAccelCharType];
   AFlags := AParent.DrawTextBiDiModeFlags(AFlags);
   with ACanvas do
   begin

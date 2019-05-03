@@ -124,10 +124,10 @@ type
 
   TJvXPAccelChar =
    (
-     acNormal = 0,                      // default
-     acHidePrefix = DT_HIDEPREFIX,
-     acNoPrefix   = DT_NOPREFIX,
-     acOnlyPrefix = DT_PREFIXONLY
+     acNormal,
+     acHidePrefix,
+     acNoPrefix,
+     acOnlyPrefix
    );
 
   { baseclass for non-focusable component descendants. }
