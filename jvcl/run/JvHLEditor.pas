@@ -96,6 +96,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Graphics,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  UITypes,
+  {$ENDIF}
   JvEditor, JvEditorCommon, JvHLParser;
 
 type
