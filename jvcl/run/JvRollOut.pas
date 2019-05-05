@@ -1451,6 +1451,8 @@ procedure TJvCustomRollOut.CheckChildVisibility;
       FChildControlVisibility.Sorted := True;
     end;
 
+    DisableAlign;
+
     for I := 0 to ControlCount - 1 do
       if (Controls[I] is TWinControl) and (TWinControl(Controls[I]).Visible) then
       begin
@@ -1458,6 +1460,8 @@ procedure TJvCustomRollOut.CheckChildVisibility;
         if CollapseCtrlsOnButton or (TWinControl(Controls[I]).Top > ButtonHeight) then
           TWinControl(Controls[I]).Visible := False;
       end;
+
+    EnableAlign := true;
   end;
 
   procedure SetChildVisibility;
@@ -1466,9 +1470,13 @@ procedure TJvCustomRollOut.CheckChildVisibility;
   begin
     if FChildControlVisibility <> nil then
     begin
+      DisableAlign;
+
       for I := 0 to FChildControlVisibility.Count - 1 do
         if FindChildControl(FChildControlVisibility[I]) <> nil then
           TWinControl(FChildControlVisibility.Objects[I]).Visible := True;
+
+      EnableAlign;
       FreeAndNil(FChildControlVisibility);
     end;
   end;
