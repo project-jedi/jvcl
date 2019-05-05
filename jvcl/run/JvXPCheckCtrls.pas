@@ -324,12 +324,12 @@ begin
     if BiDiMode = bdRightToLeft then
     begin
       Dec(Rect.Right, FCheckSize + 4 + Spacing);
-      JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, True, taRightJustify, True, Rect)
+      JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, acNormal, taRightJustify, True, Rect)
     end
     else
     begin
       Inc(Rect.Left, FCheckSize + 4 + Spacing);
-      JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, True, taLeftJustify, True, Rect);
+      JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, acNormal, taLeftJustify, True, Rect);
     end;
    end;
 end;

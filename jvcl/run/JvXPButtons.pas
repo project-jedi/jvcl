@@ -67,7 +67,7 @@ type
     FImageChangeLink: TChangeLink;
     FImageIndex: Integer;
     FLayout: TJvXPLayout;
-    FShowAccelChar: Boolean;
+    FAccelCharType: TJvXPAccelChar;
     FShowFocusRect: Boolean;
     FSmoothEdges: Boolean;
     FSpacing: Byte;
@@ -79,6 +79,7 @@ type
     procedure SetDown(const Value: Boolean);
   protected
     function GetActionLinkClass: TControlActionLinkClass; override;
+    function GetShowAccelChar: Boolean; virtual;
     function IsSpecialDrawState(IgnoreDefault: Boolean = False): Boolean;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -88,6 +89,7 @@ type
     procedure SetGlyph(Value: TJvPicture); virtual;
     procedure SetLayout(Value: TJvXPLayout); virtual;
     procedure SetShowAccelChar(Value: Boolean); virtual;
+    procedure SetAccelCharType(Value: TJvXPAccelChar); virtual;
     procedure SetShowFocusRect(Value: Boolean); virtual;
     procedure SetSmoothEdges(Value: Boolean); virtual;
     procedure SetSpacing(Value: Byte); virtual;
@@ -101,7 +103,8 @@ type
     property Down: Boolean read FDown write SetDown default False;
     property Glyph: TJvPicture read FGlyph write SetGlyph;
     property Layout: TJvXPLayout read FLayout write SetLayout default blGlyphLeft;
-    property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
+    property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar stored False;
+    property AccelCharType: TJvXPAccelChar read FAccelCharType write SetAccelCharType default acNormal;
     property ShowFocusRect: Boolean read FShowFocusRect write SetShowFocusRect default False;
     property SmoothEdges: Boolean read FSmoothEdges write SetSmoothEdges default True;
     property Spacing: Byte read FSpacing write SetSpacing default 3;
@@ -136,6 +139,7 @@ type
     property Layout;
     property ModalResult;
     property ShowAccelChar;
+    property AccelCharType;
     property ShowFocusRect;
     property SmoothEdges;
     property Spacing;
@@ -356,7 +360,7 @@ begin
   FGlyph := TJvPicture.Create;
   FGlyph.OnChange := GlyphChange;
   FLayout := blGlyphLeft;
-  FShowAccelChar := True;
+  FAccelCharType := acNormal;
   FShowFocusRect := False;
   FSmoothEdges := True;
   FSpacing := 3;
@@ -393,6 +397,11 @@ begin
   Result := TJvXPCustomButtonActionLink;
 end;
 
+function TJvXPCustomButton.GetShowAccelChar: Boolean;
+begin
+  result := FAccelCharType <> acNoPrefix;
+end;
+
 procedure TJvXPCustomButton.CMDialogKey(var Msg: TCMDialogKey);
 begin
   inherited;
@@ -406,6 +415,15 @@ begin
     end
     else
       inherited;
+end;
+
+procedure TJvXPCustomButton.SetAccelCharType(Value: TJvXPAccelChar);
+begin
+  if Value <> FAccelCharType then
+  begin
+    FAccelCharType := Value;
+    LockedInvalidate;
+  end;
 end;
 
 procedure TJvXPCustomButton.SetAutoGray(Value: Boolean);
@@ -457,10 +475,12 @@ end;
 
 procedure TJvXPCustomButton.SetShowAccelChar(Value: Boolean);
 begin
-  if Value <> FShowAccelChar then
+  if Value <> GetShowAccelChar then
   begin
-    FShowAccelChar := Value;
-    LockedInvalidate;
+    if Value then
+      AccelCharType := acNormal
+    else
+      AccelCharType := acNoPrefix;
   end;
 end;
 
@@ -727,7 +747,7 @@ begin
 
       if Length(Caption) > 0 then
       begin
-        JvXPRenderText(Self, Canvas, Caption, Font, Enabled, FShowAccelChar, Rect, Flags or DT_CALCRECT);
+        JvXPRenderText(Self, Canvas, Caption, Font, Enabled, FAccelCharType, Rect, Flags or DT_CALCRECT);
         OffsetRect(Rect, (Width - Rect.Right) div 2, (Height - Rect.Bottom) div 2);
       end;
 
@@ -770,7 +790,7 @@ begin
 
       // draw caption.
       SetBkMode(Handle, Transparent);
-      JvXPRenderText(Self, Canvas, Caption, Font, Enabled, FShowAccelChar, Rect, Flags);
+      JvXPRenderText(Self, Canvas, Caption, Font, Enabled, FAccelCharType, Rect, Flags);
     finally
       Image.Free;
     end;

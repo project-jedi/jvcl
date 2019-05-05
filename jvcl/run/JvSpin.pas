@@ -208,6 +208,7 @@ type
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure WMUpDownClick(var Msg: TMessage); message WM_UPDOWNCLICK;
     procedure SetItems(const AValue: TStrings);
+    function GetDefaultButtonWidth: Integer;
   protected
     FButtonKind: TSpinButtonKind;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
@@ -535,6 +536,7 @@ type
     procedure ScrollMessage(var Msg: TWMVScroll);
     procedure WMHScroll(var Msg: TWMHScroll); message CN_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message CN_VSCROLL;
+    function GetDefaultButtonWidth: Integer;
   public
     procedure Resize; override;
   public
@@ -643,11 +645,27 @@ begin
   Result := GSpinButtonBitmapsManager;
 end;
 
-function DefBtnWidth: Integer;
+function DefBtnWidth(ppi: Integer): Integer;
+var
+  MaxWidth : Integer;
 begin
   Result := GetSystemMetrics(SM_CXVSCROLL);
-  if Result > 15 then
-    Result := 15;
+
+  if ppi > 0 then
+  begin
+    // prevent things going completely wrong if strange data had been returned
+    // 480 = 500%, which is the maximum value Windows 10 alows one to enter
+    if ppi > 480 then
+      ppi := 480;
+
+    MaxWidth := round(15 * ppi/96);
+  end
+  else
+    // 15 was the original fixed value
+    MaxWidth := 15;
+
+  if Result > MaxWidth then
+    Result := MaxWidth;
 end;
 
 function RemoveThousands(const AValue: string): string;
@@ -831,6 +849,15 @@ begin
   Result := ',0.##';
 end;
 
+function TJvCustomSpinEdit.GetDefaultButtonWidth: Integer;
+begin
+  Result := DefBtnWidth(Screen.
+    {$IFDEF RTL300_UP}
+    MonitorFromRect(TRect.Create(Left, Top, Left + Width, Top + Height)).
+    {$ENDIF RTL300_UP}
+    PixelsPerInch);
+end;
+
 procedure TJvCustomSpinEdit.BoundsChanged;
 var
   MinHeight: Integer;
@@ -995,7 +1022,7 @@ begin
     if FButton <> nil then
       Result := FButton.Width
     else
-      Result := DefBtnWidth;
+      Result := GetDefaultButtonWidth;
   end
   else
     Result := 0;
@@ -1165,7 +1192,7 @@ begin
       with TJvUpDown(FUpDown) do
       begin
         Visible := True;
-        SetBounds(0, 1, DefBtnWidth, Self.Height);
+        SetBounds(0, 1, GetDefaultButtonWidth, Self.Height);
         if BiDiMode = bdRightToLeft then
           Align := alLeft
         else
@@ -1180,7 +1207,7 @@ begin
       FBtnWindow.Visible := True;
       FBtnWindow.Parent := Self;
       if FButtonKind <> bkClassic then
-        FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
+        FBtnWindow.SetBounds(0, 0, GetDefaultButtonWidth, Height)
       else
         FBtnWindow.SetBounds(0, 0, Height, Height);
       FButton := TJvSpinButton.Create(Self);
@@ -1201,7 +1228,7 @@ var
 begin
   if FUpDown <> nil then
   begin
-    FUpDown.Width := DefBtnWidth;
+    FUpDown.Width := GetDefaultButtonWidth;
     if BiDiMode = bdRightToLeft then
       FUpDown.Align := alLeft
     else
@@ -1212,12 +1239,12 @@ begin
   begin { bkDiagonal }
     if Ctl3D and (BorderStyle = bsSingle) then
       if FButtonKind = bkClassic then
-        R := Bounds(Width - DefBtnWidth - 4, -1, DefBtnWidth, Height - 3)
+        R := Bounds(Width - GetDefaultButtonWidth - 4, -1, GetDefaultButtonWidth, Height - 3)
       else
         R := Bounds(Width - Height - 1, -1, Height - 3, Height - 3)
     else
       if FButtonKind = bkClassic then
-      R := Bounds(Width - DefBtnWidth, 0, DefBtnWidth, Height)
+      R := Bounds(Width - GetDefaultButtonWidth, 0, GetDefaultButtonWidth, Height)
     else
       R := Bounds(Width - Height, 0, Height, Height);
     if BiDiMode = bdRightToLeft then
@@ -1914,10 +1941,19 @@ begin
   inherited Destroy;
 end;
 
+function TJvUpDown.GetDefaultButtonWidth: Integer;
+begin
+  Result := DefBtnWidth(Screen.
+    {$IFDEF RTL300_UP}
+    MonitorFromRect(TRect.Create(Left, Top, Left + Width, Top + Height)).
+    {$ENDIF RTL300_UP}
+    PixelsPerInch);
+end;
+
 procedure TJvUpDown.Resize;
 begin
-  if Width <> DefBtnWidth then
-    Width := DefBtnWidth
+  if Width <> GetDefaultButtonWidth then
+    Width := GetDefaultButtonWidth
   else
     inherited Resize;
 end;
