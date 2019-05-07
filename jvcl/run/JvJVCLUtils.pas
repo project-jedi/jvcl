@@ -2291,7 +2291,7 @@ end;
 
 function ScreenWorkArea: TRect;
 begin
-  Result := Screen.MonitorFromWindow(Screen.ActiveForm.Handle).WorkareaRect;
+  Result := Screen.MonitorFromWindow(Screen.ActiveCustomForm.Handle).WorkareaRect;
 end;
 
 { Standard Windows MessageBox function }
