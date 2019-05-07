@@ -97,7 +97,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Graphics,
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
-  UITypes,
+  System.UITypes,
   {$ENDIF}
   JvEditor, JvEditorCommon, JvHLParser;
 

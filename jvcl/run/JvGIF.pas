@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
-  UITypes,
+  System.UITypes,
   {$ENDIF}
   Windows, RTLConsts, SysUtils, Classes, Graphics, Controls;
 
