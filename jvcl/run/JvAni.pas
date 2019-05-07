@@ -42,7 +42,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, RTLConsts, Windows, Graphics, Controls, ExtCtrls, Dialogs,
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
-  UITypes,
+  System.UITypes,
   {$ENDIF}
   JvTypes;
 
