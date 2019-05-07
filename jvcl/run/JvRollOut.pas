@@ -1472,11 +1472,14 @@ procedure TJvCustomRollOut.CheckChildVisibility;
     begin
       DisableAlign;
 
-      for I := 0 to FChildControlVisibility.Count - 1 do
-        if FindChildControl(FChildControlVisibility[I]) <> nil then
-          TWinControl(FChildControlVisibility.Objects[I]).Visible := True;
+      try
+        for I := 0 to FChildControlVisibility.Count - 1 do
+          if FindChildControl(FChildControlVisibility[I]) <> nil then
+            TWinControl(FChildControlVisibility.Objects[I]).Visible := True;
+      finally
+        EnableAlign;
+      end;
 
-      EnableAlign;
       FreeAndNil(FChildControlVisibility);
     end;
   end;
