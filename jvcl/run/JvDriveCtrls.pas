@@ -1685,7 +1685,13 @@ begin
      (AnsiCompareFileName(ExcludeTrailingPathDelimiter(FileName), ExcludeTrailingPathDelimiter(Directory)) <> 0) then
   begin
     inherited ApplyFilePath(Value);
-  end;
+    if assigned(FChangeNotify) and FChangeNotify.Notifications.Count > 0 then
+      FChangeNotify.Notifications[0].Directory := Value;
+  end
+  else
+    // no directory defined any longer, so free change notification as well.
+    if assigned(FChangeNotify) then
+      FChangeNotify.Free;
 end;
 
 procedure TJvFileListBox.ApplyFilePath(const EditText: string);
