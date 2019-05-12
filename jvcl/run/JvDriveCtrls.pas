@@ -266,7 +266,7 @@ type
     procedure ApplyFilePath(const EditText: string); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property AutoUpdate: Boolean read FAutoUpdate write SetAutoUpdate;
+    property AutoUpdate: Boolean read FAutoUpdate write SetAutoUpdate default false;
     property Directory write SetDirectory stored False;
     property FileName stored False;
     // set this property to True to force the display of filename extensions for all files even if
@@ -1685,7 +1685,7 @@ begin
      (AnsiCompareFileName(ExcludeTrailingPathDelimiter(FileName), ExcludeTrailingPathDelimiter(Directory)) <> 0) then
   begin
     inherited ApplyFilePath(Value);
-    if assigned(FChangeNotify) and FChangeNotify.Notifications.Count > 0 then
+    if assigned(FChangeNotify) and (FChangeNotify.Notifications.Count > 0) then
       FChangeNotify.Notifications[0].Directory := Value;
   end
   else
