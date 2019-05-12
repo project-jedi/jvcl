@@ -40,7 +40,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, StdCtrls,
   FileCtrl,
-  JvCombobox, JvListBox, JvSearchFiles, JvTypes, JVCLVer;
+  JvCombobox, JvListBox, JvSearchFiles, JvChangeNotify, JvTypes, JVCLVer;
 
 type
   // redclare so user don't have to add JvTypes to uses manually
@@ -249,8 +249,13 @@ type
     FImages: TImageList;
     FForceFileExtensions: Boolean;
     FSearchFiles: TJvSearchFiles;
+    FChangeNotify: TJvCHangeNotify;
+    FAutoUpdate: Boolean;
     procedure SetForceFileExtensions(const Value: Boolean);
     procedure SetDirectory(const Value: string);
+    procedure SetAutoUpdate(Value: Boolean);
+    procedure InitFileChangeNotification;
+    procedure OnFilesChanged(Sender: TObject);
   protected
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
@@ -261,6 +266,7 @@ type
     procedure ApplyFilePath(const EditText: string); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AutoUpdate: Boolean read FAutoUpdate write SetAutoUpdate;
     property Directory write SetDirectory stored False;
     property FileName stored False;
     // set this property to True to force the display of filename extensions for all files even if
@@ -410,6 +416,9 @@ implementation
 uses
   ShellAPI, SysUtils, Math, Forms, ImgList,
   DBT,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvJCLUtils, JvJVCLUtils, JvConsts;
 
 function GetItemHeight(Font: TFont): Integer;
@@ -1561,6 +1570,7 @@ end;
 destructor TJvFileListBox.Destroy;
 begin
   FImages.Free;
+  FChangeNotify.Free;
   inherited Destroy;
 end;
 
@@ -1652,6 +1662,21 @@ begin
   end;
 end;
 
+procedure TJvFileListBox.SetAutoUpdate(Value: Boolean);
+begin
+  if Value <> FAutoUpdate then
+  begin
+    // Lazy initialization of JvChangeNofity
+    if FAutoUpdate = false then
+      InitFileChangeNotification
+    else
+      // If disabled, notification component can be freed
+      FChangeNotify.Free;
+
+    FAutoUpdate := Value;
+  end;
+end;
+
 procedure TJvFileListBox.SetDirectory(const Value: string);
 begin
   // Mantis #5301. We split the Directory and FileName setter to handle them slightly different.
@@ -1739,6 +1764,25 @@ begin
     if odFocused in State then
       DrawFocusRect(tmpR);
   end;
+end;
+
+procedure TJvFileListBox.InitFileChangeNotification;
+var
+  Item: TJvCHangeItem;
+begin
+  FChangeNotify := TJvChangeNotify.Create(self);
+  Item := FChangeNotify.Notifications.Add;
+  Item.Directory := self.Directory;
+  Item.IncludeSubTrees := false;
+  Item.Actions := [caChangeFileName];
+  Item.OnChange := OnFilesChanged;
+
+  FChangeNotify.Active := true;
+end;
+
+procedure TJvFileListBox.OnFilesChanged(Sender: TObject);
+begin
+  Update;
 end;
 
 function TJvDriveList.GetDrives(Index: Integer): string;
