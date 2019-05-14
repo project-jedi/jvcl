@@ -792,15 +792,15 @@ var
   procedure ResizeResultForm;
   begin
     ResultForm.ClientWidth := Max(TimeoutTextWidth,
-                                  Max(17 + ChkTextWidth,
+                                  Max( MulDiv(17, DialogUnits.X, 4) + ChkTextWidth,
                                       Max(IconWidth+TextWidth, ButtonGroupWidth)))
                               + HorzMargin * 2;
     ResultForm.ClientHeight := Max(IconHeight, TextHeight) + ButtonHeight + VertSpacing * 2 + VertMargin * 2;
 
     if CheckCaption <> '' then
-      ResultForm.ClientHeight := ResultForm.ClientHeight + VertSpacing + 17;
+      ResultForm.ClientHeight := ResultForm.ClientHeight + VertSpacing + MulDiv(17, DialogUnits.Y, 8);
     if ATimeout > 0 then
-      ResultForm.ClientHeight := ResultForm.ClientHeight + VertSpacing + 13;
+      ResultForm.ClientHeight := ResultForm.ClientHeight + VertSpacing + MulDiv(13, DialogUnits.Y, 8);
 
     if ResultForm.ClientWidth > Screen.Width-100 then
       ResultForm.ClientWidth := Screen.Width-100;
@@ -868,8 +868,8 @@ begin
     begin
       TextRect := Rect(0, 0, 0, 0);
       CalcTextRect (true, PChar(Buttons[I]), -1, TextRect);
-      if (TextRect.Right - TextRect.Left + 8) > ButtonWidth then
-        ButtonWidth := (TextRect.Right - TextRect.Left + 8);
+      if (TextRect.Right - TextRect.Left + MulDiv(8, DialogUnits.X, 4)) > ButtonWidth then
+        ButtonWidth := (TextRect.Right - TextRect.Left + MulDiv(8, DialogUnits.X, 4));
     end;
     ButtonHeight := MulDiv(mcButtonHeight, DialogUnits.Y, 8);
     ButtonSpacing := MulDiv(mcButtonSpacing, DialogUnits.X, 4);
@@ -935,14 +935,14 @@ begin
     ImagePanel.Visible := Assigned(APicture);
     if Assigned(APicture) then
     begin
-      ImagePanel.Width := APicture.Width + 4 + HorzMargin - 2;
+      ImagePanel.Width := APicture.Width + MulDiv(4, DialogUnits.X, 4) + HorzMargin - MulDiv(2, DialogUnits.X, 4);
       Image := DynControlEngine.CreateImageControl(ResultForm, ImagePanel, 'Image');
       if Supports(Image, IJvDynControlImage, DynControlImage) then
       begin
         DynControlImage.ControlSetGraphic(APicture);
         DynControlImage.ControlSetCenter(True);
       end;
-      Image.SetBounds(HorzMargin - 2, VertMargin - 2, APicture.Width + 2, APicture.Height + 2);
+      Image.SetBounds(HorzMargin - MulDiv(2, DialogUnits.X, 4), VertMargin -  MulDiv(2, DialogUnits.Y, 8), APicture.Width +  MulDiv(2, DialogUnits.Y, 8), APicture.Height + 2);
       Image.Enabled := False;
     end;
 
@@ -996,6 +996,7 @@ begin
     begin
       CheckBox := DynControlEngine.CreateCheckboxControl(ResultForm, CheckPanel, 'DontShowAgain', CheckCaption);
       CheckBox.BiDiMode := ResultForm.BiDiMode;
+      CheckBox.Height := MulDiv(CheckBox.Height, DialogUnits.Y, 8);
       CheckBox.SetBounds(HorzMargin, 0,
         ResultForm.ClientWidth - 2 * HorzMargin, CheckBox.Height);
       CheckPanel.Height := CheckBox.Height;
