@@ -993,39 +993,45 @@ begin
      ((FPlacement = plLeft) and (FAWidth = Value)) then
     Exit;
 
-  if FPlacement = plTop then
-    FAHeight := Value
-  else
-    FAWidth := Value;
+  FTopForm.DisableAlign;
 
-  if not FCollapsed then
-  begin
-    // The top form is assigned so set the width and height of this form
-    if Parent = FTopForm then
-    begin
-      FTopForm.DisableAlign;
-      if FPlacement = plTop then
-      begin
-        FTopForm.Height := FAHeight;
-        FOldWidthHeight.Y := FAHeight;
-      end
-      else
-      begin
-        FTopForm.Width := FAWidth;
-        FOldWidthHeight.X := FAWidth;
-      end;
-      FTopForm.EnableAlign;
-    end;
-
+  try
     if FPlacement = plTop then
-      ChangeHeight(FAHeight)
+      FAHeight := Value
     else
-      ChangeWidth(FAWidth);
+      FAWidth := Value;
 
-    if (Parent = FTopForm) and (FOldPos.Y + Height < FOldParent.Height) then
-      RestoreFromTopForm
-    else
-      PutOnForm;
+    if not FCollapsed then
+    begin
+      // The top form is assigned so set the width and height of this form
+      if Parent = FTopForm then
+      begin
+        FTopForm.DisableAlign;
+        if FPlacement = plTop then
+        begin
+          FTopForm.Height := FAHeight;
+          FOldWidthHeight.Y := FAHeight;
+        end
+        else
+        begin
+          FTopForm.Width := FAWidth;
+          FOldWidthHeight.X := FAWidth;
+        end;
+        FTopForm.EnableAlign;
+      end;
+
+      if FPlacement = plTop then
+        ChangeHeight(FAHeight)
+      else
+        ChangeWidth(FAWidth);
+
+      if (Parent = FTopForm) and (FOldPos.Y + Height < FOldParent.Height) then
+        RestoreFromTopForm
+      else
+        PutOnForm;
+    end;
+  finally
+    FTopForm.EnableAlign;
   end;
 end;
 
@@ -1451,13 +1457,19 @@ procedure TJvCustomRollOut.CheckChildVisibility;
       FChildControlVisibility.Sorted := True;
     end;
 
-    for I := 0 to ControlCount - 1 do
-      if (Controls[I] is TWinControl) and (TWinControl(Controls[I]).Visible) then
-      begin
-        FChildControlVisibility.AddObject(Controls[I].Name, Controls[I]);
-        if CollapseCtrlsOnButton or (TWinControl(Controls[I]).Top > ButtonHeight) then
-          TWinControl(Controls[I]).Visible := False;
-      end;
+    DisableAlign;
+
+    try
+      for I := 0 to ControlCount - 1 do
+        if (Controls[I] is TWinControl) and (TWinControl(Controls[I]).Visible) then
+        begin
+          FChildControlVisibility.AddObject(Controls[I].Name, Controls[I]);
+          if CollapseCtrlsOnButton or (TWinControl(Controls[I]).Top > ButtonHeight) then
+            TWinControl(Controls[I]).Visible := False;
+        end;
+    finally
+      EnableAlign;
+    end;
   end;
 
   procedure SetChildVisibility;
@@ -1466,10 +1478,16 @@ procedure TJvCustomRollOut.CheckChildVisibility;
   begin
     if FChildControlVisibility <> nil then
     begin
-      for I := 0 to FChildControlVisibility.Count - 1 do
-        if FindChildControl(FChildControlVisibility[I]) <> nil then
-          TWinControl(FChildControlVisibility.Objects[I]).Visible := True;
-      FreeAndNil(FChildControlVisibility);
+      DisableAlign;
+
+      try
+        for I := 0 to FChildControlVisibility.Count - 1 do
+          if FindChildControl(FChildControlVisibility[I]) <> nil then
+            TWinControl(FChildControlVisibility.Objects[I]).Visible := True;
+        FreeAndNil(FChildControlVisibility);
+      finally
+        EnableAlign;
+      end;
     end;
   end;
 begin
