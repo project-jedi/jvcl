@@ -356,7 +356,7 @@ begin
   begin
     if Assigned(FDataLink.DataSet) and FDataLink.DataSet.Active then
     begin
-      if FDataLink.Editing then
+      if FDataLink.Editing or (FDataLink.Field = nil) then
         Result := inherited IsEmpty
       else
         try
