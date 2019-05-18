@@ -993,20 +993,18 @@ begin
      ((FPlacement = plLeft) and (FAWidth = Value)) then
     Exit;
 
-  FTopForm.DisableAlign;
+  if FPlacement = plTop then
+    FAHeight := Value
+  else
+    FAWidth := Value;
 
-  try
-    if FPlacement = plTop then
-      FAHeight := Value
-    else
-      FAWidth := Value;
-
-    if not FCollapsed then
+  if not FCollapsed then
+  begin
+    // The top form is assigned so set the width and height of this form
+    if Parent = FTopForm then
     begin
-      // The top form is assigned so set the width and height of this form
-      if Parent = FTopForm then
-      begin
-        FTopForm.DisableAlign;
+      FTopForm.DisableAlign;
+      try
         if FPlacement = plTop then
         begin
           FTopForm.Height := FAHeight;
@@ -1017,21 +1015,20 @@ begin
           FTopForm.Width := FAWidth;
           FOldWidthHeight.X := FAWidth;
         end;
+      finally
         FTopForm.EnableAlign;
       end;
-
-      if FPlacement = plTop then
-        ChangeHeight(FAHeight)
-      else
-        ChangeWidth(FAWidth);
-
-      if (Parent = FTopForm) and (FOldPos.Y + Height < FOldParent.Height) then
-        RestoreFromTopForm
-      else
-        PutOnForm;
     end;
-  finally
-    FTopForm.EnableAlign;
+
+    if FPlacement = plTop then
+      ChangeHeight(FAHeight)
+    else
+      ChangeWidth(FAWidth);
+
+    if (Parent = FTopForm) and (FOldPos.Y + Height < FOldParent.Height) then
+      RestoreFromTopForm
+    else
+      PutOnForm;
   end;
 end;
 
