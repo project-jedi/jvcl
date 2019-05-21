@@ -190,7 +190,7 @@ type
     property Text;
     property UpdateFieldImmediatelly: Boolean read FUpdateFieldImmediatelly write FUpdateFieldImmediatelly default False;
     property PreserveItemSelectionOnInsert: Boolean read FPreserveItemSelectionOnInsert write FPreserveItemSelectionOnInsert default False;
-    property CaseSensitiveSearch: Boolean read GetCaseSensitiveSearchValue write SetCaseSensitiveSearchValue default true;
+    property CaseSensitiveSearch: Boolean read GetCaseSensitiveSearchValue write SetCaseSensitiveSearchValue default false;
   end;
 
   {$IFDEF RTL230_UP}
@@ -306,7 +306,6 @@ begin
 
   FListSettings := TJvDBComboBoxListSettings.Create(Self);
   FValues := TStringList.Create;
-  FValues.CaseSensitive := True;
   FValues.OnChange := ValuesChanged;
   FEnableValues := True;
   Style := csDropDownList;
