@@ -190,7 +190,7 @@ type
     property Text;
     property UpdateFieldImmediatelly: Boolean read FUpdateFieldImmediatelly write FUpdateFieldImmediatelly default False;
     property PreserveItemSelectionOnInsert: Boolean read FPreserveItemSelectionOnInsert write FPreserveItemSelectionOnInsert default False;
-    property CaseSensitiveSearch: Boolean read GetCaseSensitiveSearchValue write SetCaseSensitiveSearchValue default false;
+    property CaseSensitiveValues: Boolean read GetCaseSensitiveSearchValue write SetCaseSensitiveSearchValue default false;
   end;
 
   {$IFDEF RTL230_UP}
