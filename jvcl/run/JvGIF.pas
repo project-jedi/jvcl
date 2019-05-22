@@ -33,6 +33,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   Windows, RTLConsts, SysUtils, Classes, Graphics, Controls;
 
 const
