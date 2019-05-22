@@ -1455,7 +1455,6 @@ procedure TJvCustomRollOut.CheckChildVisibility;
     end;
 
     DisableAlign;
-
     try
       for I := 0 to ControlCount - 1 do
         if (Controls[I] is TWinControl) and (TWinControl(Controls[I]).Visible) then
@@ -1476,7 +1475,6 @@ procedure TJvCustomRollOut.CheckChildVisibility;
     if FChildControlVisibility <> nil then
     begin
       DisableAlign;
-
       try
         for I := 0 to FChildControlVisibility.Count - 1 do
           if FindChildControl(FChildControlVisibility[I]) <> nil then
