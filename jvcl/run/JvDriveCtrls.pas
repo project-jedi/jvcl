@@ -1667,7 +1667,7 @@ begin
   if Value <> FAutoUpdate then
   begin
     // Lazy initialization of JvChangeNofity
-    if FAutoUpdate = false then
+    if not FAutoUpdate then
       InitFileChangeNotification
     else
       // If disabled, notification component can be freed
@@ -1685,13 +1685,12 @@ begin
      (AnsiCompareFileName(ExcludeTrailingPathDelimiter(FileName), ExcludeTrailingPathDelimiter(Directory)) <> 0) then
   begin
     inherited ApplyFilePath(Value);
-    if assigned(FChangeNotify) and (FChangeNotify.Notifications.Count > 0) then
+    if Assigned(FChangeNotify) and (FChangeNotify.Notifications.Count > 0) then
       FChangeNotify.Notifications[0].Directory := Value;
   end
   else
     // no directory defined any longer, so free change notification as well.
-    if assigned(FChangeNotify) then
-      FChangeNotify.Free;
+    FreeAndNil(FChangeNotify);
 end;
 
 procedure TJvFileListBox.ApplyFilePath(const EditText: string);
@@ -1774,16 +1773,16 @@ end;
 
 procedure TJvFileListBox.InitFileChangeNotification;
 var
-  Item: TJvCHangeItem;
+  Item: TJvChangeItem;
 begin
-  FChangeNotify := TJvChangeNotify.Create(self);
+  FChangeNotify := TJvChangeNotify.Create(Self);
   Item := FChangeNotify.Notifications.Add;
-  Item.Directory := self.Directory;
-  Item.IncludeSubTrees := false;
+  Item.Directory := Self.Directory;
+  Item.IncludeSubTrees := False;
   Item.Actions := [caChangeFileName];
   Item.OnChange := OnFilesChanged;
 
-  FChangeNotify.Active := true;
+  FChangeNotify.Active := True;
 end;
 
 procedure TJvFileListBox.OnFilesChanged(Sender: TObject);
