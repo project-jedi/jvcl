@@ -42,6 +42,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_TYPES}
+  System.Types,
+  {$ENDIF}
   Classes, SysUtils, Windows, Graphics,
   JvLinkLabelTools, JvTypes;
 
