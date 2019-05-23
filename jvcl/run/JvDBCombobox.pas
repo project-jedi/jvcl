@@ -143,8 +143,8 @@ type
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure SetListSettings(const Value: TJvDBComboBoxListSettings);
-    procedure SetCaseSensitiveSearchValue(Value: Boolean);
-    function GetCaseSensitiveSearchValue: Boolean;
+    procedure SetCaseSensitiveValues(Value: Boolean);
+    function GetCaseSensitiveValues: Boolean;
   protected
     function GetDataLink: TDataLink;
 
@@ -190,7 +190,7 @@ type
     property Text;
     property UpdateFieldImmediatelly: Boolean read FUpdateFieldImmediatelly write FUpdateFieldImmediatelly default False;
     property PreserveItemSelectionOnInsert: Boolean read FPreserveItemSelectionOnInsert write FPreserveItemSelectionOnInsert default False;
-    property CaseSensitiveValues: Boolean read GetCaseSensitiveSearchValue write SetCaseSensitiveSearchValue default false;
+    property CaseSensitiveValues: Boolean read GetCaseSensitiveValues write SetCaseSensitiveValues default false;
   end;
 
   {$IFDEF RTL230_UP}
@@ -375,7 +375,7 @@ begin
   FDataLink.Field.AsString := ComboText;
 end;
 
-procedure TJvCustomDBComboBox.SetCaseSensitiveSearchValue(Value: Boolean);
+procedure TJvCustomDBComboBox.SetCaseSensitiveValues(Value: Boolean);
 begin
   FValues.CaseSensitive := Value;
 end;
@@ -419,7 +419,7 @@ begin
   end;
 end;
 
-function TJvCustomDBComboBox.GetCaseSensitiveSearchValue: Boolean;
+function TJvCustomDBComboBox.GetCaseSensitiveValues: Boolean;
 begin
   result := FValues.CaseSensitive;
 end;
