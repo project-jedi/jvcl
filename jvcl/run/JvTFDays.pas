@@ -6833,7 +6833,6 @@ var
   Coord: TJvTFDaysCoord;
 begin
   Cur := 0;
-  try
   with Msg do
     if HitTest = HTCLIENT then
     begin
@@ -6849,9 +6848,6 @@ begin
           Cur := Screen.Cursors[crDrag];
       end;
     end;
- except
-    Cur := 0;
-  end;
 
   if Cur <> 0 then
     SetCursor(Cur)
