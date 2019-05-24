@@ -243,7 +243,7 @@ type
     property UpdateFieldImmediatelly;
     property Values;
     property Visible;
-    property CaseSensitiveSearch;
+    property CaseSensitiveValues;
     property ListSettings; { should be published after Items and Values }
     property OnChange;
     property OnClick;
@@ -421,7 +421,7 @@ end;
 
 function TJvCustomDBComboBox.GetCaseSensitiveValues: Boolean;
 begin
-  result := FValues.CaseSensitive;
+  Result := FValues.CaseSensitive;
 end;
 
 function TJvCustomDBComboBox.GetComboText: string;
