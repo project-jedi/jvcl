@@ -91,6 +91,7 @@ type
     destructor Destroy; override;
 
     function GetFrameBitmap(Index: Integer; var TransColor: TColor; Bitmap: TBitmap): Boolean; overload;
+    procedure SetAllFramesAnimateInterval(Interval: Word);
   published
     property AsyncDrawing: Boolean read FAsyncDrawing write SetAsyncDrawing default False;
     property Animate: Boolean read FAnimate write SetAnimate default False;
@@ -461,6 +462,14 @@ begin
       PictureChanged;
     end;
   end;
+end;
+
+procedure TJvGIFAnimator.SetAllFramesAnimateInterval(Interval: Word);
+var
+  i : Integer;
+begin
+  for i := 0 to FImage.Count-1 do
+    FImage.Frames[i].AnimateInterval := Interval;
 end;
 
 procedure TJvGIFAnimator.SetAsyncDrawing(Value: Boolean);
