@@ -37,6 +37,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   Windows, Messages, Classes, Graphics, Controls, Forms, ExtCtrls, ComCtrls,
   JvComponent;
 
