@@ -40,7 +40,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, RTLConsts, Windows, Graphics, Controls, ExtCtrls, Dialogs,
+  Types, Classes, RTLConsts, Windows, Graphics, Controls, ExtCtrls, Dialogs,
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF}

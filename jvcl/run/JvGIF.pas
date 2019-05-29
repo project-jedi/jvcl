@@ -36,7 +36,7 @@ uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF}
-  Windows, RTLConsts, SysUtils, Classes, Graphics, Controls;
+  Types, Windows, RTLConsts, SysUtils, Classes, Graphics, Controls;
 
 const
   RT_GIF = 'GIF'; { GIF Resource Type }
