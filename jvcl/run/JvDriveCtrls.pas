@@ -1687,9 +1687,12 @@ begin
     inherited ApplyFilePath(Value);
     if Assigned(FChangeNotify) and (FChangeNotify.Notifications.Count > 0) then
     begin
-      FChangeNotify.Active := false;
-      FChangeNotify.Notifications[0].Directory := Value;
-      FChangeNotify.Active := true;
+      FChangeNotify.Active := False;
+      try
+        FChangeNotify.Notifications[0].Directory := Value;
+      finally
+        FChangeNotify.Active := True;
+      end;
     end;
   end
   else
