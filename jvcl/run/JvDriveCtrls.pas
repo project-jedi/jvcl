@@ -1686,7 +1686,14 @@ begin
   begin
     inherited ApplyFilePath(Value);
     if Assigned(FChangeNotify) and (FChangeNotify.Notifications.Count > 0) then
-      FChangeNotify.Notifications[0].Directory := Value;
+    begin
+      FChangeNotify.Active := False;
+      try
+        FChangeNotify.Notifications[0].Directory := Value;
+      finally
+        FChangeNotify.Active := True;
+      end;
+    end;
   end
   else
     // no directory defined any longer, so free change notification as well.
