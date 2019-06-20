@@ -2847,8 +2847,14 @@ var
   Handled: Boolean;
 begin
   if Assigned(FViewer) and FViewer.ShowSchedNamesInHint then
+  begin
     ExtraDesc := StringsToStr(SchedNames, ', ', False);
-  ExtraDesc := ExtraDesc + #13#10;
+    ExtraDesc := ExtraDesc + #13#10;
+  end
+  else
+  begin
+    ExtraDesc := '';
+  end;
 
   Handled := False;
   if Assigned(OnApptHint) then
@@ -3481,6 +3487,7 @@ begin
   inherited Create(AOwner);
   FRepeatGrouped := True;
   FShowSchedNamesInHint := True;
+  FShowStartEndTimeInHint := True;
   FInplaceEdit := True;
 end;
 

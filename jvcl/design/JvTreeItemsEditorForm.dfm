@@ -210,7 +210,6 @@ object frmTreeViewItems: TfrmTreeViewItems
         OnClick = edNodeTextChange
       end
       object cbExpandedImageIndex: TComboBox
-        AlignWithMargins = True
         Left = 112
         Top = 127
         Width = 129

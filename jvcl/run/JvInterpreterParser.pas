@@ -433,6 +433,7 @@ var
   T1: Char;
   Ci: Char;
   Point: Boolean;
+  IsScientificNotation: Boolean;
 label { Sorry about labels and gotos - for speed-ups only }
   Any, NotNumber;
 begin
@@ -499,19 +500,23 @@ begin
         Any: { !!LABEL!! }
 
         Point := False;
+        IsScientificNotation := False;
         for I := 1 to L1 do
         begin
           Ci := Token[I];
+          if CharInSet(Ci, StConstE) then
+            IsScientificNotation := True;
+
           if Ci = '.' then
             if Point then
               goto NotNumber {two Points in lexem}
             else
               Point := True
           else
-          if not CharInSet(Ci, StConstSymbols10) then
+          if not CharInSet(Ci, StConstSymbols10e) then
             goto NotNumber { not number }
         end;
-        if Point then
+        if Point or IsScientificNotation then
           Result := ttDouble
         else
           Result := ttInteger;
@@ -586,8 +591,8 @@ var
   P, F: PChar;
   F1: PChar;
   I: Integer;
-  PrevPoint:boolean;
-//  PointCount: Integer;
+  PrevPoint: Boolean;
+  PointOccurred, ExponentOccurred: Boolean;
 
   procedure Skip;
   begin
@@ -632,6 +637,9 @@ var
   end;
 
 begin
+  PointOccurred := False;
+  ExponentOccurred := False;
+
   { New Token }
   F := FPCPos;
   P := FPCPos;
@@ -658,10 +666,34 @@ begin
   if CharInSet(P[0], StConstSymbols10) then
   { number }
   begin
-    while CharInSet(P[0], StConstSymbols10) or (P[0] = '.') do
+    while CharInSet(P[0], StConstSymbols10e) or (P[0] = '.') do
     begin
-      if (P[0] = '.') and (P[1] = '.') then
-        Break;
+      if P[0] = '.' then
+      begin
+        if PointOccurred or // radix point can occur zero or one time
+          not CharInSet(P[-1], StConstSymbols10) or // radix point must be behind a number
+          (P[1] = '.') then
+          Break;
+        PointOccurred:=True;
+      end
+      else
+      begin
+        if CharInSet(P[0], StConstE)  then
+        begin
+          if ExponentOccurred  // only one time, at most
+            or  not CharInSet(P[-1], StConstSymbols10)  then // must be behind a number
+            Break;
+          ExponentOccurred := True;
+        end
+        else
+        begin
+          if CharInSet(P[0],StConstPlusSub) then
+          begin
+            if not CharInSet(P[-1],StConstE) then // +/- must be behind E
+              Break;
+          end;
+        end;
+      end;
       Inc(P);
     end;
     SetString(Result, F, P - F);

@@ -19,7 +19,7 @@ located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
+// $Id: jvcl/run/JvDynControlEngineDevExpCx.pas Jens Fudickar date $
 
 unit JvDynControlEngineDevExpCx;
 
@@ -41,10 +41,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  StdCtrls,
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
-  Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
+  Classes, Controls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
   Buttons, Dialogs, FileCtrl, ActnList, ImgList,
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage, cxTreeView,
@@ -1065,9 +1066,9 @@ function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
+    RCSfile: '$URL: jvcl/run/JvDynControlEngineDevExpCx.pas $';
+    Revision: '$Revision: d9508b93ea441d8c9218d4a346402d49d00ed37c $';
+    Date: '$Date: 2015-06-23 00:01:20 +0200 $';
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}

@@ -303,9 +303,9 @@ uses
 const
   DnDScrollArea = 15;
   DnDInterval = 200;
-  DefaultValidMasterFields = [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftFloat, ftString, ftWideString, ftBCD, ftFMTBCD];
+  DefaultValidMasterFields = [ftSmallInt, ftInteger, ftLargeInt, ftAutoInc, ftWord, ftFloat, ftString, ftWideString, ftBCD, ftFMTBCD];
   DefaultValidDetailFields = DefaultValidMasterFields;
-  DefaultValidItemFields = [ftString, ftWideString, ftMemo, ftFmtMemo, ftSmallInt, ftInteger, ftAutoInc,
+  DefaultValidItemFields = [ftString, ftWideString, ftMemo, ftFmtMemo, ftSmallInt, ftInteger, ftLargeInt, ftAutoInc,
     ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime, ftBCD, ftFMTBCD
   {$IFDEF COMPILER10_UP}
   , ftFixedWideChar, ftWideMemo, ftOraTimeStamp

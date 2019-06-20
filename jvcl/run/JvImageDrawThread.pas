@@ -91,9 +91,9 @@ begin
         if Terminated then
           Exit;
 
-        Synchronize(Draw);
       finally
         LeaveUnpauseableSection;
+        Synchronize(Draw);
       end;
     end;
   except

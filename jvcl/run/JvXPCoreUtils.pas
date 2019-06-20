@@ -53,16 +53,22 @@ procedure JvXPDrawBoundLines(const ACanvas: TCanvas; const BoundLines: TJvXPBoun
 
 procedure JvXPConvertToGray2(Bitmap: TBitmap);
 procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
-  ACaption: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
-  var ARect: TRect; AFlags: Integer);
+  ACaption: TCaption; const AFont: TFont; const AEnabled: Boolean; AShowAccelChar: Boolean;
+  var ARect: TRect; AFlags: Integer); overload;
+procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
+  ACaption: TCaption; const AFont: TFont; const AEnabled: Boolean; const AAccelCharType: TJvXPAccelChar;
+  var ARect: TRect; AFlags: Integer); overload;
 procedure JvXPFrame3D(const ACanvas: TCanvas; const Rect: TRect;
   const TopColor, BottomColor: TColor; const Swapped: Boolean = False);
 procedure JvXPColorizeBitmap(Bitmap: TBitmap; const AColor: TColor);
 procedure JvXPSetDrawFlags(const AAlignment: TAlignment; const AWordWrap: Boolean;
   var Flags: Integer);
 procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
-  const AText: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
-  const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect);
+  const AText: TCaption; const AFont: TFont; const AEnabled: Boolean; AShowAccelChar: Boolean;
+  const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect); overload;
+procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
+  const AText: TCaption; const AFont: TFont; const AEnabled: Boolean; const AAccelCharType: TJvXPAccelChar;
+  const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect); overload;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -284,7 +290,14 @@ begin
 end;
 
 procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
-  ACaption: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
+  ACaption: TCaption; const AFont: TFont; const AEnabled: Boolean; AShowAccelChar: Boolean;
+  var ARect: TRect; AFlags: Integer);
+begin
+  JvXPRenderText(AParent, ACanvas, ACaption, AFont, AEnabled, acNormal, ARect, AFlags);
+end;
+
+procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
+  ACaption: TCaption; const AFont: TFont; const AEnabled: Boolean; const AAccelCharType: TJvXPAccelChar;
   var ARect: TRect; AFlags: Integer);
 
   procedure DoDrawText;
@@ -292,12 +305,14 @@ procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
     DrawText(ACanvas, ACaption, -1, ARect, AFlags);
   end;
 
+const
+  JvXPAccelCharToFlags: array[TJvXPAccelChar] of Integer = (0, DT_HIDEPREFIX, DT_NOPREFIX, DT_PREFIXONLY);
+
 begin
-  if (AFlags and DT_CALCRECT <> 0) and ((ACaption = '') or AShowAccelChar and
-    (ACaption[1] = '&') and (ACaption[2] = #0)) then
+  if (AFlags and DT_CALCRECT <> 0) and ((ACaption = '') or (((AAccelCharType = acNormal) or
+     (AAccelCharType = acOnlyPrefix)) and (ACaption[1] = '&') and (ACaption[2] = #0))) then
     ACaption := ACaption + ' ';
-  if not AShowAccelChar then
-    AFlags := AFlags or DT_NOPREFIX;
+  AFlags := AFlags or JvXPAccelCharToFlags[AAccelCharType];
   AFlags := AParent.DrawTextBiDiModeFlags(AFlags);
   with ACanvas do
   begin
@@ -381,8 +396,15 @@ begin
     Flags := Flags or DT_WORDBREAK;
 end;
 
+procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
+  const AText: TCaption; const AFont: TFont; const AEnabled: Boolean; AShowAccelChar: Boolean;
+  const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect);
+begin
+  JvXPPlaceText(AParent, ACanvas, AText, AFont, AEnabled, acNormal, AAlignment, AWordWrap, Rect);
+end;
+
 procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas; const AText: TCaption;
-  const AFont: TFont; const AEnabled, AShowAccelChar: Boolean; const AAlignment: TAlignment;
+  const AFont: TFont; const AEnabled: Boolean; const AAccelCharType: TJvXPAccelChar; const AAlignment: TAlignment;
   const AWordWrap: Boolean; var Rect: TRect);
 var
   Flags, DX, OH, OW: Integer;
@@ -390,7 +412,7 @@ begin
   OH := Rect.Bottom - Rect.Top;
   OW := Rect.Right - Rect.Left;
   JvXPSetDrawFlags(AAlignment, AWordWrap, Flags);
-  JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AShowAccelChar, Rect,
+  JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AAccelCharType, Rect,
     Flags or DT_CALCRECT);
   if AAlignment = taRightJustify then
     DX := OW - (Rect.Right + Rect.Left)
@@ -400,7 +422,7 @@ begin
   else
     DX := 0;
   OffsetRect(Rect, DX, (OH - Rect.Bottom) div 2);
-  JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AShowAccelChar, Rect, Flags);
+  JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AAccelCharType, Rect, Flags);
 end;
 
 {$IFDEF UNITVERSIONING}

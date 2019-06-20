@@ -42,7 +42,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, SysUtils, Windows, Graphics,
+  Types, Classes, SysUtils, Windows, Graphics,
   JvLinkLabelTree, JvLinkLabelTextHandler, JvTypes;
 
 type

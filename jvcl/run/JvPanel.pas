@@ -131,15 +131,21 @@ type
 
   TJvCustomArrangePanel = class(TJvCustomPanel, IJvDenySubClassing, IJvHotTrack, IJvArrangePanel)
   private
+    FFlatBorderColor: TColor;
+    FLastPos: TPoint;
     FTransparent: Boolean;
     FFlatBorder: Boolean;
-    FFlatBorderColor: TColor;
     FMultiLine: Boolean;
     FSizeable: Boolean;
     FDragging: Boolean;
-    FLastPos: TPoint;
-    FEnableArrangeCount: Integer;
+    FMovable: Boolean;
+    FWasMoved: Boolean;
+    {$IFNDEF RTL200_UP}
+    FShowCaption: Boolean;
+    {$ENDIF ~RTL200_UP}
+    FShowAccelChar: Boolean;
     FArrangeControlActive: Boolean;
+    FEnableArrangeCount: Integer;
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
     FArrangeSettings: TJvArrangeSettings;
@@ -147,12 +153,10 @@ type
     FOnChangedWidth: TJvPanelChangedSizeEvent;
     FOnChangedHeight: TJvPanelChangedSizeEvent;
     FOnPaint: TNotifyEvent;
-    FMovable: Boolean;
-    FWasMoved: Boolean;
     FOnAfterMove: TNotifyEvent;
     FOnBeforeMove: TJvPanelMoveEvent;
-    FHotTrack: Boolean;
     FHotTrackFont: TFont;
+    FHotTrack: Boolean;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FHotTrackOptions: TJvHotTrackOptions;
     FLastScreenCursor: TCursor;
@@ -168,7 +172,11 @@ type
     procedure SetFlatBorder(const Value: Boolean);
     procedure SetFlatBorderColor(const Value: TColor);
     procedure SetMultiLine(const Value: Boolean);
+    procedure SetShowAccelChar(const Value: Boolean);
     procedure SetSizeable(const Value: Boolean);
+    {$IFNDEF RTL200_UP}
+    procedure SetShowCaption(const Value: Boolean);
+    {$ENDIF ~RTL200_UP}
 
     {IJvHotTrack}   //added by dejoy 2005-04-28
     function GetHotTrack: Boolean;
@@ -183,9 +191,9 @@ type
     procedure IJvHotTrack.Assign = IJvHotTrack_Assign;
     function IsHotTrackFontStored: Boolean;
   protected
-    procedure DrawCaption; dynamic;
-    procedure DrawCaptionTo(ACanvas: TCanvas ); dynamic;
-    procedure DrawBorders; dynamic;
+    procedure DrawCaption; virtual;
+    procedure DrawCaptionTo(ACanvas: TCanvas ); virtual;
+    procedure DrawBorders; virtual;
 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -199,8 +207,8 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMExitSizeMove(var Msg: TMessage); message WM_EXITSIZEMOVE;
-    function DoBeforeMove(X, Y: Integer): Boolean; dynamic;
-    procedure DoAfterMove; dynamic;
+    function DoBeforeMove(X, Y: Integer): Boolean; virtual;
+    procedure DoAfterMove; virtual;
     procedure Loaded; override;
     procedure Resize; override;
     procedure Rearrange;
@@ -230,10 +238,14 @@ type
       DefaultTrackFontOptions;
     property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
 
+    {$IFNDEF RTL200_UP}
+    property ShowCaption: Boolean read FShowCaption write SetShowCaption default True;
+    {$ENDIF ~RTL200_UP}
     property Movable: Boolean read FMovable write FMovable default False;
     property Sizeable: Boolean read FSizeable write SetSizeable default False;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property MultiLine: Boolean read FMultiLine write SetMultiLine default False;
+    property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     //FlatBorder used the BorderWidth to draw the border
     property FlatBorder: Boolean read FFlatBorder write SetFlatBorder default False;
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
@@ -268,6 +280,8 @@ type
     property Sizeable;
     property HintColor;
     property Transparent;
+    property ShowCaption;
+    property ShowAccelChar;
     property MultiLine;
     property FlatBorder;
     property FlatBorderColor;
@@ -597,7 +611,11 @@ begin
   inherited Create(AOwner);
   IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
   ControlStyle := ControlStyle - [csSetCaption];
+  {$IFNDEF RTL200_UP}
+  FShowCaption := True;
+  {$ENDIF ~RTL200_UP}
   FMultiLine := False;
+  FShowAccelChar := True;
   FTransparent := False;
   FFlatBorder := False;
   FFlatBorderColor := clBtnShadow;
@@ -832,7 +850,8 @@ end;
 
 procedure TJvCustomArrangePanel.DrawCaption;
 begin
-  DrawCaptionTo(Self.Canvas);
+  if ShowCaption then
+    DrawCaptionTo(Self.Canvas);
 end;
 
 procedure TJvCustomArrangePanel.DrawCaptionTo(ACanvas: TCanvas );
@@ -864,6 +883,8 @@ begin
         Inc(BevelSize, BevelWidth);
       InflateRect(ATextRect, -BevelSize, -BevelSize);
       Flags := DT_EXPANDTABS or WordWrap[MultiLine] or Alignments[Alignment];
+      if not ShowAccelChar then
+        Flags := Flags or DT_NOPREFIX;
       Flags := DrawTextBiDiModeFlags(Flags);
       //calculate required rectangle size
       DrawText(ACanvas.Handle, Caption, -1, ATextRect, Flags or DT_CALCRECT);
@@ -1025,6 +1046,26 @@ begin
     Invalidate;
   end;
 end;
+
+procedure TJvCustomArrangePanel.SetShowAccelChar(const Value: Boolean);
+begin
+  if FShowAccelChar <> Value then
+  begin
+    FShowAccelChar := Value;
+    Invalidate;
+  end;
+end;
+
+{$IFNDEF RTL200_UP}
+procedure TJvCustomArrangePanel.SetShowCaption(const Value: Boolean);
+begin
+  if FShowCaption <> Value then
+  begin
+    FShowCaption := Value;
+    Invalidate;
+  end;
+end;
+{$ENDIF ~RTL200_UP}
 
 procedure TJvCustomArrangePanel.TextChanged;
 begin

@@ -809,6 +809,7 @@ var
   Offset: Word;
   Field: TField;
   FieldDefsUpdated: Boolean;
+  FieldLen: Word;
 begin
   if FieldDefs.Count = 0 then
   begin
@@ -833,7 +834,13 @@ begin
     begin
       FOffsets[I] := Offset;
       if FieldDefList[I].DataType in ftSupported - ftBlobTypes then
-        Inc(Offset, CalcFieldLen(FieldDefList[I].DataType, FieldDefList[I].Size) + 1);
+      begin
+        FieldLen := CalcFieldLen(FieldDefList[I].DataType, FieldDefList[I].Size);
+        if Offset + FieldLen + 1 <= high(Offset) then
+          Inc(Offset, FieldLen + 1)
+        else
+          raise ERangeError.CreateResFmt(@RsEFieldOffsetOverflow, [I]);
+      end;
     end;
   finally
     FieldDefs.Updated := FieldDefsUpdated;

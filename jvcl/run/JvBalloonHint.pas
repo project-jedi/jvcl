@@ -1248,7 +1248,7 @@ begin
     Exit;
 
   {$IFDEF JVCLThemesEnabled}
-  if IsWinVista_UP and StyleServices.Enabled and FIsMultiLineMsg then
+  if IsWinVista_UP and StyleServices.Enabled then
     Region := CreateThemedRegion
   else
   {$ENDIF JVCLThemesEnabled}

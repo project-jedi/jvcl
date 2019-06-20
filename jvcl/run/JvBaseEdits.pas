@@ -656,12 +656,17 @@ end;
 {WAP added GetEditFormat, this code used to be ininline inside DataChanged.}
 function TJvCustomNumEdit.GetEditFormat:String;
 begin
-  Result := ',0';  // must put the thousands separator by default to allow direct edit of value (paste for example)
-  if FDecimalPlaces > 0 then
+  if FDecimalPlaces = 0 then
+    Result := '0'
+  else
+  begin
+    Result := ',0'; // must put the thousands separator by default to allow direct
+                    // edit of value (paste for example), but only if there are decimal places
     if FDecimalPlacesAlwaysShown then
-       Result  := Result + '.' + MakeStr('0', FDecimalPlaces)
+       Result := Result + '.' + MakeStr('0', FDecimalPlaces)
     else
-       Result  := Result + '.' + MakeStr('#', FDecimalPlaces);
+       Result := Result + '.' + MakeStr('#', FDecimalPlaces);
+  end;
 end;
 
 procedure TJvCustomNumEdit.DataChanged;

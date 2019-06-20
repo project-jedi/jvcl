@@ -742,6 +742,9 @@ implementation
 uses
   RTLConsts, TypInfo, Forms,
   JclMath, JclLogic, // For EnsureRange and Min/Max
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   JvResources, JvConsts, JvJVCLUtils;
 
 type

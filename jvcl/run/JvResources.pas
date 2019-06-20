@@ -1,4 +1,4 @@
-ï»¿{-----------------------------------------------------------------------------
+{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -56,7 +56,7 @@ resourcestring
   RsSelectAllItem = 'Select &All';
   {
   SWEDISH:
-  RsUndoItem = '&Ã…ngra';
+  RsUndoItem = '&Ångra';
   RsCutItem = '&Klipp ut';
   RsCopyItem = 'K&opiera';
   RsPasteItem = 'Kl&istra in';
@@ -64,17 +64,17 @@ resourcestring
   RsSelectAllItem = '&Markera allt';
 
   GERMAN:
-  RsUndoItem = '&RÃ¼ckgÃ¤ngig';
+  RsUndoItem = '&Rückgängig';
   RsCutItem = '&Ausschneiden';
   RsCopyItem = '&Kopieren';
-  RsPasteItem = 'E&infÃ¼gen';
-  RsDeleteItem = '&LÃ¶schen';
+  RsPasteItem = 'E&infügen';
+  RsDeleteItem = '&Löschen';
   RsSelectAllItem = 'Alles &markieren';
 
   DUTCH:
   RsUndoItem = '&Ongedaan maken';
   RsCutItem = 'K&nippen';
-  RsCopyItem = '&KopiÃ«ren';
+  RsCopyItem = '&Kopiëren';
   RsPasteItem = '&Plakken';
   RsDeleteItem = '&Wissen';
   RsSelectAllItem = '&Alles selecteren';
@@ -1076,8 +1076,8 @@ resourcestring
 //=== JvgXMLSerializer.pas ===================================================
 resourcestring
   { RUSSIAN
-  RsOpenXMLTagNotFound = 'ÃŽÃ²ÃªÃ°Ã»Ã¢Ã Ã¾Ã¹Ã¨Ã© Ã²Ã¥Ã£ Ã­Ã¥ Ã­Ã Ã©Ã¤Ã¥Ã­: <%s>';
-  RsCloseXMLTagNotFound = 'Ã‡Ã ÃªÃ°Ã»Ã¢Ã Ã¾Ã¹Ã¨Ã© Ã²Ã¥Ã£ Ã­Ã¥ Ã­Ã Ã©Ã¤Ã¥Ã­: </%s>';
+  RsOpenXMLTagNotFound = 'Îòêðûâàþùèé òåã íå íàéäåí: <%s>';
+  RsCloseXMLTagNotFound = 'Çàêðûâàþùèé òåã íå íàéäåí: </%s>';
   RsUncknownProperty = 'Uncknown property: %s'
   }
   RsOpenXMLTagNotFound = 'Open tag not found: <%s>';
@@ -1479,6 +1479,7 @@ resourcestring
   RsEUpdateError = 'Unable to modify the record.';
   // 'No se pudo eliminar el registro.';
   RsEDeleteError = 'Unable to erase the record.';
+  RsEFieldOffsetOverflow = 'Field offset overflow. Index: %0:d';
 
 //=== JvMouseGesture.pas =====================================================
 resourcestring

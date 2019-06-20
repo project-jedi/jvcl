@@ -242,7 +242,7 @@ type
   end;
 
   IJvDynControlDblClick = interface
-    ['{EB2435FE-D9A6-4D33-9F01-589D0C93C6AC}']
+    ['{B9BAAC73-15BE-4E94-A063-034E2938065D}']
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
   end;
 

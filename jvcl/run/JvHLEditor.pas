@@ -96,6 +96,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Graphics,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   JvEditor, JvEditorCommon, JvHLParser;
 
 type
@@ -364,6 +367,7 @@ const
     ' external overload platform deprecated implements export contains' +
     ' requires resourcestring message dispid assembler asm abstract absolute' +
     ' dispinterface file threadvar library' +
+    ' array exports label asm packed in' +
     // TurboPascal
     ' interrupt inline near far' +
     // Delphi 8
