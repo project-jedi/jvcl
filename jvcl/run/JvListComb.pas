@@ -44,9 +44,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, ExtCtrls, StdCtrls, ImgList,
-  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
-  System.UITypes,
-  {$ENDIF}
   JvJCLUtils, JvCombobox,
   JvExStdCtrls;
 
@@ -412,6 +409,9 @@ uses
   {$IFDEF RTL330_UP}
   System.Generics.Collections, // for TCollectionNotification items
   {$ENDIF RTL330_UP}
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   Math, JvJVCLUtils;
 
 type
