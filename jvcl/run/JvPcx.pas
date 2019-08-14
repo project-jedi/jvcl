@@ -56,7 +56,7 @@ type
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
 
-    class function CanLoadFromStream(Stream: TStream): Boolean;
+    class function CanLoadFromStream(Stream: TStream): Boolean; override;
   end;
 
 {$IFDEF UNITVERSIONING}
