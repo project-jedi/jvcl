@@ -55,6 +55,7 @@ type
     {$ENDIF MSWINDOWS}
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
+    class function CanLoadFromStream(Stream: TStream): Boolean; override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -71,6 +72,20 @@ implementation
 
 uses
   JvResources;
+
+class function TJvPcx.CanLoadFromStream(Stream: TStream): Boolean;
+var
+  Header: TPcxHeader;
+  P: Int64;
+begin
+  P := Stream.Position;
+  try
+    Result := (Stream.Read(Header, SizeOf(Header)) = SizeOf(Header)) and
+      (Header.Id = $0A) and (Header.BytesPerLine mod 2 = 0);
+  finally
+    Stream.Position := P;
+  end;
+end;
 
 procedure TJvPcx.LoadFromResourceName(Instance: THandle;
   const ResName: string; ResType: PChar);
