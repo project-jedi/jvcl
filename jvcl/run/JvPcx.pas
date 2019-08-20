@@ -55,7 +55,6 @@ type
     {$ENDIF MSWINDOWS}
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
-
     class function CanLoadFromStream(Stream: TStream): Boolean; override;
   end;
 
@@ -80,7 +79,6 @@ var
   P: Int64;
 begin
   P := Stream.Position;
-
   try
     Result := (Stream.Read(Header, SizeOf(Header)) = SizeOf(Header)) and
       (Header.Id = $0A) and (Header.BytesPerLine mod 2 = 0);
