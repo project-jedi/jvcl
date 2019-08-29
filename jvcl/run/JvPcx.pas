@@ -55,7 +55,9 @@ type
     {$ENDIF MSWINDOWS}
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
+    {$IFDEF RTL320_UP}
     class function CanLoadFromStream(Stream: TStream): Boolean; override;
+    {$ENDIF RTL320_UP}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -107,6 +109,7 @@ type
     Reserved2: array [0..53] of Byte;
   end;
 
+{$IFDEF RTL320_UP}
 class function TJvPcx.CanLoadFromStream(Stream: TStream): Boolean;
 var
   Header: TPcxHeader;
@@ -120,6 +123,7 @@ begin
     Stream.Position := P;
   end;
 end;
+{$ENDIF RTL320_UP}
 
 procedure TJvPcx.LoadFromResourceName(Instance: THandle;
   const ResName: string; ResType: PChar);
