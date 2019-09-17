@@ -570,15 +570,16 @@ begin
       SavedOwner := FOwner;
       try
         FOwner := nil;
-        S.Delete(Index);
         if (SavedOwner.GetOwner is TJvImageListBox) and (TJvImageListBox(SavedOwner.GetOwner).Sorted) then
-          S.AddObject(Value, Self)
+        begin
+          S.Delete(Index);
+          Index := S.AddObject(Value, Self);
+        end
         else
-          S.InsertObject(Index, Value, Self);
+          S[Index]:= value;
       finally
         FOwner := SavedOwner;
       end;
-      Index := S.IndexOfObject(Self);
       Change;
     end;
   end;
