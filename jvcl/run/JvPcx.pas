@@ -55,6 +55,9 @@ type
     {$ENDIF MSWINDOWS}
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
+    {$IFDEF RTL320_UP}
+    class function CanLoadFromStream(Stream: TStream): Boolean; override;
+    {$ENDIF RTL320_UP}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -71,6 +74,56 @@ implementation
 
 uses
   JvResources;
+
+type
+  PPcxPalette = ^TPcxPalette;
+  TPcxPalette = packed record
+    Red: Byte;
+    Green: Byte;
+    Blue: Byte;
+  end;
+  PPcxPaletteArray = ^TPcxPaletteArray;
+  TPcxPaletteArray = array [0..255] of TPcxPalette;
+
+  TPcxPalette256 = packed record
+    Id: Byte; // $0C
+    Items: array [0..255] of TPcxPalette;
+  end;
+
+  TPcxHeader = packed record
+    Id: Byte; // $0A
+    Version: Byte; // 5 = 3.0
+    Compressed: Boolean;
+    Bpp: Byte;
+    x0, y0: Word;
+    x1, y1: Word;
+    dpiX: Word;
+    dpiY: Word;
+    Palette16: array [0..15] of TPcxPalette;
+    Reserved1: Byte;
+    Planes: Byte;
+    BytesPerLine: Word;
+    PaletteType: Word; // 1: color or s/w   2: grayscaled
+    ScreenWidth: Word; // 0
+    ScreenHeight: Word; // 0
+    Reserved2: array [0..53] of Byte;
+  end;
+
+{$IFDEF RTL320_UP}
+class function TJvPcx.CanLoadFromStream(Stream: TStream): Boolean;
+var
+  Header: TPcxHeader;
+  P: Int64;
+begin
+  P := Stream.Position;
+  try
+    Result := (Stream.Read(Header, SizeOf(Header)) = SizeOf(Header)) and
+      (Header.Id = $0A) and (Header.BytesPerLine mod 2 = 0);
+  finally
+    Stream.Position := P;
+  end;
+end;
+{$ENDIF RTL320_UP}
 
 procedure TJvPcx.LoadFromResourceName(Instance: THandle;
   const ResName: string; ResType: PChar);
@@ -111,42 +164,6 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
-
-type
-  PPcxPalette = ^TPcxPalette;
-  TPcxPalette = packed record
-    Red: Byte;
-    Green: Byte;
-    Blue: Byte;
-  end;
-  PPcxPaletteArray = ^TPcxPaletteArray;
-  TPcxPaletteArray = array [0..255] of TPcxPalette;
-
-  TPcxPalette256 = packed record
-    Id: Byte; // $0C
-    Items: array [0..255] of TPcxPalette;
-  end;
-
-  TPcxHeader = packed record
-    Id: Byte; // $0A
-    Version: Byte; // 5 = 3.0
-    Compressed: Boolean;
-    Bpp: Byte;
-    x0, y0: Word;
-    x1, y1: Word;
-    dpiX: Word;
-    dpiY: Word;
-    Palette16: array [0..15] of TPcxPalette;
-    Reserved1: Byte;
-    Planes: Byte;
-    BytesPerLine: Word;
-    PaletteType: Word; // 1: color or s/w   2: grayscaled
-    ScreenWidth: Word; // 0
-    ScreenHeight: Word; // 0
-    Reserved2: array [0..53] of Byte;
-  end;
-
-
 
 procedure ReadPalette(Bitmap: TJvPcx; ColorNum: Integer; PcxPalette: PPcxPalette);
 var

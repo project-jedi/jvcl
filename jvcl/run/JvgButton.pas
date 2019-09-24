@@ -217,7 +217,11 @@ const
 implementation
 
 uses
-  JvConsts, JvJCLUtils, JvResources, JvThemes;
+  JvConsts, JvJCLUtils, JvResources,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  JvThemes;
 
 {$R JvgButton.res}
 
