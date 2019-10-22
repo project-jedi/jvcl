@@ -190,7 +190,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Variants,
-  JvInterpreterParser, JvComponentBase;
+  JvInterpreterParser, JvComponentBase, JclBase;
 
 const
   // (rom) renamed to longer names
@@ -1166,6 +1166,12 @@ function V2P(const V: Variant): Pointer;
 { P2V - converts pointer to variant }
 function P2V(P: Pointer): Variant;
 
+{ V2AB - converts variant to byte array }
+function V2AB(const V: Variant): TDynByteArray;
+
+{ AB2V - converts byte array to variant }
+function AB2V(const AB: TDynByteArray): Variant;
+
 { R2V - create record holder and put it into variant }
 function R2V(const ARecordType: string; ARec: Pointer): Variant;
 
@@ -1536,6 +1542,28 @@ function P2V(P: Pointer): Variant;
 begin
   TVarData(Result).VType := varPointer;
   TVarData(Result).VPointer := P;
+end;
+
+function V2AB(const V: Variant): TDynByteArray;
+var
+  liLen: integer;
+  lp: PByte;
+begin
+  liLen := VarArrayHighBound(V, 1) - VarArrayLowBound(V, 1) + 1;
+  SetLength(result, liLen);
+  lp := VarArrayLock(V);
+  Move(lp^, result[0], liLen);
+end;
+
+function AB2V(const AB: TDynByteArray): Variant;
+var
+  liLen: integer;
+  lp: PByte;
+begin
+  liLen := Length(AB);
+  result := VarArrayCreate([0, liLen - 1], varByte);
+  lp := VarArrayLock(result);
+  Move(AB[0], lp^, liLen);
 end;
 
 function R2V(const ARecordType: string; ARec: Pointer): Variant;

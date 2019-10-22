@@ -183,7 +183,6 @@ type
 
     procedure GotoReadyState;
     procedure GotoWaitState(const AThreadCount: Integer);
-    procedure GotoRunningState;
     procedure SetCommandLine(const Value: string);
   protected
     procedure CheckReady;
@@ -1232,13 +1231,6 @@ begin
   FRunningThreadCount := 0;
 end;
 
-procedure TJvCreateProcess.GotoRunningState;
-begin
-  CheckReady;
-  FState := psRunning;
-  CloseProcessHandles;
-end;
-
 procedure TJvCreateProcess.GotoWaitState(const AThreadCount: Integer);
 begin
   CheckReady;
@@ -1342,7 +1334,7 @@ begin
     begin
       { http://support.microsoft.com/default.aspx?scid=kb;en-us;124121 }
       WaitForInputIdle(FProcessInfo.hProcess, INFINITE);
-      GotoRunningState;
+      GoToReadyState;
     end;
   finally
     { Close pipe handles (do not continue to modify the parent).

@@ -19,7 +19,7 @@ to the MPL license.
 Clone with GIT
 --------------
 ```
-> git clone git://github.com/project-jedi/jvcl.git jvcl
+> git clone https://github.com/project-jedi/jvcl.git jvcl
 ```
 
 This will get you the JVCL repository. You also need the JCL <https://github.com/project-jedi/jcl>

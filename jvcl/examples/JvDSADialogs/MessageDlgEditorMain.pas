@@ -155,8 +155,7 @@ implementation
 
 uses
   TypInfo,
-//  JvDynControlEngineDevExpcx,
-  MessageDlgEditorSelectIcon;
+  MessageDlgEditorSelectIcon, JvDynControlEngineJVCL;
 
 function MsgToSource(const S: TStrings): string;
 begin
