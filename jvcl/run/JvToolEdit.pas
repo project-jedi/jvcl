@@ -5165,7 +5165,13 @@ begin
     ClearFileList;
   end
   else
-    raise EComboEditError.CreateResFmt(@SInvalidFilename, [Value]);
+    raise EComboEditError.CreateResFmt(
+      {$IFDEF RTL330_UP}
+      @SInvalidKnownFilename,
+      {$ELSE}
+      @SInvalidFilename,
+      {$ENDIF RTL330_UP}
+      [Value]);
 end;
 
 function TJvFilenameEdit.GetFileName: TFileName;
