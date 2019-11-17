@@ -286,6 +286,19 @@ type
     property HistoryClearCaption: string read FHistoryClearCaption write FHistoryClearCaption;
   end;
 
+  {$IFDEF SUPPORTS_FOR_IN}
+  TJvParameterListEnumerator = class
+  private
+    FIndex: Integer;
+    FParameterList: TJvParameterList;
+  public
+    constructor Create(AJvParameterList: TJvParameterList);
+    function GetCurrent: TJvBaseParameter;
+    function MoveNext: Boolean;
+    property Current: TJvBaseParameter read GetCurrent;
+  end;
+  {$ENDIF}
+
   TJvParameterList = class(TJvComponent)
   private
     FHandleParameterEnabledCnt: Integer;
@@ -440,6 +453,9 @@ type
     procedure OnChangeParameterControl(Sender: TObject);
     { Saves the data of all allowed parameters to the AppStorage }
     procedure StoreDataTo(const iTempAppStoragePath: string);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: TJvParameterListEnumerator;
+    {$ENDIF}
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Messages: TJvParameterListMessages read FMessages;
@@ -1234,6 +1250,30 @@ begin
       SetEnabled(FEnabled and not ReadOnly);
   HandleAfterWincontrolPropertiesChanged;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+
+//=== { TJvParameterListEnumerator } ===================================================
+
+constructor TJvParameterListEnumerator.Create(AJvParameterList: TJvParameterList);
+begin
+  inherited Create;
+  FIndex := -1;
+  FParameterList := AJvParameterList;
+end;
+
+function TJvParameterListEnumerator.GetCurrent: TJvBaseParameter;
+begin
+  Result := FParameterList.Parameters[FIndex];
+end;
+
+function TJvParameterListEnumerator.MoveNext: Boolean;
+begin
+  Result := FIndex < FParameterList.Count - 1;
+  if Result then
+    Inc(FIndex);
+end;
+{$ENDIF}
 
 //=== { TJvParameterList } ===================================================
 
@@ -2189,6 +2229,13 @@ begin
   Dec(FHandleParameterEnabledCnt);
 end;
 
+{$IFDEF SUPPORTS_FOR_IN}
+function TJvParameterList.GetEnumerator: TJvParameterListEnumerator;
+begin
+  Result := TJvParameterListEnumerator.Create(Self);
+end;
+{$ENDIF}
+
 procedure TJvParameterList.HandleShowValidState;
 var
   I: Integer;
@@ -2394,6 +2441,7 @@ begin
     ParameterList.StoreDataTo(SelectPath);
   end;
 end;
+
 
 {$IFDEF UNITVERSIONING}
 initialization
