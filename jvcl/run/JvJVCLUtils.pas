@@ -2291,7 +2291,13 @@ end;
 
 function ScreenWorkArea: TRect;
 begin
-  Result := Screen.MonitorFromWindow(Screen.ActiveCustomForm.Handle).WorkareaRect;
+  if Assigned(Screen.ActiveCustomForm) then
+    Result := Screen.MonitorFromWindow(Screen.ActiveCustomForm.Handle).WorkareaRect
+  else  
+  {$IFDEF MSWINDOWS}
+  if not SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0) then
+  {$ENDIF MSWINDOWS}
+    Result := Bounds(0, 0, Screen.Width, Screen.Height);
 end;
 
 { Standard Windows MessageBox function }
