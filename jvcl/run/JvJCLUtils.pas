@@ -2294,15 +2294,8 @@ end;
 {$ENDIF UNIX}
 
 function GetComputerName: string;
-var
-  nSize: Cardinal;
 begin
-  nSize := MAX_COMPUTERNAME_LENGTH + 1;
-  SetLength(Result, nSize);
-  if Windows.GetComputerName(PChar(Result), nSize) then
-    SetLength(Result, nSize)
-  else
-    Result := '';
+  Result := GetLocalComputerName;
 end;
 
 function CurrencyToStr(const Cur: Currency): string;
