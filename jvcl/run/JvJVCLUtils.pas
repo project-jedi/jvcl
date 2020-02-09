@@ -7681,10 +7681,17 @@ function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
   end;
 
   function GenerateName(const AName: string; ANumber: Integer): string;
+  var vName : String;
   begin
-    Result := ValidateName (AName);
-    if Assigned(AOwner) and (AOwner.Name <> '') then
-      Result := AOwner.Name + '_' + Result;
+    vName := ValidateName (AName);
+    if Assigned(AOwner) then
+      if (AOwner.Name <> '') then
+        Result := AOwner.Name
+      else
+        Result := AOwner.ClassName;
+    if (vName <> '') and (Result <> '') then
+      Result := Result + '_';
+    Result := Result + vName;
     if ANumber > 0 then
       Result := Result + IntToStr(ANumber);
   end;
@@ -7694,7 +7701,7 @@ function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
     I: Integer;
   begin
     Result := True;
-    if AName <> '' then
+    if (AName <> '') and Assigned(AOwner) then
       for I := 0 to AOwner.ComponentCount - 1 do
         if (AOwner.Components[I] <> AComponent) and
           (CompareText(AOwner.Components[I].Name, AName) = 0) then
@@ -7707,21 +7714,18 @@ function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
 var
   I: Integer;
 begin
-  if not Assigned(AOwner) then
-    Result := ''
-  else
-    for I := 0 to MaxInt do
-    begin
-      if (AComponentName <> '') then
-        Result := GenerateName(AComponentName, I)
+  for I := 0 to MaxInt do
+  begin
+    if (AComponentName <> '') then
+      Result := GenerateName(AComponentName, I)
+    else
+      if Assigned(AComponent) then
+        Result := GenerateName(AComponent.ClassName, I)
       else
-        if Assigned(AComponent) then
-          Result := GenerateName(AComponent.ClassName, I)
-        else
-          Result := GenerateName('', I);
-      if IsUnique(Result) then
-        Break;
-    end;
+        Result := GenerateName('', I);
+    if IsUnique(Result) then
+      Break;
+  end;
 end;
 
 function ReplaceComponentReference(This, NewReference: TComponent; var VarReference: TComponent): Boolean;
