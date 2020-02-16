@@ -153,6 +153,7 @@ type
     FOnExitParameter: TJvParameterListEvent;
     FOnValidateData: TJvParameterOnValidateData;
     FRequired: Boolean;
+    FRequiredReasons: TJvParameterListEnableDisableReasonList;
     procedure DisableAfterWincontrolPropertiesChanged;
     procedure EnableAfterWincontrolPropertiesChanged;
     procedure HandleAfterWincontrolPropertiesChanged;
@@ -252,6 +253,7 @@ type
     property TabOrder: Integer read FTabOrder write SetTabOrder;
     property DisableReasons: TJvParameterListEnableDisableReasonList read FDisableReasons;
     property EnableReasons: TJvParameterListEnableDisableReasonList read FEnableReasons;
+    property RequiredReasons: TJvParameterListEnableDisableReasonList read FRequiredReasons;
     property AfterWincontrolPropertiesChanged: TJvParameterListAfterParameterWincontrolPropertiesChangedEvent read
       FAfterWincontrolPropertiesChanged write FAfterWincontrolPropertiesChanged;
     /// Use this event to implement a custom logic to validate the parameter contents
@@ -851,6 +853,7 @@ begin
   FVisible := True;
   FEnableReasons := TJvParameterListEnableDisableReasonList.Create;
   FDisableReasons := TJvParameterListEnableDisableReasonList.Create;
+  FRequiredReasons := TJvParameterListEnableDisableReasonList.Create;
   FValue := null;
   FAfterWincontrolPropertiesChangedDisabledCnt := 0;
 end;
@@ -859,6 +862,7 @@ destructor TJvBaseParameter.Destroy;
 begin
   FreeAndNil(FEnableReasons);
   FreeAndNil(FDisableReasons);
+  FreeAndNil(FRequiredReasons);
   inherited Destroy;
 end;
 
@@ -1141,6 +1145,7 @@ begin
       Enabled := TJvBaseParameter(Source).Enabled;
       FEnableReasons.Assign(TJvBaseParameter(Source).FEnableReasons);
       FDisableReasons.Assign(TJvBaseParameter(Source).FDisableReasons);
+      FRequiredReasons.Assign(TJvBaseParameter(Source).FRequiredReasons);
     finally
       EnableAfterWincontrolPropertiesChanged;
       HandleAfterWincontrolPropertiesChanged;
@@ -1837,7 +1842,7 @@ var
   Data: Variant;
 begin
   IEnable := 0;
-  if AEnableReasons.Count > 0 then
+  if Assigned (AEnableReasons) and (AEnableReasons.Count > 0) then
   begin
     for J := 0 to AEnableReasons.Count - 1 do
     begin
@@ -1865,7 +1870,7 @@ begin
     if IEnable = 0 then
       IEnable := -1;
   end;
-  if ADisableReasons.Count > 0 then
+  if Assigned (ADisableReasons) and (ADisableReasons.Count > 0) then
   begin
     for J := 0 to ADisableReasons.Count - 1 do
     begin
@@ -1918,6 +1923,13 @@ begin
           1:
             Parameter.Enabled := True;
         end;
+      end;
+      IEnable := GetEnableDisableReasonState(nil, Parameter.RequiredReasons);
+      case IEnable of
+        -1:
+          Parameter.Required:= False;
+        1:
+          Parameter.Required:= True;
       end;
     end;
   finally
