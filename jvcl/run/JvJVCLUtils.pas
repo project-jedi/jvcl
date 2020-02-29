@@ -862,8 +862,13 @@ function IsChildWindow(const AChild, AParent: THandle): Boolean;
 // The name is generated in the login <OwnerName>_<AComponentName><Nr> or
 // <OwnerName>_<ACOmponent.ClassName><Nr> when the AComponentName parameter
 // is not defined. The number will be increased until the name is unique.
-function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
-    AComponentName: string = ''): string;
+function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const AComponentName: string = ''): string; overload;
+// This function generates a unique name for a component inside the list of all
+// components of its owner.
+// The name is generated in the login <OwnerName>_<AComponentName><Nr> or
+// <OwnerName>_<ACOmponent.ClassName><Nr> when the AComponentName parameter
+// is not defined. The number will be increased until the name is unique.
+procedure GenerateUniqueComponentName(AComponent: TComponent; const AComponentName: string = ''); overload;
 
 function ReplaceImageListReference(This: TComponent; NewReference: TCustomImageList;
   var VarReference: TCustomImageList; ChangeLink: TChangeLink): Boolean;
@@ -7727,6 +7732,14 @@ begin
       Break;
   end;
 end;
+
+procedure GenerateUniqueComponentName(AComponent: TComponent; const AComponentName: string = '');
+begin
+  if not Assigned(AComponent) then
+    Exit;
+  AComponent.Name := GenerateUniqueComponentName(AComponent.Owner, AComponent, AComponentName);
+end;
+
 
 function ReplaceComponentReference(This, NewReference: TComponent; var VarReference: TComponent): Boolean;
 begin

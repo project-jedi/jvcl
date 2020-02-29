@@ -20,7 +20,7 @@ located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
+// $Id: jvcl/run/JvThreadDialog.pas jfudickar date $
 
 unit JvThreadDialog;
 
@@ -239,9 +239,9 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
+    RCSfile: '$URL: jvcl/run/JvThreadDialog.pas $';
+    Revision: '$Revision: 9594babef19065116dda9ae3f8ea25b629c9e477 $';
+    Date: '$Date: 2013-08-10 22:56:30 +0200 $';
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
@@ -823,7 +823,7 @@ begin
   if H < (ClientHeight -20) then // Reduces the resize flickering when the text is changed to often
     ClientHeight := H
   else if H > ClientHeight then
-    ClientHeight := H+10; // Reduces the resize flickering when the text is changed to often
+    ClientHeight := H+5; // Reduces the resize flickering when the text is changed to often
 end;
 
 procedure TJvThreadBaseDialogForm.SetFormInfoText;
