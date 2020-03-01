@@ -440,6 +440,7 @@ type
     function Clone(AOwner: TComponent): TJvParameterList;
     {creates the components of all parameters on any TWInControl}
     procedure CreateWinControlsOnWinControl(ParameterParent: TWinControl);
+    function IsDataValid: Boolean;
     {
     Checks the IsDataValid of each Parameter, When the ShowParameterValidStatus is
     activated the labels invalid parameters will be shown italic
@@ -2015,18 +2016,18 @@ begin
         except
           on e:exception do
             raise Exception.CreateResFmt(@RsECreateWinControlsOnWinControlDuplicateBeforeAfterNotAllowed, ['AfterParameterName', TJvBasePanelEditParameter(Parameters[I]).AfterParameterName]);
-        end;
       end;
+    end;
     if ParameterParent is TJvCustomArrangePanel then
       TJvCustomArrangePanel(ParameterParent).DisableArrange;
     for I := 0 to Count - 1 do
       if (BeforeAfterParameterNames.IndexOf(Parameters[I].SearchName) < 0)then
-      begin
+    begin
         Parameters[I].CreateWinControlOnParent(
           GetParentByName(ParameterParent, Parameters[I].ParentParameterName));
         if (Parameters[I] is TJvArrangeParameter) then
           TJvArrangeParameter(Parameters[I]).DisableArrange;
-      end;
+    end;
 
     // Splitted in a Separate Loop because the order could be changed when Before/AfterParameterName is Used
     for I := 0 to Count - 1 do
@@ -2035,10 +2036,11 @@ begin
 
     for I := 0 to Count - 1 do
       if (Parameters[I] is TJvArrangeParameter) and Assigned(Parameters[I].WinControl) then
-      begin
+    begin
         TJvArrangeParameter(Parameters[I]).EnableArrange;
         TJvArrangeParameter(Parameters[I]).ArrangeControls;
-      end;
+    end;
+
   finally
     if ParameterParent is TJvCustomArrangePanel then
       TJvCustomArrangePanel(ParameterParent).EnableArrange;
@@ -2247,6 +2249,18 @@ begin
   Result := TJvParameterListEnumerator.Create(Self);
 end;
 {$ENDIF}
+
+function TJvParameterList.IsDataValid: Boolean;
+Var i : Integer;
+  Parameter : TJvBaseParameter;
+begin
+  Result := True;
+  for I := 0 to Count - 1 do
+  begin
+    Parameter := Parameters[I];
+    Result := Result And Parameter.IsValid(Parameter.GetWinControlData);
+  end;
+end;
 
 procedure TJvParameterList.HandleShowValidState;
 var
