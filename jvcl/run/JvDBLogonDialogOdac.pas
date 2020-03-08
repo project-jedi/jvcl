@@ -98,6 +98,7 @@ type
     procedure FillAllComoboBoxes; override;
     procedure FillDatabaseComboBoxValues(Items: TStrings); override;
     procedure FillOracleHomeComboBox;
+    procedure FreeFormControls; override;
     { Retrieve the class that holds the storage options and format settings. }
     class function GetDBLogonConnectionListClass: TJvBaseConnectionListClass; override;
     { Retrieve the class that holds the storage options and format settings. }
@@ -271,6 +272,7 @@ var
   Enum: TOraServerEnumerator;
   List: TStringList;
 begin
+  Inherited FillDatabaseComboBoxValues(Items);
   List := TStringList.Create;
   Enum := TOraServerEnumerator.Create;
   try
@@ -297,6 +299,13 @@ begin
   finally
     Items.Free;
   end;
+end;
+
+procedure TJvDBOdacLogonDialog.FreeFormControls;
+begin
+  INetOptionCheckBox:= Nil;
+  IOracleHomeEditData:= Nil;
+  inherited;
 end;
 
 function TJvDBOdacLogonDialog.GetConnectionList: TJvOdacOracleConnectionList;

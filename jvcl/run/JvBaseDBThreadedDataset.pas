@@ -230,6 +230,7 @@ type
     procedure SetDialogOptions(const Value: TJvThreadedDatasetDialogOptions);
   protected
     procedure FillDialogData;
+    procedure FreeFormControls; override;
     procedure InitializeFormContents; override;
     procedure UpdateFormContents; override;
   public
@@ -590,6 +591,14 @@ begin
   end;
   FRowsStaticText.Width:= FRowsPanel.Width - FRowsLabel.Width;
   FTimeStaticText.Width:= FTimePanel.Width - FTimeLabel.Width;
+end;
+
+procedure TJvDatasetThreadDialogForm.FreeFormControls;
+begin
+  if Assigned(IProgressBarControl) then
+    IProgressBarControl.ControlSetMarquee(False);// To deactivate the toolbar marquee in rare circumstances
+  IProgressBarControl := nil;
+  inherited;
 end;
 
 function TJvDatasetThreadDialogForm.GetConnectedDataset: TDataSet;

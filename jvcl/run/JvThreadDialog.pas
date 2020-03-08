@@ -228,6 +228,7 @@ type
     procedure SetDialogOptions(Value: TJvThreadAnimateDialogOptions);
   protected
     procedure CreateFormControls; override;
+    procedure FreeFormControls; override;
     procedure InitializeFormContents; override;
     procedure UpdateFormContents; override;
   public
@@ -458,6 +459,8 @@ end;
 
 procedure TJvThreadSimpleDialogForm.FreeFormControls;
 begin
+  if Assigned(IProgressBarControl) then
+    IProgressBarControl.ControlSetMarquee(False);// To deactivate the toolbar marquee in rare circumstances
   IProgressBarControl := nil;
   inherited;
 end;
@@ -596,6 +599,11 @@ begin
 
   SetFormDefaultProperties;
   SetFormHeightWidth;
+end;
+
+procedure TJvThreadAnimateDialogForm.FreeFormControls;
+begin
+  inherited;
 end;
 
 procedure TJvThreadAnimateDialogForm.InitializeFormContents;

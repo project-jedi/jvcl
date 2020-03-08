@@ -21,7 +21,7 @@ located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
+// $Id: jvcl/run/JvDBLogonDialogUniDac.pas Jens Fudickar date $
 
 unit JvDBLogonDialogUniDac;
 
@@ -154,11 +154,11 @@ type
     property InternalConnection: TUniConnection read FInternalConnection;
   protected
     procedure CreateAdditionalConnectDialogControls(AOwner: TComponent; AParentControl: TWinControl); override;
-    procedure CreateFormControls(AForm: TForm); override;
     procedure FillAllComoboBoxes; override;
     procedure FillDatabaseComboBoxValues(Items: TStrings); override;
     procedure FillServerComboBox;
     procedure FillServerComboBoxValues(Items: TStrings); virtual;
+    procedure FreeFormControls; override;
     { Retrieve the class that holds the storage options and format settings. }
     class function GetDBLogonConnectionListClass: TJvBaseConnectionListClass; override;
     { Retrieve the class that holds the storage options and format settings. }
@@ -205,9 +205,9 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
+    RCSfile: '$URL: jvcl/run/JvDBLogonDialogUniDac.pas $';
+    Revision: '$Revision: 452e37996b3821b0e7ca9082f2fe381bf5c65e15 $';
+    Date: '$Date: 2014-09-21 21:26:51 +0200 $';
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
@@ -349,11 +349,6 @@ begin
   //DirectCheckBox.Hint := RsNetOptionCheckBoxHint;
 end;
 
-procedure TJvDBUniDacLogonDialog.CreateFormControls(AForm: TForm);
-begin
-  inherited CreateFormControls(AForm);
-end;
-
 procedure TJvDBUniDacLogonDialog.FillAllComoboBoxes;
 begin
   inherited FillAllComoboBoxes;
@@ -415,6 +410,19 @@ begin
           if Items.IndexOf(Connection.Server) < 0 then
             Items.Add(Connection.Server);
     end;
+end;
+
+procedure TJvDBUniDacLogonDialog.FreeFormControls;
+begin
+  IDirectCheckBox := nil;
+  IOracleHomeEditData := nil;
+  IOracleHomeEditItems := nil;
+  IPortEditData := nil;
+  IProviderEditData := nil;
+  IProviderEditItems := nil;
+  IServerEditData := nil;
+  IServerEditItems := nil;
+  inherited;
 end;
 
 function TJvDBUniDacLogonDialog.GetConnectionList: TJvUniDacConnectionList;
