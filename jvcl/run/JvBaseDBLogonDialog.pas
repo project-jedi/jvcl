@@ -1514,104 +1514,24 @@ end;
 
 procedure TJvBaseDBLogonDialog.FreeFormControls;
 begin
-  if Assigned(AdditionalBtn) then
-    FreeAndNil(AdditionalBtn);
-  if Assigned(AdditionalPopupMenu) then
-    FreeAndNil(AdditionalPopupMenu);
-  if Assigned(AddToListBtn) then
-    FreeAndNil(AddToListBtn);
-  if Assigned(AliasPanel) then
-    FreeAndNil(AliasPanel);
-  if Assigned(ButtonPanel) then
-    FreeAndNil(ButtonPanel);
-  if Assigned(ColorBoxPanel) then
-    FreeAndNil(CancelBtn);
-  if Assigned(ColorBoxPanel) then
-    FreeAndNil(ColorBoxPanel);
-  if Assigned(ConnectBtn) then
-    FreeAndNil(ConnectBtn);
-  if Assigned(ConnectGroupPanel) then
-    FreeAndNil(ConnectGroupPanel);
-  if Assigned(ConnectionFilterTimer) then
-    FreeAndNil(ConnectionFilterTimer);
-  if Assigned(ConnectListListBox) then
-    FreeAndNil(ConnectListListBox);
-  if Assigned(DatabaseComboBox) then
-    FreeAndNil(DatabaseComboBox);
-  if Assigned(DatabasePanel) then
-    FreeAndNil(DatabasePanel);
-  if Assigned(DatabaseTreeView) then
-    FreeAndNil(DatabaseTreeView);
-  if Assigned(EditConnectionPanel) then
-    FreeAndNil(EditConnectionPanel);
-  if Assigned(FConnectionFilterEdit) then
-    FreeAndNil(FConnectionFilterEdit);
-  if Assigned(GetFromListBtn) then
-    FreeAndNil(GetFromListBtn);
-  if Assigned(GroupByDatabaseCheckBox) then
-    FreeAndNil(GroupByDatabaseCheckBox);
-  if Assigned(GroupByUserCheckBox) then
-    FreeAndNil(GroupByUserCheckBox);
-  if Assigned(GroupTreeView) then
-    FreeAndNil(GroupTreeView);
-  if Assigned(LeftBottomPanel) then
-    FreeAndNil(LeftBottomPanel);
-  if Assigned(LeftPanel) then
-    FreeAndNil(LeftPanel);
-  if Assigned(PasswordEdit) then
-    FreeAndNil(PasswordEdit);
-  if Assigned(PasswordPanel) then
-    FreeAndNil(PasswordPanel);
-  if Assigned(RemoveFromListBtn) then
-    FreeAndNil(RemoveFromListBtn);
-  if Assigned(SavePasswordsCheckBox) then
-    FreeAndNil(SavePasswordsCheckBox);
-  if Assigned(ShortCutPanel) then
-    FreeAndNil(ShortCutPanel);
-  if Assigned(UserNameEdit) then
-    FreeAndNil(UserNameEdit);
-  if Assigned(UserNamePanel) then
-    FreeAndNil(UserNamePanel);
-  if Assigned(UserTreeView) then
-    FreeAndNil(UserTreeView);
-  if Assigned(ConnectionListPageControl) then
-    FreeAndNil(ConnectionListPageControl);
-  if Assigned(IAliasEditData) then
-    IAliasEditData:= nil;
-  if Assigned(IConnectionFilterEditData) then
-    IConnectionFilterEditData:= nil;
-  if Assigned(IColorComboBox) then
-    IColorComboBox:= nil;
-  if Assigned(IConnectGroupComboBoxData) then
-    IConnectGroupComboBoxData:= nil;
-  if Assigned(IConnectGroupComboBoxItems) then
-    IConnectGroupComboBoxItems:= nil;
-  if Assigned(IConnectionListPageControlTab) then
-    IConnectionListPageControlTab:= nil;
-  if Assigned(IConnectListListBoxData) then
-    IConnectListListBoxData:= nil;
-  if Assigned(IConnectListListBoxItems) then
-    IConnectListListBoxItems:= nil;
-  if Assigned(IDatabaseComboBoxData) then
-    IDatabaseComboBoxData:= nil;
-  if Assigned(IDatabaseTreeView) then
-    IDatabaseTreeView:= nil;
-  if Assigned(IGroupByDatabaseCheckBox) then
-    IGroupByDatabaseCheckBox:= nil;
-  if Assigned(IGroupByUserCheckBox) then
-    IGroupByUserCheckBox:= nil;
-  if Assigned(IGroupTreeView) then
-    IGroupTreeView:= nil;
-  if Assigned(IPasswordEditData) then
-    IPasswordEditData:= nil;
-  if Assigned(ISavePasswordsCheckBox) then
-    ISavePasswordsCheckBox:= nil;
-  if Assigned(IShortCutComboBoxData) then
-    IShortCutComboBoxData:= nil;
-  if Assigned(IUserNameEditData) then
-    IUserNameEditData:= nil;
-  if Assigned(IUserTreeView) then
-    IUserTreeView:= nil;
+  IAliasEditData:= nil;
+  IConnectionFilterEditData:= nil;
+  IColorComboBox:= nil;
+  IConnectGroupComboBoxData:= nil;
+  IConnectGroupComboBoxItems:= nil;
+  IConnectionListPageControlTab:= nil;
+  IConnectListListBoxData:= nil;
+  IConnectListListBoxItems:= nil;
+  IDatabaseComboBoxData:= nil;
+  IDatabaseTreeView:= nil;
+  IGroupByDatabaseCheckBox:= nil;
+  IGroupByUserCheckBox:= nil;
+  IGroupTreeView:= nil;
+  IPasswordEditData:= nil;
+  ISavePasswordsCheckBox:= nil;
+  IShortCutComboBoxData:= nil;
+  IUserNameEditData:= nil;
+  IUserTreeView:= nil;
   inherited;
 end;
 
