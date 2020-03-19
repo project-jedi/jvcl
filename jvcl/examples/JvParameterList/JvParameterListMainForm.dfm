@@ -1697,52 +1697,52 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      object Button5: TButton
+      object MessageDlgButtonA: TButton
         Left = 5
         Top = 89
         Width = 126
         Height = 25
         Caption = 'MessageDlg &A'
         TabOrder = 1
-        OnClick = Button5Click
+        OnClick = MessageDlgButtonAClick
       end
-      object Button6: TButton
+      object MessageDlgButtonB: TButton
         Left = 134
         Top = 89
         Width = 126
         Height = 25
         Caption = 'MessageDlg &B'
         TabOrder = 2
-        OnClick = Button6Click
+        OnClick = MessageDlgButtonBClick
       end
-      object Button7: TButton
+      object MessageDlgButtonC: TButton
         Left = 5
         Top = 117
         Width = 126
         Height = 25
         Caption = 'MessageDlg &C'
         TabOrder = 3
-        OnClick = Button7Click
+        OnClick = MessageDlgButtonCClick
       end
-      object Button8: TButton
+      object MessageDlgButtonD: TButton
         Left = 134
         Top = 117
         Width = 126
         Height = 25
         Caption = 'MessageDlg &D'
         TabOrder = 4
-        OnClick = Button8Click
+        OnClick = MessageDlgButtonDClick
       end
-      object Button9: TButton
+      object MessageDlgButtonE: TButton
         Left = 5
         Top = 145
         Width = 126
         Height = 25
         Caption = 'MessageDlg &E'
         TabOrder = 5
-        OnClick = Button9Click
+        OnClick = MessageDlgButtonEClick
       end
-      object Button10: TButton
+      object MessageDlgButtonF: TButton
         Left = 134
         Top = 145
         Width = 126
@@ -1834,15 +1834,15 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        object Button12: TButton
+        object DisableEnableEngineButton: TButton
           Left = 5
           Top = 39
           Width = 156
           Height = 25
-          Caption = 'Disable/Enable Default Engine'
+          Caption = 'Disable/Enable Reasons'
           Default = True
           TabOrder = 1
-          OnClick = Button12Click
+          OnClick = DisableEnableEngineButtonClick
         end
         object StaticText4: TStaticText
           Left = 5
@@ -2065,43 +2065,43 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      object Button16: TButton
+      object SimpleMemoButton: TButton
         Left = 128
         Top = 5
         Width = 120
         Height = 25
         Caption = 'Simple Memo'
         TabOrder = 1
-        OnClick = Button16Click
+        OnClick = SimpleMemoButtonClick
       end
-      object Button15: TButton
+      object AnalyzeTableButton: TButton
         Left = 5
         Top = 5
         Width = 120
         Height = 25
         Caption = 'Analyze Table Sample'
         TabOrder = 0
-        OnClick = Button15Click
+        OnClick = AnalyzeTableButtonClick
       end
-      object Button17: TButton
+      object UnitVersioningButton: TButton
         Left = 5
         Top = 33
         Width = 120
         Height = 25
         Caption = 'Unit Versioning'
         TabOrder = 2
-        OnClick = Button17Click
+        OnClick = UnitVersioningButtonClick
       end
-      object Button18: TButton
+      object DBMSJobEntryButton: TButton
         Left = 128
         Top = 33
         Width = 120
         Height = 25
         Caption = 'Edit DBMS_JOB Entry'
         TabOrder = 3
-        OnClick = Button18Click
+        OnClick = DBMSJobEntryButtonClick
       end
-      object Button19: TButton
+      object LabelArrangeModeButton: TButton
         Left = 5
         Top = 61
         Width = 120
@@ -2109,9 +2109,9 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Hint = 'Demonstrates the LabelArrangeMode '
         Caption = 'LabelArrangeMode'
         TabOrder = 4
-        OnClick = Button19Click
+        OnClick = LabelArrangeModeButtonClick
       end
-      object Button20: TButton
+      object BeforeAfterParameterButton: TButton
         Left = 128
         Top = 61
         Width = 120
@@ -2119,9 +2119,9 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Hint = 'Demonstrates the Before/AfterParameterName'
         Caption = 'BeforeAfterParameter'
         TabOrder = 5
-        OnClick = Button20Click
+        OnClick = BeforeAfterParameterButtonClick
       end
-      object Button21: TButton
+      object MultipleTabsButton: TButton
         Left = 5
         Top = 89
         Width = 120
@@ -2129,7 +2129,7 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Hint = 'Demonstrates the LabelArrangeMode '
         Caption = 'Multiple Tabs'
         TabOrder = 6
-        OnClick = Button21Click
+        OnClick = MultipleTabsButtonClick
       end
     end
   end

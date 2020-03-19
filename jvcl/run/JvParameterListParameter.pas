@@ -118,6 +118,8 @@ type
     procedure ArrangeLabelAndWinControlOnPanelNone;
     procedure ArrangeWinControlsonPanel(iLeft, iTop: Integer; var iWidth: Integer;
         iHeight: Integer);
+    function GetBeforeParameter: TJvBaseParameter;
+    function GetAfterParameter: TJvBaseParameter;
   protected
     procedure ArrangeLabelAndWinControlOnPanel; virtual;
     procedure CreateAfterParameterControl(AParameterParent: TWinControl); virtual;
@@ -139,6 +141,8 @@ type
     procedure SetTabOrder(Value: Integer); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetWidth(Value: Integer); override;
+    property BeforeParameter: TJvBaseParameter read GetBeforeParameter;
+    property AfterParameter: TJvBaseParameter read GetAfterParameter;
     property FrameControl: TWinControl read FFrameControl;
     property LabelControl: TControl read FLabelControl;
   published
@@ -1000,16 +1004,16 @@ end;
 procedure TJvBasePanelEditParameter.CreateAfterParameterControl(
   AParameterParent: TWinControl);
 var
-  AfterParameter: TJvBaseParameter;
+  Parameter: TJvBaseParameter;
 begin
-  AfterParameter := ParameterList.ParameterByName(AfterParameterName);
-  if Assigned(AfterParameter) and AfterParameter.Visible then
+  Parameter := AfterParameter;
+  if Assigned(Parameter) and Parameter.Visible then
   begin
-    AfterParameter.CreateWinControlOnParent(AParameterParent);
-    if AfterParameter is TJvBasePanelEditParameter then
-      FAfterParameterControl := TJvBasePanelEditParameter(AfterParameter).FrameControl
+    Parameter.CreateWinControlOnParent(AParameterParent);
+    if Parameter is TJvBasePanelEditParameter then
+      FAfterParameterControl := TJvBasePanelEditParameter(Parameter).FrameControl
     else
-      FAfterParameterControl := AfterParameter.WinControl;
+      FAfterParameterControl := Parameter.WinControl;
     FAfterParameterControl.Parent := AParameterParent;
   end
   else
@@ -1018,16 +1022,24 @@ end;
 
 procedure TJvBasePanelEditParameter.CreateBeforeParameterControl(AParameterParent: TWinControl);
 var
-  BeforeParameter: TJvBaseParameter;
+  Parameter: TJvBaseParameter;
+  SaveCaption : String;
 begin
-  BeforeParameter := ParameterList.ParameterByName(BeforeParameterName);
-  if Assigned(BeforeParameter) and BeforeParameter.Visible then
+  Parameter := BeforeParameter;
+  if Assigned(Parameter) and Parameter.Visible then
   begin
-    BeforeParameter.CreateWinControlOnParent(AParameterParent);
-    if BeforeParameter is TJvBasePanelEditParameter then
-      FBeforeParameterControl := TJvBasePanelEditParameter(BeforeParameter).FrameControl
+    SaveCaption := Parameter.Caption;
+    if (Caption = '') and (SaveCaption <> '') and (LabelArrangeMode = lamGroupBox) then
+      Parameter.Caption := '';
+    try
+      Parameter.CreateWinControlOnParent(AParameterParent);
+    finally
+      Parameter.Caption := SaveCaption;
+    end;
+    if Parameter is TJvBasePanelEditParameter then
+      FBeforeParameterControl := TJvBasePanelEditParameter(Parameter).FrameControl
     else
-      FBeforeParameterControl := BeforeParameter.WinControl;
+      FBeforeParameterControl := Parameter.WinControl;
     FBeforeParameterControl.Parent := AParameterParent;
   end
   else
@@ -1037,10 +1049,20 @@ end;
 procedure TJvBasePanelEditParameter.CreateFramePanel(AParameterParent: TWinControl);
 var
   DynBevel: IJvDynControlBevelBorder;
+
+  function GetGroupCaption : string;
+  begin
+    if Caption <> '' then
+      Result := Caption
+    else
+      if Assigned(BeforeParameter) and (BeforeParameter.Caption <> '') then
+        Result := BeforeParameter.Caption;
+  end;
+
 begin
   if LabelArrangeMode = lamGroupBox then
     FFrameControl := DynControlEngine.CreateGroupBoxControl(Self, AParameterParent,
-      GetParameterName + 'GroupBox', Caption)
+      GetParameterName + 'GroupBox', GetGroupCaption)
   else
     FFrameControl := DynControlEngine.CreatePanelControl(Self, AParameterParent,
       GetParameterName + 'Panel', '', alNone);
@@ -1089,6 +1111,16 @@ begin
   fOrgWinControlHeight := WinControl.Height;
   fOrgWinControlWidth := WinControl.Width;
   ArrangeLabelAndWinControlOnPanel;
+end;
+
+function TJvBasePanelEditParameter.GetBeforeParameter: TJvBaseParameter;
+begin
+  Result := ParameterList.ParameterByName(BeforeParameterName);
+end;
+
+function TJvBasePanelEditParameter.GetAfterParameter: TJvBaseParameter;
+begin
+  Result := ParameterList.ParameterByName(AfterParameterName);
 end;
 
 function TJvBasePanelEditParameter.GetLabelWidth: Integer;

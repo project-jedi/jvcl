@@ -20,7 +20,7 @@ located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
+// $Id: jvcl/run/JvBaseDBLogonDialog.pas Jens Fudickar date $
 
 unit JvBaseDBLogonDialog;
 
@@ -34,7 +34,8 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, Forms, Controls, Menus,
   JvAppStorage, JvDynControlEngine, JvDynControlEngineIntf,
-  JvPropertyStore, JvBaseDBDialog, JvBaseDBPasswordDialog, Graphics;
+  JvPropertyStore, JvBaseDBDialog, JvBaseDBPasswordDialog, Graphics,
+  ExtCtrls;
 
 type
   TJvLogonDialogFillListEvent = procedure(List: TStringList) of object;
@@ -59,6 +60,7 @@ type
     FShowColors: Boolean;
     FShowConnectGroup: Boolean;
     FShowConnectionsExport: Boolean;
+    FShowConnectionFilter: Boolean;
     FShowSavePasswords: Boolean;
     FShowShortcuts: Boolean;
   public
@@ -84,6 +86,7 @@ type
     property ShowColors: Boolean read FShowColors write FShowColors default False;
     property ShowConnectGroup: Boolean read FShowConnectGroup write FShowConnectGroup default True;
     property ShowConnectionsExport: Boolean read FShowConnectionsExport write FShowConnectionsExport default True;
+    property ShowConnectionFilter: Boolean read FShowConnectionFilter write FShowConnectionFilter default true;
     property ShowSavePasswords: Boolean read FShowSavePasswords write FShowSavePasswords default False;
     property ShowShortcuts: Boolean read FShowShortcuts write FShowShortcuts default True;
   end;
@@ -136,6 +139,7 @@ type
     function IsConnectAllowed(AllowNullPasswords: Boolean): Boolean; virtual;
     function ConnectString: string; virtual;
     function DatabaseGroupIdentifier: string; virtual;
+    function MatchesFilter(iFilterValue: String): Boolean; virtual;
     property SavePassword: Boolean read FSavePassword write SetSavePassword;
     property ShortCut: Integer read FShortCut write FShortCut;
   published
@@ -211,6 +215,7 @@ type
     ColorBoxPanel: TWinControl;
     ConnectBtn: TWinControl;
     ConnectGroupPanel: TWinControl;
+    ConnectionFilterTimer: TTimer;
     ConnectListListBox: TWinControl;
     DatabaseComboBox: TWinControl;
     DatabasePanel: TWinControl;
@@ -218,6 +223,8 @@ type
     EditConnectionPanel: TWinControl;
     FAfterTransferSessionDataToConnectionInfo: TJvLogonDialogConnectionInfoEvent;
     FBeforeTransferConnectionInfoToSessionData: TJvLogonDialogConnectionInfoEvent;
+    FConnectionFilterEdit: TWincontrol;
+    IConnectionFilterEditData: IJvDynControlData;
     FConnectionList: TJvBaseConnectionList;
     FCurrentConnectionInfo: TJvBaseConnectionInfo;
     FGroupByDatabase: Boolean;
@@ -260,6 +267,7 @@ type
     UserNameEdit: TWinControl;
     UserNamePanel: TWinControl;
     UserTreeView: TWinControl;
+    ConnectionListPageControl: TWinControl;
     procedure AdditionalBtnClick(Sender: TObject);
     procedure AddToListBtnClick(Sender: TObject);
     function CalculatePanelHeight(iPanel: TWinControl): Integer;
@@ -268,7 +276,8 @@ type
     procedure ConnectionListPageControlChange(Sender: TObject);
     procedure ConnectListListBoxClick(Sender: TObject);
     procedure ConnectListListBoxDblClick(Sender: TObject);
-    procedure CreateUserTreeView;
+    procedure ConnectionFilterEditChange(Sender: TObject);
+    procedure ConnectionFilterTimerTimer(Sender: TObject);
     function DecryptPassword(const Value: string): string;
     function EncryptPassword(const Value: string): string;
     procedure FillAllConnectionLists;
@@ -276,11 +285,13 @@ type
     procedure FillConnectionList;
     procedure FillDatabaseTreeView;
     procedure FillGroupTreeView;
+    procedure FillUserTreeView;
     procedure FillShortCutList(Items: TStringList);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     function GetActivePage: TJvDBLogonDialogActivePage;
+    function GetConnectionFilterValue: string;
     function GetCurrentDialogListConnectionInfo: TJvBaseConnectionInfo;
     function GetDialogDatabase: string;
     function GetDialogPassword: string;
@@ -303,6 +314,7 @@ type
     procedure SetDialogUserName(const Value: string);
     procedure SetOptions(const Value: TJvBaseDBLogonDialogOptions);
     procedure StoreSettings;
+    property ConnectionFilterValue: string read GetConnectionFilterValue;
   protected
     procedure ActivateDatabaseControl;
     procedure ActivatePasswordControl;
@@ -325,6 +337,7 @@ type
     procedure FillAllComoboBoxes; virtual;
     procedure FillDatabaseComboBox;
     procedure FillDatabaseComboBoxValues(Items: TStrings); virtual;
+    procedure FreeFormControls; override;
     { Retrieve the class that holds the storage options and format settings. }
     class function GetDBLogonConnectionListClass: TJvBaseConnectionListClass; virtual;
     { Retrieve the class that holds the storage options and format settings. }
@@ -424,9 +437,9 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
+    RCSfile: '$URL: jvcl/run/JvBaseDBLogonDialog.pas $';
+    Revision: '$Revision: 452e37996b3821b0e7ca9082f2fe381bf5c65e15 $';
+    Date: '$Date: 2014-09-21 21:26:51 +0200 $';
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
@@ -439,10 +452,11 @@ implementation
 uses
   Windows, SysUtils, Types, ComCtrls, StdCtrls, Dialogs,
   {$IFDEF HAS_UNIT_CHARACTER}
-  Character, 
+  Character,
   {$ENDIF HAS_UNIT_CHARACTER}
-  JvJCLUtils, //ToUpper and CharInSet
-  JvAppIniStorage, JvAppXMLStorage, JvDSADialogs, JvResources, ExtCtrls;
+  JvJCLUtils,
+  JvAppIniStorage, JvAppXMLStorage, JvDSADialogs, JvResources,
+  Variants, StrUtils;
 
 
 //=== { TJvBaseDBLogonDialog } ===============================================
@@ -490,6 +504,7 @@ begin
   ConnectionInfo := ConnectionList.CreateConnection;
   TransferConnectionInfoFromDialog(ConnectionInfo);
   ConnectionList.AddConnection(ConnectionInfo);
+  IConnectionFilterEditData.ControlValue := '';
   FillAllConnectionLists;
 end;
 
@@ -573,6 +588,7 @@ begin
   IShortCutComboBoxData:= nil;
   IUserNameEditData:= nil;
   IUserTreeView:= nil;
+  IConnectionFilterEditData := nil;
 end;
 
 procedure TJvBaseDBLogonDialog.ClearFormControls;
@@ -589,6 +605,9 @@ begin
     IShortCutComboBoxData.ControlValue := '';
   if Assigned(IColorComboBox)  then
     IColorComboBox.ControlSelectedColor  := cDefaultColorComboBoxColor;
+  if Assigned(IConnectionFilterEditData)  then
+    IConnectionFilterEditData.ControlValue  := '';
+
 end;
 
 procedure TJvBaseDBLogonDialog.ConnectBtnClick(Sender: TObject);
@@ -596,6 +615,18 @@ begin
   if not ConnectBtn.Enabled then
     Exit;
   ConnectToSession;
+end;
+
+procedure TJvBaseDBLogonDialog.ConnectionFilterEditChange(Sender: TObject);
+begin
+  ConnectionFilterTimer.Enabled := False;
+  ConnectionFilterTimer.Enabled := True;
+end;
+
+procedure TJvBaseDBLogonDialog.ConnectionFilterTimerTimer(Sender: TObject);
+begin
+  ConnectionFilterTimer.Enabled := False;
+  FillAllConnectionLists;
 end;
 
 procedure TJvBaseDBLogonDialog.ConnectionListPageControlChange(Sender: TObject);
@@ -676,7 +707,6 @@ var
   AliasEdit: TWinControl;
   ShortCutComboBox: TWinControl;
   ConnectGroupComboBox: TWinControl;
-  ConnectionListPageControl: TWinControl;
   ColorComboBox: TWinControl;
   Items: TStringList;
   ITabControl: IJvDynControlTabControl;
@@ -747,9 +777,20 @@ begin
   ListPanel.TabOrder := 1;
 
   ConnectListLabel := DynControlEngine.CreateStaticTextControl(AForm, ListPanel, 'ConnectListLabel', 'Connection List');
-
   AlignControlTop(ConnectListLabel, nil);
   ConnectListLabel.Height := 18;
+
+  FConnectionFilterEdit := TWinControl(DynControlEngine.CreateControl(jctEdit, AForm, ListPanel, 'ConnectionFilterEdit'));
+  FConnectionFilterEdit.Visible := Options.ShowConnectionFilter;
+  Supports(FConnectionFilterEdit, IJvDynControlData, IConnectionFilterEditData);
+  IConnectionFilterEditData.ControlValue := '';
+  IConnectionFilterEditData.ControlSetOnChange(ConnectionFilterEditChange);
+  AlignControlTop(FConnectionFilterEdit, ConnectListLabel);
+
+  ConnectionFilterTimer:= TTimer.Create(self);
+  ConnectionFilterTimer.Interval := 250;
+  ConnectionFilterTimer.Enabled := False;
+  ConnectionFilterTimer.OnTimer := ConnectionFilterTimerTimer;
 
   ListBtnPanel := DynControlEngine.CreatePanelControl(AForm, MainPanel, 'ListBtnPanel', '', alLeft);
   ListBtnPanel.Width := 32;
@@ -815,7 +856,10 @@ begin
   if Supports(UserTreeView, IJvDynControlDblClick, IDynControlDblClick) then
     IDynControlDblClick.ControlSetOnDblClick(ConnectListListBoxDblClick);
   if Supports(UserTreeView, IJvDynControlTreeView, IUserTreeView) then
+  begin
     IUserTreeView.ControlSetSortType(stText);
+    IUserTreeView.ControlSetAutoExpand(true);
+  end;
   if Supports(UserTreeView, IJvDynControlReadOnly, IDynControlReadOnly) then
     IDynControlReadOnly.ControlSetReadOnly(True);
   DatabaseTreeView := DynControlEngine.CreateTreeViewControl(AForm, AForm, 'DatabaseTreeView');
@@ -964,41 +1008,55 @@ begin
   Result := nil;
 end;
 
-procedure TJvBaseDBLogonDialog.CreateUserTreeView;
+procedure TJvBaseDBLogonDialog.FillUserTreeView;
 var
   i, j: Integer;
   Node: TTreeNode;
   Found: Boolean;
   s: string;
   Connection: TJvBaseConnectionInfo;
+  UserName : String;
   Items: TTreeNodes;
 begin
   Items := IUserTreeView.ControlItems;
-  Items.Clear;
-  for i := 0 to ConnectionList.Count - 1 do
-  begin
-    Connection := ConnectionList.Connection[i];
-    s := ListConnectString(Connection, Options.ShowShortcuts, Options.ShowConnectGroup);
-
-    Found := False;
-    for j := 0 to Items.Count - 1 do
-      if Items[j].Level = 0 then
-      begin
-        Node := Items[j];
-        if Node.Text = Connection.Username then
-        begin
-          Node := Items.AddChild(Node, s);
-          Node.Data := Connection;
-          Found := True;
-          break;
-        end;
-      end;
-    if not Found then
+  try
+    Items.BeginUpdate;
+    Items.Clear;
+    for i := 0 to ConnectionList.Count - 1 do
     begin
-      Node := Items.AddChild(nil, Connection.Username);
-      Node := Items.AddChild(Node, s);
-      Node.Data := Connection;
+      Connection := ConnectionList.Connection[i];
+      if not Connection.MatchesFilter(ConnectionFilterValue) then
+        Continue;
+      s := ListConnectString(Connection, Options.ShowShortcuts, Options.ShowConnectGroup);
+      UserName := UpperCase(Connection.Username);
+
+      Found := False;
+      for j := 0 to Items.Count - 1 do
+        if Items[j].Level = 0 then
+        begin
+          Node := Items[j];
+          if Node.Text = Username then
+          begin
+            Node := Items.AddChild(Node, s);
+            Node.Data := Connection;
+            Found := True;
+            break;
+          end;
+        end;
+      if not Found then
+      begin
+        Node := Items.AddChild(nil, Username);
+        Node := Items.AddChild(Node, s);
+        Node.Data := Connection;
+      end;
     end;
+    if (ConnectionFilterValue <> '') then
+      for i := 0 to Items.Count-1 do
+        Items.Item[i].Expand(True);
+    if Items.Count > 0 then
+      Items.Item[0].Selected := True;
+  finally
+    Items.EndUpdate;
   end;
   IUserTreeView.ControlSortItems;
 end;
@@ -1084,7 +1142,7 @@ begin
   FillDatabaseTreeView;
   FillGroupTreeView;
   FillConnectGroupComboBox;
-  CreateUserTreeView;
+  FillUserTreeView;
   SetButtonState;
 end;
 
@@ -1102,6 +1160,8 @@ begin
       for i := 0 to ConnectionList.Count - 1 do
       begin
         Connection := ConnectionList.Connection[i];
+        if not Connection.MatchesFilter(ConnectionFilterValue) then
+          Continue;
         if Connection.Group <> '' then
           if Items.IndexOf(Connection.Group) < 0 then
             Items.Add(Connection.Group);
@@ -1122,11 +1182,22 @@ begin
   if Assigned(IConnectListListBoxItems) then
   begin
     Items := IConnectListListBoxItems.ControlItems;
-    Items.Clear;
-    for i := 0 to ConnectionList.Count - 1 do
-    begin
-      Connection := ConnectionList.Connection[i];
-      Items.AddObject(ListConnectString(Connection, Options.ShowShortCuts, Options.ShowConnectGroup), Connection);
+    try
+      Items.BeginUpdate;
+      Items.Clear;
+      for i := 0 to ConnectionList.Count - 1 do
+      begin
+        Connection := ConnectionList.Connection[i];
+        if not Connection.MatchesFilter(ConnectionFilterValue) then
+          Continue;
+        Items.AddObject(ListConnectString(Connection, Options.ShowShortCuts, Options.ShowConnectGroup), Connection);
+      end;
+      if Assigned(IConnectListListBoxData) and (Items.Count > 0) then
+      begin
+        IConnectListListBoxData.ControlValue := Items[0];
+      end;
+    finally
+      Items.EndUpdate;
     end;
   end;
 end;
@@ -1172,33 +1243,47 @@ var
   Found: Boolean;
   s: string;
   Connection: TJvBaseConnectionInfo;
+  DatabaseName : String;
   Items: TTreeNodes;
 begin
   Items := IDatabaseTreeView.ControlItems;
-  Items.Clear;
-  for i := 0 to ConnectionList.Count - 1 do
-  begin
-    Connection := ConnectionList.Connection[i];
-    s := ListConnectString(Connection, Options.ShowShortCuts, Options.ShowConnectGroup);
-    Found := False;
-    for j := 0 to Items.Count - 1 do
-      if Items[j].Level = 0 then
-      begin
-        Node := Items[j];
-        if Node.Text = Connection.DatabaseGroupIdentifier then
-        begin
-          Node := Items.AddChild(Node, s);
-          Node.Data := Connection;
-          Found := True;
-          break;
-        end;
-      end;
-    if not Found then
+  try
+    Items.BeginUpdate;
+    Items.Clear;
+    for i := 0 to ConnectionList.Count - 1 do
     begin
-      Node := Items.AddChild(nil, Connection.DatabaseGroupIdentifier);
-      Node := Items.AddChild(Node, s);
-      Node.Data := Connection;
+      Connection := ConnectionList.Connection[i];
+      if not Connection.MatchesFilter(ConnectionFilterValue) then
+        Continue;
+      s := ListConnectString(Connection, Options.ShowShortCuts, Options.ShowConnectGroup);
+      DatabaseName := UpperCase(Connection.DatabaseGroupIdentifier);
+      Found := False;
+      for j := 0 to Items.Count - 1 do
+        if Items[j].Level = 0 then
+        begin
+          Node := Items[j];
+          if Node.Text = DatabaseName then
+          begin
+            Node := Items.AddChild(Node, s);
+            Node.Data := Connection;
+            Found := True;
+            break;
+          end;
+        end;
+      if not Found then
+      begin
+        Node := Items.AddChild(nil, DatabaseName);
+        Node := Items.AddChild(Node, s);
+        Node.Data := Connection;
+      end;
     end;
+    if (ConnectionFilterValue <> '') then
+      for i := 0 to Items.Count-1 do
+        Items.Item[i].Expand(True);
+    if Items.Count > 0 then
+      Items.Item[0].Selected := True;
+  finally
+    Items.EndUpdate;
   end;
   IDatabaseTreeView.ControlSortItems;
 end;
@@ -1214,73 +1299,58 @@ var
   gr: string;
   GroupList: TStringList;
   Connection: TJvBaseConnectionInfo;
+  UserName : String;
+  DatabaseName : String;
 begin
   if not Assigned(IGroupTreeView) then
     Exit;
   Items := IGroupTreeView.ControlItems;
-  Items.Clear;
-  for i := 0 to ConnectionList.Count - 1 do
-  begin
-    Connection := ConnectionList.Connection[i];
-    GroupList := TStringList.Create;
-    try
-      {$IFDEF DELPHI2009_UP}
-      GroupList.StrictDelimiter:=true;
-      {$ENDIF DELPHI2009_UP}
-      GroupList.Duplicates := dupIgnore;
-      GroupList.Sorted := True;
-      if (Pos(';',Connection.Group) >= 1) and (Pos(',',Connection.Group) < 1)then
-        GroupList.Delimiter := ';'
-      else
+  try
+    Items.BeginUpdate;
+    Items.Clear;
+    for i := 0 to ConnectionList.Count - 1 do
+    begin
+      Connection := ConnectionList.Connection[i];
+      if not Connection.MatchesFilter(ConnectionFilterValue) then
+        Continue;
+      UserName := UpperCase(Connection.Username);
+      DatabaseName := UpperCase(Connection.DatabaseGroupIdentifier);
+      GroupList := TStringList.Create;
+      try
+        {$IFDEF DELPHI2009_UP}
+        GroupList.StrictDelimiter:=true;
+        {$ENDIF DELPHI2009_UP}
+        GroupList.Duplicates := dupIgnore;
+        GroupList.Sorted := True;
+        if (Pos(';',Connection.Group) >= 1) and (Pos(',',Connection.Group) < 1)then
+          GroupList.Delimiter := ';'
+        else
+          GroupList.Delimiter := ',';
+        GroupList.DelimitedText := Connection.Group;
         GroupList.Delimiter := ',';
-      GroupList.DelimitedText := Connection.Group;
-      GroupList.Delimiter := ',';
-      Connection.Group := GroupList.CommaText;
-      if GroupList.CommaText = '' then
-        GroupList.CommaText := RsGroupNameUndefined;
+        Connection.Group := GroupList.CommaText;
+        if GroupList.CommaText = '' then
+          GroupList.CommaText := RsGroupNameUndefined;
 
-      for g := 0 to GroupList.Count - 1 do
-      begin
-        Gr := GroupList[g];
-        if gr = '' then
-          continue;
-        s := ListConnectString(Connection, Options.ShowShortcuts, False);
+        for g := 0 to GroupList.Count - 1 do
+        begin
+          Gr := GroupList[g];
+          if gr = '' then
+            continue;
+          s := ListConnectString(Connection, Options.ShowShortcuts, False);
 
-        Found := False;
-        for j := 0 to Items.Count - 1 do
-          if Items[j].Level = 0 then
-          begin
-            Node := Items[j];
-            if Node.Text = Gr then
-              if GroupByDatabase then
-              begin
-                for k := 0 to Node.Count - 1 do
-                begin
-                  Node2 := Node.Item[k];
-                  if Node2.Text = Connection.DatabaseGroupIdentifier then
-                  begin
-                    Node := Items.AddChild(Node2, s);
-                    Node.Data := Connection;
-                    Found := True;
-                    break;
-                  end;
-                end;
-                if not Found then
-                begin
-                  Node := Items.AddChild(Node, Connection.DatabaseGroupIdentifier);
-                  Node := Items.AddChild(Node, s);
-                  Node.Data := Connection;
-                  Found := True;
-                end;
-                Break;
-              end
-              else
-                if GroupByUser then
+          Found := False;
+          for j := 0 to Items.Count - 1 do
+            if Items[j].Level = 0 then
+            begin
+              Node := Items[j];
+              if Node.Text = Gr then
+                if GroupByDatabase then
                 begin
                   for k := 0 to Node.Count - 1 do
                   begin
                     Node2 := Node.Item[k];
-                    if Node2.Text = Connection.Username then
+                    if Node2.Text = DatabaseName then
                     begin
                       Node := Items.AddChild(Node2, s);
                       Node.Data := Connection;
@@ -1290,37 +1360,68 @@ begin
                   end;
                   if not Found then
                   begin
-                    Node := Items.AddChild(Node, Connection.Username);
+                    Node := Items.AddChild(Node, DatabaseName);
                     Node := Items.AddChild(Node, s);
-                    //Node.SelectedIndex := i;
                     Node.Data := Connection;
                     Found := True;
                   end;
                   Break;
                 end
                 else
-                begin
-                  Node := Items.AddChild(Node, s);
-                  Node.Data := Connection;
-                  Found := True;
-                  break;
-                end; {*** IF Node.Text = UpperCase(Databases[i]) THEN ***}
-          end; {*** IF Items[i].Level = 0 THEN ***}
-        if not Found then
-        begin
-          Node := Items.AddChild(nil, Gr);
-          if GroupByDataBase then
-            Node := Items.AddChild(Node, Connection.DatabaseGroupIdentifier)
-          else
-            if GroupByUser then
-              Node := Items.AddChild(Node, Connection.Username);
-          Node := Items.AddChild(Node, s);
-          Node.Data := Connection;
+                  if GroupByUser then
+                  begin
+                    for k := 0 to Node.Count - 1 do
+                    begin
+                      Node2 := Node.Item[k];
+                      if Node2.Text = Username then
+                      begin
+                        Node := Items.AddChild(Node2, s);
+                        Node.Data := Connection;
+                        Found := True;
+                        break;
+                      end;
+                    end;
+                    if not Found then
+                    begin
+                      Node := Items.AddChild(Node, Username);
+                      Node := Items.AddChild(Node, s);
+                      //Node.SelectedIndex := i;
+                      Node.Data := Connection;
+                      Found := True;
+                    end;
+                    Break;
+                  end
+                  else
+                  begin
+                    Node := Items.AddChild(Node, s);
+                    Node.Data := Connection;
+                    Found := True;
+                    break;
+                  end; {*** IF Node.Text = UpperCase(Databases[i]) THEN ***}
+            end; {*** IF Items[i].Level = 0 THEN ***}
+          if not Found then
+          begin
+            Node := Items.AddChild(nil, Gr);
+            if GroupByDataBase then
+              Node := Items.AddChild(Node, DatabaseName)
+            else
+              if GroupByUser then
+                Node := Items.AddChild(Node, Username);
+            Node := Items.AddChild(Node, s);
+            Node.Data := Connection;
+          end;
         end;
+      finally
+        GroupList.Free;
       end;
-    finally
-      GroupList.Free;
     end;
+    if (ConnectionFilterValue <> '') then
+      for i := 0 to Items.Count-1 do
+        Items.Item[i].Expand(True);
+    if Items.Count > 0 then
+      Items.Item[0].Selected := True;
+  finally
+    Items.EndUpdate;
   end;
   IGroupTreeView.ControlSortItems;
 end;
@@ -1375,6 +1476,22 @@ begin
       Exit;
     end;
   end;
+  if (Shift = [ssCtrl]) then
+    Case Key of
+       VK_UP,
+       Ord ('F') : if FConnectionFilterEdit.Visible then FConnectionFilterEdit.SetFocus;
+       VK_LEFT : if GetFromListBtn.Enabled then GetFromListBtnClick(nil);
+       VK_RIGHT : AddToListBtnClick(nil);
+       VK_Down :
+          if FConnectionFilterEdit.Focused then
+          case ActivePage of
+            ldapUserTree: if Assigned(UserTreeView) then UserTreeView.SetFocus;
+            ldapDatabaseTree: if Assigned(DatabaseTreeView) then DatabaseTreeView.SetFocus;
+            ldapGroupTree: if Assigned(GroupTreeView) then GroupTreeView.SetFocus;
+            ldapConnectList: if Assigned(ConnectListListBox) then ConnectListListBox.SetFocus;
+          end;
+
+    End;
 end;
 
 procedure TJvBaseDBLogonDialog.FormShow(Sender: TObject);
@@ -1395,6 +1512,29 @@ begin
   ValidateConnectBtnEnabled;
 end;
 
+procedure TJvBaseDBLogonDialog.FreeFormControls;
+begin
+  IAliasEditData:= nil;
+  IConnectionFilterEditData:= nil;
+  IColorComboBox:= nil;
+  IConnectGroupComboBoxData:= nil;
+  IConnectGroupComboBoxItems:= nil;
+  IConnectionListPageControlTab:= nil;
+  IConnectListListBoxData:= nil;
+  IConnectListListBoxItems:= nil;
+  IDatabaseComboBoxData:= nil;
+  IDatabaseTreeView:= nil;
+  IGroupByDatabaseCheckBox:= nil;
+  IGroupByUserCheckBox:= nil;
+  IGroupTreeView:= nil;
+  IPasswordEditData:= nil;
+  ISavePasswordsCheckBox:= nil;
+  IShortCutComboBoxData:= nil;
+  IUserNameEditData:= nil;
+  IUserTreeView:= nil;
+  inherited;
+end;
+
 function TJvBaseDBLogonDialog.GetActivePage: TJvDBLogonDialogActivePage;
 begin
   if IConnectionListPageControlTab.ControlTabIndex = 1 then
@@ -1407,6 +1547,11 @@ begin
         Result := ldapGroupTree
       else
         Result := ldapConnectList;
+end;
+
+function TJvBaseDBLogonDialog.GetConnectionFilterValue: string;
+begin
+  Result := VarToStr(IConnectionFilterEditData.ControlValue);
 end;
 
 function TJvBaseDBLogonDialog.GetCurrentDialogListConnectionInfo: TJvBaseConnectionInfo;
@@ -2086,6 +2231,7 @@ begin
   FAllowPasswordChange := False;
   FPasswordDialogOptions := TJvBaseDBPasswordDialogOptions.Create;
   FShowAlias := false;
+  FShowConnectionFilter := true;
 end;
 
 destructor TJvBaseDBLogonDialogOptions.Destroy;
@@ -2286,6 +2432,17 @@ end;
 function TJvBaseConnectionInfo.GetShortCutText: string;
 begin
   Result := ShortCutToText(ShortCut);
+end;
+
+function TJvBaseConnectionInfo.MatchesFilter(iFilterValue: String): Boolean;
+begin
+  if iFilterValue = '' then
+    Result := True
+  else
+    Result := ContainsText(Alias, iFilterValue) or
+              ContainsText(Database, iFilterValue) or
+              ContainsText(Group, iFilterValue)or
+              ContainsText(Username, iFilterValue);
 end;
 
 function TJvBaseConnectionInfo.SearchName: String;
