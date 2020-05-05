@@ -3324,7 +3324,7 @@ begin
   else
     Form := TForm(GetParentForm(Control));
   if Form.Scaled then
-    Result := Result * Form.PixelsPerInch div 96;
+    Result := MulDiv(Result, Form.PixelsPerInch, 96);
 end;
 
 procedure ShowMenu(Form: TForm; MenuAni: TMenuAnimation);
