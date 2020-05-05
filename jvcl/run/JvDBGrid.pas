@@ -4307,7 +4307,7 @@ begin
     ColLineWidth := Ord(dgColLines in Options) * GridLineWidth;
     AvailableWidth := ClientWidth;
     if (dgIndicator in Options) then
-      Dec(AvailableWidth, IndicatorWidth + ColLineWidth);
+      Dec(AvailableWidth, Pixels(Self, IndicatorWidth) + ColLineWidth);
     TotalColWidth := 0;
     if FixedCols = 0 then
       BeginLayout;
