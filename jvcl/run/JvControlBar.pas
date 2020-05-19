@@ -88,6 +88,13 @@ implementation
 
 uses
   SysUtils,
+  {$IFDEF SUPPORTS_INLINE}
+  {$IFDEF HAS_UNITSCOPE}
+  System.Types,
+  {$ELSE}
+  Types,
+  {$ENDIF ~HAS_UNITSCOPE}
+  {$ENDIF SUPPORTS_INLINE}
   JvThemes;
 
 const

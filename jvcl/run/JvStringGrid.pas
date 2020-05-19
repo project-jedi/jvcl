@@ -260,6 +260,13 @@ implementation
 
 uses
   Math,
+  {$IFDEF SUPPORTS_INLINE}
+  {$IFDEF HAS_UNITSCOPE}
+  System.Types,
+  {$ELSE}
+  Types,
+  {$ENDIF ~HAS_UNITSCOPE}
+  {$ENDIF SUPPORTS_INLINE}
   JclBase, // TBytes for Pre-Delphi 2007
   JvJVCLUtils;
 
