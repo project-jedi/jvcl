@@ -509,7 +509,6 @@ begin
   FProgressbarPanel.Height := FRowsStaticText.Height + 4;
   if Supports(FProgressbar, IJvDynControlAlign, ITmpAlign) then
     ITmpAlign.ControlSetAlign(alClient);
-  IProgressBarControl.ControlSetMarquee(True);
   FProgressbarPanel.Top := FRowsPanel.Top + FRowsPanel.Height + 1;
 
   FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ButtonPanel', '', alTop);
@@ -566,6 +565,8 @@ procedure TJvDatasetThreadDialogForm.FillDialogData;
 var
   ITmpControl: IJvDynControlCaption;
 begin
+  if Assigned(IProgressBarControl) then
+    IProgressBarControl.ControlSetMarquee(True);
   if Assigned(ConnectedDatasetHandler) then
   begin
     if DialogOptions.Caption <> '' then

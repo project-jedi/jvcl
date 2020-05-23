@@ -43,7 +43,7 @@ uses
   JvDynControlEngineIntf;
 
 type
-  TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
+  TDlgCenterKind = (dckDefault, dckScreen, dckMainForm, dckActiveForm);
 
   TDSAMessageForm = class(TJvForm)
   private
@@ -222,39 +222,39 @@ const
   mbNone = TMsgDlgBtn(-1);
   mbDefault = TMsgDlgBtn(-2);
 
-procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckDefault; const Timeout: Integer = 0;
   const ADynControlEngine: TJvDynControlEngine = nil);
-procedure ShowMessageFmt(const Msg: string; const Params: array of const; const Center: TDlgCenterKind = dckScreen;
+procedure ShowMessageFmt(const Msg: string; const Params: array of const; const Center: TDlgCenterKind = dckDefault;
   const Timeout: Integer = 0; const ADynControlEngine: TJvDynControlEngine = nil);
 
 function MessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
-  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const HelpCtx: Longint; const Center: TDlgCenterKind = dckDefault; const Timeout: Integer = 0;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
   const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function MessageDlg(const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
-  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const HelpCtx: Longint; const Center: TDlgCenterKind = dckDefault; const Timeout: Integer = 0;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
   const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function MessageDlg(const Caption, Msg: string; const Picture: TGraphic; const Buttons: TMsgDlgButtons;
-  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const HelpCtx: Longint; const Center: TDlgCenterKind = dckDefault; const Timeout: Integer = 0;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
   const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 
 function MessageDlgEx(const Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string;
-  const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
+  const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckDefault;
   const Timeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
   const HelpButton: Integer = -1;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function MessageDlgEx(const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string;
-  const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
+  const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckDefault;
   const Timeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
   const HelpButton: Integer = -1;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic; const Buttons: array of string;
-  const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
+  const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckDefault;
   const Timeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
   const HelpButton: Integer = -1;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
@@ -263,39 +263,39 @@ function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic; const
 // "Don't Show Again" (DSA) dialogs
 //--------------------------------------------------------------------------------------------------
 
-procedure DSAShowMessage(const DlgID: Integer; const Msg: string; const Center: TDlgCenterKind = dckScreen;
+procedure DSAShowMessage(const DlgID: Integer; const Msg: string; const Center: TDlgCenterKind = dckDefault;
   const Timeout: Integer = 0; const ADynControlEngine: TJvDynControlEngine = nil);
 procedure DSAShowMessageFmt(const DlgID: Integer; const Msg: string; const Params: array of const;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const Center: TDlgCenterKind = dckDefault; const Timeout: Integer = 0;
   const ADynControlEngine: TJvDynControlEngine = nil);
 function DSAMessageDlg(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
+  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckDefault;
   const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
   const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
+  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckDefault;
   const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
   const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
+  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckDefault;
   const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
   const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function DSAMessageDlgEx(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const Center: TDlgCenterKind = dckDefault; const Timeout: Integer = 0;
   const DefaultButton: Integer = 0; const CancelButton: Integer = 1; const HelpButton: Integer = -1;
   const ADynControlEngine: TJvDynControlEngine = nil): Integer; overload;
 function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0; const DefaultButton: Integer = 0;
+  const Center: TDlgCenterKind = dckDefault; const Timeout: Integer = 0; const DefaultButton: Integer = 0;
   const CancelButton: Integer = 1; const HelpButton: Integer = -1;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0; const DefaultButton: Integer = 0;
+  const Center: TDlgCenterKind = dckDefault; const Timeout: Integer = 0; const DefaultButton: Integer = 0;
   const CancelButton: Integer = 1; const HelpButton: Integer = -1;
   const ADynControlEngine: TJvDynControlEngine = nil): Integer; overload;
 
@@ -305,7 +305,7 @@ function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const
 
 function CreateDSAMessageForm(const ACaption, Msg: string; const APicture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Integer;
-  const CheckCaption: string; const Center: TDlgCenterKind = dckScreen;
+  const CheckCaption: string; const Center: TDlgCenterKind = dckDefault;
   const ATimeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
   HelpButton: Integer = -1; const ADynControlEngine: TJvDynControlEngine = nil): TDSAMessageForm;
 
@@ -465,6 +465,10 @@ type
     property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
   end;
 
+/// This function allows to set an application default for the Center parameter of the MessageDlg functions.
+/// If this function is not called the default is dckScreen.
+procedure SetDSADefaultDialogCenterKind(Center : TDlgCenterKind);
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -497,6 +501,13 @@ type
 
 var
   TimeFormatter: TJvDSATimeFormatter = StandardDSATimeFormatter;
+  DefaultDialogCenterKind : TDlgCenterKind;
+
+procedure SetDSADefaultDialogCenterKind(Center : TDlgCenterKind);
+begin
+  Assert(Center <> dckDefault,'DefaultDialogCenterKind can not be set to dckDefault');
+  DefaultDialogCenterKind := Center;
+end;
 
 procedure SetDSATimeFormatter(const ATimeFormatter: TJvDSATimeFormatter);
 begin
@@ -739,7 +750,7 @@ end;
 
 function CreateDSAMessageForm(const ACaption, Msg: string; const APicture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Integer;
-  const CheckCaption: string; const Center: TDlgCenterKind = dckScreen;
+  const CheckCaption: string; const Center: TDlgCenterKind = dckDefault;
   const ATimeout: Integer = 0; const DefaultButton: Integer = 0;
   const CancelButton: Integer = 1; HelpButton: Integer = -1;
   const ADynControlEngine: TJvDynControlEngine = nil): TDSAMessageForm;
@@ -778,6 +789,7 @@ var
   CheckPanel : TWinControl;
   MainPanel : TWinControl;
   DynControlAutoSize: IJvDynControlAutoSize;
+  IntCenter : TDlgCenterKind;
 
   procedure CalcTextRect(iSingle: Boolean; lpString: PChar; nCount: Integer; var lpRect: TRect);
   begin
@@ -817,7 +829,11 @@ begin
     DynControlEngine := ADynControlEngine
   else
     DynControlEngine := DefaultDynControlEngine;
-  case Center of
+  if Center = dckDefault then
+    IntCenter := DefaultDialogCenterKind
+  else
+    IntCenter := Center;
+  case IntCenter of
     dckScreen:
       CenterParent := Screen;
     dckMainForm:
@@ -825,7 +841,7 @@ begin
     dckActiveForm:
       CenterParent := Screen.ActiveCustomForm;
   else
-    CenterParent := nil;
+    CenterParent := Screen;
   end;
   if CenterParent = nil then
     CenterParent := Screen;
@@ -2611,6 +2627,7 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
+  SetDSADefaultDialogCenterKind(dckScreen);
 
 finalization
   FreeAndNil(GlobalCheckMarkTexts);
