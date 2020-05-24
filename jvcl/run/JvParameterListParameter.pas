@@ -1565,10 +1565,15 @@ function TJvListParameter.GetWinControlData: Variant;
 var
   Index: Integer;
 begin
-  if Assigned(JvDynControlData) then
-    Index := JvDynControlData.ControlValue
-  else
-    Index := -1;
+  if not Assigned(JvDynControlData) then
+  begin
+    if VariantAsItemIndex then
+      Result := -1
+    else
+      Result := varNull;
+    exit;
+  end;
+  Index := JvDynControlData.ControlValue;
   if VariantAsItemIndex then
     Result := Index
   else if (Index >= 0) and (Index < ItemList.Count) then
