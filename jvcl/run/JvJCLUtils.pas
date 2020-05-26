@@ -5742,11 +5742,16 @@ begin
     Result := False;
     Exit;
   until (CInputWord > MaxInputWord) or (CWild > MaxWilds);
+
+  {$IFNDEF COMPILER27_UP}
+  // Delphi 10.4 complains that this code is useless and if one looks at the
+  // lines just above the until statement, it makes a lot of sense...
   { no completed evaluation }
   if CInputWord <= MaxInputWord then
     Result := False;
   if (CWild <= MaxWilds) and (Wilds[MaxWilds] <> '*') then
     Result := False;
+  {$ENDIF ~COMPILER27_UP}
 end;
 
 function XorString(const Key, Src: ShortString): ShortString;

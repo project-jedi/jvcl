@@ -1520,8 +1520,15 @@ begin
     Result.LookupDataSet := Field.LookupDataSet;
     Result.LookupKeyFields := Field.LookupKeyFields;
     Result.LookupResultField := Field.LookupResultField;
-  end else
-    FillChar(Result, SizeOf(Result), 0);
+  end
+  else
+  begin
+    Result.IsLookup := False;
+    Result.KeyFields := '';
+    Result.LookupDataSet := nil;
+    Result.LookupKeyFields := '';
+    Result.LookupResultField := '';
+  end;
 
   if Assigned(FOnGetColumnLookupInfo) then
     FOnGetColumnLookupInfo(Self, Column, Result);
