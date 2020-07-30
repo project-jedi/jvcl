@@ -275,6 +275,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ShowButton;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -417,6 +418,7 @@ type
     property PopupAlign;
     property PopupColor;
     property PopupMenu;
+    property ShowButton;
     property ShowHint;
     property CalendarStyle;
     property ShowNullDate;
