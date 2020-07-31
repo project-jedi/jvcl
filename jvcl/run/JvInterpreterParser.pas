@@ -501,10 +501,13 @@ begin
 
         Point := False;
         IsScientificNotation := False;
-        for I := 1 to L1 do
+        for I := 2 to L1 do
         begin
           Ci := Token[I];
-          if CharInSet(Ci, StConstE) then
+          // Scientific notation requires that before the E/e at least one digit
+          // is present
+          if CharInSet(Ci, StConstE) and
+             CharInSet(Token[I-1], StConstSymbols10) then
             IsScientificNotation := True;
 
           if Ci = '.' then
