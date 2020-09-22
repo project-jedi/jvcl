@@ -179,7 +179,7 @@ type
     property Visible: Boolean read FVisible write FVisible default False;
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
     property AutoFit: Boolean read FAutoFit write FAutoFit;
-    property HeaderRow: Boolean read FHeaderRow write FHeaderRow;
+    property HeaderRow: Boolean read FHeaderRow write FHeaderRow default True;
   end;
 
   TJvCustomDBGridTextExport = class(TJvCustomDBGridExport)
