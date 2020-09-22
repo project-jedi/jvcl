@@ -589,6 +589,7 @@ begin
   Caption := RsExportExcel;
   FExcel := Unassigned;
   FVisible := False;
+  FHeaderRow := True;
   FOrientation := woPortrait;
   FClose := scNewInstance;
 end;
