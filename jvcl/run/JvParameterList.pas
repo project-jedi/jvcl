@@ -153,6 +153,7 @@ type
     FOnExitParameter: TJvParameterListEvent;
     FOnValidateData: TJvParameterOnValidateData;
     FRequired: Boolean;
+    FRequiredReasons: TJvParameterListEnableDisableReasonList;
     procedure DisableAfterWincontrolPropertiesChanged;
     procedure EnableAfterWincontrolPropertiesChanged;
     procedure HandleAfterWincontrolPropertiesChanged;
@@ -252,6 +253,7 @@ type
     property TabOrder: Integer read FTabOrder write SetTabOrder;
     property DisableReasons: TJvParameterListEnableDisableReasonList read FDisableReasons;
     property EnableReasons: TJvParameterListEnableDisableReasonList read FEnableReasons;
+    property RequiredReasons: TJvParameterListEnableDisableReasonList read FRequiredReasons;
     property AfterWincontrolPropertiesChanged: TJvParameterListAfterParameterWincontrolPropertiesChangedEvent read
       FAfterWincontrolPropertiesChanged write FAfterWincontrolPropertiesChanged;
     /// Use this event to implement a custom logic to validate the parameter contents
@@ -285,6 +287,19 @@ type
     property HistorySaveCaption: string read FHistorySaveCaption write FHistorySaveCaption;
     property HistoryClearCaption: string read FHistoryClearCaption write FHistoryClearCaption;
   end;
+
+  {$IFDEF SUPPORTS_FOR_IN}
+  TJvParameterListEnumerator = class
+  private
+    FIndex: Integer;
+    FParameterList: TJvParameterList;
+  public
+    constructor Create(AJvParameterList: TJvParameterList);
+    function GetCurrent: TJvBaseParameter;
+    function MoveNext: Boolean;
+    property Current: TJvBaseParameter read GetCurrent;
+  end;
+  {$ENDIF}
 
   TJvParameterList = class(TJvComponent)
   private
@@ -425,6 +440,7 @@ type
     function Clone(AOwner: TComponent): TJvParameterList;
     {creates the components of all parameters on any TWInControl}
     procedure CreateWinControlsOnWinControl(ParameterParent: TWinControl);
+    function IsDataValid: Boolean;
     {
     Checks the IsDataValid of each Parameter, When the ShowParameterValidStatus is
     activated the labels invalid parameters will be shown italic
@@ -440,6 +456,9 @@ type
     procedure OnChangeParameterControl(Sender: TObject);
     { Saves the data of all allowed parameters to the AppStorage }
     procedure StoreDataTo(const iTempAppStoragePath: string);
+    {$IFDEF SUPPORTS_FOR_IN}
+    function GetEnumerator: TJvParameterListEnumerator;
+    {$ENDIF}
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Messages: TJvParameterListMessages read FMessages;
@@ -835,6 +854,7 @@ begin
   FVisible := True;
   FEnableReasons := TJvParameterListEnableDisableReasonList.Create;
   FDisableReasons := TJvParameterListEnableDisableReasonList.Create;
+  FRequiredReasons := TJvParameterListEnableDisableReasonList.Create;
   FValue := null;
   FAfterWincontrolPropertiesChangedDisabledCnt := 0;
 end;
@@ -843,6 +863,7 @@ destructor TJvBaseParameter.Destroy;
 begin
   FreeAndNil(FEnableReasons);
   FreeAndNil(FDisableReasons);
+  FreeAndNil(FRequiredReasons);
   inherited Destroy;
 end;
 
@@ -1125,6 +1146,7 @@ begin
       Enabled := TJvBaseParameter(Source).Enabled;
       FEnableReasons.Assign(TJvBaseParameter(Source).FEnableReasons);
       FDisableReasons.Assign(TJvBaseParameter(Source).FDisableReasons);
+      FRequiredReasons.Assign(TJvBaseParameter(Source).FRequiredReasons);
     finally
       EnableAfterWincontrolPropertiesChanged;
       HandleAfterWincontrolPropertiesChanged;
@@ -1234,6 +1256,30 @@ begin
       SetEnabled(FEnabled and not ReadOnly);
   HandleAfterWincontrolPropertiesChanged;
 end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+
+//=== { TJvParameterListEnumerator } ===================================================
+
+constructor TJvParameterListEnumerator.Create(AJvParameterList: TJvParameterList);
+begin
+  inherited Create;
+  FIndex := -1;
+  FParameterList := AJvParameterList;
+end;
+
+function TJvParameterListEnumerator.GetCurrent: TJvBaseParameter;
+begin
+  Result := FParameterList.Parameters[FIndex];
+end;
+
+function TJvParameterListEnumerator.MoveNext: Boolean;
+begin
+  Result := FIndex < FParameterList.Count - 1;
+  if Result then
+    Inc(FIndex);
+end;
+{$ENDIF}
 
 //=== { TJvParameterList } ===================================================
 
@@ -1797,7 +1843,7 @@ var
   Data: Variant;
 begin
   IEnable := 0;
-  if AEnableReasons.Count > 0 then
+  if Assigned (AEnableReasons) and (AEnableReasons.Count > 0) then
   begin
     for J := 0 to AEnableReasons.Count - 1 do
     begin
@@ -1825,7 +1871,7 @@ begin
     if IEnable = 0 then
       IEnable := -1;
   end;
-  if ADisableReasons.Count > 0 then
+  if Assigned (ADisableReasons) and (ADisableReasons.Count > 0) then
   begin
     for J := 0 to ADisableReasons.Count - 1 do
     begin
@@ -1878,6 +1924,13 @@ begin
           1:
             Parameter.Enabled := True;
         end;
+      end;
+      IEnable := GetEnableDisableReasonState(nil, Parameter.RequiredReasons);
+      case IEnable of
+        -1:
+          Parameter.Required:= False;
+        1:
+          Parameter.Required:= True;
       end;
     end;
   finally
@@ -1963,18 +2016,18 @@ begin
         except
           on e:exception do
             raise Exception.CreateResFmt(@RsECreateWinControlsOnWinControlDuplicateBeforeAfterNotAllowed, ['AfterParameterName', TJvBasePanelEditParameter(Parameters[I]).AfterParameterName]);
-        end;
       end;
+    end;
     if ParameterParent is TJvCustomArrangePanel then
       TJvCustomArrangePanel(ParameterParent).DisableArrange;
     for I := 0 to Count - 1 do
       if (BeforeAfterParameterNames.IndexOf(Parameters[I].SearchName) < 0)then
-      begin
+    begin
         Parameters[I].CreateWinControlOnParent(
           GetParentByName(ParameterParent, Parameters[I].ParentParameterName));
         if (Parameters[I] is TJvArrangeParameter) then
           TJvArrangeParameter(Parameters[I]).DisableArrange;
-      end;
+    end;
 
     // Splitted in a Separate Loop because the order could be changed when Before/AfterParameterName is Used
     for I := 0 to Count - 1 do
@@ -1983,10 +2036,11 @@ begin
 
     for I := 0 to Count - 1 do
       if (Parameters[I] is TJvArrangeParameter) and Assigned(Parameters[I].WinControl) then
-      begin
+    begin
         TJvArrangeParameter(Parameters[I]).EnableArrange;
         TJvArrangeParameter(Parameters[I]).ArrangeControls;
-      end;
+    end;
+
   finally
     if ParameterParent is TJvCustomArrangePanel then
       TJvCustomArrangePanel(ParameterParent).EnableArrange;
@@ -2187,6 +2241,25 @@ end;
 procedure TJvParameterList.EnableHandleParameterEnabled;
 begin
   Dec(FHandleParameterEnabledCnt);
+end;
+
+{$IFDEF SUPPORTS_FOR_IN}
+function TJvParameterList.GetEnumerator: TJvParameterListEnumerator;
+begin
+  Result := TJvParameterListEnumerator.Create(Self);
+end;
+{$ENDIF}
+
+function TJvParameterList.IsDataValid: Boolean;
+Var i : Integer;
+  Parameter : TJvBaseParameter;
+begin
+  Result := True;
+  for I := 0 to Count - 1 do
+  begin
+    Parameter := Parameters[I];
+    Result := Result And Parameter.IsValid(Parameter.GetWinControlData);
+  end;
 end;
 
 procedure TJvParameterList.HandleShowValidState;
@@ -2394,6 +2467,7 @@ begin
     ParameterList.StoreDataTo(SelectPath);
   end;
 end;
+
 
 {$IFDEF UNITVERSIONING}
 initialization

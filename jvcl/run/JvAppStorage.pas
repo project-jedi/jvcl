@@ -2739,10 +2739,18 @@ var
   TmpValue: Integer;
   SubObj: TObject;
   P: PPropInfo;
+  T: TTypeKind;
 begin
   if not Assigned(PersObj) then
     Exit;
-  case PropType(PersObj, PropName) of
+
+  P := GetPropInfo(PersObj, PropName, tkAny);
+  T := PropType(PersObj, PropName);
+  if T <> tkClass then
+    if not Assigned(P.SetProc)  then
+      Exit;
+
+  case T of
     {$IFDEF UNICODE} tkUString, {$ENDIF}
     tkLString, tkString:
       SetStrProp(PersObj, PropName, ReadString(Path, GetStrProp(PersObj, PropName)));
@@ -2773,7 +2781,6 @@ begin
         IntToStr(GetInt64Prop(PersObj, PropName)))));
     tkFloat:
       begin
-        P := GetPropInfo(PersObj, PropName, tkAny);
         if (P <> nil) and (P.PropType <> nil) and (P.PropType^ = TypeInfo(TDateTime)) then
           SetFloatProp(PersObj, PropName, ReadDateTime(Path, GetFloatProp(PersObj, PropName)))
         else

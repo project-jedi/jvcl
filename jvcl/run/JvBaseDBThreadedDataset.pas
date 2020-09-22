@@ -23,7 +23,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
+// $Id: jvcl/run/JvBaseDBThreadedDataset.pas jfudickar date $
 
 unit JvBaseDBThreadedDataset;
 
@@ -37,7 +37,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, StdCtrls, Forms, Controls,
   DB,
-  JvThread, JvThreadDialog, JvDynControlEngine;
+  JvThread, JvThreadDialog, JvDynControlEngineIntf, JvDynControlEngine;
 
 type
   TJvThreadedDatasetOperation = (tdoOpen, tdoFetch, tdoLast, tdoRefresh, tdoNothing);
@@ -113,6 +113,7 @@ type
     FEnableCancelButton: Boolean;
     FFormStyle: TFormStyle;
     FShowCancelButton: Boolean;
+    FShowProgressBar: Boolean;
     FShowRowsLabel: Boolean;
     FShowTimeLabel: Boolean;
     procedure SetCaption(const Value: string);
@@ -120,6 +121,7 @@ type
     procedure SetEnableCancelButton(const Value: Boolean);
     procedure SetFormStyle(const Value: TFormStyle);
     procedure SetShowCancelButton(const Value: Boolean);
+    procedure SetShowProgressBar(const Value: Boolean);
     procedure SetShowRowsLabel(const Value: Boolean);
     procedure SetShowTimeLabel(const Value: Boolean);
   public
@@ -131,6 +133,7 @@ type
     property EnableCancelButton: Boolean read FEnableCancelButton write SetEnableCancelButton default True;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle;
     property ShowCancelButton: Boolean read FShowCancelButton write SetShowCancelButton default True;
+    property ShowProgressBar: Boolean read FShowProgressBar write SetShowProgressBar default true;
     property ShowRowsLabel: Boolean read FShowRowsLabel write SetShowRowsLabel default True;
     property ShowTimeLabel: Boolean read FShowTimeLabel write SetShowTimeLabel default True;
   end;
@@ -215,6 +218,9 @@ type
     FCancelButtonPanel: TWinControl;
     FRowsPanel: TWinControl;
     FTimePanel: TWinControl;
+    FProgressbar: TWinControl;
+    FProgressbarPanel: TWinControl;
+    IProgressBarControl : IJvDynControlProgressbar;
     FDialogOptions: TJvThreadedDatasetDialogOptions;
     procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel: TWinControl; var LabelCtrl: TControl;
         var StaticText: TWinControl; const BaseName: string);
@@ -224,6 +230,7 @@ type
     procedure SetDialogOptions(const Value: TJvThreadedDatasetDialogOptions);
   protected
     procedure FillDialogData;
+    procedure FreeFormControls; override;
     procedure InitializeFormContents; override;
     procedure UpdateFormContents; override;
   public
@@ -406,9 +413,9 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
+    RCSfile: '$URL: jvcl/run/JvBaseDBThreadedDataset.pas $';
+    Revision: '$Revision: 5d8806a57b10804dbc1ec6a5ac352f67d2fcb67d $';
+    Date: '$Date: 2011-10-26 23:17:50 +0000 $';
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
@@ -420,7 +427,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
-  JvDynControlEngineIntf, JvDSADialogs, JvResources;
+  JvDSADialogs, JvResources;
 
 //=== { TJvDatasetThreadDialog } =============================================
 
@@ -476,6 +483,7 @@ var
   MainPanel: TWinControl;
   ITmpPanel: IJvDynControlPanel;
   ITmpControl: IJvDynControlCaption;
+  ITmpAlign: IJvDynControlAlign;
 begin
   Inherited CreateFormControls;
   MainPanel := DynControlEngine.CreatePanelControl(Self, Self, 'MainPanel', '', alClient);
@@ -491,12 +499,24 @@ begin
   if Supports(FRowsLabel, IJvDynControlCaption, ITmpControl) then
     ITmpControl.ControlSetCaption(RsODSCurrentRecord);
   FRowsPanel.Top := FTimeLabel.Top + FTimeLabel.Height + 1;
+
+  FProgressbarPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ProgressbarPanel', '', alTop);
+  if not Supports(FProgressbarPanel, IJvDynControlPanel, ITmpPanel) then
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, 2);
+  FProgressbar := DynControlEngine.CreateProgressbarControl(Self, FProgressbarPanel, 'Progressbar');
+  Supports(FProgressbar, IJvDynControlProgressbar, IProgressBarControl);
+  FProgressbarPanel.Height := FRowsStaticText.Height + 4;
+  if Supports(FProgressbar, IJvDynControlAlign, ITmpAlign) then
+    ITmpAlign.ControlSetAlign(alClient);
+  FProgressbarPanel.Top := FRowsPanel.Top + FRowsPanel.Height + 1;
+
   FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ButtonPanel', '', alTop);
   FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
     'CancelBtn', RsButtonCancelCaption, '', DefaultCancelBtnClick, True, True);
   FCancelBtn.Anchors := [akTop];
   FCancelBtn.Top := 2;
-  FCancelButtonPanel.Top := FRowsPanel.Top + FRowsPanel.Height + 1;
+  FCancelButtonPanel.Top := FProgressbarPanel.Top + FProgressbarPanel.Height + 1;
   FCancelButtonPanel.Height := FCancelBtn.Height + 3;
 
   BorderIcons := [];
@@ -545,6 +565,8 @@ procedure TJvDatasetThreadDialogForm.FillDialogData;
 var
   ITmpControl: IJvDynControlCaption;
 begin
+  if Assigned(IProgressBarControl) then
+    IProgressBarControl.ControlSetMarquee(True);
   if Assigned(ConnectedDatasetHandler) then
   begin
     if DialogOptions.Caption <> '' then
@@ -570,6 +592,14 @@ begin
   end;
   FRowsStaticText.Width:= FRowsPanel.Width - FRowsLabel.Width;
   FTimeStaticText.Width:= FTimePanel.Width - FTimeLabel.Width;
+end;
+
+procedure TJvDatasetThreadDialogForm.FreeFormControls;
+begin
+  if Assigned(IProgressBarControl) then
+    IProgressBarControl.ControlSetMarquee(False);// To deactivate the toolbar marquee in rare circumstances
+  IProgressBarControl := nil;
+  inherited;
 end;
 
 function TJvDatasetThreadDialogForm.GetConnectedDataset: TDataSet;
@@ -620,11 +650,14 @@ begin
   FCancelBtn.Left := Round((FCancelButtonPanel.Width - FCancelBtn.Width) / 2);
   FRowsPanel.Visible := DialogOptions.ShowRowsLabel;
   FTimePanel.Visible := DialogOptions.ShowTimeLabel;
+  FProgressbarPanel.Visible := DialogOptions.ShowProgressBar;
   H := 10;
   if FRowsPanel.Visible then
     H := H + FRowsPanel.Height;
   if FTimePanel.Visible then
     H := H + FTimePanel.Height;
+  if FProgressbarPanel.Visible then
+    H := H + FProgressbarPanel.Height;
   if FCancelButtonPanel.Visible then
     H := H + FCancelButtonPanel.Height;
   ClientHeight := H;
@@ -645,6 +678,7 @@ begin
   FShowCancelButton := True;
   FShowRowsLabel := True;
   FShowTimeLabel := True;
+  FShowProgressBar := true;
 end;
 
 destructor TJvThreadedDatasetDialogOptions.Destroy;
@@ -675,6 +709,11 @@ end;
 procedure TJvThreadedDatasetDialogOptions.SetShowCancelButton(const Value: Boolean);
 begin
   FShowCancelButton := Value;
+end;
+
+procedure TJvThreadedDatasetDialogOptions.SetShowProgressBar(const Value: Boolean);
+begin
+  FShowProgressBar := Value;
 end;
 
 procedure TJvThreadedDatasetDialogOptions.SetShowRowsLabel(const Value: Boolean);

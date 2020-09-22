@@ -862,8 +862,13 @@ function IsChildWindow(const AChild, AParent: THandle): Boolean;
 // The name is generated in the login <OwnerName>_<AComponentName><Nr> or
 // <OwnerName>_<ACOmponent.ClassName><Nr> when the AComponentName parameter
 // is not defined. The number will be increased until the name is unique.
-function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
-    AComponentName: string = ''): string;
+function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const AComponentName: string = ''): string; overload;
+// This function generates a unique name for a component inside the list of all
+// components of its owner.
+// The name is generated in the login <OwnerName>_<AComponentName><Nr> or
+// <OwnerName>_<ACOmponent.ClassName><Nr> when the AComponentName parameter
+// is not defined. The number will be increased until the name is unique.
+procedure GenerateUniqueComponentName(AComponent: TComponent; const AComponentName: string = ''); overload;
 
 function ReplaceImageListReference(This: TComponent; NewReference: TCustomImageList;
   var VarReference: TCustomImageList; ChangeLink: TChangeLink): Boolean;
@@ -2291,7 +2296,13 @@ end;
 
 function ScreenWorkArea: TRect;
 begin
-  Result := Screen.MonitorFromWindow(Screen.ActiveCustomForm.Handle).WorkareaRect;
+  if Assigned(Screen.ActiveCustomForm) then
+    Result := Screen.MonitorFromWindow(Screen.ActiveCustomForm.Handle).WorkareaRect
+  else  
+  {$IFDEF MSWINDOWS}
+  if not SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0) then
+  {$ENDIF MSWINDOWS}
+    Result := Bounds(0, 0, Screen.Width, Screen.Height);
 end;
 
 { Standard Windows MessageBox function }
@@ -7675,10 +7686,17 @@ function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
   end;
 
   function GenerateName(const AName: string; ANumber: Integer): string;
+  var vName : String;
   begin
-    Result := ValidateName (AName);
-    if Assigned(AOwner) and (AOwner.Name <> '') then
-      Result := AOwner.Name + '_' + Result;
+    vName := ValidateName (AName);
+    if Assigned(AOwner) then
+      if (AOwner.Name <> '') then
+        Result := AOwner.Name
+      else
+        Result := AOwner.ClassName;
+    if (vName <> '') and (Result <> '') then
+      Result := Result + '_';
+    Result := Result + vName;
     if ANumber > 0 then
       Result := Result + IntToStr(ANumber);
   end;
@@ -7688,7 +7706,7 @@ function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
     I: Integer;
   begin
     Result := True;
-    if AName <> '' then
+    if (AName <> '') and Assigned(AOwner) then
       for I := 0 to AOwner.ComponentCount - 1 do
         if (AOwner.Components[I] <> AComponent) and
           (CompareText(AOwner.Components[I].Name, AName) = 0) then
@@ -7701,22 +7719,27 @@ function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
 var
   I: Integer;
 begin
-  if not Assigned(AOwner) then
-    Result := ''
-  else
-    for I := 0 to MaxInt do
-    begin
-      if (AComponentName <> '') then
-        Result := GenerateName(AComponentName, I)
+  for I := 0 to MaxInt do
+  begin
+    if (AComponentName <> '') then
+      Result := GenerateName(AComponentName, I)
+    else
+      if Assigned(AComponent) then
+        Result := GenerateName(AComponent.ClassName, I)
       else
-        if Assigned(AComponent) then
-          Result := GenerateName(AComponent.ClassName, I)
-        else
-          Result := GenerateName('', I);
-      if IsUnique(Result) then
-        Break;
-    end;
+        Result := GenerateName('', I);
+    if IsUnique(Result) then
+      Break;
+  end;
 end;
+
+procedure GenerateUniqueComponentName(AComponent: TComponent; const AComponentName: string = '');
+begin
+  if not Assigned(AComponent) then
+    Exit;
+  AComponent.Name := GenerateUniqueComponentName(AComponent.Owner, AComponent, AComponentName);
+end;
+
 
 function ReplaceComponentReference(This, NewReference: TComponent; var VarReference: TComponent): Boolean;
 begin

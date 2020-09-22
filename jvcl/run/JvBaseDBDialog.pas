@@ -49,6 +49,7 @@ type
     function CreateForm: TForm; virtual;
     procedure CreateFormControls(aForm: TForm); virtual;
     procedure AfterCreateFormControls(aForm: TForm); virtual;
+    procedure FreeFormControls; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAppStorage(Value: TJvCustomAppStorage); virtual;
     procedure SetAppStoragePath(Value: string); virtual;
@@ -56,6 +57,7 @@ type
     property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property AppStoragePath: string read FAppStoragePath write SetAppStoragePath;
   public
+    destructor Destroy; override;
     function Execute(ParentWnd: HWND): Boolean; overload; override;
     function SessionIsConnected: Boolean; virtual;
     property DBDialog: TForm read FDBDialog ;
@@ -81,6 +83,12 @@ uses
   SysUtils, Types,
   JvJCLUtils, // SetWindowLongPtr for older Delphi versions
   JvJVCLUtils;
+
+destructor TJvBaseDBDialog.Destroy;
+begin
+  FreeFormControls;
+  inherited Destroy;
+end;
 
 function TJvBaseDBDialog.CreateForm: TForm;
 begin
@@ -116,6 +124,10 @@ begin
   finally
     FreeAndNil(FDBDialog);
   end;
+end;
+
+procedure TJvBaseDBDialog.FreeFormControls;
+begin
 end;
 
 function TJvBaseDBDialog.GetDynControlEngine: TJvDynControlEngine;

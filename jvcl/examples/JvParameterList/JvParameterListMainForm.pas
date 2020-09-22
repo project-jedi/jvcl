@@ -85,19 +85,19 @@ type
     VclRedRadioButton: TRadioButton;
     GroupBox4: TGroupBox;
     JvPanel1: TJvPanel;
-    Button5: TButton;
-    Button6: TButton;
-    Button7: TButton;
-    Button8: TButton;
-    Button9: TButton;
-    Button10: TButton;
+    MessageDlgButtonA: TButton;
+    MessageDlgButtonB: TButton;
+    MessageDlgButtonC: TButton;
+    MessageDlgButtonD: TButton;
+    MessageDlgButtonE: TButton;
+    MessageDlgButtonF: TButton;
     JvGroupBox1: TJvGroupBox;
     JvGroupBox2: TJvGroupBox;
     JvPanel3: TJvPanel;
     Button13: TButton;
     JvGroupBox3: TJvGroupBox;
     JvPanel4: TJvPanel;
-    Button12: TButton;
+    DisableEnableEngineButton: TButton;
     JvGroupBoxAllControls: TJvGroupBox;
     JvPanelAllControls: TJvPanel;
     Button1: TButton;
@@ -125,14 +125,14 @@ type
     DefaultParameterLabelWidthEdit: TMaskEdit;
     AssignWidthHeightCheckBox: TCheckBox;
     JvPanel2: TJvPanel;
-    Button16: TButton;
-    Button15: TButton;
-    Button17: TButton;
-    Button18: TButton;
-    Button19: TButton;
-    Button20: TButton;
+    SimpleMemoButton: TButton;
+    AnalyzeTableButton: TButton;
+    UnitVersioningButton: TButton;
+    DBMSJobEntryButton: TButton;
+    LabelArrangeModeButton: TButton;
+    BeforeAfterParameterButton: TButton;
     NativeCheckBox: TCheckBox;
-    Button21: TButton;
+    MultipleTabsButton: TButton;
     JvSimpleThread: TJvThread;
     JvGroupBox4: TJvGroupBox;
     JvPanel5: TJvPanel;
@@ -150,28 +150,28 @@ type
     procedure BitBtn2Click(Sender: TObject);
     procedure DevExpCxLookAndFeelRadioGroupClick(Sender: TObject);
     procedure VCLRadioButtonClick(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
-    procedure Button7Click(Sender: TObject);
-    procedure Button8Click(Sender: TObject);
+    procedure MessageDlgButtonAClick(Sender: TObject);
+    procedure MessageDlgButtonBClick(Sender: TObject);
+    procedure MessageDlgButtonCClick(Sender: TObject);
+    procedure MessageDlgButtonDClick(Sender: TObject);
     procedure Button11Click(Sender: TObject);
-    procedure Button12Click(Sender: TObject);
+    procedure DisableEnableEngineButtonClick(Sender: TObject);
     procedure JvPanelAllControlsResize(Sender: TObject);
     procedure Button13Click(Sender: TObject);
     procedure JvAppRegistryStorageDecryptPropertyValue(var Value: string);
     procedure JvAppRegistryStorageEncryptPropertyValue(var Value: string);
     procedure Button14Click(Sender: TObject);
-    procedure Button15Click(Sender: TObject);
+    procedure AnalyzeTableButtonClick(Sender: TObject);
     procedure AssignWidthHeightCheckBoxClick(Sender: TObject);
-    procedure Button16Click(Sender: TObject);
-    procedure Button17Click(Sender: TObject);
-    procedure Button18Click(Sender: TObject);
-    procedure Button19Click(Sender: TObject);
-    procedure Button20Click(Sender: TObject);
-    procedure Button21Click(Sender: TObject);
+    procedure SimpleMemoButtonClick(Sender: TObject);
+    procedure UnitVersioningButtonClick(Sender: TObject);
+    procedure DBMSJobEntryButtonClick(Sender: TObject);
+    procedure LabelArrangeModeButtonClick(Sender: TObject);
+    procedure BeforeAfterParameterButtonClick(Sender: TObject);
+    procedure MultipleTabsButtonClick(Sender: TObject);
     procedure Button22Click(Sender: TObject);
     procedure Button23Click(Sender: TObject);
-    procedure Button9Click(Sender: TObject);
+    procedure MessageDlgButtonEClick(Sender: TObject);
     procedure JvAnimatedThreadExecute(Sender: TObject; Params: Pointer);
     procedure JvSimpleThreadExecute(Sender: TObject; Params: Pointer);
     procedure StaticText6Click(Sender: TObject);
@@ -186,7 +186,7 @@ type
   public
     { Public-Deklarationen }
     procedure ShowTest1(const aDynControlEngine: tJvDynControlEngine);
-    procedure ShowTest2(const aDynControlEngine: tJvDynControlEngine);
+    procedure ShowDisableEnableReasons(const aDynControlEngine: tJvDynControlEngine);
     procedure ShowTest3(const aDynControlEngine: tJvDynControlEngine);
     procedure ShowTestCrypt(const aDynControlEngine: tJvDynControlEngine);
   end;
@@ -345,7 +345,7 @@ begin
     begin
       SearchName := 'ButtonEditTest';
       Caption := 'ButtonEditTest';
-      OnClick := Button5Click;
+      OnClick := MessageDlgButtonAClick;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvFileNameParameter.Create(ParameterList);
@@ -460,7 +460,7 @@ begin
   end;
 end;
 
-procedure TJvParameterListDemoMainFrm.ShowTest2(const aDynControlEngine: tJvDynControlEngine);
+procedure TJvParameterListDemoMainFrm.ShowDisableEnableReasons(const aDynControlEngine: tJvDynControlEngine);
 var
   ParameterList: TJvParameterList;
   Parameter: TJvBaseParameter;
@@ -472,49 +472,52 @@ begin
     {$IFDEF INCLUDE_DEVEXP_CX}
     SetDevExpressDynControlEngineProperties(ParameterList);
     {$ENDIF INCLUDE_DEVEXP_CX}
+
     Parameter := tjvRadioGroupParameter.Create(ParameterList);
-    with tjvRadioGroupParameter(Parameter) do
-    begin
-      SearchName := 'RadioGroup';
-      Caption := '&Enabled';
-      ItemList.Add('1 Enabled');
-      ItemList.Add('2 Enabled');
-      ItemList.Add('Both Enabled');
-      ItemList.Add('Both Disabled');
-      ItemIndex := 2;
-      Columns := 2;
-    end;
+    Parameter.SearchName := 'RadioGroup';
+    Parameter.Caption := '&Enabled';
+    tjvRadioGroupParameter(Parameter).ItemList.Add('1 Enabled');
+    tjvRadioGroupParameter(Parameter).ItemList.Add('2 Enabled');
+    tjvRadioGroupParameter(Parameter).ItemList.Add('Both Enabled');
+    tjvRadioGroupParameter(Parameter).ItemList.Add('Both Disabled');
+    tjvRadioGroupParameter(Parameter).ItemIndex := 2;
+    tjvRadioGroupParameter(Parameter).Columns := 2;
     ParameterList.AddParameter(Parameter);
+
     Parameter := tjvCheckboxParameter.Create(ParameterList);
-    with Parameter do
-    begin
-      SearchName := 'Checkbox';
-      Caption := '2 Enabled';
-    end;
+    Parameter.SearchName := 'Checkbox';
+    Parameter.Caption := '2 Enabled';
     ParameterList.AddParameter(Parameter);
+
+    Parameter := tjvCheckboxParameter.Create(ParameterList);
+    Parameter.SearchName := 'Edit3Required';
+    Parameter.Caption := 'Edit 3 Required';
+    Parameter.AsBoolean := True;
+    ParameterList.AddParameter(Parameter);
+
     Parameter := tjvEditParameter.Create(ParameterList);
-    with Parameter do
-    begin
-      SearchName := 'Edit1';
-      Caption := 'Edit Test 1';
-//      Width      := 80;
-      AsDate := Now;
-      DisableReasons.AddReason('RadioGroup', '2 Enabled');
-      DisableReasons.AddReason('RadioGroup', 'Both Disabled');
-    end;
+    Parameter.SearchName := 'Edit1';
+    Parameter.Caption := 'Edit Test 1';
+    Parameter.AsDate := Now;
+    Parameter.DisableReasons.AddReason('RadioGroup', '2 Enabled');
+    Parameter.DisableReasons.AddReason('RadioGroup', 'Both Disabled');
     ParameterList.AddParameter(Parameter);
+
     Parameter := tjvEditParameter.Create(ParameterList);
-    with Parameter do
-    begin
-      SearchName := 'Edit2';
-      Caption := 'Edit Test 2';
-//      Width      := 80;
-      AsDate := Now;
-      DisableReasons.AddReason('RadioGroup', '1 Enabled');
-      DisableReasons.AddReason('RadioGroup', 'Both Disabled');
-      DisableReasons.AddReason('Checkbox', False);
-    end;
+    Parameter.SearchName := 'Edit2';
+    Parameter.Caption := 'Edit Test 2';
+    Parameter.AsDate := Now;
+    Parameter.DisableReasons.AddReason('RadioGroup', '1 Enabled');
+    Parameter.DisableReasons.AddReason('RadioGroup', 'Both Disabled');
+    Parameter.DisableReasons.AddReason('Checkbox', False);
     ParameterList.AddParameter(Parameter);
+
+    Parameter := tjvEditParameter.Create(ParameterList);
+    Parameter.SearchName := 'Edit3';
+    Parameter.Caption := 'Edit Test 3';
+    Parameter.RequiredReasons.AddReason ('Edit3Required', true);
+    ParameterList.AddParameter(Parameter);
+
     if AutoHeightCheckBox.Checked then
       if AutoWidthCheckBox.Checked then
         ParameterList.ArrangeSettings.AutoSize := JvPanel.asBoth
@@ -538,6 +541,7 @@ begin
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
     ParameterList.AppStorage := DefaultStorage;
     ParameterList.AppStoragePath := 'Dialog 2';
+    ParameterList.ShowParameterValidState := True;
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
     if ParameterList.ShowParameterDialog then
@@ -554,16 +558,16 @@ procedure TJvParameterListDemoMainFrm.ShowTest3ButttonClick(const ParameterList:
 begin
   if Assigned(Parameter) then
     if Parameter.SearchName = 'ButtonA' then
-      Button5Click(nil)
+      MessageDlgButtonAClick(nil)
     else
     if Parameter.SearchName = 'ButtonB' then
-      Button6Click(nil)
+      MessageDlgButtonBClick(nil)
     else
     if Parameter.SearchName = 'ButtonC' then
-      Button7Click(nil)
+      MessageDlgButtonCClick(nil)
     else
     if Parameter.SearchName = 'ButtonD' then
-      Button8Click(nil)
+      MessageDlgButtonDClick(nil)
     else
     if Parameter.SearchName = 'ButtonE' then
       if Assigned(ParameterList) then
@@ -788,19 +792,19 @@ begin
     SetDefaultDynControlEngine(DynControlEngineVCL);
 end;
 
-procedure TJvParameterListDemoMainFrm.Button5Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.MessageDlgButtonAClick(Sender: TObject);
 begin
   JVDSADialogs.MessageDlg('Simple warning box, standard title, VCL buttons and image.',
     mtWarning, [mbOK], 0);
 end;
 
-procedure TJvParameterListDemoMainFrm.Button6Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.MessageDlgButtonBClick(Sender: TObject);
 begin
   JVDSADialogs.MessageDlg('Simple confirmation box, standard title, VCL buttons and image.',
     mtConfirmation, [mbYes, mbNo], 0);
 end;
 
-procedure TJvParameterListDemoMainFrm.Button7Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.MessageDlgButtonCClick(Sender: TObject);
 var
   Pic: TPicture;
   BtnCap: TDynStringArray;
@@ -823,7 +827,7 @@ begin
   end;
 end;
 
-procedure TJvParameterListDemoMainFrm.Button8Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.MessageDlgButtonDClick(Sender: TObject);
 begin
   ShowMessage('Test ShowMessage with custom checkmark text.');
 end;
@@ -833,9 +837,9 @@ begin
   ShowTest1(DynControlEngineVCLRed);
 end;
 
-procedure TJvParameterListDemoMainFrm.Button12Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.DisableEnableEngineButtonClick(Sender: TObject);
 begin
-  ShowTest2(nil);
+  ShowDisableEnableReasons(nil);
 end;
 
 procedure TJvParameterListDemoMainFrm.JvPanelAllControlsResize(Sender: TObject);
@@ -875,7 +879,7 @@ begin
   ShowTestCrypt(nil);
 end;
 
-procedure TJvParameterListDemoMainFrm.Button15Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.AnalyzeTableButtonClick(Sender: TObject);
 var
   ParameterList: TJvParameterList;
   Gparameter,
@@ -1040,7 +1044,7 @@ begin
   HeightEdit.Enabled := AssignWidthHeightCheckBox.Checked;
 end;
 
-procedure TJvParameterListDemoMainFrm.Button16Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.SimpleMemoButtonClick(Sender: TObject);
 var
   ParameterList: TJvParameterList;
   Parameter: TJvBaseParameter;
@@ -1074,12 +1078,12 @@ begin
   end;
 end;
 
-procedure TJvParameterListDemoMainFrm.Button17Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.UnitVersioningButtonClick(Sender: TObject);
 begin
   ShowUnitVersioning(nil);
 end;
 
-procedure TJvParameterListDemoMainFrm.Button18Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.DBMSJobEntryButtonClick(Sender: TObject);
 var
   ParameterList: TJvParameterList;
   Parameter: TJvBaseParameter;
@@ -1161,7 +1165,7 @@ begin
   end;
 end;
 
-procedure TJvParameterListDemoMainFrm.Button19Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.LabelArrangeModeButtonClick(Sender: TObject);
 var
   ParameterList: TJvParameterList;
   Parameter: TJvBaseParameter;
@@ -1210,7 +1214,7 @@ begin
   end;
 end;
 
-procedure TJvParameterListDemoMainFrm.Button20Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.BeforeAfterParameterButtonClick(Sender: TObject);
 var
   ParameterList: TJvParameterList;
   Parameter: TJvBaseParameter;
@@ -1258,7 +1262,7 @@ begin
       Caption := '&After';
       SearchName := 'After';
       AsString := 'A';
-      Width := 20;
+      Width := 40;
     end; {*** WITH TJvEditParameter(Parameter) DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
@@ -1298,7 +1302,7 @@ begin
   end;
 end;
 
-procedure TJvParameterListDemoMainFrm.Button21Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.MultipleTabsButtonClick(Sender: TObject);
 var
   ParameterList: TJvParameterList;
   Parameter: TJvBaseParameter;
@@ -1760,7 +1764,7 @@ begin
   JvAnimatedThread.Execute(Self);
 end;
 
-procedure TJvParameterListDemoMainFrm.Button9Click(Sender: TObject);
+procedure TJvParameterListDemoMainFrm.MessageDlgButtonEClick(Sender: TObject);
 begin
   JVDSADialogs.MessageDlg('Simple confirmation box, standard title, VCL buttons and image. Multi Lines'#13#10+
   'Line2'#13#10+
