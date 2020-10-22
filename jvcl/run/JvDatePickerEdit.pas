@@ -145,6 +145,7 @@ type
     FDateSeparator: Char;
     FPopupDate: TDateTime;
     FNoDateValue: TDateTime;
+    FRaiseException: Boolean;
     FOnGetValidDateString: TJvGetValidDateStringEvent;
     //    FMinYear: Word;
     //    FMaxYear: Word;
@@ -230,7 +231,8 @@ type
     //    property MinYear: Word read FMinYear write FMinYear;
     property NoDateShortcut: TShortcut read FNoDateShortcut write FNoDateShortcut stored IsNoDateShortcutStored;
     property NoDateText: string read FNoDateText write SetNoDateText stored IsNoDateTextStored;
-    property NoDateValue: TDateTime read FNoDateValue write SetNoDateValue stored IsNoDateValueStored; 
+    property NoDateValue: TDateTime read FNoDateValue write SetNoDateValue stored IsNoDateValueStored;
+    property RaiseException: Boolean read FRaiseException write FRaiseException default True;
     property ShowButton default True;
     property StoreDate: Boolean read FStoreDate write FStoreDate default False;
     property StoreDateFormat: Boolean read FStoreDateFormat write FStoreDateFormat default False;
@@ -660,6 +662,7 @@ begin
   //  FMinYear := 1800;
   FNoDateShortcut := TextToShortCut(RsDefaultNoDateShortcut);
   FNoDateText := '';
+  FRaiseException := True;
   FStoreDate := False;
   FStoreDateFormat := False;
 
@@ -780,7 +783,8 @@ begin
       begin
         FDateError := True;
         SetFocus;
-        raise;
+        if FRaiseException then
+          raise;
       end
       else
         Self.Date := NoDateValue;
