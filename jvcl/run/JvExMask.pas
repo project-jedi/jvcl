@@ -53,6 +53,7 @@ type
     FHintColor: TColor;
     FMouseOver: Boolean;
     FHintWindowClass: THintWindowClass;
+    FRaiseException: Boolean;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
@@ -75,11 +76,13 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
+    procedure ValidateError; override;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property RaiseException: Boolean read FRaiseException write FRaiseException default True;
   public
     constructor Create(AOwner: TComponent); override;
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
@@ -259,6 +262,7 @@ begin
   FHintColor := clDefault;
   FClipboardCommands := [caCopy..caUndo];
   FBeepOnError := True;
+  FRaiseException := True;
   if UserTextHint then
     ControlState := ControlState + [csCustomPaint]; // needed for PaintWindow
 end;
@@ -280,6 +284,12 @@ end;
 function TJvExCustomMaskEdit.BaseWndProcEx(Msg: Cardinal; WParam: WPARAM; var StructLParam): LRESULT;
 begin
   Result := BaseWndProc(Msg, WParam, Windows.LPARAM(@StructLParam));
+end;
+
+procedure TJvExCustomMaskEdit.ValidateError;
+begin
+  if FRaiseException then
+    inherited;
 end;
 
 procedure TJvExCustomMaskEdit.VisibleChanged;
