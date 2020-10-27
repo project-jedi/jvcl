@@ -165,6 +165,7 @@ type
     property NoDateShortcut;
     property NoDateText;
     property NoDateValue;
+    property RaiseException;
     property NumGlyphs;
     property ParentColor;
     property ParentFont;
