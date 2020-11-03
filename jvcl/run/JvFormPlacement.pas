@@ -280,7 +280,7 @@ type
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
@@ -386,8 +386,8 @@ end;
 
 procedure TJvFormPlacement.SetAppStoragePath(const AValue: string);
 begin
-  if (AValue <> '') and ({$IFDEF COMPILER12_UP}AValue[Length(AValue)]{$ELSE}AnsiLastChar(AValue){$ENDIF COMPILER12_UP} <> '\') then
-    FAppStoragePath := AValue + '\'
+  if (AValue <> '') then
+    FAppStoragePath := IncludeTrailingPathDelimiter(AValue)
   else
     FAppStoragePath := AValue;
 

@@ -19,7 +19,7 @@ located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: jvcl/run/JvDynControlEngineDevExpCx.pas Jens Fudickar date $
+// $Id$
 
 unit JvDynControlEngineDevExpCx;
 
@@ -1066,9 +1066,9 @@ function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: jvcl/run/JvDynControlEngineDevExpCx.pas $';
-    Revision: '$Revision: d9508b93ea441d8c9218d4a346402d49d00ed37c $';
-    Date: '$Date: 2015-06-23 00:01:20 +0200 $';
+    RCSfile: '$URL$';
+    Revision: '$Rev$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
@@ -1639,12 +1639,11 @@ begin
       if FInitialDir <> '' then
         Dir := FInitialDir
       else
-        Dir := '\';
+        Dir := PathDelim;
     end;
     if not DirectoryExists(Dir) then
-      Dir := '\';
+      Dir := PathDelim;
     if BrowseForFolder('', True, Dir, HelpContext) then
-//    if SelectDirectory(Dir, FDialogOptions, HelpContext) then
       ControlSetValue(Dir);
     if CanFocus then
       SetFocus;

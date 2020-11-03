@@ -212,7 +212,7 @@ procedure LoadPropertyStoreFromXmlFile(APropertyStore: TJvCustomPropertyStore; c
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
@@ -857,7 +857,7 @@ begin
 
   try
     try
-      StrToStrings(Path, '\', NodeList, False);
+      StrToStrings(Path, PathDelim, NodeList, False);
       for I := 0 to NodeList.Count - 1 do
       begin
         // Node names cannot have spaces in them so we replace
