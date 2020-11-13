@@ -3326,11 +3326,11 @@ begin
     Form := TForm(GetParentForm(Control));
   if Form.Scaled then
   begin
-  {$ifdef COMPILER24_UP}
+    {$ifdef RTL210_UP}
     MonitorPPI := Screen.MonitorFromWindow(Form.Handle).PixelsPerInch;
-  {$else}
+    {$else}
     MonitorPPI := Screen.PixelsPerInch;
-  {$endif}
+    {$endif}
     Result := MulDiv(Result, MonitorPPI, 96);
   end;
 end;
