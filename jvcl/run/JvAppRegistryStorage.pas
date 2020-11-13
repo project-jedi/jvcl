@@ -141,7 +141,7 @@ type
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
@@ -162,7 +162,7 @@ const
   cCompanyNameMask = '%COMPANY_NAME%';
   cDefaultAppName = 'MyJVCLApplication';
   cDefaultCompanyName = 'MyCompany';
-  cOldDefaultRootMask =  cSoftwareKey + '\' + cCompanyNameMask + '\' + cAppNameMask;
+  cOldDefaultRootMask =  cSoftwareKey + RegPathDelim + cCompanyNameMask + RegPathDelim + cAppNameMask;
 
 { (rom) disabled unused
 const

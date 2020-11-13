@@ -179,7 +179,7 @@ procedure LoadPropertyStoreFromIniFile(APropertyStore: TJvCustomPropertyStore;
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
@@ -704,7 +704,7 @@ begin
           IniFile.EraseSection(Sections[I])
       else
         for I := 0 to Sections.Count - 1 do
-          if Pos(TopSection, Sections[I]) = 1 then
+          if Pos(TopSection + PathDelim, Sections[I] + PathDelim) = 1 then
             IniFile.EraseSection(Sections[I]);
       FlushIfNeeded;
     finally

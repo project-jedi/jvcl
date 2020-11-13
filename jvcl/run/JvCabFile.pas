@@ -90,7 +90,7 @@ type
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
@@ -200,7 +200,7 @@ begin
       Result := FILEOP_DOIT;
       CAB := PFileInCabinetInfo(Param1);
 
-      if Sender.FDestPath[Length(Sender.FDestPath)] = '\' then
+      if Sender.FDestPath[Length(Sender.FDestPath)] = PathDelim then
       begin
         // extract all
         Path := Sender.FDestPath + StrPas(CAB^.NameInCabinet);

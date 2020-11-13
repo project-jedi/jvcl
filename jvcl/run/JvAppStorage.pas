@@ -1032,7 +1032,7 @@ const
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
     );
@@ -2744,7 +2744,7 @@ begin
   if not Assigned(PersObj) then
     Exit;
 
-  P := GetPropInfo(PersObj, PropName, tkAny);
+  P := GetPropInfo(PersObj, PropName);
   T := PropType(PersObj, PropName);
   if T <> tkClass then
     if not Assigned(P.SetProc)  then
@@ -2759,7 +2759,7 @@ begin
     tkEnumeration:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
-        ReadEnumeration(Path, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+        ReadEnumeration(Path, P.PropType^, TmpValue, TmpValue);
         SetOrdProp(PersObj, PropName, TmpValue);
       end;
     tkVariant:
@@ -2767,13 +2767,13 @@ begin
     tkSet:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
-        ReadSet(Path, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+        ReadSet(Path, P.PropType^, TmpValue, TmpValue);
         SetOrdProp(PersObj, PropName, TmpValue);
       end;
     tkChar, tkWChar, tkInteger:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
-        ReadEnumeration(Path, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+        ReadEnumeration(Path, P.PropType^, TmpValue, TmpValue);
         SetOrdProp(PersObj, PropName, TmpValue);
       end;
     tkInt64:

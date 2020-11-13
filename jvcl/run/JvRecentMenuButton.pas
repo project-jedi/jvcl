@@ -68,7 +68,7 @@ type
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
@@ -245,8 +245,8 @@ var
   I: Integer;
 begin
   DeleteItem(Item, True);
-  if (Directory <> '') and (Directory[Length(Directory)] <> '\') then
-    Directory := Directory + '\';
+  if (Directory <> '') then
+    Directory := IncludeTrailingPathDelimiter(Directory);
   S := TStringList.Create;
   try
     InternalFileFind(Directory, '*.*', S);

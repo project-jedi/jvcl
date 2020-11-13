@@ -59,10 +59,10 @@ procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine = nil)
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-    );
+  );
 {$ENDIF UNITVERSIONING}
 
 implementation
@@ -119,8 +119,8 @@ procedure TJvJclUnitVersioningBrowser.ShowUnitVersioning(const aDynControlEngine
     Part1 := '';
     while (Part1 = '') and (Part2 <> '') do
     begin
-      Part1 := trim(StrBefore('\', Part2));
-      Part2 := trim(StrAfter('\', Part2));
+      Part1 := trim(StrBefore(PathDelim, Part2));
+      Part2 := trim(StrAfter(PathDelim, Part2));
     end;
     if Part1 <> '' then
     begin

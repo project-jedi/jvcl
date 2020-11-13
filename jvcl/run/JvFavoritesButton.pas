@@ -69,7 +69,7 @@ type
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
@@ -159,8 +159,8 @@ var
   FolderIndex: Integer;
 begin
   DeleteItem(Item, True);
-  if (Directory <> '') and (Directory[Length(Directory)] <> '\') then
-    Directory := Directory + '\';
+  if (Directory <> '') then
+    Directory := IncludeTrailingPathDelimiter(Directory);
   Res := FindFirst(Directory + '*.*', faAnyFile, SearchRec);
   First := True;
   FolderIndex := 1;
