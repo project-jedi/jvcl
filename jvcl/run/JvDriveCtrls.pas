@@ -405,7 +405,7 @@ type
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
@@ -1084,9 +1084,10 @@ end;
 
 function AddPathBackslash(const Path: string): string;
 begin
-  Result := Path;
-  if (Length(Path) > 1) and ({$IFDEF COMPILER12_UP}Path[Length(Path)]{$ELSE}AnsiLastChar(Path){$ENDIF COMPILER12_UP} <> '\') then
-    Result := Path + '\';
+  if (Path <> '') then
+    Result := IncludeTrailingPathDelimiter(Path)
+  else
+    Result := Path;
 end;
 
 function DirLevel(const PathName: string): Integer; { counts '\' in path }
@@ -1094,12 +1095,12 @@ var
   P: PChar;
 begin
   Result := 0;
-  P := AnsiStrScan(PChar(PathName), '\');
+  P := AnsiStrScan(PChar(PathName), PathDelim);
   while P <> nil do
   begin
     Inc(Result);
     Inc(P);
-    P := AnsiStrScan(P, '\');
+    P := AnsiStrScan(P, PathDelim);
   end;
 end;
 
@@ -1110,8 +1111,8 @@ begin
     Result := AddPathBackslash(S);
     Exit;
   end;
-  if AnsiLastChar(Path)^ <> '\' then
-    Result := Path + '\' + S
+  if AnsiLastChar(Path)^ <> PathDelim then
+    Result := Path + PathDelim + S
   else
     Result := Path + S;
 end;
@@ -1271,9 +1272,9 @@ begin
 
     if Length(TempPath) > 0 then
     begin
-      if AnsiLastChar(TempPath)^ <> '\' then
+      if AnsiLastChar(TempPath)^ <> PathDelim then
       begin
-        BackSlashPos := AnsiPos('\', TempPath);
+        BackSlashPos := AnsiPos(PathDelim, TempPath);
         while BackSlashPos <> 0 do
         begin
           DirName := Copy(TempPath, 1, BackSlashPos - 1);
@@ -1282,7 +1283,7 @@ begin
           SHGetFileInfo(PChar(tmpFolder), 0, psfi, SizeOf(TSHFileInfo), CFlagsDir);
           Items.AddObject(tmpFolder, TObject(psfi.iIcon));
           FDisplayNames.Add(psfi.szDisplayName);
-          BackSlashPos := AnsiPos('\', TempPath);
+          BackSlashPos := AnsiPos(PathDelim, TempPath);
         end;
       end;
       // add the selected dir:

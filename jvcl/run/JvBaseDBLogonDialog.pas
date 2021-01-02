@@ -2439,10 +2439,10 @@ begin
   if iFilterValue = '' then
     Result := True
   else
-    Result := ContainsText(Alias, iFilterValue) or
-              ContainsText(Database, iFilterValue) or
-              ContainsText(Group, iFilterValue)or
-              ContainsText(Username, iFilterValue);
+    Result := AnsiContainsText(Alias, iFilterValue) or
+              AnsiContainsText(Database, iFilterValue) or
+              AnsiContainsText(Group, iFilterValue)or
+              AnsiContainsText(Username, iFilterValue);
 end;
 
 function TJvBaseConnectionInfo.SearchName: String;

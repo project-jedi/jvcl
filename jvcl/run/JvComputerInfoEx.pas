@@ -1468,7 +1468,7 @@ type
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
@@ -1479,7 +1479,7 @@ implementation
 uses
   Registry,
   JclShell, JclRegistry, JclFileUtils,
-  JvResources;
+  JvResources, JvConsts;
 
 var
   IsDesigning: Boolean = False;
@@ -5849,7 +5849,7 @@ begin
     if Reg.OpenKey(Ext, False) then
       // get ID to associated program:
       Result := Reg.ReadString('');
-    if Reg.OpenKey('\' + Result + '\DefaultIcon', False) then
+    if Reg.OpenKey(RegPathDelim + Result + RegPathDelim + 'DefaultIcon', False) then
       Result := Reg.ReadString(''); // path (and possibly index) to icon location
     if Length(Result) > 0 then
     begin

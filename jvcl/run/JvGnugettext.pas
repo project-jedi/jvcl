@@ -2702,7 +2702,9 @@ begin
     a:=b;
     offset:=offset+bufsize;
   end;
+  {$IFNDEF COMPILER27_UP}
   Result:=0;
+  {$ENDIF ~COMPILER27_UP}
 end;
 
 procedure TFileLocator.Analyze;

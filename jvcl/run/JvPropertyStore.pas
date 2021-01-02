@@ -22,7 +22,7 @@ located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
+// $Id: jvcl/run/JvPropertyStore.pas jfudickar date $
 
 unit JvPropertyStore;
 
@@ -215,9 +215,9 @@ procedure StorePropertyStorageToAppStorage(iPropertyStore: TJvCustomPropertyStor
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile:
-      '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
+      '$URL: jvcl/run/JvPropertyStore.pas $';
+    Revision: '$Revision: 0559eb86d50554080bc539a2225603400dfb6baf $';
+    Date: '$Date: 2013-04-09 22:23:19 +0000 $';
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
@@ -492,7 +492,7 @@ begin
     begin
       SrcPropInfo := GetPropInfo(Src.ClassInfo, PropName);
       DestPropInfo := GetPropInfo(Dest.ClassInfo, PropName);
-      if (DestPropInfo <> nil) and (GetPropKind(DestPropInfo) = GetPropKind(SrcPropInfo)) then
+      if (DestPropInfo <> nil) and (GetPropKind(DestPropInfo) = GetPropKind(SrcPropInfo)) and Assigned(DestPropInfo.SetProc) then
         case GetPropKind(DestPropInfo) of
           {$IFDEF UNICODE} tkUString, {$ENDIF}
           tkLString, tkString:

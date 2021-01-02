@@ -473,7 +473,7 @@ procedure SetDSADefaultDialogCenterKind(Center : TDlgCenterKind);
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
-    Revision: '$Revision$';
+    Revision: '$Rev$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
@@ -1376,9 +1376,9 @@ end;
 
 procedure TDSARegStorage.CreateKey(const DSAInfo: TDSARegItem);
 begin
-  if not (RegKeyExists(RootKey, Key + '\' + DSAInfo.Name) or
-    (RegCreateKey(RootKey, Key + '\' + DSAInfo.Name, '') = ERROR_SUCCESS)) then
-    raise EJvDSADialog.CreateResFmt(@RsEDSARegKeyCreateError, [Key + '\' + DSAInfo.Name]);
+  if not (RegKeyExists(RootKey, Key + RegPathDelim + DSAInfo.Name) or
+    (RegCreateKey(RootKey, Key + RegPathDelim + DSAInfo.Name, '') = ERROR_SUCCESS)) then
+    raise EJvDSADialog.CreateResFmt(@RsEDSARegKeyCreateError, [Key + RegPathDelim + DSAInfo.Name]);
 end;
 
 function TDSARegStorage.GetCheckMarkTextSuffix: string;
@@ -1392,64 +1392,64 @@ end;
 
 function TDSARegStorage.ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean;
 begin
-  Result := RegReadBool(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
+  Result := RegReadBool(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
 end;
 
 function TDSARegStorage.ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Boolean): Boolean;
 begin
-  Result := RegReadBoolDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
+  Result := RegReadBoolDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
 end;
 
 function TDSARegStorage.ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended;
 begin
-  RegReadBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(Extended));
+  RegReadBinary(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Result, SizeOf(Extended));
 end;
 
 function TDSARegStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Extended): Extended;
 begin
-  if RegReadBinaryDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(Extended), 0) = 0 then
+  if RegReadBinaryDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Result, SizeOf(Extended), 0) = 0 then
     Result := Default;
 end;
 
 function TDSARegStorage.ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64;
 begin
-  Result := RegReadInt64(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
+  Result := RegReadInt64(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
 end;
 
 function TDSARegStorage.ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string; const Default: Int64): Int64;
 begin
-  Result := RegReadInt64Def(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
+  Result := RegReadInt64Def(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
 end;
 
 function TDSARegStorage.ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer;
 begin
-  Result := RegReadInteger(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
+  Result := RegReadInteger(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
 end;
 
 function TDSARegStorage.ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Integer): Integer;
 begin
-  Result := RegReadIntegerDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
+  Result := RegReadIntegerDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
 end;
 
 function TDSARegStorage.ReadString(const DSAInfo: TDSARegItem; const Key: string): string;
 begin
-  Result := RegReadString(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
+  Result := RegReadString(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
 end;
 
 function TDSARegStorage.ReadStringDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: string): string;
 begin
-  Result := RegReadStringDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
+  Result := RegReadStringDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
 end;
 
 procedure TDSARegStorage.WriteBool(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Boolean);
 begin
   CreateKey(DSAInfo);
-  RegWriteBool(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
+  RegWriteBool(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
 end;
 
 procedure TDSARegStorage.WriteFloat(const DSAInfo: TDSARegItem; const Key: string;
@@ -1459,28 +1459,28 @@ var
 begin
   CreateKey(DSAInfo);
   Temp := Value;
-  RegWriteBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Temp, SizeOf(Extended));
+  RegWriteBinary(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Temp, SizeOf(Extended));
 end;
 
 procedure TDSARegStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Int64);
 begin
   CreateKey(DSAInfo);
-  RegWriteInt64(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
+  RegWriteInt64(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
 end;
 
 procedure TDSARegStorage.WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Integer);
 begin
   CreateKey(DSAInfo);
-  RegWriteInteger(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
+  RegWriteInteger(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
 end;
 
 procedure TDSARegStorage.WriteString(const DSAInfo: TDSARegItem; const Key: string;
   const Value: string);
 begin
   CreateKey(DSAInfo);
-  RegWriteString(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
+  RegWriteString(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
 end;
 
 {$ENDIF MSWINDOWS}
