@@ -846,6 +846,7 @@ begin
 
   FThreadOptions := TJvThreadedDatasetThreadOptions.Create;
   FExecuteThread := TJvBaseDatasetThread.Create(Self);
+  FExecuteThread.Name := AOwner.Name + '_ExecuteThread';
   FThreadDialog := TJvDatasetThreadDialog.Create(Self);
   FExecuteThread.Exclusive := True;
   FExecuteThread.OnExecute := ThreadExecute;
