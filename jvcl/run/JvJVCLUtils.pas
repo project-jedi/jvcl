@@ -7693,7 +7693,9 @@ function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
       if (AOwner.Name <> '') then
         Result := AOwner.Name
       else
-        Result := AOwner.ClassName;
+        Result := AOwner.ClassName
+    else
+      Result := '';
     if (vName <> '') and (Result <> '') then
       Result := Result + '_';
     Result := Result + vName;
