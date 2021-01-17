@@ -319,8 +319,9 @@ var
     if TheText <> '' then
     begin
       Canvas.Brush.Style := bsClear;
-      Canvas.TextRect(ARect, ARect.Left + (ARect.Right - ARect.Left - TextWidth(TheText)) div 2,
-        ARect.Top + (ARect.Bottom - ARect.Top - TextHeight(TheText)) div 2, TheText);
+      // Use Canvas.TextWidth()  not only TextHeight() to have good result when Form.PixelPerInch <> 96
+      Canvas.TextRect(ARect, ARect.Left + (ARect.Right - ARect.Left - Canvas.TextWidth(TheText)) div 2,
+        ARect.Top + (ARect.Bottom - ARect.Top - Canvas.TextHeight(TheText)) div 2, TheText);
     end;
   end;
 
@@ -334,8 +335,9 @@ var
           if Color = clBtnFace then
           begin
             Canvas.Font.Color := clBtnHighlight;
-            Canvas.TextRect(ARect, ARect.Left + (ARect.Right - ARect.Left - TextWidth(TheText)) div 2 + 1,
-              ARect.Top + (ARect.Bottom - ARect.Top - TextHeight(TheText)) div 2 + 1, TheText);
+            // Use Canvas.TextWidth()  not only TextHeight() to have good result when Form.PixelPerInch <> 96
+            Canvas.TextRect(ARect, ARect.Left + (ARect.Right - ARect.Left - Canvas.TextWidth(TheText)) div 2 + 1,
+              ARect.Top + (ARect.Bottom - ARect.Top - Canvas.TextHeight(TheText)) div 2 + 1, TheText);
             Canvas.Font.Color := clBtnShadow;
           end;
         end;
