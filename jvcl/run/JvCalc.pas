@@ -98,6 +98,7 @@ type
     FDisplayLabel: TLabel;
     FPasteItem: TMenuItem;
     FParentWnd: HWND;
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure PopupMenuPopup(Sender: TObject);
     procedure CopyItemClick(Sender: TObject);
@@ -307,7 +308,7 @@ function CreateCalcBtn(AParent: TWinControl; AKind: TCalcBtnKind;
 const
   BtnCaptions: array [cbSgn..cbMC] of string =
     ('', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
-     'MP', 'MS', 'MR', 'MC');
+     'M+', 'M-', 'MR', 'MC');
 begin
   Result := TJvCalcButton.CreateKind(AParent, AKind);
   with Result do
@@ -491,6 +492,7 @@ begin
   try
     Ctl3D := not FFlat;
     Caption := Self.Title;
+    Scaled := True;
     TJvCalculatorPanel(FCalcPanel).FMemory := Self.FMemory;
     TJvCalculatorPanel(FCalcPanel).UpdateMemoryLabel;
     TJvCalculatorPanel(FCalcPanel).FPrecision := Max(2, Self.Precision);
@@ -554,6 +556,7 @@ var
   Items: array [0..1] of TMenuItem;
 begin
   inherited CreateNew(AOwner, 0); // for BCB
+  Color := clWindow;
   BorderIcons := [biSystemMenu];
   BorderStyle := bsDialog;
   PixelsPerInch := 96;
@@ -566,7 +569,8 @@ begin
   Position := poOwnerFormCenter;
   {$ELSE}
   Position := poScreenCenter;
-  {$ENDIF COMPILER7_UP};  
+  {$ENDIF COMPILER7_UP};
+  OnKeyDown := FormKeyDown;
   OnKeyPress := FormKeyPress;
   Items[0] := NewItem(RsCopyItem, scCtrl + VK_INSERT, False, True, CopyItemClick, 0, '');
   Items[1] := NewItem(RsPasteItem, scShift + VK_INSERT, False, True, PasteItemClick, 0, '');
@@ -579,7 +583,7 @@ begin
   begin
     Align := alClient;
     Parent := Self;
-    BevelOuter := bvLowered;
+    BevelOuter := bvNone;
     ParentColor := True;
     PopupMenu := Popup;
   end;
@@ -674,6 +678,14 @@ procedure TJvCalculatorForm.DisplayChange(Sender: TObject);
 begin
   if (Owner <> nil) and (Owner is TJvCalculator) then
     TJvCalculator(Owner).DisplayChange;
+end;
+
+procedure TJvCalculatorForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+
+  if (Key = VK_END) or (Key = VK_INSERT) then
+    ModalResult := mrOK;
 end;
 
 procedure TJvCalculatorForm.FormKeyPress(Sender: TObject; var Key: Char);
