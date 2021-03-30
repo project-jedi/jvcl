@@ -3392,6 +3392,8 @@ begin
   else
   {$ENDIF JVCLThemesEnabled}
   {$ENDIF ~COMPILER14_UP}
+    //Reduce flickering
+    if ((ACol = 0)and(dgIndicator in Options))or(ARow > 0)or(not(dgTitles in Options)) then
     CallDrawCellEvent(ACol, ARow, ARect, AState);
 end;
 
@@ -3582,6 +3584,9 @@ begin
     (DataLink.DataSet.State = dsBrowse) then
   begin { draw multiselect indicators if needed }
     FixRect := ARect;
+    //Fix selection/multiple selection cursor display
+    Self.Canvas.Brush.Color := FixedColor;
+    Self.Canvas.FillRect(FixRect);
     if [dgRowLines, dgColLines] * Options = [dgRowLines, dgColLines] then
     begin
       InflateRect(FixRect, -1, -1);
@@ -4314,7 +4319,8 @@ begin
     ColLineWidth := Ord(dgColLines in Options) * GridLineWidth;
     AvailableWidth := ClientWidth;
     if (dgIndicator in Options) then
-      Dec(AvailableWidth, IndicatorWidth + ColLineWidth);
+      //Use ColWidths[0] instead of IndicatorWidth (real width may change in some condition)
+      Dec(AvailableWidth, ColWidths[0] + ColLineWidth);
     TotalColWidth := 0;
     if FixedCols = 0 then
       BeginLayout;
