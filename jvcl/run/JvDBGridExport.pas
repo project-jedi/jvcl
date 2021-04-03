@@ -661,7 +661,9 @@ begin
         Inc(K);
       end;
 
-    if HeaderRow then J := 1 else J := 0;
+    J := 0;
+    if HeaderRow then
+      J := 1;
     with Grid.DataSource.DataSet do
     begin
       ARecNo := 0;
