@@ -57,7 +57,11 @@ const
   {$EXTERNALSYM MSFTEDIT_CLASSW}
   MSFTEDIT_CLASSW       = 'RICHEDIT50W';     { Richedit4.0 Window Class. }
   {$EXTERNALSYM MSFTEDIT_CLASS}
+  {$IFDEF SUPPORTS_UNICODE}
   MSFTEDIT_CLASS = MSFTEDIT_CLASSW;
+  {$ELSE}
+  MSFTEDIT_CLASS = MSFTEDIT_CLASSA;
+  {$ENDIF SUPPORTS_UNICODE}
 
 type
   TJvCustomRichEdit = class;
@@ -2833,13 +2837,15 @@ begin
   if RichEditVersion >= 4 then
     CreateSubClass(Params, MSFTEDIT_CLASS)
   else
-  case RichEditVersion of
-    2:
+  begin
+    case RichEditVersion of
+      2:
+        CreateSubClass(Params, RICHEDIT_CLASS);
+      1:
+        CreateSubClass(Params, RICHEDIT_CLASS10A);
+    else
       CreateSubClass(Params, RICHEDIT_CLASS);
-    1:
-      CreateSubClass(Params, RICHEDIT_CLASS10A);
-  else
-    CreateSubClass(Params, RICHEDIT_CLASS);
+    end;
   end;
   with Params do
   begin
@@ -7740,8 +7746,8 @@ begin
 
   if GLibHandle = 0 then
   begin
-  GLibHandle := SafeLoadLibrary(RichEdit20ModuleName);
-  if (GLibHandle > 0) and (GLibHandle < HINSTANCE_ERROR) then
+    GLibHandle := SafeLoadLibrary(RichEdit20ModuleName);
+   if (GLibHandle > 0) and (GLibHandle < HINSTANCE_ERROR) then
       GLibHandle := 0
     else
       RichEditVersion := 2; // at least version 2
