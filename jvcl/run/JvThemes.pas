@@ -1390,30 +1390,36 @@ begin
     Options.dwFlags := Options.dwFlags or DTT_TEXTCOLOR;
     Options.crText := GetTextColor(DC);
 
-    {$IFDEF COMPILER16_UP}
-    if not StyleServices.IsSystemStyle then
-    begin
-      // The Style engine doesn't have DrawThemeTextEx support
-      {$WARNINGS OFF} // ignore "deprecated" warning
-      StyleServices.DrawText(DC, StyleServices.GetElementDetails(tbPushButtonNormal), Text, TextRect, TextFlags, 0);
-      {$WARNINGS ON}
-      Exit;
-    end
-    else
-    {$ENDIF}
-    begin
-      {$IFDEF COMPILER12_UP}
-      with ThemeServices do
-        if DrawThemeTextEx(Theme[teToolBar], DC, TP_BUTTON, TS_NORMAL, PWideChar(Text), Length(Text),
-                           TextFlags, TextRect, Options) <> E_NOTIMPL then
-          Exit;
-      {$ELSE}
-      S := Text;
-      with ThemeServices do
-        if DrawThemeTextEx(Theme[teToolBar], DC, TP_BUTTON, TS_NORMAL, PWideChar(S), Length(S),
-                           TextFlags, @TextRect, Options) <> E_NOTIMPL then
-          Exit;
-      {$ENDIF COMPILER12_UP}
+    try
+      {$IFDEF COMPILER16_UP}
+      if not StyleServices.IsSystemStyle then
+      begin
+        // The Style engine doesn't have DrawThemeTextEx support
+        {$WARNINGS OFF} // ignore "deprecated" warning
+        StyleServices.DrawText(DC, StyleServices.GetElementDetails(tbPushButtonNormal), Text, TextRect, TextFlags, 0);
+        {$WARNINGS ON}
+        Exit;
+      end
+      else
+      {$ENDIF}
+      begin
+        {$IFDEF COMPILER12_UP}
+        with ThemeServices do
+          if DrawThemeTextEx(Theme[teToolBar], DC, TP_BUTTON, TS_NORMAL, PWideChar(Text), Length(Text),
+                             TextFlags, TextRect, Options) <> E_NOTIMPL then
+            Exit;
+        {$ELSE}
+        S := Text;
+        with ThemeServices do
+          if DrawThemeTextEx(Theme[teToolBar], DC, TP_BUTTON, TS_NORMAL, PWideChar(S), Length(S),
+                             TextFlags, @TextRect, Options) <> E_NOTIMPL then
+            Exit;
+        {$ENDIF COMPILER12_UP}
+      end;
+    except
+      //Sometimes result check is not enough
+      on E:EExternalException do Exit;
+      else raise;
     end;
   end;
   {$ENDIF COMPILER11_UP}

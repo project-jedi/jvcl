@@ -3088,6 +3088,8 @@ begin
       FHeader.Align := alTop;
       FHeader.Alignment := Alignment;
       FHeader.WordWrap := WordWrap;
+      //Header autosize
+      FHeader.Height := TJvNavigationPane(Parent).ButtonHeight - 1;
     end;
   end;
 end;
