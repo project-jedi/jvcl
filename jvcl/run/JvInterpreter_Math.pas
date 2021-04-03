@@ -353,7 +353,9 @@ begin
     AddConst(cMath, 'MaxSingle', MaxSingle);
     AddConst(cMath, 'MinComp', MinComp);
     AddConst(cMath, 'MinDouble', MinDouble);
+    {$WARN SYMBOL_PLATFORM OFF} // MinExtended is platform specific
     AddConst(cMath, 'MinExtended', MinExtended);
+    {$WARN SYMBOL_PLATFORM ON}
     AddConst(cMath, 'MinSingle', MinSingle);
     AddConst(cMath, 'NaN', NaN);
     AddConst(cMath, 'NegInfinity', NegInfinity);
