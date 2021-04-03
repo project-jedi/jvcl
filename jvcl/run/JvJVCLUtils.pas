@@ -3317,6 +3317,7 @@ end;
 function Pixels(Control: TControl; APixels: Integer): Integer;
 var
   Form: TForm;
+  MonitorPPI: Integer;
 begin
   Result := APixels;
   if Control is TForm then
@@ -3324,7 +3325,14 @@ begin
   else
     Form := TForm(GetParentForm(Control));
   if Form.Scaled then
-    Result := Result * Form.PixelsPerInch div 96;
+  begin
+    {$ifdef RTL210_UP}
+    MonitorPPI := Screen.MonitorFromWindow(Form.Handle).PixelsPerInch;
+    {$else}
+    MonitorPPI := Screen.PixelsPerInch;
+    {$endif}
+    Result := MulDiv(Result, MonitorPPI, 96);
+  end;
 end;
 
 procedure ShowMenu(Form: TForm; MenuAni: TMenuAnimation);
