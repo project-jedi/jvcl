@@ -75,6 +75,7 @@ type
     FLinkedObject: TObject;
     FNoTextAssign: Boolean;
     FBrush: TBrush;
+    FStringsIndex: Integer;
     procedure SetImageIndex(const Value: Integer);
     procedure SetText(const Value: string);
     procedure SetIndent(const Value: Integer);
@@ -93,8 +94,10 @@ type
     function IsColorHighlightTextStored: Boolean;
     function IsColorHighlightStored: Boolean;
     procedure SetBrush(const Value: TBrush);
+    procedure SyncControlItemIndex(ControlItemIndex: Integer; UpdateIndex: Boolean);
   protected
     procedure SetIndex(Value: Integer); override;
+    function GetStringsIndex: Integer;
     function GetDisplayName: string; override;
 
     function IsFontStored: Boolean;
@@ -131,22 +134,28 @@ type
   protected
     FStrings: TStrings;  // Protected to allow to use it in derived classes
     FDestroying: Boolean; // True when our Destroy has been called.
+    FClearing: Boolean; // True when our Clear is active
 
     procedure Update(Item: TCollectionItem); override;
     procedure FillItems;
+    procedure UpdateItemIndices;
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
+    function IsStringsSorted: Boolean;
   public
     constructor Create(AOwner: TPersistent);
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     function Add: TJvImageItem;
+    function AddTextItem(const Text: string): TJvImageItem;
     function AddText(const Text: string): Integer;
     function AddObject(const Text: string; ALinkedObject: TObject): Integer;
     function Insert(Index: Integer): TJvImageItem;
+    function InsertTextItem(Index: Integer; const Text: string): TJvImageItem;
     procedure InsertText(Index: Integer; const Text: string);
     procedure InsertObject(Index: Integer; const Text: string; ALinkedObject: TObject);
     procedure Move(CurIndex, NewIndex: Integer);
     procedure Sort(SortProc: TCollectionSortProc);
+    procedure Clear; // unfortunately not virtual
 
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
@@ -178,7 +187,6 @@ type
     FDroppedWidth: Integer;
     FFullWidthItemDraw: Boolean;
     FCanvas: TControlCanvas;
-    FSorted: Boolean;
     function GetCanvas: TCanvas;
     function GetDroppedWidth: Integer;
     procedure SetDroppedWidth(Value: Integer);
@@ -495,22 +503,32 @@ begin
   FFont := nil;
   FColorHighlight := clHighlight;
   FColorHighlightText := clHighlightText;
+  FStringsIndex := -1;
 end;
 
 destructor TJvImageItem.Destroy;
 var
   S: TStrings;
-  I: Integer;
+  I, Idx: Integer;
 begin
   S := GetOwnerStrings;
   FOwner := nil; // indicate that the item is in the destructor
-  // PRY 2002.06.04
-  //if (S <> nil) and not (csDestroying in TComponent(FOwner.GetWinControl).ComponentState) then
-  if (S <> nil) and (GetWinControl <> nil) and not (csDestroying in GetWinControl.ComponentState) then
+
+  if (Collection <> nil) and not (TJvImageItems(Collection).FDestroying or TJvImageItems(Collection).FClearing) then
   begin
-    S.Delete(Index);
-    for I := 0 to S.Count - 1 do
-      TJvImageItem(S.Objects[I]).Index := I;
+    //if (S <> nil) and not (csDestroying in TComponent(FOwner.GetWinControl).ComponentState) then
+    if (S <> nil) and (GetWinControl <> nil) and not (csDestroying in GetWinControl.ComponentState) then
+    begin
+      S.BeginUpdate;
+      try
+        Idx := Index;
+        S.Delete(Idx);
+        for I := Idx to S.Count - 1 do
+          TJvImageItem(S.Objects[I]).SyncControlItemIndex(I, False); // we don't need to set Item.Index because we remove it from the collection
+      finally
+        S.EndUpdate;
+      end;
+    end;
   end;
   FFont.Free;
   FGlyph.Free;
@@ -561,27 +579,36 @@ procedure TJvImageItem.SetText(const Value: string);
 var
   S: TStrings;
   SavedOwner: TJvImageItems;
+  Idx: Integer;
 begin
   S := GetOwnerStrings;
   if Assigned(FOwner) and (FOwner.FStrings.Count <> FOwner.Count) then
     FOwner.FillItems;
   if S <> nil then
   begin
-    if S[Index] <> Value then
+    Idx := GetStringsIndex;
+    if S[Idx] <> Value then
     begin
       // do not add the item in FillItems which might be called by the draw message handler while deleting the string
       SavedOwner := FOwner;
       try
         FOwner := nil;
-        S.Delete(Index);
-        if (SavedOwner.GetOwner is TJvImageListBox) and (TJvImageListBox(SavedOwner.GetOwner).Sorted) then
-          S.AddObject(Value, Self)
-        else
-          S.InsertObject(Index, Value, Self);
+        S.BeginUpdate;
+        try
+          S.Delete(Idx);
+          if SavedOwner.IsStringsSorted then
+            SyncControlItemIndex(S.AddObject(Value, Self), True) // AddObject moved the item (sorted)
+          else
+          begin
+            S.InsertObject(Idx, Value, Self);
+            SyncControlItemIndex(Idx, False);
+          end;
+        finally
+          S.EndUpdate;
+        end;
       finally
         FOwner := SavedOwner;
       end;
-      Index := S.IndexOfObject(Self);
       Change;
     end;
   end;
@@ -604,15 +631,58 @@ var
   OldIndex, TmpIndex: Integer;
   S: TStrings;
 begin
-  if Value <> Index then
+  OldIndex := Index;
+  if Value <> OldIndex then
   begin
-    OldIndex := Index;
     inherited SetIndex(Value);
     S := GetOwnerStrings;
-    TmpIndex := S.IndexOfObject(Self);
+    TmpIndex := GetStringsIndex;
     if (TmpIndex > -1) and (TmpIndex <> Value) then
-      S.Move(OldIndex,Value);
+    begin
+      S.Move(OldIndex, Value);
+      FStringsIndex := Value;
+    end;
   end;
+end;
+
+procedure TJvImageItem.SyncControlItemIndex(ControlItemIndex: Integer; UpdateIndex: Boolean);
+begin
+  // We don't need to update the control's string list because the index comes from it so we
+  // can set the index much faster.
+  FStringsIndex := ControlItemIndex;
+  if UpdateIndex then
+    inherited SetIndex(ControlItemIndex);
+end;
+
+function TJvImageItem.GetStringsIndex: Integer;
+var
+  S: TStrings;
+begin
+  S := GetOwnerStrings;
+  if S <> nil then
+  begin
+    Result := FStringsIndex;
+    if Result = -1 then // we don't have that information yet
+    begin
+      FStringsIndex := S.IndexOfObject(Self);
+      Result := FStringsIndex;
+    end
+    else
+    begin
+      if (Result >= 0) and (Result < S.Count) then
+      begin
+        if S.Objects[Result] <> Self then // we have the wrong item
+        begin
+          FStringsIndex := S.IndexOfObject(Self);
+          Result := FStringsIndex;
+        end;
+      end
+      else
+        Result := -1;
+    end;
+  end
+  else
+    Result := -1;
 end;
 
 //=== { TJvImageItems } ======================================================
@@ -629,32 +699,94 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvImageItems.Clear;
+begin
+  FClearing := True; // prevent the item by item deletion from FStrings
+  try
+    if (GetOwner is TWinControl) and TWinControl(GetOwner).HandleAllocated then
+      FStrings.Clear;
+    inherited Clear;
+  finally
+    FClearing := False;
+  end;
+end;
+
 function TJvImageItems.Add: TJvImageItem;
 begin
-  Result := TJvImageItem(inherited Add);
-  while FStrings.Count < Count do
-    Result.Index := FStrings.AddObject('', Result);
+  Result := Items[AddText('')];
+end;
+
+function TJvImageItems.AddTextItem(const Text: string): TJvImageItem;
+begin
+  Result := Items[AddText(Text)];
 end;
 
 function TJvImageItems.AddText(const Text: string): Integer;
 var
+  Index: Integer;
+  MinIndex, Idx: Integer;
+  I: Integer;
   Item: TJvImageItem;
 begin
-  Item := Add;
-  Item.Text := Text;
-  Result := Item.Index;
+  MinIndex := Count + 1;
+
+  // Add missing items to FStrings
+  Index := FStrings.Count;
+  while Index < Count do
+  begin
+    Idx := FStrings.AddObject('', Items[Index]);
+    if Idx <> Count - 1 then
+      Items[Index].SyncControlItemIndex(Idx, True); // don't use SetIndex here because it will move the FStrings element
+    if Idx < MinIndex then
+      MinIndex := Idx;
+  end;
+
+  // Add new item
+  Item := TJvImageItem(inherited Add);
+  Result := FStrings.AddObject(Text, Item);
+  if Result <> Count - 1 then
+    Item.SyncControlItemIndex(Result, True); // don't use SetIndex here because it will move the FStrings element
+  if Result < MinIndex then
+    MinIndex := Result;
+
+  // If we were sorted all indices of the items from the first inserted must be sync'ed.
+  // Include the added item because the SyncControlItemIndex call above may not have been called.
+  for I := MinIndex to Count - 1 do
+    Items[Index].SyncControlItemIndex(I, False);
 end;
 
 function TJvImageItems.Insert(Index: Integer): TJvImageItem;
 begin
-  Result := TJvImageItem(inherited Insert(Index));
-  FStrings.InsertObject(Index, '', Result);
-  Result.Index := FStrings.IndexOfObject(Result);
+  Result := InsertTextItem(Index, '');
+end;
+
+function TJvImageItems.InsertTextItem(Index: Integer; const Text: string): TJvImageItem;
+begin
+  InsertText(Index, Text);
+  Result := Items[Index];
 end;
 
 procedure TJvImageItems.InsertText(Index: Integer; const Text: string);
+var
+  Item: TJvImageItem;
 begin
-  Insert(Index).Text := Text;
+  // InsertString ignores the SORT flag of the control
+  //   https://docs.microsoft.com/en-us/windows/win32/controls/cb-insertstring
+  //   https://docs.microsoft.com/en-us/windows/win32/controls/lb-insertstring
+
+  //Item := TJvImageItem(inherited Insert(Index)); => Add+SetIndex
+  // Don't move the not yet existing FStrings element what SetIndex in inherited Insert would do
+  Item := TJvImageItem(inherited Add);
+  if Index < Count - 1 then // Don't move at all if we just append
+    Item.SyncControlItemIndex(Index, True);
+  FStrings.InsertObject(Index, Text, Item);
+
+  // The StringsIndex of the affected items must be sync'ed
+  while Index < Count do
+  begin
+    Items[Index].SyncControlItemIndex(Index, False);
+    Inc(Index);
+  end;
 end;
 
 procedure TJvImageItems.Move(CurIndex, NewIndex: Integer);
@@ -674,13 +806,42 @@ begin
       Item := TJvImageItem(FStrings.Objects[CurIndex]);
       ItemText := Item.Text;
       FStrings.Delete(CurIndex);
-      FStrings.InsertObject(NewIndex,ItemText,Item);
-      Item.Index := FStrings.IndexOfObject(Item);
+      FStrings.InsertObject(NewIndex, ItemText, Item);
+      Item.SyncControlItemIndex(NewIndex, True); // move the item without moving the FStrings element
+
+      // update FStringsIndex for all affected items
+      if NewIndex > CurIndex then
+      begin
+        while CurIndex < NewIndex do
+        begin
+          Items[CurIndex].SyncControlItemIndex(CurIndex, False);
+          Inc(CurIndex);
+        end;
+      end
+      else
+      begin
+        Inc(NewIndex);
+        while NewIndex <= CurIndex do
+        begin
+          Items[NewIndex].SyncControlItemIndex(NewIndex, False);
+          Inc(NewIndex);
+        end;
+      end;
     finally
       EndUpdate;
     end;
     Changed;
   end;
+end;
+
+function TJvImageItems.IsStringsSorted: Boolean;
+begin
+  if GetOwner is TJvImageListBox then
+    Result := TJvImageListBox(GetOwner).Sorted
+  else if GetOwner is TJvImageComboBox then
+    Result := TJvImageComboBox(GetOwner).Sorted
+  else
+    Result := False;
 end;
 
 function TJvImageItems.IndexOfLinkedObject(ALinkedObject: TObject): Integer;
@@ -775,32 +936,82 @@ end;
 procedure TJvImageItems.FillItems;
 var
   Index: Integer;
+  List: TList;
+  ControlInUpdate: Boolean;
 begin
-  for Index := 0 to Count - 1 do
-    if Items[Index].FOwner = Self then // not in destructor
-      if FStrings.IndexOfObject(Items[Index]) = -1 then
-        FStrings.InsertObject(Index, '', Items[Index]);
-  for Index := 0 to FStrings.Count - 1 do
-    TJvImageItem(FStrings.Objects[Index]).Index := Index;
+  if Count > 0 then
+  begin
+    // Create a list with all objects from FStrings, so that we don't need to communicate with the
+    // control via (slow) SendMessage calls for item and every IndexOfObject call.
+    List := TList.Create;
+    try
+      for Index := 0 to FStrings.Count - 1 do
+        List.Add(FStrings.Objects[Index]);
+
+      ControlInUpdate := False;
+      BeginUpdate;
+      try
+        for Index := 0 to Count - 1 do
+        begin
+          if Items[Index].FOwner = Self then // not in destructor
+          begin
+            if List.IndexOf(Items[Index]) = -1 then
+            begin
+              if not ControlInUpdate then
+              begin
+                ControlInUpdate := True;
+                FStrings.BeginUpdate;
+              end;
+              // Keep List and FStrings in sync
+              List.Insert(Index, Items[Index]);
+              FStrings.InsertObject(Index, '', Items[Index]);
+            end;
+          end;
+        end;
+
+        // Slow if many items exist because of the GetIndex in SetIndex
+        for Index := 0 to List.Count - 1 do
+          TJvImageItem(List[Index]).SyncControlItemIndex(Index, True);
+      finally
+        if ControlInUpdate then
+          FStrings.EndUpdate;
+        EndUpdate;
+      end;
+    finally
+      List.Free;
+    end;
+  end;
+end;
+
+procedure TJvImageItems.UpdateItemIndices;
+var
+  Index: Integer;
+begin
+  // Move all items to the indices from FStrings
+  if Count > 0 then
+  begin
+    BeginUpdate;
+    try
+      for Index := 0 to FStrings.Count - 1 do
+        TJvImageItem(FStrings.Objects[Index]).SyncControlItemIndex(Index, True);
+    finally
+      EndUpdate;
+    end;
+  end;
 end;
 
 function TJvImageItems.AddObject(const Text: string; ALinkedObject: TObject): Integer;
 var
   Item: TJvImageItem;
 begin
-  Item := Add;
-  Item.Text := Text;
+  Result := AddText(Text);
+  Item := Items[Result];
   Item.LinkedObject := ALinkedObject;
-  Result := Item.Index;
 end;
 
 procedure TJvImageItems.InsertObject(Index: Integer; const Text: string; ALinkedObject: TObject);
-var
-  Item: TJvImageItem;
 begin
-  Item := Insert(Index);
-  Item.Text := Text;
-  Item.LinkedObject := ALinkedObject;
+  InsertTextItem(Index, Text).LinkedObject := ALinkedObject;
 end;
 
 procedure TJvImageItems.Sort(SortProc: TCollectionSortProc);
@@ -810,6 +1021,8 @@ end;
 
 procedure TJvImageItems.Notify(Item: TCollectionItem;
   Action: TCollectionNotification);
+var
+  Idx: Integer;
 begin
   inherited Notify(Item, Action);
 
@@ -822,7 +1035,15 @@ begin
   // sync with the count in this class.
   case Action of
     cnAdded: ;
-    cnExtracting: FStrings.Delete(FStrings.IndexOfObject(Item));
+    cnExtracting:
+      begin
+        if not FClearing and not FDestroying then
+        begin
+          Idx := TJvImageItem(Item).GetStringsIndex;
+          if Idx <> -1 then
+            FStrings.Delete(Idx);
+        end;
+      end;
     cnDeleting: ;
   end;
 end;
@@ -861,12 +1082,10 @@ begin
   FCanvas.Free;
 end;
 
-
 function TJvImageComboBox.GetCanvas: TCanvas;
 begin
   Result := FCanvas;
 end;
-
 
 procedure TJvImageComboBox.ImageListChange(Sender: TObject);
 begin
@@ -892,7 +1111,6 @@ begin
   end;
 end;
 
-
 procedure TJvImageComboBox.CreateWnd;
 begin
   inherited CreateWnd;
@@ -905,17 +1123,12 @@ begin
   SetDroppedWidth(FDroppedWidth);
 end;
 
-
-
-
-
 procedure TJvImageComboBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FImageList) then
     FImageList := nil;
 end;
-
 
 procedure TJvImageComboBox.CNDrawItem(var Msg: TWMDrawItem);
 var
@@ -966,11 +1179,7 @@ begin
   end;
 end;
 
-
-
 procedure TJvImageComboBox.DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState);
-
-
 var
   Offset, Tmp: Integer;
   TmpCol: TColor;
@@ -1071,16 +1280,12 @@ begin
   end;
 end;
 
-
 procedure TJvImageComboBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
   Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + (Ord(ButtonFrame) * 4));
 //  if Assigned(FImageList) then
 //    Height := Max(Height,FImageList.Height);
 end;
-
-
-
 
 procedure TJvImageComboBox.SetColorHighlight(Value: TColor);
 begin
@@ -1100,8 +1305,6 @@ begin
   end;
 end;
 
-
-
 function TJvImageComboBox.GetDroppedWidth: Integer;
 begin
   HandleNeeded;
@@ -1114,10 +1317,6 @@ begin
   FDroppedWidth := SendMessage(Handle, CB_SETDROPPEDWIDTH, Value, 0);
 end;
 
-
-
-
-
 procedure TJvImageComboBox.FontChanged;
 begin
   inherited FontChanged;
@@ -1127,16 +1326,19 @@ end;
 
 procedure TJvImageComboBox.ResetItemHeight;
 var
-  MaxImageHeight: Integer;
+  MaxImageHeight, H: Integer;
   I: Integer;
 begin
   MaxImageHeight := GetImageHeight(-1);
-  for I := 0 to FItems.Count-1 do
+  for I := 0 to FItems.Count - 1 do
   begin
-    if GetImageHeight(I) > MaxImageHeight then
-      MaxImageHeight := GetImageHeight(I);
+    H := GetImageHeight(I);
+    if H > MaxImageHeight then
+      MaxImageHeight := H;
   end;
-  ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + Ord(ButtonFrame) * 4);
+  H := Max(GetItemHeight(Font) + 4, MaxImageHeight + Ord(ButtonFrame) * 4);
+  if ItemHeight <> H then
+    ItemHeight := H; // SetItemHeight does a RecreateWnd without checking if the value has changed
 end;
 
 procedure TJvImageComboBox.Change;
@@ -1144,7 +1346,6 @@ begin
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
-
 
 procedure TJvImageComboBox.CNCommand(var Msg: TWMCommand);
 begin
@@ -1158,7 +1359,6 @@ begin
         Change;
   end;
 end;
-
 
 procedure TJvImageComboBox.EnabledChanged;
 const
@@ -1195,19 +1395,13 @@ begin
   FItems.Update(nil);
 end;
 
-function NamesSorter(Item1, Item2: TCollectionItem): Integer;
-begin
-  Result := CompareStr(Item1.DisplayName, Item2.DisplayName);
-end;
-
 procedure TJvImageComboBox.SetSorted(const Value: Boolean);
 begin
-  if FSorted <> Value then
+  if Sorted <> Value then
   begin
-    FSorted := Value;
-
-    if FSorted then
-      FItems.Sort(NamesSorter);
+    inherited Sorted := Value;
+    if Value then
+      FItems.UpdateItemIndices; // all indices have changed, we must apply the changes to the Items
   end;
 end;
 
@@ -1233,7 +1427,7 @@ end;
 
 function TJvImageComboBox.GetSorted: Boolean;
 begin
-  Result := FSorted;
+  Result := inherited Sorted;
 end;
 
 function TJvImageComboBox.GetImageHeight(Index: Integer): Integer;
@@ -1283,12 +1477,10 @@ begin
   FCanvas.Free;
 end;
 
-
 function TJvImageListBox.GetCanvas: TCanvas;
 begin
   Result := FCanvas;
 end;
-
 
 procedure TJvImageListBox.ImageListChange;
 begin
@@ -1322,14 +1514,12 @@ begin
   end;
 end;
 
-
 procedure TJvImageListBox.CreateWnd;
 begin
   inherited CreateWnd;
   Items.FillItems;
   SetBkMode(FCanvas.Handle, TRANSPARENT);
 end;
-
 
 procedure TJvImageListBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
@@ -1355,7 +1545,6 @@ begin
     Invalidate;
   end;
 end;
-
 
 procedure TJvImageListBox.CNDrawItem(var Msg: TWMDrawItem);
 var
@@ -1409,11 +1598,7 @@ begin
   end;
 end;
 
-
-
 procedure TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
-
-
 var
   SavedColor: TColor;
 begin
@@ -1684,14 +1869,10 @@ begin
   end;
 end;
 
-
 procedure TJvImageListBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
   Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + Ord(ButtonFrame) * 4);
 end;
-
-
-
 
 procedure TJvImageListBox.FontChanged;
 begin
