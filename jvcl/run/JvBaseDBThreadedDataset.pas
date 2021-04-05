@@ -427,7 +427,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
-  JvDSADialogs, JvResources;
+  JvDSADialogs, JvResources, JvJVCLUtils;
 
 //=== { TJvDatasetThreadDialog } =============================================
 
@@ -532,7 +532,7 @@ begin
   {$ELSE}
   Position := poScreenCenter;
   {$ENDIF COMPILER7_UP}
-  PixelsPerInch := 96;
+  PixelsPerInch := cDefaultPixelsPerInch;
 end;
 
 procedure TJvDatasetThreadDialogForm.CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel: TWinControl;

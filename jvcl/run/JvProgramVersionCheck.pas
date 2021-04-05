@@ -661,12 +661,6 @@ begin
   until (AVersion1 = '') and (AVersion2 = '');
 end;
 
-//=== { Support function for DPI Aware apps } ================================
-
-function PPIScale(Value: Integer): Integer;
-begin
-  Result := MulDiv(Value, Screen.PixelsPerInch, 96);
-end;
 
 //=== { TJvProgramVersionsStringList } =======================================
 

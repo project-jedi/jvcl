@@ -658,7 +658,7 @@ begin
     if ppi > 480 then
       ppi := 480;
 
-    MaxWidth := round(15 * ppi/96);
+    MaxWidth := MulDiv(15, ppi, cDefaultPixelsPerInch);
   end
   else
     // 15 was the original fixed value

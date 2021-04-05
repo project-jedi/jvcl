@@ -666,13 +666,6 @@ implementation
 uses
   JvResources, JvJVCLUtils, JclSysUtils;
 
-//=== { Support function for DPI Aware apps } ================================
-
-function PPIScale(Value: Integer): Integer;
-begin
-  Result := MulDiv(Value, Screen.PixelsPerInch, 96);
-end;
-
 function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
   const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;

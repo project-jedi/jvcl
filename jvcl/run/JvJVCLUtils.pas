@@ -333,7 +333,13 @@ procedure EnableControls(Control: TWinControl; const Enable: Boolean);
 procedure EnableMenuItems(MenuItem: TMenuItem; const Tag: Integer; const Enable: Boolean);
 procedure ExpandWidth(Parent: TControl; MinWidth: Integer; Controls: array of TControl);
 function PanelBorder(Panel: TCustomPanel): Integer;
-function Pixels(Control: TControl; APixels: Integer): Integer;
+
+//=== { Support functions for DPI Aware apps } ================================
+const cDefaultPixelsPerInch : Integer = 96;
+function Pixels(Control: TControl; APixels: Integer): Integer; deprecated; // Use PPIScale instead of Pixels
+function ControlScreenPixelsPerInch(Control: TControl): Integer;
+function PPIScale(Value: Integer): Integer; overload;
+function PPIScale(Control: TControl; Value: Integer): Integer; overload;
 
 type
   TMenuAnimation = (maNone, maRandom, maUnfold, maSlide);
@@ -3315,25 +3321,66 @@ begin
 end;
 
 function Pixels(Control: TControl; APixels: Integer): Integer;
+begin
+  Result := PPIScale (Control, APixels);
+end;
+
+function ControlScreenPixelsPerInch(Control: TControl): Integer;
+{$ifdef RTL210_UP}
 var
   Form: TForm;
-  MonitorPPI: Integer;
+{$endif}
 begin
-  Result := APixels;
+  {$ifdef RTL210_UP}
   if Control is TForm then
     Form := TForm(Control)
   else
     Form := TForm(GetParentForm(Control));
-  if Form.Scaled then
+  if Assigned(Form) then
+    Result := Screen.MonitorFromWindow(Form.Handle).PixelsPerInch
+  else
+    Result := Screen.PixelsPerInch;
+  {$else}
+  Result := Screen.PixelsPerInch;
+  {$endif}
+end;
+
+function PPIScale(Value: Integer): Integer; overload;
+begin
+  Result := PPIScale(nil, Value);
+end;
+
+function PPIScale(Control: TControl; Value: Integer): Integer;
+var
+  Form: TForm;
+  MonitorPPI: Integer;
+begin
+  Result := Value;
+  if Not Assigned(Control) then
+    Form := nil
+  else
+    if Control is TForm then
+      Form := TForm(Control)
+    else
+      Form := TForm(GetParentForm(Control));
+  if Assigned(Form) then
+    if Form.Scaled then
+    begin
+      {$ifdef RTL210_UP}
+      MonitorPPI := Screen.MonitorFromWindow(Form.Handle).PixelsPerInch;
+      {$else}
+      MonitorPPI := Screen.PixelsPerInch;
+      {$endif}
+      Result := MulDiv(Result, MonitorPPI, cDefaultPixelsPerInch);
+    end
+    else
+  else
   begin
-    {$ifdef RTL210_UP}
-    MonitorPPI := Screen.MonitorFromWindow(Form.Handle).PixelsPerInch;
-    {$else}
     MonitorPPI := Screen.PixelsPerInch;
-    {$endif}
-    Result := MulDiv(Result, MonitorPPI, 96);
+    Result := MulDiv(Result, MonitorPPI, cDefaultPixelsPerInch);
   end;
 end;
+
 
 procedure ShowMenu(Form: TForm; MenuAni: TMenuAnimation);
 var

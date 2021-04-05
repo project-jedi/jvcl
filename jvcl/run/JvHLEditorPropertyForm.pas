@@ -215,19 +215,6 @@ uses
 function GetHardCodedExamples: string;
   forward;
 
-function Pixels(Control: TControl; APixels: Integer): Integer;
-var
-  Form: TForm;
-begin
-  Result := APixels;
-  if Control is TForm then
-    Form := TForm(Control)
-  else
-    Form := TForm(GetParentForm(Control));
-  if Form.Scaled then
-    Result := Result * Form.PixelsPerInch div 96;
-end;
-
 //=== { TJvSampleViewer } ====================================================
 
 type
@@ -662,8 +649,8 @@ begin
   if not Params.FHighlighterCombo then
   begin
     for I := 0 to tsColors.ControlCount - 1 do
-      tsColors.Controls[I].Top := tsColors.Controls[I].Top - Pixels(tsColors, 24);
-    JvHLEditorPreview.Height := JvHLEditorPreview.Height + Pixels(tsColors, 24);
+      tsColors.Controls[I].Top := tsColors.Controls[I].Top - PPIScale(tsColors, 24);
+    JvHLEditorPreview.Height := JvHLEditorPreview.Height + PPIScale(tsColors, 24);
   end;
 end;
 

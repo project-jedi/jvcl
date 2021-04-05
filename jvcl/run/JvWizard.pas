@@ -895,10 +895,9 @@ uses
   JvResources, JvJVCLUtils;
 
 const
-  ciDefaultPPI = 96;
-
   ciButtonWidth = 75;
   ciBaseButtonHeight = 25; // button height for default ppi
+  ciBaseButtonBarHeight = 17; // Additional button bar height for default ppi
 
 type
   TJvWizardBaseButton = class(TJvWizardButtonControl)
@@ -2559,12 +2558,12 @@ end;
 
 class function TJvWizard.CalculateButtonBarHeight: Integer;
 begin
-  Result := CalculateButtonHeight + Round(Screen.PixelsPerInch / ciDefaultPPI * 17);
+  Result := CalculateButtonHeight + PPIScale(ciBaseButtonBarHeight);
 end;
 
 class function TJvWizard.CalculateButtonHeight: Integer;
 begin
-  Result := Round(Screen.PixelsPerInch / ciDefaultPPI * ciBaseButtonHeight);
+  Result := PPIScale(ciBaseButtonHeight);
 end;
 
 class function TJvWizard.CalculateButtonPlacement: Integer;

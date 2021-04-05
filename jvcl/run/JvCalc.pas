@@ -352,9 +352,9 @@ begin
     HelpContext := AHelpContext;
     if HelpContext <> 0 then
       BorderIcons := BorderIcons + [biHelp];
-    if Screen.PixelsPerInch <> 96 then
+    if Screen.PixelsPerInch <> cDefaultPixelsPerInch then
     begin { scale to screen res }
-      ScaleBy(Screen.PixelsPerInch, 96);
+      ScaleBy(Screen.PixelsPerInch, cDefaultPixelsPerInch);
       SetDefaultFont(Font, clDialog);
       Left := (Screen.Width div 2) - (Width div 2);
       Top := (Screen.Height div 2) - (Height div 2);
@@ -368,18 +368,6 @@ end;
 function CreatePopupCalculator(AOwner: TComponent; ABiDiMode: TBiDiMode = bdLeftToRight): TWinControl;
 begin
   Result := TJvPopupCalculator.Create(AOwner);
-  // ahuser: reported as a bug (Mantis #2048)
-  (*
-  if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
-    (Screen.PixelsPerInch <> 96) then
-  begin { scale to screen res }
-    Result.ScaleBy(Screen.PixelsPerInch, 96);
-    { The ScaleBy method does not scale the font well, so set the
-      font back to the original info. }
-    TJvPopupCalculator(Result).FCalcPanel.ParentFont := True;
-    SetDefaultFont(TJvPopupCalculator(Result).Font, clPopup);
-  end;
-  *)
   Result.BiDiMode := ABiDiMode;
 end;
 
@@ -556,7 +544,7 @@ begin
   inherited CreateNew(AOwner, 0); // for BCB
   BorderIcons := [biSystemMenu];
   BorderStyle := bsDialog;
-  PixelsPerInch := 96;
+  PixelsPerInch := cDefaultPixelsPerInch;
   Caption := RsCalculatorCaption;
   ClientHeight := 159;
   ClientWidth := 242;

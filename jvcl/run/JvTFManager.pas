@@ -4740,7 +4740,7 @@ begin
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSX)
   else
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-  Result := Trunc(ScreenPPI / PrinterPPI * Value);
+  Result := MulDiv(Value, ScreenPPI, PrinterPPI);
 end;
 
 procedure TJvTFPrinter.SaveDocToFiles(BaseFileName: TFileName);
@@ -4764,7 +4764,7 @@ begin
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSX)
   else
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-  Result := Trunc(PrinterPPI / ScreenPPI * Value);
+  Result := MulDiv(Value, PrinterPPI, ScreenPPI);
 end;
 
 procedure TJvTFPrinter.SetDirectPrint(Value: Boolean);

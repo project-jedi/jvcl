@@ -551,14 +551,6 @@ const
     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_');
 
-
-//=== { Support function for DPI Aware apps } ================================
-
-function PPIScale(Value: Integer): Integer;
-begin
-  Result := MulDiv(Value, Screen.PixelsPerInch, 96);
-end;
-
 //=== { TJvParameterListMessages } ===========================================
 
 constructor TJvParameterListMessages.Create;
