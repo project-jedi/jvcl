@@ -819,8 +819,8 @@ var
     if ResultForm.ClientHeight > Screen.Height-100 then
       ResultForm.ClientHeight := Screen.Height-100;
 
-    ResultForm.Left := (CenterParWidth div 2) - (ResultForm.Width div 2) + CenterParLeft;
-    ResultForm.Top := (CenterParHeight div 2) - (ResultForm.Height div 2) + CenterParTop;
+    ResultForm.Left := Max((CenterParWidth div 2) - (ResultForm.Width div 2) + CenterParLeft, 0);
+    ResultForm.Top := Max((CenterParHeight div 2) - (ResultForm.Height div 2) + CenterParTop, 0);
   end;
 
 begin
@@ -849,8 +849,13 @@ begin
   begin
     CenterParLeft := 0;
     CenterParTop := 0;
+    {$ifdef RTL210_UP}
+    CenterParWidth := TScreen(CenterParent).MonitorFromWindow(TScreen(CenterParent).ActiveCustomForm.Handle).Width;
+    CenterParHeight := TScreen(CenterParent).MonitorFromWindow(TScreen(CenterParent).ActiveCustomForm.Handle).Height;
+    {$else}
     CenterParWidth := TScreen(CenterParent).Width;
     CenterParHeight := TScreen(CenterParent).Height;
+    {$endif}
   end
   else
   begin
