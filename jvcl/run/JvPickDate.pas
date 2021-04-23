@@ -889,23 +889,6 @@ function CreatePopupCalendar(AOwner: TComponent;
   MinDate: TDateTime = 0.0; MaxDate: TDateTime = 0.0): TWinControl;
 begin
   Result := TJvPopupCalendar.Create(AOwner);
-(*
-  // TJvPopupCalendar sets Scaled to false anyway...
-  if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
-    (Screen.PixelsPerInch <> 96) then
-  begin { scale to screen res }
-    Result.ScaleBy(Screen.PixelsPerInch, 96);
-    { The ScaleBy method does not scale the font well, so set the
-      font back to the original info. }
-    TJvPopupCalendar(Result).FCalendar.ParentFont := True;
-    TJvPopupCalendar(Result).FCalendar.MinDate := MinDate;
-    TJvPopupCalendar(Result).FCalendar.MaxDate := MaxDate;
-    FontSetDefault(TJvPopupCalendar(Result).Font);
-    {$IFDEF VCL}
-    Result.BiDiMode := ABiDiMode;
-    {$ENDIF VCL}
-  end;
-*)
 end;
 
 procedure SetupPopupCalendar(PopupCalendar: TWinControl;
@@ -1574,9 +1557,9 @@ begin
       Result.Caption := DlgCaption;
     Result.Calendar.MinDate := MinDate; // Polaris
     Result.Calendar.MaxDate := MaxDate; // Polaris
-    if Screen.PixelsPerInch <> 96 then
+    if Screen.PixelsPerInch <> cDefaultPixelsPerInch then
     begin { scale to screen res }
-      Result.ScaleBy(Screen.PixelsPerInch, 96);
+      Result.ScaleBy(Screen.PixelsPerInch, cDefaultPixelsPerInch);
       { The ScaleBy method does not scale the font well, so set the
         font back to the original info. }
       Result.Calendar.ParentFont := True;

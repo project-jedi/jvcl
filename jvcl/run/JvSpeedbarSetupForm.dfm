@@ -56,7 +56,7 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
   object ButtonsLabel: TLabel
     Left = 146
     Top = 11
-    Width = 96
+    Width = 97
     Height = 13
     Caption = '&Available Buttons:    '
     FocusControl = ButtonsList
@@ -74,7 +74,7 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
     Width = 413
     Height = 29
     AutoSize = False
-    Caption =
+    Caption = 
       'To add command Buttons, drag and drop Buttons onto the JvSpeedba' +
       'r. To remove command Buttons, drag them off of the JvSpeedbar.'
     WordWrap = True

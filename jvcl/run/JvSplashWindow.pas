@@ -70,7 +70,7 @@ const
 implementation
 
 uses
-  Math;
+  Math, JvJVCLUtils;
 
 const
   defSplashHeight = 64;
@@ -96,7 +96,7 @@ begin
     Enabled := False;
     Font.Height := -11;
     Font.Name := 'MS Sans Serif';
-    PixelsPerInch := 96;
+    PixelsPerInch := cDefaultPixelsPerInch;
     Scaled := True;
     Font.Style := [];
     Font.Color := clWindowText;
