@@ -329,7 +329,7 @@ end;
 
 procedure JvInterpreter_Pixels(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Pixels(V2O(Args.Values[0]) as TControl, Args.Values[1]);
+  Value := PPIScale(V2O(Args.Values[0]) as TControl, Args.Values[1]);
 end;
 
 { procedure SetChildPropOrd(Owner: TComponent; PropName: string; Value: Longint); }
