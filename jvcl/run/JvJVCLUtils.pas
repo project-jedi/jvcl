@@ -3326,12 +3326,12 @@ begin
 end;
 
 function ControlScreenPixelsPerInch(Control: TControl): Integer;
-{$ifdef RTL210_UP}
+{$IFDEF RTL300_UP}
 var
   Form: TForm;
-{$endif}
+{$ENDIF}
 begin
-  {$ifdef RTL210_UP}
+  {$IFDEF RTL300_UP}
   if Control is TForm then
     Form := TForm(Control)
   else
@@ -3340,9 +3340,9 @@ begin
     Result := Screen.MonitorFromWindow(Form.Handle).PixelsPerInch
   else
     Result := Screen.PixelsPerInch;
-  {$else}
+  {$ELSE}
   Result := Screen.PixelsPerInch;
-  {$endif}
+  {$ENDIF}
 end;
 
 function PPIScale(Value: Integer): Integer; overload;
