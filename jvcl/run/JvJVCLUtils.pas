@@ -3366,7 +3366,7 @@ begin
   if Assigned(Form) then
     if Form.Scaled then
     begin
-      {$ifdef RTL210_UP}
+      {$ifdef RTL300_UP}
       MonitorPPI := Screen.MonitorFromWindow(Form.Handle).PixelsPerInch;
       {$else}
       MonitorPPI := Screen.PixelsPerInch;
