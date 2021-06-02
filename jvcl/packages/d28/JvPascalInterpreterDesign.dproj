@@ -73,7 +73,6 @@
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="vclx.dcp"/>
         <DCCReference Include="vcldb.dcp"/>
-        <DCCReference Include="bdertl.dcp"/>
         <DCCReference Include="..\..\design\JvPascalInterpreterReg.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
