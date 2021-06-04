@@ -329,7 +329,7 @@ uses
   {$ENDIF ~COMPILER12_UP}
   CmdLineUtils, Utils,
   JvConsts,
-  JclBase, JclSysInfo, JclSimpleXml, JclSysUtils, JclFileUtils, JclIDEUtils;
+  JclBase, JclSysInfo, JclSimpleXml, JclSysUtils, JclFileUtils, JclIDEUtils, JclStrings;
 
 function DequoteStr(const S: string): string;
 begin
@@ -839,6 +839,10 @@ procedure TCompileTarget.LoadFromRegistry;
     end;
   end;
 
+const
+  BDS19UpCatalogRepositoryElementsSubKey = '\CatalogRepository\Elements';   // do not localize
+  BDS19UpCoreCommonFilesPrefix = 'Core_Common_Files_';   // do not localize
+
 var
   Reg: TRegistry;
   i: Integer;
@@ -849,6 +853,7 @@ var
   LibraryKey: string;
   ValueInfo: TRegDataInfo;
   EnvVarNames: TStrings;
+  KeyNames: TStrings;
 begin
   Reg := TRegistry.Create;
   try
@@ -876,6 +881,23 @@ begin
 
       ReadUpdateState(Reg);
       Reg.CloseKey;
+    end;
+
+    // Starting with Delphi 10.2, the Edition key is missing so we have to find the information somewhere else
+    if IsBDS and (IDEVersion >= 19) and Reg.OpenKeyReadOnly(HKLMRegistryKey + BDS19UpCatalogRepositoryElementsSubKey) then
+    begin
+      KeyNames := TStringList.Create;
+      try
+        Reg.GetKeyNames(KeyNames);
+        for i := 0 to KeyNames.Count - 1 do
+          if StrHasPrefix(KeyNames[i], [BDS19UpCoreCommonFilesPrefix]) then
+          begin
+            FEdition := Copy(KeyNames[i], Length(BDS19UpCoreCommonFilesPrefix) + 1);
+            FEdition := Copy(FEdition, 1, Pos('_', FEdition) - 1);
+          end;
+      finally
+        KeyNames.Free;
+      end;
     end;
 
     FIsValid := (RootDir <> '') and (Executable <> '') and FileExists(Executable);
