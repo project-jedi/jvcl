@@ -854,6 +854,7 @@ var
   ValueInfo: TRegDataInfo;
   EnvVarNames: TStrings;
   KeyNames: TStrings;
+  CandidateEdition: string;
 begin
   Reg := TRegistry.Create;
   try
@@ -892,8 +893,12 @@ begin
         for i := 0 to KeyNames.Count - 1 do
           if StrHasPrefix(KeyNames[i], [BDS19UpCoreCommonFilesPrefix]) then
           begin
-            FEdition := Copy(KeyNames[i], Length(BDS19UpCoreCommonFilesPrefix) + 1);
-            FEdition := Copy(FEdition, 1, Pos('_', FEdition) - 1);
+            CandidateEdition := Copy(KeyNames[i], Length(BDS19UpCoreCommonFilesPrefix) + 1);
+            if Pos('_', CandidateEdition) = 0 then
+            begin
+              FEdition := Copy(CandidateEdition, 1, Pos('-', CandidateEdition) - 1);
+              Break;
+            end;
           end;
       finally
         KeyNames.Free;
