@@ -3603,7 +3603,7 @@ begin
         Indicator := 0
       else
         Indicator := 1; { multiselected and current row }
-//      MsIndicators.BkColor := FixedColor;
+      MsIndicators.BkColor := FixedColor;
       ALeft := FixRect.Right - MsIndicators.Width - FrameOffs;
       if InBiDiMode then
         Inc(ALeft);
