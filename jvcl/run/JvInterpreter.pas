@@ -7998,6 +7998,7 @@ begin
   if FAdapter.UnitExists(UnitName) then
     Exit;
   FAdapter.AddSrcUnit(FCurUnitName, '', '');
+  FAdapter.AddSrcUnit(UnitName, '', '');
   OldUnitName := FCurUnitName;
   OldSource := Source;
   PushState;
