@@ -8803,129 +8803,144 @@ var
   Done: Boolean;
   ApptRect: TRect;
 begin
-  with Result do
-  begin
-    Col := gcUndef;
-    Row := gcUndef;
-    CellX := -100;
-    CellY := -100;
-    AbsX := X;
-    AbsY := Y;
-    Schedule := nil;
-    Appt := nil;
-  end;
-
-  if X < CalcBlockHdrWidth then
-  begin
-    // POSSIBLE BUG!!
-    //Result.Row := gcGroupHdr; // WRONG CODE
-    Result.Col := gcGroupHdr; // UNTESTED - CORRECT CODE
-    Result.CellX := X;
-  end
-  //block if X < RowHdrWidth then
-  else
-  if X < CalcBlockRowHdrsWidth then
-  begin
-    Result.Col := gcHdr;
-    Result.CellX := X - CalcBlockHdrWidth;
-  end
-  else
-  if LeftCol > -1 then
-  begin
-    // Find the col that PtX falls in
-    ColNum := LeftCol;
-    //block AdjX := X - RowHdrWidth;
-    AdjX := X - CalcBlockRowHdrsWidth;
-    Done := False;
-    Temp := 0;
-
-    while (ColNum < Cols.Count) and not Done do
+  try
+    with Result do
     begin
-      Inc(Temp, Cols[ColNum].Width);
-      if AdjX < Temp then
-      begin
-        Done := True;
-        Result.Col := ColNum;
-        Result.CellX := AdjX - (Temp - Cols[ColNum].Width);
-      end
-      else
-        Inc(ColNum);
+      Col := gcUndef;
+      Row := gcUndef;
+      CellX := -100;
+      CellY := -100;
+      AbsX := X;
+      AbsY := Y;
+      Schedule := nil;
+      Appt := nil;
     end;
-    if not Done then
+
+    if X < CalcBlockHdrWidth then
     begin
-      Result.Col := Cols.Count-1;
-      Result.CellX := AdjX - (Temp - Cols[Cols.Count-1].Width);
-    end;
-  end;
-
-  if Y < CalcGroupHdrHeight then
-  begin
-    Result.Row := gcGroupHdr;
-    Result.CellY := Y;
-  end
-  //else if Y < ColHdrHeight then
-  else
-  if Y < CalcGroupColHdrsHeight then
-  begin
-    Result.Row := gcHdr;
-    Result.CellY := Y - CalcGroupHdrHeight;
-  end
-  else
-  if TopRow > -1 then
-  begin
-    RowNum := TopRow;
-    //group AdjY := Y - ColHdrHeight;
-    AdjY := Y - CalcGroupColHdrsHeight;
-    Done := False;
-    Temp := 0;
-
-    while (RowNum < RowCount) and not Done do
-    begin
-      Inc(Temp, RowHeight);
-      if AdjY < Temp then
-      begin
-        Done := True;
-        Result.Row := RowNum;
-        Result.CellY := AdjY - (Temp - RowHeight);
-      end
-      else
-        Inc(RowNum);
-    end;
-    if not Done then
-    begin
-      Result.Row := RowCount-1;
-      Result.CellY := AdjY - (Temp - RowHeight);
-    end;
-  end;
-
-  if Result.Col > gcHdr then
-  begin
-    Result.Schedule := Cols[Result.Col].Schedule;
-
-    // move grab handles
-    if PtInTopHandle(Point(X, Y), Result.Col, SelAppt) then
-      Result.Appt := SelAppt
+      // POSSIBLE BUG!!
+      //Result.Row := gcGroupHdr; // WRONG CODE
+      Result.Col := gcGroupHdr; // UNTESTED - CORRECT CODE
+      Result.CellX := X;
+    end
+    //block if X < RowHdrWidth then
     else
-    if PtInBottomHandle(Point(X, Y), Result.Col, SelAppt) then
-      Result.Appt := SelAppt
-    else
-    if (Result.Row > gcHdr) and Assigned(Result.Schedule) then
+    if X < CalcBlockRowHdrsWidth then
     begin
-      TotalWidth := Cols[Result.Col].Width;
-      SegCount := Cols[Result.Col].MapColCount(Result.Row);
-      if SegCount > 0 then
-      begin
-        MapCol := LocateDivCol(Result.CellX, TotalWidth, SegCount);
-        Result.Appt := Cols[Result.Col].MapLocation(MapCol, Result.Row);
+      Result.Col := gcHdr;
+      Result.CellX := X - CalcBlockHdrWidth;
+    end
+    else
+    if LeftCol > -1 then
+    begin
+      // Find the col that PtX falls in
+      ColNum := LeftCol;
+      //block AdjX := X - RowHdrWidth;
+      AdjX := X - CalcBlockRowHdrsWidth;
+      Done := False;
+      Temp := 0;
 
-        ApptRect := GetApptRect(Result.Col, Result.Appt);
-        if not Windows.PtInRect(ApptRect, Point(X, Y)) then
-          Result.Appt := nil;
+      while (ColNum < Cols.Count) and not Done do
+      begin
+        Inc(Temp, Cols[ColNum].Width);
+        if AdjX < Temp then
+        begin
+          Done := True;
+          Result.Col := ColNum;
+          Result.CellX := AdjX - (Temp - Cols[ColNum].Width);
+        end
+        else
+          Inc(ColNum);
+      end;
+      if not Done then
+      begin
+        Result.Col := Cols.Count-1;
+        Result.CellX := AdjX - (Temp - Cols[Cols.Count-1].Width);
       end;
     end;
-  end;
 
-  Result.DragAccept := (Result.Row > gcHdr) and (Result.Col > gcHdr);
+    if Y < CalcGroupHdrHeight then
+    begin
+      Result.Row := gcGroupHdr;
+      Result.CellY := Y;
+    end
+    //else if Y < ColHdrHeight then
+    else
+    if Y < CalcGroupColHdrsHeight then
+    begin
+      Result.Row := gcHdr;
+      Result.CellY := Y - CalcGroupHdrHeight;
+    end
+    else
+    if TopRow > -1 then
+    begin
+      RowNum := TopRow;
+      //group AdjY := Y - ColHdrHeight;
+      AdjY := Y - CalcGroupColHdrsHeight;
+      Done := False;
+      Temp := 0;
+
+      while (RowNum < RowCount) and not Done do
+      begin
+        Inc(Temp, RowHeight);
+        if AdjY < Temp then
+        begin
+          Done := True;
+          Result.Row := RowNum;
+          Result.CellY := AdjY - (Temp - RowHeight);
+        end
+        else
+          Inc(RowNum);
+      end;
+      if not Done then
+      begin
+        Result.Row := RowCount-1;
+        Result.CellY := AdjY - (Temp - RowHeight);
+      end;
+    end;
+
+    if Result.Col > gcHdr then
+    begin
+      Result.Schedule := Cols[Result.Col].Schedule;
+
+      // move grab handles
+      if PtInTopHandle(Point(X, Y), Result.Col, SelAppt) then
+        Result.Appt := SelAppt
+      else
+      if PtInBottomHandle(Point(X, Y), Result.Col, SelAppt) then
+        Result.Appt := SelAppt
+      else
+      if (Result.Row > gcHdr) and Assigned(Result.Schedule) then
+      begin
+        TotalWidth := Cols[Result.Col].Width;
+        SegCount := Cols[Result.Col].MapColCount(Result.Row);
+        if SegCount > 0 then
+        begin
+          MapCol := LocateDivCol(Result.CellX, TotalWidth, SegCount);
+          Result.Appt := Cols[Result.Col].MapLocation(MapCol, Result.Row);
+
+          ApptRect := GetApptRect(Result.Col, Result.Appt);
+          if not Windows.PtInRect(ApptRect, Point(X, Y)) then
+            Result.Appt := nil;
+        end;
+      end;
+    end;
+
+    Result.DragAccept := (Result.Row > gcHdr) and (Result.Col > gcHdr);
+  except
+    with Result do
+    begin
+      Col := gcUndef;
+      Row := gcUndef;
+      CellX := -100;
+      CellY := -100;
+      AbsX := X;
+      AbsY := Y;
+      Schedule := nil;
+      Appt := nil;
+      DragAccept := False;
+    end;
+  end;
 end;
 {$ENDIF Jv_TIMEBLOCKS}
 
