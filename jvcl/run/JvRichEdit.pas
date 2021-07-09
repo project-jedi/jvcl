@@ -622,7 +622,6 @@ type
     procedure FindDialogFind(Sender: TObject);
     procedure NeedAdvancedTypography;
     procedure ReplaceDialogReplace(Sender: TObject);
-    procedure SetSelText(const Value: string);
     procedure FindDialogClose(Sender: TObject);
     procedure SetUIActive(Active: Boolean);
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
@@ -679,6 +678,7 @@ type
     function GetSelText: string; override;
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
+    procedure SetSelText(const Value: string); {$IFDEF RTL350_UP}override;{$ENDIF RTL350_UP}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     property AllowInPlace: Boolean read FAllowInPlace write FAllowInPlace default True;
     property AutoAdvancedTypography: Boolean read FAutoAdvancedTypography write FAutoAdvancedTypography default True;
@@ -4414,7 +4414,11 @@ end;
 procedure TJvCustomRichEdit.SetSelText(const Value: string);
 begin
   FLinesUpdating := True;
+  {$IFDEF RTL350_UP}
+  inherited SetSelText(Value);
+  {$ELSE}
   inherited SelText := Value;
+  {$ENDIF RTL350_UP}
   FLinesUpdating := False;
 end;
 
