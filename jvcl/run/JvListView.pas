@@ -2460,7 +2460,7 @@ end;
 procedure TJvListView.LVMSetColumn(var Msg: TMessage);
 var
   i: Integer;
-  Column: tagLVCOLUMN;
+  Column: {$IFDEF RTL350_UP}TLVCOLUMN{$ELSE}tagLVCOLUMN{$ENDIF RTL350_UP};
 begin
   inherited;
 
