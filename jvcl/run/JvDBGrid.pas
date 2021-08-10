@@ -2565,10 +2565,11 @@ begin
         FTitleArrowDown := True;
 
       if (Button = mbRight) and
-        (dgTitles in Options) and (dgIndicator in Options) and
+        (dgTitles in Options) and
         (Cell.Y = 0) then
       begin
-        if (Cell.X = 0) and FTitleArrow and Assigned(FOnTitleArrowMenuEvent) then
+        if (Cell.X = 0) and FTitleArrow and Assigned(FOnTitleArrowMenuEvent) and
+           (dgIndicator in Options) then
         begin
           FOnTitleArrowMenuEvent(Self);
           Exit;
