@@ -526,7 +526,9 @@ begin
   else
     Caption := ' ';
   FormStyle := DialogOptions.FormStyle;
+  {$IFDEF HAS_PROPERTY_OLDCREATEORDER}
   OldCreateOrder := False;
+  {$ENDIF HAS_PROPERTY_OLDCREATEORDER}
   {$IFDEF COMPILER7_UP}
   Position := poOwnerFormCenter;
   {$ELSE}

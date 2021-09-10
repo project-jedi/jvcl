@@ -123,8 +123,10 @@ begin
       finally
         Exclude(FFormState, fsCreating);
       end;
+      {$IFDEF HAS_PROPERTY_OLDCREATEORDER}
       if OldCreateOrder then
         DoCreate;
+      {$ENDIF HAS_PROPERTY_OLDCREATEORDER}
     end;
   finally
     GlobalNameSpace.EndWrite;

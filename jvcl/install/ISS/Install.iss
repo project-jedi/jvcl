@@ -295,7 +295,7 @@ Name: "{app}\lib\d27\win32"
 Name: "{app}\lib\d27\win32\debug"
 Name: "{app}\lib\d27\win64"
 Name: "{app}\lib\d27\win64\debug"
-; 10.5
+; 11
 Name: "{app}\lib\d28"
 Name: "{app}\lib\d28\win32"
 Name: "{app}\lib\d28\win32\debug"
