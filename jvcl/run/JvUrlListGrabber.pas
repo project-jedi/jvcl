@@ -29,7 +29,11 @@ interface
 
 {$I jvcl.inc}
 
+{$IFDEF WIN64}
+{$HPPEMIT '#pragma link "wininet.a"'}
+{$ELSE}
 {$HPPEMIT '#pragma link "wininet.lib"'}
+{$ENDIF WIN64}
 
 uses
   {$IFDEF UNITVERSIONING}
