@@ -1182,8 +1182,8 @@ msgstr "Une JCL %s ou plus récente n'est pas installée"
 
 #. Programmer's name for it: RsDownloadOrSelectJclDir
 #: InstallerConsts.pas:184
-msgid "Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|http://jcl.delphi-jedi.org/"
-msgstr "Téléchargez la JCL, fermez l'installateur de la JVCL et installez la JCL avant de redémarrer l'installateur de la JVCL.|http://jcl.delphi-jedi.org/"
+msgid "Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|https://github.com/project-jedi/jcl"
+msgstr "Téléchargez la JCL, fermez l'installateur de la JVCL et installez la JCL avant de redémarrer l'installateur de la JVCL.|https://github.com/project-jedi/jcl"
 
 #. Programmer's name for it: RsInstalledJVCLVersion
 #: InstallerConsts.pas:185

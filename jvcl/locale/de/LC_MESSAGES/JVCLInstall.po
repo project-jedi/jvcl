@@ -1236,7 +1236,7 @@ msgstr "Packages kompilieren"
 #. Programmer's name for it: RsInstallPageSubTitle
 #: InstallerConsts.pas:114
 msgid "The selected packages are compiling for the selected Delphi and C++Builder versions"
-msgstr "Die ausgewählen Packages werden für die gewählten Delphi und C++Builder Versionen kompiliert"
+msgstr "Die ausgewählten Packages werden für die gewählten Delphi und C++Builder Versionen kompiliert"
 
 #  PgPackageSelection.pas
 #  Programmer's name for it: RsPackageSelectionPageTitle
@@ -1370,7 +1370,7 @@ msgstr "Zum Bibliothekspfad hinzufügen"
 #. Programmer's name for it: RsAddToIncludePath
 #: InstallerConsts.pas:140
 msgid "Add to include path:"
-msgstr "Zum Includepfad hinzufügen"
+msgstr "Zum Include-Pfad hinzufügen"
 
 #  Programmer's name for it: RsUninstallFromTarget
 #  Programmer's name for it: RsUninstallFromTarget
@@ -1454,7 +1454,7 @@ msgstr "Alle Versionen"
 #. Programmer's name for it: RsCannotOpen
 #: InstallerConsts.pas:158
 msgid "Cannot open %s"
-msgstr "Fehler beim öffnen von %s"
+msgstr "Fehler beim Öffnen von %s"
 
 #  Programmer's name for it: RsReadReadmeForXPThemingInfo
 #. Programmer's name for it: RsReadReadmeForXPThemingInfo
@@ -1561,8 +1561,8 @@ msgstr "JCL %s oder höher benötigt"
 #  Programmer's name for it: RsDownloadOrSelectJclDir
 #. Programmer's name for it: RsDownloadOrSelectJclDir
 #: InstallerConsts.pas:184
-msgid "Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|http://jcl.delphi-jedi.org/"
-msgstr "Laden Sie die JCL aus dem Internet, schhießen sie den JVCL Installer und installieren Sie die JCL bevor sie den JVCL Installer erneut starten.|http://jcl.delphi-jedi.org/"
+msgid "Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|https://github.com/project-jedi/jcl"
+msgstr "Laden Sie die JCL aus dem Internet, schließen Sie den JVCL Installer und installieren Sie die JCL bevor Sie den JVCL Installer erneut starten.|https://github.com/project-jedi/jcl"
 
 #  Programmer's name for it: RsInstalledJVCLVersion
 #  Programmer's name for it: RsInstalledJVCLVersion
@@ -1600,7 +1600,7 @@ msgstr "&Neu einlesen"
 #. Programmer's name for it: RsEvaluationVersion
 #: InstallerConsts.pas:194
 msgid "Evaluation version is not supported"
-msgstr "Die Evaluations Version wird nicht unterstützt"
+msgstr "Die Evaluation Version wird nicht unterstützt"
 
 #  Main.pas
 #  Programmer's name for it: RsBtnInstall
@@ -1695,7 +1695,7 @@ msgstr "Ausnahmeadresse: %p"
 #. Programmer's name for it: RsStackList
 #: Debug/ExceptionDlg.pas:127
 msgid "Stack list, generated %s"
-msgstr "Stackliste generiert %s"
+msgstr "Stack-Liste generiert %s"
 
 #  Programmer's name for it: RsModulesList
 #. Programmer's name for it: RsModulesList
@@ -1734,7 +1734,7 @@ msgstr "Thread: %s"
 #. Programmer's name for it: RsMissingVersionInfo
 #: Debug/ExceptionDlg.pas:134
 msgid "(no version info)"
-msgstr "(keine versioninfo)"
+msgstr "(keine Versionsinfo)"
 
 #  Programmer's name for it: STR_HELPBTN
 #  Programmer's name for it: STR_HELPBTN

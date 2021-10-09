@@ -1264,8 +1264,8 @@ msgstr "Требуется JCL версии 1.9 или выше"
 #  Programmer's name for it: RsDownloadOrSelectJclDir
 #. Programmer's name for it: RsDownloadOrSelectJclDir
 #: InstallerConsts.pas:184 
-msgid "Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|http://jcl.delphi-jedi.org/"
-msgstr "Скачайте или установите каталог JCL.|http://jcl.delphi-jedi.org/"
+msgid "Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|https://github.com/project-jedi/jcl"
+msgstr "Скачайте или установите каталог JCL.|https://github.com/project-jedi/jcl"
 
 #  Programmer's name for it: RsInstalledJVCLVersion
 #. Programmer's name for it: RsInstalledJVCLVersion

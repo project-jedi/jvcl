@@ -1349,8 +1349,8 @@ msgstr "JCL %s eller senare krävs"
 #  Programmer's name for it: RsDownloadOrSelectJclDir
 #. Programmer's name for it: RsDownloadOrSelectJclDir
 #: InstallerConsts.pas:184 
-msgid "Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|http://jcl.delphi-jedi.org/"
-msgstr "Ladda ner eller välj en JCL-mapp|http://jcl.delphi-jedi.org/"
+msgid "Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|https://github.com/project-jedi/jcl"
+msgstr "Ladda ner eller välj en JCL-mapp|https://github.com/project-jedi/jcl"
 
 #  Programmer's name for it: RsInstalledJVCLVersion
 #. Programmer's name for it: RsInstalledJVCLVersion

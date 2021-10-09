@@ -1037,6 +1037,18 @@ msgstr ""
 msgid "http://jvcl.delphi-jedi.org/"
 msgstr ""
 
+msgid "https://github.com/project-jedi/jcl"
+msgstr ""
+
+msgid "https://github.com/project-jedi/jcl/"
+msgstr ""
+
+msgid "https://github.com/project-jedi/jvcl"
+msgstr ""
+
+msgid "https://github.com/project-jedi/jvcl/"
+msgstr ""
+
 msgid "TJvCustomPropertyStore.StoreProperties:"
 msgstr ""
 

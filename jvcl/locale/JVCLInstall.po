@@ -1068,7 +1068,7 @@ msgstr ""
 #: InstallerConsts.pas:184 
 msgid ""
 "Download the JCL, close the JVCL Installer and install the JCL before "
-"restarting the JVCL Installer.|http://jcl.delphi-jedi.org/"
+"restarting the JVCL Installer.|https://github.com/project-jedi/jcl"
 msgstr ""
 
 #. Programmer's name for it: RsInstalledJVCLVersion
