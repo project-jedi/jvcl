@@ -19,7 +19,7 @@ Contributor(s):
   Polaris Software
   Lionel Reynaud
   Flemming Brandt Clausen
-  Frédéric Leneuf-Magaud
+  FrÃ©dÃ©ric Leneuf-Magaud
   Andreas Hausladen
   Ronald Hoek
 
@@ -51,7 +51,7 @@ KNOWN ISSUES:
   a gap after the last column). This bug comes from DBGrid.pas.
 
 -----------------------------------------------------------------------------
-2004/07/08 - WPostma merged changes by Frédéric Leneuf-Magaud and ahuser.}
+2004/07/08 - WPostma merged changes by FrÃ©dÃ©ric Leneuf-Magaud and ahuser.}
 
 // $Id$
 
@@ -3842,7 +3842,10 @@ begin
     begin
       Bmp := GetGridBitmap(TGridPicture(I));
       if Highlight then
-        DrawThemedHighlighting(Canvas, Rect)
+      begin
+        if not DrawThemedHighlighting(Canvas, Rect) then
+          Canvas.FillRect(Rect);
+      end
       else
         Canvas.FillRect(Rect);
       DrawBitmapTransparent(Canvas, (Rect.Left + Rect.Right + 1 - Bmp.Width) div 2,
