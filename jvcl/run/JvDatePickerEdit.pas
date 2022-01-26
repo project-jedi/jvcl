@@ -715,8 +715,8 @@ begin
   Result := ADateFormat;
   StrReplace(Result, 'dd', '00', []);
   StrReplace(Result, 'd', '99', []);
-  StrReplace(Result, 'MM', '00', []);
-  StrReplace(Result, 'M', '99', []);
+  StrReplace(Result, 'MM', '00', [rfIgnoreCase]);
+  StrReplace(Result, 'M', '99', [rfIgnoreCase]);
   StrReplace(Result, 'yyyy', '0099', []);
   StrReplace(Result, 'yy', '00', []);
   StrReplace(Result, ' ', '_', []);
@@ -750,7 +750,7 @@ end;
 
 function TJvCustomDatePickerEdit.DetermineDateSeparator(AFormat: string): Char;
 begin
-  AFormat := StrRemoveChars(Trim(AFormat), ['d', 'M', 'y']);
+  AFormat := StrRemoveChars(Trim(AFormat), ['d', 'm', 'M', 'y']);
   if AFormat <> '' then
     Result := AFormat[1]
   else
