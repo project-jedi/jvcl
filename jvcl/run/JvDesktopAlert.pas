@@ -171,6 +171,7 @@ type
     FDesktopForm: TJvCustomFormDesktopAlert;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure InternalOnMove(Sender: TObject);
+    class procedure GetEffectiveRectAndPosition(Owner: TComponent; var Position: TJvDesktopAlertPosition; out Rect: TRect);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1100,12 +1101,15 @@ var
   Form: TJvCustomFormDesktopAlert;
   X, Y: Integer;
   R: TRect;
+  LocalPosition: TJvDesktopAlertPosition;
 begin
   C := Count;
   if C > 0 then
   begin
-    R := ScreenWorkArea;
-    case Position of
+    LocalPosition := Position;
+    TJvDesktopAlert.GetEffectiveRectAndPosition(Owner, LocalPosition, R);
+
+    case LocalPosition of
       dapBottomRight:
         begin
           Y := R.Bottom;
@@ -1595,30 +1599,8 @@ begin
   if FDesktopForm.Visible then
     FDesktopForm.Close;
 
-  ARect := ScreenWorkArea;
-  if (Application <> nil) and (Application.MainForm <> nil) and
-     (Location.Position in [dapMainFormTopLeft, dapMainFormTopRight, dapMainFormBottomLeft, dapMainFormBottomRight]) then
-    ARect := Application.MainForm.BoundsRect
-  else
-  if (Screen.ActiveForm <> nil) and
-     (Location.Position in [dapActiveFormTopLeft, dapActiveFormTopRight, dapActiveFormBottomLeft, dapActiveFormBottomRight]) then
-    ARect := Screen.ActiveForm.BoundsRect
-  else
-  if (Owner is TCustomForm) and
-     (Location.Position in [dapOwnerFormTopLeft, dapOwnerFormTopRight, dapOwnerFormBottomLeft, dapOwnerFormBottomRight]) then
-    ARect := TCustomForm(Owner).BoundsRect;
-
   Position := Location.Position;
-  case Position of
-    dapMainFormTopLeft, dapActiveFormTopLeft, dapOwnerFormTopLeft:
-      Position := dapTopLeft;
-    dapMainFormTopRight, dapActiveFormTopRight, dapOwnerFormTopRight:
-      Position := dapTopRight;
-    dapMainFormBottomLeft, dapActiveFormBottomLeft, dapOwnerFormBottomLeft:
-      Position := dapBottomLeft;
-    dapMainFormBottomRight, dapActiveFormBottomRight, dapOwnerFormBottomRight:
-      Position := dapBottomRight;
-  end;
+  GetEffectiveRectAndPosition(Owner, Position, ARect);
 
   if Location.Width <> 0 then
     FDesktopForm.Width := Location.Width
@@ -1764,6 +1746,34 @@ end;
 function TJvCustomDesktopAlert.Showing: Boolean;
 begin
   Result := (FDesktopForm <> nil) and FDesktopForm.Showing;
+end;
+
+class procedure TJvCustomDesktopAlert.GetEffectiveRectAndPosition(Owner: TComponent;
+  var Position: TJvDesktopAlertPosition; out Rect: TRect);
+begin
+  Rect := ScreenWorkArea;
+  if (Application <> nil) and (Application.MainForm <> nil) and
+     (Position in [dapMainFormTopLeft, dapMainFormTopRight, dapMainFormBottomLeft, dapMainFormBottomRight]) then
+    Rect := Application.MainForm.BoundsRect
+  else
+  if (Screen.ActiveForm <> nil) and
+     (Position in [dapActiveFormTopLeft, dapActiveFormTopRight, dapActiveFormBottomLeft, dapActiveFormBottomRight]) then
+    Rect := Screen.ActiveForm.BoundsRect
+  else
+  if (Owner is TCustomForm) and
+     (Position in [dapOwnerFormTopLeft, dapOwnerFormTopRight, dapOwnerFormBottomLeft, dapOwnerFormBottomRight]) then
+    Rect := TCustomForm(Owner).BoundsRect;
+
+  case Position of
+    dapMainFormTopLeft, dapActiveFormTopLeft, dapOwnerFormTopLeft:
+      Position := dapTopLeft;
+    dapMainFormTopRight, dapActiveFormTopRight, dapOwnerFormTopRight:
+      Position := dapTopRight;
+    dapMainFormBottomLeft, dapActiveFormBottomLeft, dapOwnerFormBottomLeft:
+      Position := dapBottomLeft;
+    dapMainFormBottomRight, dapActiveFormBottomRight, dapOwnerFormBottomRight:
+      Position := dapBottomRight;
+  end;
 end;
 
 { TJvDesktopAlertForm }
