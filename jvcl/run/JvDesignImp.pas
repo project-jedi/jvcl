@@ -224,6 +224,12 @@ type
     {$IFDEF COMPILER9_UP}
     procedure PaintMenu;
     {$ENDIF COMPILER9_UP}
+    {$IFDEF RTL350_UP}
+    procedure UpdateCaption(AVisible: Boolean; AUpdateFrame: Boolean);
+    procedure UpdateDesigner;
+    function DesignPPI(AControl: TWinControl): Integer;
+    function GetDesignerHighDPIMode: TVCLDesignerHighDPIMode;
+    {$ENDIF RTL350_UP}
     property Messenger: TJvDesignCustomMessenger read FMessenger write FMessenger;
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property Form: TCustomForm read GetCustomForm write SetCustomForm;
@@ -1301,6 +1307,28 @@ begin
   //
 end;
 {$ENDIF COMPILER9_UP}
+
+{$IFDEF RTL350_UP}
+procedure TJvDesignDesigner.UpdateCaption(AVisible: Boolean; AUpdateFrame: Boolean);
+begin
+  //
+end;
+
+procedure TJvDesignDesigner.UpdateDesigner;
+begin
+  //
+end;
+
+function TJvDesignDesigner.DesignPPI(AControl: TWinControl): Integer;
+begin
+  Result := 96;
+end;
+
+function TJvDesignDesigner.GetDesignerHighDPIMode: TVCLDesignerHighDPIMode;
+begin
+  Result := hdmLowDPI;
+end;
+{$ENDIF RTL350_UP}
 
 //=== { TJvDesignDesignerMessenger } =========================================
 

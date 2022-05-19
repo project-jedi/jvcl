@@ -1281,7 +1281,7 @@ begin
       begin
         SetLength(S, Len);
         if Len > 0 then
-          Len := SendMessage(ComboBox.Handle, CB_GETLBTEXT, 0, LPARAM(PChar(S)));
+          SendMessage(ComboBox.Handle, CB_GETLBTEXT, 0, LPARAM(PChar(S)));
         Obj := TObject(SendMessage(ComboBox.Handle, CB_GETITEMDATA, 0, 0));
         SendMessage(ComboBox.Handle, CB_DELETESTRING, 0, 0);
         InternalList.AddObject(S, Obj);

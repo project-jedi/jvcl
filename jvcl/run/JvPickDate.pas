@@ -319,8 +319,9 @@ var
     if TheText <> '' then
     begin
       Canvas.Brush.Style := bsClear;
-      Canvas.TextRect(ARect, ARect.Left + (ARect.Right - ARect.Left - TextWidth(TheText)) div 2,
-        ARect.Top + (ARect.Bottom - ARect.Top - TextHeight(TheText)) div 2, TheText);
+      // Use Canvas.TextWidth()  not only TextHeight() to have good result when Form.PixelPerInch <> 96
+      Canvas.TextRect(ARect, ARect.Left + (ARect.Right - ARect.Left - Canvas.TextWidth(TheText)) div 2,
+        ARect.Top + (ARect.Bottom - ARect.Top - Canvas.TextHeight(TheText)) div 2, TheText);
     end;
   end;
 
@@ -334,8 +335,9 @@ var
           if Color = clBtnFace then
           begin
             Canvas.Font.Color := clBtnHighlight;
-            Canvas.TextRect(ARect, ARect.Left + (ARect.Right - ARect.Left - TextWidth(TheText)) div 2 + 1,
-              ARect.Top + (ARect.Bottom - ARect.Top - TextHeight(TheText)) div 2 + 1, TheText);
+            // Use Canvas.TextWidth()  not only TextHeight() to have good result when Form.PixelPerInch <> 96
+            Canvas.TextRect(ARect, ARect.Left + (ARect.Right - ARect.Left - Canvas.TextWidth(TheText)) div 2 + 1,
+              ARect.Top + (ARect.Bottom - ARect.Top - Canvas.TextHeight(TheText)) div 2 + 1, TheText);
             Canvas.Font.Color := clBtnShadow;
           end;
         end;
@@ -887,23 +889,6 @@ function CreatePopupCalendar(AOwner: TComponent;
   MinDate: TDateTime = 0.0; MaxDate: TDateTime = 0.0): TWinControl;
 begin
   Result := TJvPopupCalendar.Create(AOwner);
-(*
-  // TJvPopupCalendar sets Scaled to false anyway...
-  if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
-    (Screen.PixelsPerInch <> 96) then
-  begin { scale to screen res }
-    Result.ScaleBy(Screen.PixelsPerInch, 96);
-    { The ScaleBy method does not scale the font well, so set the
-      font back to the original info. }
-    TJvPopupCalendar(Result).FCalendar.ParentFont := True;
-    TJvPopupCalendar(Result).FCalendar.MinDate := MinDate;
-    TJvPopupCalendar(Result).FCalendar.MaxDate := MaxDate;
-    FontSetDefault(TJvPopupCalendar(Result).Font);
-    {$IFDEF VCL}
-    Result.BiDiMode := ABiDiMode;
-    {$ENDIF VCL}
-  end;
-*)
 end;
 
 procedure SetupPopupCalendar(PopupCalendar: TWinControl;
@@ -1572,9 +1557,9 @@ begin
       Result.Caption := DlgCaption;
     Result.Calendar.MinDate := MinDate; // Polaris
     Result.Calendar.MaxDate := MaxDate; // Polaris
-    if Screen.PixelsPerInch <> 96 then
+    if Screen.PixelsPerInch <> cDefaultPixelsPerInch then
     begin { scale to screen res }
-      Result.ScaleBy(Screen.PixelsPerInch, 96);
+      Result.ScaleBy(Screen.PixelsPerInch, cDefaultPixelsPerInch);
       { The ScaleBy method does not scale the font well, so set the
         font back to the original info. }
       Result.Calendar.ParentFont := True;

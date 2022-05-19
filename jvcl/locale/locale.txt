@@ -1,4 +1,4 @@
-This directory contains the localization files to use with dxGettext (http://dxgettext.sf.net/)
+This directory contains the localization files to use with dxGettext (https://github.com/vslavik/gettext-tools-windows)
 If you want to add a new language to those that already exist, create a directory for it.
 Then create a LC_MESSAGES directory in it, then finally, copy jvcl.po into that last directory.
 To find the name you should use for the directory, please use this standard:

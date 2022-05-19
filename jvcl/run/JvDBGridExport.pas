@@ -158,6 +158,7 @@ type
     FExcel: OleVariant;
     FVisible: Boolean;
     FAutoFit: Boolean;
+    FHeaderRow: Boolean;
     FOrientation: TWordOrientation;
     FClose: TOleServerClose;
     FRunningInstance: Boolean;
@@ -178,6 +179,7 @@ type
     property Visible: Boolean read FVisible write FVisible default False;
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
     property AutoFit: Boolean read FAutoFit write FAutoFit;
+    property HeaderRow: Boolean read FHeaderRow write FHeaderRow default True;
   end;
 
   TJvCustomDBGridTextExport = class(TJvCustomDBGridExport)
@@ -587,6 +589,7 @@ begin
   Caption := RsExportExcel;
   FExcel := Unassigned;
   FVisible := False;
+  FHeaderRow := True;
   FOrientation := woPortrait;
   FClose := scNewInstance;
 end;
@@ -658,7 +661,9 @@ begin
         Inc(K);
       end;
 
-    J := 1;
+    J := 0;
+    if HeaderRow then
+      J := 1;
     with Grid.DataSource.DataSet do
     begin
       ARecNo := 0;

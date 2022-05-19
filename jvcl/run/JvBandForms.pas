@@ -244,7 +244,9 @@ type
     property Icon;
     property KeyPreview;
     property Menu;
+    {$IFDEF HAS_PROPERTY_OLDCREATEORDER}
     property OldCreateOrder;
+    {$ENDIF HAS_PROPERTY_OLDCREATEORDER}
     property ObjectMenuItem;
     property ParentBiDiMode;
     property PixelsPerInch;

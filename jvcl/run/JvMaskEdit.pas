@@ -166,6 +166,7 @@ type
     property Text;
     property Visible;
 
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnDblClick;

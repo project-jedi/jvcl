@@ -48,22 +48,18 @@ type
     CloseBtn: TButton;
     HelpBtn: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure SectionListSelectCell(Sender: TObject; Col, Row: Longint;
-      var CanSelect: Boolean);
-    procedure SectionListDrawCell(Sender: TObject; Col, Row: Longint;
-      Rect: TRect; State: TGridDrawState);
     procedure ButtonsListMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure ButtonsListDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     procedure ButtonsListMouseMove(Sender: TObject; Shift: TShiftState;
       X, Y: Integer);
     procedure ButtonsListMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure ButtonsListSelectCell(Sender: TObject; Col, Row: Longint;
-      var CanSelect: Boolean);
+    procedure ButtonsListSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
+    procedure SectionListDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+    procedure SectionListSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure ButtonsListDrawCell(Sender: TObject; Col, Row: Longint;
-      Rect: TRect; State: TGridDrawState);
     procedure CloseBtnClick(Sender: TObject);
     procedure HelpBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -207,7 +203,7 @@ var
   MaxHeight: Integer;
 begin
   Canvas.Font := Font;
-  MaxHeight := MulDiv(MaxBtnListHeight, Screen.PixelsPerInch, 96);
+  MaxHeight := PPIScale (self, MaxBtnListHeight);
   ButtonsList.DefaultRowHeight := FSpeedbar.BtnHeight + 2;
   Cnt := Max(1, Max(ButtonsList.ClientHeight, MaxHeight) div
     (FSpeedbar.BtnHeight + 2));
@@ -273,21 +269,21 @@ begin
   FSpeedbar := nil;
 end;
 
-procedure TJvSpeedbarSetupWindow.SectionListSelectCell(Sender: TObject; Col,
-  Row: Longint; var CanSelect: Boolean);
+procedure TJvSpeedbarSetupWindow.SectionListSelectCell(Sender: TObject; ACol, 
+  ARow: Integer; var CanSelect: Boolean);
 begin
   CanSelect := False;
-  SetSection(Row);
+  SetSection(ARow);
   CanSelect := True;
 end;
 
-procedure TJvSpeedbarSetupWindow.SectionListDrawCell(Sender: TObject;
-  Col, Row: Longint; Rect: TRect; State: TGridDrawState);
+procedure TJvSpeedbarSetupWindow.SectionListDrawCell(Sender: TObject; 
+  ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
 begin
   if CheckSpeedBar then
-    if Row < FSpeedbar.SectionCount then
-      DrawCellText(Sender as TDrawGrid, Col, Row,
-        FSpeedbar.Sections[Row].Caption, Rect, taLeftJustify, vaCenterJustify,
+    if ARow < FSpeedbar.SectionCount then
+      DrawCellText(Sender as TDrawGrid, ACol, ARow,
+        FSpeedbar.Sections[ARow].Caption, Rect, taLeftJustify, vaCenterJustify,
           TDrawGrid(Sender).IsRightToLeft);
 end;
 
@@ -360,12 +356,12 @@ begin
   end;
 end;
 
-procedure TJvSpeedbarSetupWindow.ButtonsListSelectCell(Sender: TObject; Col,
-  Row: Longint; var CanSelect: Boolean);
+procedure TJvSpeedbarSetupWindow.ButtonsListSelectCell(Sender: TObject; ACol,
+  ARow: Integer; var CanSelect: Boolean);
 begin
-  CanSelect := not FDrag or (Row = ButtonsList.Row);
+  CanSelect := not FDrag or (ARow = ButtonsList.Row);
   if CanSelect then
-    UpdateHint(CurrentSection, Row)
+    UpdateHint(CurrentSection, ARow)
   else
     Hint := '';
 end;
@@ -393,13 +389,13 @@ begin
 end;
 
 procedure TJvSpeedbarSetupWindow.ButtonsListDrawCell(Sender: TObject;
-  Col, Row: Longint; Rect: TRect; State: TGridDrawState);
+  ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
 var
   I: Integer;
 begin
   I := CurrentSection;
-  if (I >= 0) and (Row < FSpeedbar.ItemsCount(I)) then
-    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage,
+  if (I >= 0) and (ARow < FSpeedbar.ItemsCount(I)) then
+    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(ARow), FImage,
       TDrawGrid(Sender).IsRightToLeft);
 end;
 

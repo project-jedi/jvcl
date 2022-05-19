@@ -2565,10 +2565,11 @@ begin
         FTitleArrowDown := True;
 
       if (Button = mbRight) and
-        (dgTitles in Options) and (dgIndicator in Options) and
+        (dgTitles in Options) and
         (Cell.Y = 0) then
       begin
-        if (Cell.X = 0) and FTitleArrow and Assigned(FOnTitleArrowMenuEvent) then
+        if (Cell.X = 0) and FTitleArrow and Assigned(FOnTitleArrowMenuEvent) and
+           (dgIndicator in Options) then
         begin
           FOnTitleArrowMenuEvent(Self);
           Exit;
@@ -4314,7 +4315,7 @@ begin
     ColLineWidth := Ord(dgColLines in Options) * GridLineWidth;
     AvailableWidth := ClientWidth;
     if (dgIndicator in Options) then
-      Dec(AvailableWidth, IndicatorWidth + ColLineWidth);
+      Dec(AvailableWidth, PPIScale(Self, IndicatorWidth) + ColLineWidth);
     TotalColWidth := 0;
     if FixedCols = 0 then
       BeginLayout;

@@ -722,6 +722,7 @@ type
     property TabStop;
     property Text;
     property Visible;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -835,6 +836,7 @@ type
     property TabStop;
     property Text;
     property Visible;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnDblClick;

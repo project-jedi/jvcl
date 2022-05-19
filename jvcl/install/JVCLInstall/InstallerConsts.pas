@@ -181,7 +181,7 @@ resourcestring
   RsDownloadUpdatesFrom = 'Download from';
   RsJCLVersionRequired = 'JCL %s or higher not installed';
   RsDownloadOrSelectJclDir = 'Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|' +
-    'http://jcl.delphi-jedi.org/'; 
+    'https://github.com/project-jedi/jcl'; 
   RsInstalledJVCLVersion = 'Installed JVCL version: %s';
   RsInstallJCL = 'Install JCL';
 //  RsNoJclVersionFound = 'No JCL %s found.';

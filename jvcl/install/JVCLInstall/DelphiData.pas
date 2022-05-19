@@ -35,7 +35,7 @@ uses
   Windows, SysUtils, Classes, Contnrs, Registry, PackageInformation;
 
 const
-  BDSVersions: array[1..21] of record
+  BDSVersions: array[1..22] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -63,7 +63,8 @@ const
     (Name: 'Embarcadero RAD Studio'; VersionStr: '10.1'; Version: 24; CIV: '240'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: '10.2'; Version: 25; CIV: '250'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: '10.3'; Version: 26; CIV: '260'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.4'; Version: 27; CIV: '270'; Supported: True)
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.4'; Version: 27; CIV: '270'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '11'; Version: 28; CIV: '280'; Supported: True)
   );
 
 type
@@ -329,7 +330,7 @@ uses
   {$ENDIF ~COMPILER12_UP}
   CmdLineUtils, Utils,
   JvConsts,
-  JclBase, JclSysInfo, JclSimpleXml, JclSysUtils, JclFileUtils, JclIDEUtils;
+  JclBase, JclSysInfo, JclSimpleXml, JclSysUtils, JclFileUtils, JclIDEUtils, JclStrings;
 
 function DequoteStr(const S: string): string;
 begin
@@ -839,6 +840,10 @@ procedure TCompileTarget.LoadFromRegistry;
     end;
   end;
 
+const
+  BDS19UpCatalogRepositoryElementsSubKey = '\CatalogRepository\Elements';   // do not localize
+  BDS19UpCoreCommonFilesPrefix = 'Core_Common_Files_';   // do not localize
+
 var
   Reg: TRegistry;
   i: Integer;
@@ -849,6 +854,8 @@ var
   LibraryKey: string;
   ValueInfo: TRegDataInfo;
   EnvVarNames: TStrings;
+  KeyNames: TStrings;
+  CandidateEdition: string;
 begin
   Reg := TRegistry.Create;
   try
@@ -876,6 +883,27 @@ begin
 
       ReadUpdateState(Reg);
       Reg.CloseKey;
+    end;
+
+    // Starting with Delphi 10.2, the Edition key is missing so we have to find the information somewhere else
+    if IsBDS and (IDEVersion >= 19) and Reg.OpenKeyReadOnly(HKLMRegistryKey + BDS19UpCatalogRepositoryElementsSubKey) then
+    begin
+      KeyNames := TStringList.Create;
+      try
+        Reg.GetKeyNames(KeyNames);
+        for i := 0 to KeyNames.Count - 1 do
+          if StrHasPrefix(KeyNames[i], [BDS19UpCoreCommonFilesPrefix]) then
+          begin
+            CandidateEdition := Copy(KeyNames[i], Length(BDS19UpCoreCommonFilesPrefix) + 1);
+            if Pos('_', CandidateEdition) = 0 then
+            begin
+              FEdition := Copy(CandidateEdition, 1, Pos('-', CandidateEdition) - 1);
+              Break;
+            end;
+          end;
+      finally
+        KeyNames.Free;
+      end;
     end;
 
     FIsValid := (RootDir <> '') and (Executable <> '') and FileExists(Executable);

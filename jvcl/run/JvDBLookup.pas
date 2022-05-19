@@ -622,6 +622,7 @@ type
     property LookupField: string read GetLookupField write SetLookupField;
     property LookupSource: TDataSource read GetLookupSource write SetLookupSource;
     property PopupOnlyLocate: Boolean read FPopupOnlyLocate write FPopupOnlyLocate default True;
+    property Align;
     property Alignment;
     property AutoSelect;
     property AutoSize;

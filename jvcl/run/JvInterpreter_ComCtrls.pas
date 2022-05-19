@@ -1091,7 +1091,7 @@ end;
 
 procedure TTextAttributes_Read_ConsistentAttributes(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := S2V(Byte(TTextAttributes(Args.Obj).ConsistentAttributes));
+  Value := S2V({$IFDEF RTL350_UP}Cardinal{$ELSE}Byte{$ENDIF RTL350_UP}(TTextAttributes(Args.Obj).ConsistentAttributes));
 end;
 
 { property Read Name: TFontName }

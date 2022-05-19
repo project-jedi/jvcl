@@ -35,7 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Classes, SysUtils, Graphics,
+  Windows, Types, Classes, SysUtils, Graphics,
   JvTypes;
 
 type

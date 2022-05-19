@@ -178,8 +178,10 @@ begin
     if not InitInheritedComponent(Self, TJvPlugIn) then
       raise EResNotFound.CreateResFmt(@RsEFmtResNotFound, [ClassName]);
 
+    {$IFDEF HAS_PROPERTY_OLDCREATEORDER}
     if OldCreateOrder then
       DoCreate;
+    {$ENDIF HAS_PROPERTY_OLDCREATEORDER}
   end;
 end;
 

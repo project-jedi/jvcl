@@ -340,6 +340,17 @@ end;
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 const
   cMath = 'Math';
+  // MinExtended is platform specific in Delphi 10.2 and newer This prevents the
+  // platform warning without playing with the "$WARN PLAFORM_SYMBOL" compiler option.
+  {$IF declared(MinExtended80)}
+    {$IF SizeOf(Extended) >= 10}
+  MinExtendedValue = MinExtended80;
+    {$ELSE}
+  MinExtendedValue = MinDouble; // SSE instruction set doesn't support 10-Byte Extended
+    {$IFEND}
+  {$ELSE}
+  MinExtendedValue = MinExtended;
+  {$IFEND}
 begin
   with JvInterpreterAdapter do
   begin
@@ -353,7 +364,7 @@ begin
     AddConst(cMath, 'MaxSingle', MaxSingle);
     AddConst(cMath, 'MinComp', MinComp);
     AddConst(cMath, 'MinDouble', MinDouble);
-    AddConst(cMath, 'MinExtended', MinExtended);
+    AddConst(cMath, 'MinExtended', MinExtendedValue);
     AddConst(cMath, 'MinSingle', MinSingle);
     AddConst(cMath, 'NaN', NaN);
     AddConst(cMath, 'NegInfinity', NegInfinity);

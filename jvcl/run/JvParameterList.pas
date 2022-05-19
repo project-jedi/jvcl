@@ -200,6 +200,7 @@ type
     property JvDynControlData: IJvDynControlData read FJvDynControlData;
     property JvDynControlReadOnly: IJvDynControlReadOnly read FJvDynControlReadOnly;
     property Value: Variant read FValue write FValue;
+    function WinControlPPIScale(Value: Integer): Integer;
     function IsDataValid(const AData: Variant; var vMsg: String): Boolean; virtual;
     procedure SetWinControlProperties; virtual;
   public
@@ -377,6 +378,7 @@ type
      scrollbox. This function should only be called, after the size of
      the parent-panel has changed}
     procedure CheckScrollBoxAutoScroll;
+    function DialogPPIScale(Value: Integer): Integer;
     property IntParameterList: TStrings read GetIntParameterList;
     property ParameterDialog: TCustomForm read FParameterDialog;
     property ParameterListSelectList: TJvParameterListSelectList read FParameterListSelectList;
@@ -550,14 +552,6 @@ const
     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_');
-
-
-//=== { Support function for DPI Aware apps } ================================
-
-function PPIScale(Value: Integer): Integer;
-begin
-  Result := MulDiv(Value, Screen.PixelsPerInch, 96);
-end;
 
 //=== { TJvParameterListMessages } ===========================================
 
@@ -1162,6 +1156,11 @@ begin
   Result.Assign(Self);
 end;
 
+function TJvBaseParameter.WinControlPPIScale(Value: Integer): Integer;
+begin
+  Result := PPIScale(WinControl, Value);
+end;
+
 procedure TJvBaseParameter.DisableAfterWincontrolPropertiesChanged;
 begin
   Inc(FAfterWincontrolPropertiesChangedDisabledCnt);
@@ -1295,15 +1294,15 @@ begin
   FArrangeSettings.AutoArrange := True;
   FArrangeSettings.WrapControls := True;
   FArrangeSettings.AutoSize := asBoth;
-  FArrangeSettings.DistanceVertical := PPIScale(3);
-  FArrangeSettings.DistanceHorizontal := PPIScale(3);
-  FArrangeSettings.BorderLeft := PPIScale(5);
-  FArrangeSettings.BorderTop := PPIScale(5);
+  FArrangeSettings.DistanceVertical := 3;
+  FArrangeSettings.DistanceHorizontal := 3;
+  FArrangeSettings.BorderLeft := 5;
+  FArrangeSettings.BorderTop := 5;
+  FMaxWidth := 600;
+  FMaxHeight := 400;
   ScrollBox := nil;
   RightPanel := nil;
   ArrangePanel := nil;
-  FMaxWidth := PPIScale(600);
-  FMaxHeight := PPIScale(400);
   FDefaultParameterHeight := 0;
   FDefaultParameterWidth := 0;
   FDefaultParameterLabelWidth := 0;
@@ -1578,7 +1577,7 @@ begin
   MainPanel := DynControlEngine.CreatePanelControl(Self, ParameterDialog, 'MainPanel', '', alClient);
   if not Supports(MainPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  ITmpPanel.ControlSetBorder(bvNone, bvRaised, 1, bsNone, PPIScale(3));
+  ITmpPanel.ControlSetBorder(bvNone, bvRaised, 1, bsNone, DialogPPIScale(3));
 
   ButtonPanel := DynControlEngine.CreatePanelControl(Self, BottomPanel, 'BottonPanel', '',
     alRight);
@@ -1592,28 +1591,28 @@ begin
     Messages.CancelButton, '',
     OnCancelButtonClick, False, True);
 
-  BottomPanel.Height := PPIScale(22) + PPIScale(6 + 2);
+  BottomPanel.Height := DialogPPIScale(22) + DialogPPIScale(6 + 2);
 
-  OkButton.Top := PPIScale(3);
-  OkButton.Left := PPIScale(3);
+  OkButton.Top := DialogPPIScale(3);
+  OkButton.Left := DialogPPIScale(3);
   OkButton.Visible := OkButtonVisible;
   OkButton.Enabled := OkButtonVisible;
-  OkButton.Height := PPIScale(22);
+  OkButton.Height := DialogPPIScale(22);
   if OkButton.Visible then
-    ButtonLeft := OkButton.Left + OkButton.Width + PPIScale(3)
+    ButtonLeft := OkButton.Left + OkButton.Width + DialogPPIScale(3)
   else
     ButtonLeft := 0;
 
-  CancelButton.Top := PPIScale(3);
-  CancelButton.Left := ButtonLeft + PPIScale(3);
+  CancelButton.Top := DialogPPIScale(3);
+  CancelButton.Left := ButtonLeft + DialogPPIScale(3);
   CancelButton.Visible := CancelButtonVisible;
   CancelButton.Enabled := CancelButtonVisible;
-  CancelButton.Height := PPIScale(22);
+  CancelButton.Height := DialogPPIScale(22);
   if CancelButton.Visible then
-    ButtonLeft := ButtonLeft + PPIScale(3) + CancelButton.Width + PPIScale(3);
+    ButtonLeft := ButtonLeft + DialogPPIScale(3) + CancelButton.Width + DialogPPIScale(3);
 
-  ButtonPanel.Width := ButtonLeft + PPIScale(3);
-  OrgButtonPanelWidth := ButtonLeft + PPIScale(3);
+  ButtonPanel.Width := ButtonLeft + DialogPPIScale(3);
+  OrgButtonPanelWidth := ButtonLeft + DialogPPIScale(3);
 
   OkButton.Anchors := [akTop, akRight];
   CancelButton.Anchors := [akTop, akRight];
@@ -1625,13 +1624,13 @@ begin
     if not Supports(HistoryPanel, IJvDynControlPanel, ITmpPanel) then
       raise EIntfCastError.CreateRes(@RsEIntfCastError);
     ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, 0);
-    HistoryPanel.Height := PPIScale(25);
+    HistoryPanel.Height := DialogPPIScale(25);
     LoadButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'LoadButton',
       Messages.HistoryLoadButton, '',
       HistoryLoadClick, False, False);
-    LoadButton.Left := PPIScale(6);
-    LoadButton.Top := PPIScale(5);
-    LoadButton.Height := PPIScale(20);
+    LoadButton.Left := DialogPPIScale(6);
+    LoadButton.Top := DialogPPIScale(5);
+    LoadButton.Height := DialogPPIScale(20);
     LoadButton.Width :=
         TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryLoadButton) + 5;
     ButtonLeft := LoadButton.Left + LoadButton.Width + 5;
@@ -1639,8 +1638,8 @@ begin
     Messages.HistorySaveButton, '',
     HistorySaveClick, False, False);
     SaveButton.Left := ButtonLeft;
-    SaveButton.Top := PPIScale(5);
-    SaveButton.Height := PPIScale(20);
+    SaveButton.Top := DialogPPIScale(5);
+    SaveButton.Height := DialogPPIScale(20);
     SaveButton.Width :=
       TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistorySaveButton) + 5;
     ButtonLeft := SaveButton.Left + SaveButton.Width + 5;
@@ -1648,12 +1647,12 @@ begin
       Messages.HistoryClearButton, '',
       HistoryClearClick, False, False);
     ClearButton.Left := ButtonLeft;
-    ClearButton.Top := PPIScale(5);
-    ClearButton.Height := PPIScale(20);
+    ClearButton.Top := DialogPPIScale(5);
+    ClearButton.Height := DialogPPIScale(20);
     ClearButton.Width :=
       TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryClearButton) +
-      PPIScale(5);
-    ButtonLeft := ClearButton.Left + ClearButton.Width + PPIScale(5);
+      DialogPPIScale(5);
+    ButtonLeft := ClearButton.Left + ClearButton.Width + DialogPPIScale(5);
     HistoryPanel.Width := ButtonLeft;
     OrgHistoryPanelWidth := ButtonLeft;
   end
@@ -1674,9 +1673,9 @@ begin
         if ArrangePanel.Width > MaxWidth then
           TForm(ParameterDialog).ClientWidth := MaxWidth
         else
-          TForm(ParameterDialog).ClientWidth := ArrangePanel.Width + PPIScale(5)
+          TForm(ParameterDialog).ClientWidth := ArrangePanel.Width + DialogPPIScale(5)
       else
-        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width + PPIScale(5);
+        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width + DialogPPIScale(5);
     if Assigned(HistoryPanel) and
       (TForm(ParameterDialog).ClientWidth < HistoryPanel.Width) then
       TForm(ParameterDialog).ClientWidth := HistoryPanel.Width
@@ -1687,17 +1686,17 @@ begin
         if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
           TForm(ParameterDialog).ClientHeight := MaxHeight + 10
         else
-          TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + PPIScale(10)
+          TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + DialogPPIScale(10)
       else
-        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + PPIScale(10);
+        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + DialogPPIScale(10);
   end;
 
   if Assigned(HistoryPanel) then
     if (OrgButtonPanelWidth + OrgHistoryPanelWidth) > BottomPanel.Width then
     begin
       ButtonPanel.Align := alBottom;
-      ButtonPanel.Height := OkButton.Height + PPIScale(6 + 2);
-      BottomPanel.Height := ButtonPanel.Height * 2 + PPIScale(1);
+      ButtonPanel.Height := OkButton.Height + DialogPPIScale(6 + 2);
+      BottomPanel.Height := ButtonPanel.Height * 2 + DialogPPIScale(1);
       HistoryPanel.Align := alClient;
     end
     else
@@ -1706,7 +1705,7 @@ begin
       ButtonPanel.Width := OrgButtonPanelWidth;
       HistoryPanel.Align := alLeft;
       HistoryPanel.Width := OrgHistoryPanelWidth;
-      BottomPanel.Height := OkButton.Height + PPIScale(6 + 2);
+      BottomPanel.Height := OkButton.Height + DialogPPIScale(6 + 2);
     end;
   CheckScrollBoxAutoScroll;
 end;
@@ -2232,6 +2231,11 @@ end;
 
 type
   TAccessControl = class(TControl);
+
+function TJvParameterList.DialogPPIScale(Value: Integer): Integer;
+begin
+  Result := PPIScale(ParameterDialog, Value);
+end;
 
 procedure TJvParameterList.DisableHandleParameterEnabled;
 begin

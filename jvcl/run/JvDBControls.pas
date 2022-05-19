@@ -157,6 +157,7 @@ type
     property BeepOnError;
     { designtime properties SPECIFIC to only JvDBMaskEdit: }
     property EditMask: string read GetEditMask write SetEditMask;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnContextPopup;

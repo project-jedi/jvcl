@@ -51,6 +51,18 @@ uses
   Forms, Graphics, StdCtrls, Dialogs, RichEdit, Menus, ComCtrls, SyncObjs,
   JvExStdCtrls, JvTypes;
 
+const
+  {$EXTERNALSYM MSFTEDIT_CLASSA}
+  MSFTEDIT_CLASSA       = 'RICHEDIT50A';     { Richedit4.0 Window Class. }
+  {$EXTERNALSYM MSFTEDIT_CLASSW}
+  MSFTEDIT_CLASSW       = 'RICHEDIT50W';     { Richedit4.0 Window Class. }
+  {$EXTERNALSYM MSFTEDIT_CLASS}
+  {$IFDEF SUPPORTS_UNICODE}
+  MSFTEDIT_CLASS = MSFTEDIT_CLASSW;
+  {$ELSE}
+  MSFTEDIT_CLASS = MSFTEDIT_CLASSA;
+  {$ENDIF SUPPORTS_UNICODE}
+
 type
   TJvCustomRichEdit = class;
 
@@ -610,7 +622,6 @@ type
     procedure FindDialogFind(Sender: TObject);
     procedure NeedAdvancedTypography;
     procedure ReplaceDialogReplace(Sender: TObject);
-    procedure SetSelText(const Value: string);
     procedure FindDialogClose(Sender: TObject);
     procedure SetUIActive(Active: Boolean);
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
@@ -667,6 +678,7 @@ type
     function GetSelText: string; override;
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
+    procedure SetSelText(const Value: string); {$IFDEF RTL350_UP}override;{$ENDIF RTL350_UP}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     property AllowInPlace: Boolean read FAllowInPlace write FAllowInPlace default True;
     property AutoAdvancedTypography: Boolean read FAutoAdvancedTypography write FAutoAdvancedTypography default True;
@@ -1338,6 +1350,8 @@ const
 
   RichEdit10ModuleName = 'RICHED32.DLL';
   RichEdit20ModuleName = 'RICHED20.DLL';
+  RichEdit40ModuleName = 'MSFTEDIT.DLL';
+
 
   FT_DOWN = 1;
 
@@ -2820,11 +2834,18 @@ const
   OLEDragDrops: array[Boolean] of DWORD = (ES_NOOLEDRAGDROP, 0);
 begin
   inherited CreateParams(Params);
-  case RichEditVersion of
-    1:
-      CreateSubClass(Params, RICHEDIT_CLASS10A);
+  if RichEditVersion >= 4 then
+    CreateSubClass(Params, MSFTEDIT_CLASS)
   else
-    CreateSubClass(Params, RICHEDIT_CLASS);
+  begin
+    case RichEditVersion of
+      2:
+        CreateSubClass(Params, RICHEDIT_CLASS);
+      1:
+        CreateSubClass(Params, RICHEDIT_CLASS10A);
+    else
+      CreateSubClass(Params, RICHEDIT_CLASS);
+    end;
   end;
   with Params do
   begin
@@ -4393,7 +4414,11 @@ end;
 procedure TJvCustomRichEdit.SetSelText(const Value: string);
 begin
   FLinesUpdating := True;
+  {$IFDEF RTL350_UP}
+  inherited SetSelText(Value);
+  {$ELSE}
   inherited SelText := Value;
+  {$ENDIF RTL350_UP}
   FLinesUpdating := False;
 end;
 
@@ -7716,18 +7741,31 @@ var
   VerSize: DWORD;
 begin
   RichEditVersion := 1;
-  GLibHandle := SafeLoadLibrary(RichEdit20ModuleName);
+
+  GLibHandle := SafeLoadLibrary(RichEdit40ModuleName);
   if (GLibHandle > 0) and (GLibHandle < HINSTANCE_ERROR) then
-    GLibHandle := 0;
+    GLibHandle := 0
+  else
+    RichEditVersion := 4; // at least version 4
+
   if GLibHandle = 0 then
   begin
+    GLibHandle := SafeLoadLibrary(RichEdit20ModuleName);
+   if (GLibHandle > 0) and (GLibHandle < HINSTANCE_ERROR) then
+      GLibHandle := 0
+    else
+      RichEditVersion := 2; // at least version 2
+  end;
+
+  if GLibHandle = 0 then
+  begin
+    RichEditVersion := 1; // fall back to version 1
     GLibHandle := SafeLoadLibrary(RichEdit10ModuleName);
     if (GLibHandle > 0) and (GLibHandle < HINSTANCE_ERROR) then
       GLibHandle := 0;
   end
   else
   begin
-    RichEditVersion := 2;
 
     FileName := GetModuleName(GLibHandle);
     InfoSize := GetFileVersionInfoSize(PChar(FileName), Wnd);
