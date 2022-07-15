@@ -1,5 +1,7 @@
 JEDI Visual Component Library
 =============================
+![](https://tokei.rs/b1/github/project-jedi/jvcl?category=code)
+![](https://tokei.rs/b1/github/project-jedi/jvcl?category=files)
 
 JVCL is a library of over 600 Delphi visual and non-visual Delphi/C++Builder components.
 It supports Delphi/C++Builder 6 and newer.
