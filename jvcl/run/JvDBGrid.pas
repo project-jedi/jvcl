@@ -2748,9 +2748,11 @@ begin
               end
               else
               begin
-                Clear;
                 if FClearSelection then
+                begin
+                  Clear;
                   CurrentRowSelected := True;
+                end;
               end;
             end;
           end;
