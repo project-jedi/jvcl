@@ -367,7 +367,7 @@ begin
 end;
 
 // global download callback
-procedure DownloadCallBack(Handle: HINTERNET; Context: DWORD;
+procedure DownloadCallBack(Handle: HINTERNET; Context: DWORD_PTR;
   AStatus: DWORD; Info: Pointer; StatLen: DWORD); stdcall;
 begin
   with TJvCustomUrlGrabberThread(Context) do
