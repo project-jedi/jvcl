@@ -1,5 +1,6 @@
 JEDI Visual Component Library
 =============================
+[![Build details](https://github.com/project-jedi/tools/blob/master/build_results/badges/jvcl.svg)](https://github.com/project-jedi/tools/blob/master/build_results/jvcl.md)
 ![](https://tokei.rs/b1/github/project-jedi/jvcl?category=code)
 ![](https://tokei.rs/b1/github/project-jedi/jvcl?category=files)
 
