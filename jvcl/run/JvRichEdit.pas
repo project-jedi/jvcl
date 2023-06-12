@@ -678,7 +678,6 @@ type
     function GetSelText: string; override;
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
-    procedure SetSelText(const Value: string); {$IFDEF RTL350_UP}override;{$ENDIF RTL350_UP}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     property AllowInPlace: Boolean read FAllowInPlace write FAllowInPlace default True;
     property AutoAdvancedTypography: Boolean read FAutoAdvancedTypography write FAutoAdvancedTypography default True;
@@ -795,6 +794,7 @@ type
     procedure SetSelection(StartPos, EndPos: Longint; ScrollCaret: Boolean);
     function GetSelection: TCharRange;
     function GetTextRange(StartPos, EndPos: Longint): string;
+    procedure SetSelText(const Value: string); {$IFDEF RTL350_UP}override;{$ENDIF RTL350_UP}
     // GetTextLenEx is to be used when printing the RichEdit using EM_FORMATRANGE
     // because GetTextLen is unreliable in this case.
     // See Mantis 4782 and http://edn.embarcadero.com/article/26772 for details
