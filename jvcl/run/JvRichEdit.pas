@@ -700,7 +700,6 @@ type
     property WordSelection: Boolean read GetWordSelection write SetWordSelection default True;
     property ScrollBars default ssBoth;
     property TabStop default True;
-    property SelText: string read GetSelText write SetSelText;
     // Zoom: zoom in/out percentage (100=normal) note: no need to set default (100) in constructor.
     property Zoom: Integer read GetZoom write SetZoom default 100;
     property OnSaveClipboard: TRichEditSaveClipboard read FOnSaveClipboard
@@ -838,6 +837,7 @@ type
     property PageRect: TRect read FPageRect write FPageRect;
     property Paragraph: TJvParaAttributes read FParagraph;
     property SelectionType: TRichSelectionType read GetSelectionType;
+    property SelText: string read GetSelText write SetSelText;
   end;
 
   {$IFDEF RTL230_UP}
