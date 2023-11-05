@@ -6146,7 +6146,7 @@ begin
     if TVarData(Variable).VType = varArray then
     begin
       {Get array value}
-      PP := PJvInterpreterArrayRec(NativeUInt(JvInterpreterVarAsType(Variable, varInt64)));
+      PP := PJvInterpreterArrayRec(Int64(JvInterpreterVarAsType(Variable, varInt64)));
       if Args.Count > PP.Dimension then
         JvInterpreterError(ieArrayTooManyParams, -1)
       else
@@ -6225,7 +6225,7 @@ begin
     if TVarData(Variable).VType = varArray then
     begin
       { Get array value }
-      PP := PJvInterpreterArrayRec(NativeUInt(JvInterpreterVarAsType(Variable, varInt64)));
+      PP := PJvInterpreterArrayRec(Int64(JvInterpreterVarAsType(Variable, varInt64)));
       if Args.Count > PP.Dimension then
         JvInterpreterError(ieArrayTooManyParams, -1)
       else
