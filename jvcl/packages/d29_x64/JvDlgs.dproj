@@ -31,7 +31,7 @@
         <DCC_Description>JVCL Dialog Components Runtime Package</DCC_Description>
         <DCC_ImageBase>49520000</DCC_ImageBase>
         <DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
-        <DllSuffix>280</DllSuffix>
+        <DllSuffix>290</DllSuffix>
         <DCC_Platform>x86</DCC_Platform>
         <DCC_UnitSearchPath>..\..\run;..\..\common;..\..\resources;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_ResourcePath>..\..\resources;$(DCC_ResourcePath)</DCC_ResourcePath>
@@ -44,17 +44,17 @@
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_DebugInformation>0</DCC_DebugInformation>
-        <DCC_UnitSearchPath>..\..\lib\d28\win64;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_DcpOutput>..\..\lib\d28\win64</DCC_DcpOutput>
-        <DCC_DcuOutput>..\..\lib\d28\win64</DCC_DcuOutput>
+        <DCC_UnitSearchPath>..\..\lib\d29\win64;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcpOutput>..\..\lib\d29\win64</DCC_DcpOutput>
+        <DCC_DcuOutput>..\..\lib\d29\win64</DCC_DcuOutput>
         <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
         <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
-        <DCC_UnitSearchPath>..\..\lib\d28\win64\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_DcpOutput>..\..\lib\d28\win64\debug</DCC_DcpOutput>
-        <DCC_DcuOutput>..\..\lib\d28\win64\debug</DCC_DcuOutput>
+        <DCC_UnitSearchPath>..\..\lib\d29\win64\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcpOutput>..\..\lib\d29\win64\debug</DCC_DcpOutput>
+        <DCC_DcuOutput>..\..\lib\d29\win64\debug</DCC_DcuOutput>
         <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
     </PropertyGroup>
     <ItemGroup>
@@ -148,7 +148,7 @@
                     <VersionInfoKeys Name="InternalName">JvDlgs</VersionInfoKeys>
                     <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
                     <VersionInfoKeys Name="LegalTrademarks"/>
-                    <VersionInfoKeys Name="OriginalFilename">JvDlgs280.bpl</VersionInfoKeys>
+                    <VersionInfoKeys Name="OriginalFilename">JvDlgs290.bpl</VersionInfoKeys>
                     <VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
                     <VersionInfoKeys Name="ProductVersion">3.41.0.0</VersionInfoKeys>
                     <VersionInfoKeys Name="Comments">3.41 Build 0</VersionInfoKeys>
