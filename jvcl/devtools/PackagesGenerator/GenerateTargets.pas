@@ -73,7 +73,7 @@ type
   end;
 
 const
-  TargetDefines: array [0..21] of TTargetDefine = (
+  TargetDefines: array [0..22] of TTargetDefine = (
     (TargetName: 'c6'; Define: 'VER140'),
     (TargetName: 'd6'; Define: 'VER140'),
     (TargetName: 'd7'; Define: 'VER150'),
@@ -95,7 +95,8 @@ const
     (TargetName: 'd25'; Define: 'VER320'),
     (TargetName: 'd26'; Define: 'VER330'),
     (TargetName: 'd27'; Define: 'VER340'),
-    (TargetName: 'd28'; Define: 'VER350')
+    (TargetName: 'd28'; Define: 'VER350'),
+    (TargetName: 'd29'; Define: 'VER360')
   );
 
 { TTarget }

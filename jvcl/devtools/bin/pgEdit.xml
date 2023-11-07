@@ -16,6 +16,8 @@
     <jsgFiles_Height>168</jsgFiles_Height>
     <odlAddFiles_InitialDir>..\..\run</odlAddFiles_InitialDir>
     <cmbModel_ItemIndex>-1</cmbModel_ItemIndex>
+    <MinMaxPos_3840x1080_>-1,-1,-1,-1</MinMaxPos_3840x1080_>
+    <NormPos_3840x1080_>428,199,1251,820</NormPos_3840x1080_>
   </pgEdit>
   <!--
     The nodes below are read by the generation process.
@@ -111,13 +113,15 @@
         <target name="d27_x64"/>
         <target name="d28"/>
         <target name="d28_x64"/>
+        <target name="d29"/>
+        <target name="d29_x64"/>
         <target name="help" defines="HELP"/>
       </targets>
       <aliases>
-        <alias name="D" value="d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64"/>
-        <alias name="C" value="c6,c6p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64"/>
-        <alias name="DB" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64"/>
-        <alias name="DB_win32" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
+        <alias name="D" value="d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64,d29,d29_x64"/>
+        <alias name="C" value="c6,c6p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64,d29,d29_x64"/>
+        <alias name="DB" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64,d29,d29_x64"/>
+        <alias name="DB_win32" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
         <alias name="BDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
         <alias name="d16_all" value="d16,d16_x64"/>
         <alias name="d17_all" value="d17,d17_x64"/>
@@ -132,10 +136,11 @@
         <alias name="d26_all" value="d26,d26_x64"/>
         <alias name="d27_all" value="d27,d27_x64"/>
         <alias name="d28_all" value="d28,d28_x64"/>
-        <alias name="allv7up" value="d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64"/>
-        <alias name="allv9up" value="d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64"/>
-        <alias name="allv12up" value="d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64"/>
-        <alias name="all_win32" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28"/>
+        <alias name="d29_all" value="d29,d29_x64"/>
+        <alias name="allv7up" value="d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64,d29,d29_x64"/>
+        <alias name="allv9up" value="d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64,d29,d29_x64"/>
+        <alias name="allv12up" value="d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64,d24,d24_x64,d25,d25_x64,d26,d26_x64,d27,d27_x64,d28,d28_x64,d29,d29_x64"/>
+        <alias name="all_win32" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29"/>
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="3"/>

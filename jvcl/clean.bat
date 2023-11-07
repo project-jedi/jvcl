@@ -102,6 +102,9 @@ del /S lib\d27\win64\debug\*.dcp lib\d27\win64\debug\*.bpl lib\d27\win64\debug\*
 del /S lib\d28\win64\*.dcp lib\d28\win64\*.bpl lib\d28\win64\*.dfm lib\d28\win64\*.obj lib\d28\win64\*.bpi lib\d28\win64\*.lib >NUL
 del /S lib\d28\win64\debug\*.dcp lib\d28\win64\debug\*.bpl lib\d28\win64\debug\*.dfm lib\d28\win64\debug\*.obj lib\d28\win64\debug\*.bpi lib\d28\win64\debug\*.lib >NUL
 
+del /S lib\d29\win64\*.dcp lib\d29\win64\*.bpl lib\d29\win64\*.dfm lib\d29\win64\*.obj lib\d29\win64\*.bpi lib\d29\win64\*.lib >NUL
+del /S lib\d29\win64\debug\*.dcp lib\d29\win64\debug\*.bpl lib\d29\win64\debug\*.dfm lib\d29\win64\debug\*.obj lib\d29\win64\debug\*.bpi lib\d29\win64\debug\*.lib >NUL
+
 del /S run\*.hpp >NUL
 del /S design\*.hpp >NUL
 del /S common\*.hpp >NUL
