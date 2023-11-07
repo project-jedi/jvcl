@@ -230,6 +230,9 @@ type
     function DesignPPI(AControl: TWinControl): Integer;
     function GetDesignerHighDPIMode: TVCLDesignerHighDPIMode;
     {$ENDIF RTL350_UP}
+    {$IFDEF RTL360_UP}
+    function GetExcludedStyleElements(AControl: TControl): TStyleElements;
+    {$ENDIF RTL360_UP}
     property Messenger: TJvDesignCustomMessenger read FMessenger write FMessenger;
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property Form: TCustomForm read GetCustomForm write SetCustomForm;
@@ -1329,6 +1332,13 @@ begin
   Result := hdmLowDPI;
 end;
 {$ENDIF RTL350_UP}
+
+{$IFDEF RTL360_UP}
+function TJvDesignDesigner.GetExcludedStyleElements(AControl: TControl): TStyleElements;
+begin
+  Result := [];
+end;
+{$ENDIF RTL360_UP}
 
 //=== { TJvDesignDesignerMessenger } =========================================
 
