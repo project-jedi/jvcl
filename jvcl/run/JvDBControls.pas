@@ -2644,7 +2644,7 @@ begin
   {$IFDEF COMPILER7_UP}
   ParentBackground := Value;
   {$ENDIF COMPILER7_UP}
-  for Button := Low(Buttons) to High(Buttons) do
+  for Button := Low(TNavigateBtn) to High(TNavigateBtn) do
     Buttons[Button].Transparent := Value;
   Invalidate;
 end;
