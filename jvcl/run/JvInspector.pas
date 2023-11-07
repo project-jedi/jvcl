@@ -2182,7 +2182,7 @@ type
   TCanvasStack = class(TObjectList)
   private
     FTop: Integer;
-    procedure SetCapacity(const Value: Integer);
+    procedure SetCapacity(const Value: {$IFDEF RTL360_UP}NativeInt{$ELSE}Integer{$ENDIF RTL360_UP});
   public
     constructor Create(const ACapacity: Integer);
     function Push(const Canvas: TCanvas): Integer;
@@ -2214,7 +2214,7 @@ begin
   Capacity := ACapacity;
 end;
 
-procedure TCanvasStack.SetCapacity(const Value: Integer);
+procedure TCanvasStack.SetCapacity(const Value: {$IFDEF RTL360_UP}NativeInt{$ELSE}Integer{$ENDIF RTL360_UP});
 var
   I: Integer;
 begin
