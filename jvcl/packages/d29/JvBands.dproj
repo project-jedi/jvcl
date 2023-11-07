@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{DD2CB040-B066-4061-B05C-1F1CD0FD0D5D}</ProjectGuid>
         <MainSource>JvBands.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

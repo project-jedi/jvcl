@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{86DF4ED4-828C-457A-ADE5-78BE9050BCF6}</ProjectGuid>
         <MainSource>JvWizards.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{CFE6ED76-BD93-4A2E-BE82-A8C22E686277}</ProjectGuid>
         <MainSource>JvXPCtrls.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

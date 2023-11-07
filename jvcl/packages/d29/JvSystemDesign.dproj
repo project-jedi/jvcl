@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{07B1C96C-1DED-4F54-B6B5-8CCF7AA7D986}</ProjectGuid>
         <MainSource>JvSystemDesign.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

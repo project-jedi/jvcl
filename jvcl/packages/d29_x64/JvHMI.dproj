@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{E8945997-84A1-4589-89BA-EF5759023364}</ProjectGuid>
         <MainSource>JvHMI.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

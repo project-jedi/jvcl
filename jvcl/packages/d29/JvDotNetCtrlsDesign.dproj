@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{F7FFBA61-6088-4CE8-B542-EC81959A4DC5}</ProjectGuid>
         <MainSource>JvDotNetCtrlsDesign.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

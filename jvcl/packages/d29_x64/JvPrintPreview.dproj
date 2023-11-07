@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{08661E45-2C90-4301-A95E-77C50EE00CAF}</ProjectGuid>
         <MainSource>JvPrintPreview.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{177EF676-53B7-41C5-8B88-62DEC3EDD002}</ProjectGuid>
         <MainSource>JvGlobusDesign.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

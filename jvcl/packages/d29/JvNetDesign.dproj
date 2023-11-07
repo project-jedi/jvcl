@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{7F81A0A6-736F-4165-90E2-381F365CDDE9}</ProjectGuid>
         <MainSource>JvNetDesign.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

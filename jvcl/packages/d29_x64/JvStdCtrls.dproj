@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{1C1476C2-A01A-44DE-A7D5-34E47E811C5B}</ProjectGuid>
         <MainSource>JvStdCtrls.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

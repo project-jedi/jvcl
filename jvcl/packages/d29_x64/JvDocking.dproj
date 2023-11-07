@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{45F663F1-EF6E-436F-AE8A-85B96C6EE41E}</ProjectGuid>
         <MainSource>JvDocking.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

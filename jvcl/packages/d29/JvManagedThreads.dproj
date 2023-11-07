@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{B20F7784-CED8-4792-9E5F-A304AC4711F4}</ProjectGuid>
         <MainSource>JvManagedThreads.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

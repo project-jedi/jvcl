@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{4EED06C1-B111-4EA3-815B-8530F67D8659}</ProjectGuid>
         <MainSource>JvCryptDesign.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

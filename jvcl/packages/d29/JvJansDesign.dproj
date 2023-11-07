@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{E207A9DB-95B3-4B55-9811-1C417007E088}</ProjectGuid>
         <MainSource>JvJansDesign.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>

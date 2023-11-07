@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{9F0A300E-7B7A-4B5A-A5F9-B2A6D3D81A1C}</ProjectGuid>
         <MainSource>JvPascalInterpreterDesign.dpk</MainSource>
-        <ProjectVersion>19.1</ProjectVersion>
+        <ProjectVersion>20.0</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <FrameworkType>VCL</FrameworkType>
@@ -73,6 +73,7 @@
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="vclx.dcp"/>
         <DCCReference Include="vcldb.dcp"/>
+        <DCCReference Include="bdertl.dcp"/>
         <DCCReference Include="..\..\design\JvPascalInterpreterReg.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
