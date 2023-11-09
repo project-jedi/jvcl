@@ -402,7 +402,7 @@ procedure TJvMail.CreateMapiMessage;
       SetLength(FAttachArray, Attachment.Count);
       for I := 0 to Attachment.Count - 1 do
       begin
-        // Look for #0 splitting parameter in physical filename (lpszPathName) and virtual name (lpszFileName)
+        // Look for #0 splitting parameter in physical filename (PathName) and virtual name (FileName)
         NullPos := Pos(#0, Attachment[I]);
         if NullPos > 0 then
         begin
