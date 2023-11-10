@@ -1091,169 +1091,191 @@ begin
     FOnVerticalScroll(Self);
 end;
 
-procedure TJvListView.ColClick(Column: TListColumn);
 type
   TParamSort = record
     ColumnIndex: Integer;
     Sender: TObject;
   end;
+
+function CustomCompare1(Item1, Item2, ParamSort: LPARAM): Integer; stdcall;
 var
   Parm: TParamSort;
+  i1, i2: TListItem;
+  S1, S2: string;
+  I: Integer;
+  SortKind: TJvSortMethod;
 
-  function CustomCompare1(Item1, Item2, ParamSort: LPARAM): Integer stdcall;
+  function IsBigger(First, Second: string; SortType: TJvSortMethod): Boolean;
   var
-    Parm: TParamSort;
-    i1, i2: TListItem;
-    S1, S2: string;
-    I: Integer;
-    SortKind: TJvSortMethod;
+    I, J: Double;
+    d, e: TDateTime;
+    a, b: Currency;
+    l, m: Int64;
+    st, st2: string;
+    int1, int2: Integer;
 
-    function IsBigger(First, Second: string; SortType: TJvSortMethod): Boolean;
+    function FirstNonAlpha(Value: string): Integer;
     var
-      I, J: Double;
-      d, e: TDateTime;
-      a, b: Currency;
-      l, m: Int64;
-      st, st2: string;
-      int1, int2: Integer;
+      Len: Integer;
+      I, J: Integer;
+      Comma: Boolean;
+    begin
+      Len := Length(Value);
+      I := 1;
+      J := 0;
+      Comma := False;
 
-      function FirstNonAlpha(Value: string): Integer;
-      var
-        Len: Integer;
-        I, J: Integer;
-        Comma: Boolean;
+      while I <= Len do
       begin
-        Len := Length(Value);
-        I := 1;
-        J := 0;
-        Comma := False;
-
-        while I <= Len do
-        begin
-          case Value[I] of
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-              J := I;
-            ',', '.':
-              if not Comma then
-                Comma := True
-              else
-              begin
-                J := I - 1;
-                I := Len;
-              end;
-          else
+        case Value[I] of
+          '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+            J := I;
+          ',', '.':
+            if not Comma then
+              Comma := True
+            else
             begin
               J := I - 1;
               I := Len;
             end;
+        else
+          begin
+            J := I - 1;
+            I := Len;
           end;
-          Inc(I);
         end;
-
-        Result := J;
+        Inc(I);
       end;
 
-    begin
-      Result := False;
-      if Trim(First) = '' then
-        Result := False
-      else
-        if Trim(Second) = '' then
-          Result := True
-        else
-        begin
-          case SortType of
-            smAlphabetic:
-              Result := First > Second;
-            smNonCaseSensitive:
-              Result := UpperCase(First) > UpperCase(Second);
-            smNumeric:
-              begin
-                try
-                  VarR8FromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(First), LOCALE_USER_DEFAULT, 0, I);
-                  VarR8FromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(Second), LOCALE_USER_DEFAULT, 0, J);
-                  Result := I > J;
-                except
-                  try
-                    l := StrToInt64(First);
-                  except
-                    l := 0;
-                  end;
-                  try
-                    m := StrToInt64(Second);
-                  except
-                    m := 0;
-                  end;
-                  Result := l > m;
-                end;
-              end;
-            smDate:
-              begin
-                d := StrToDate(First);
-                e := StrToDate(Second);
-                Result := d > e;
-              end;
-            smTime:
-              begin
-                d := StrToTime(First);
-                e := StrToTime(Second);
-                Result := d > e;
-              end;
-            smDateTime:
-              begin
-                d := StrToDateTime(First);
-                e := StrToDateTime(Second);
-                Result := d > e;
-              end;
-            smCurrency:
-              begin
-                VarCyFromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(First), LOCALE_USER_DEFAULT, 0, a);
-                VarCyFromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(Second), LOCALE_USER_DEFAULT, 0, b);
-                Result := a > b;
-              end;
-            smAutomatic:
-              begin
-                int1 := FirstNonAlpha(First);
-                int2 := FirstNonAlpha(Second);
-                if (int1 <> 0) and (int2 <> 0) then
-                begin
-                  st := Copy(First, 1, int1);
-                  st2 := Copy(Second, 1, int2);
-                  try
-                    Result := StrToFloat(st) > StrToFloat(st2);
-                  except
-                    Result := First > Second;
-                  end;
-                end
-                else
-                  Result := First > Second;
-              end;
-          end;
-        end;
+      Result := J;
     end;
 
   begin
-    Parm := TParamSort(Pointer(ParamSort)^);
-    i1 := TListItem(Item1);
-    i2 := TListItem(Item2);
-    I := Parm.ColumnIndex;
-
-    // (Salvatore)
-    if Parm.ColumnIndex < TJvListView(Parm.Sender).ExtendedColumns.Count  then
-      SortKind := TJvListView(Parm.Sender).ExtendedColumns[Parm.ColumnIndex].SortMethod
+    Result := False;
+    if Trim(First) = '' then
+      Result := False
     else
-      SortKind := TJvListView(Parm.Sender).SortMethod;
+      if Trim(Second) = '' then
+        Result := True
+      else
+      begin
+        case SortType of
+          smAlphabetic:
+            Result := First > Second;
+          smNonCaseSensitive:
+            Result := UpperCase(First) > UpperCase(Second);
+          smNumeric:
+            begin
+              try
+                VarR8FromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(First), LOCALE_USER_DEFAULT, 0, I);
+                VarR8FromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(Second), LOCALE_USER_DEFAULT, 0, J);
+                Result := I > J;
+              except
+                try
+                  l := StrToInt64(First);
+                except
+                  l := 0;
+                end;
+                try
+                  m := StrToInt64(Second);
+                except
+                  m := 0;
+                end;
+                Result := l > m;
+              end;
+            end;
+          smDate:
+            begin
+              d := StrToDate(First);
+              e := StrToDate(Second);
+              Result := d > e;
+            end;
+          smTime:
+            begin
+              d := StrToTime(First);
+              e := StrToTime(Second);
+              Result := d > e;
+            end;
+          smDateTime:
+            begin
+              d := StrToDateTime(First);
+              e := StrToDateTime(Second);
+              Result := d > e;
+            end;
+          smCurrency:
+            begin
+              VarCyFromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(First), LOCALE_USER_DEFAULT, 0, a);
+              VarCyFromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(Second), LOCALE_USER_DEFAULT, 0, b);
+              Result := a > b;
+            end;
+          smAutomatic:
+            begin
+              int1 := FirstNonAlpha(First);
+              int2 := FirstNonAlpha(Second);
+              if (int1 <> 0) and (int2 <> 0) then
+              begin
+                st := Copy(First, 1, int1);
+                st2 := Copy(Second, 1, int2);
+                try
+                  Result := StrToFloat(st) > StrToFloat(st2);
+                except
+                  Result := First > Second;
+                end;
+              end
+              else
+                Result := First > Second;
+            end;
+        end;
+      end;
+  end;
 
-    if Assigned(TJvListView(Parm.Sender).OnAutoSort) then
-      TJvListView(Parm.Sender).OnAutoSort(Parm.Sender, Parm.ColumnIndex, SortKind);
+begin
+  Parm := TParamSort(Pointer(ParamSort)^);
+  i1 := TListItem(Item1);
+  i2 := TListItem(Item2);
+  I := Parm.ColumnIndex;
 
-    case I of
-      {sort by caption}
-      0:
+  // (Salvatore)
+  if Parm.ColumnIndex < TJvListView(Parm.Sender).ExtendedColumns.Count  then
+    SortKind := TJvListView(Parm.Sender).ExtendedColumns[Parm.ColumnIndex].SortMethod
+  else
+    SortKind := TJvListView(Parm.Sender).SortMethod;
+
+  if Assigned(TJvListView(Parm.Sender).OnAutoSort) then
+    TJvListView(Parm.Sender).OnAutoSort(Parm.Sender, Parm.ColumnIndex, SortKind);
+
+  case I of
+    {sort by caption}
+    0:
+      begin
+        S1 := i1.Caption;
+        S2 := i2.Caption;
+
+        if IsBigger(S1, S2, SortKind) then
+          Result := 1
+        else
+          if IsBigger(S2, S1, SortKind) then
+            Result := -1
+          else
+            Result := 0;
+      end;
+  else
+    {sort by Column}
+    begin
+      if I > i1.SubItems.Count then
+      begin
+        if I > i2.SubItems.Count then
+          Result := 0
+        else
+          Result := -1;
+      end
+      else
+        if I > i2.SubItems.Count then
+          Result := 1
+        else
         begin
-          S1 := i1.Caption;
-          S2 := i2.Caption;
-
+          S1 := i1.SubItems[I - 1];
+          S2 := i2.SubItems[I - 1];
           if IsBigger(S1, S2, SortKind) then
             Result := 1
           else
@@ -1262,40 +1284,18 @@ var
             else
               Result := 0;
         end;
-    else
-      {sort by Column}
-      begin
-        if I > i1.SubItems.Count then
-        begin
-          if I > i2.SubItems.Count then
-            Result := 0
-          else
-            Result := -1;
-        end
-        else
-          if I > i2.SubItems.Count then
-            Result := 1
-          else
-          begin
-            S1 := i1.SubItems[I - 1];
-            S2 := i2.SubItems[I - 1];
-            if IsBigger(S1, S2, SortKind) then
-              Result := 1
-            else
-              if IsBigger(S2, S1, SortKind) then
-                Result := -1
-              else
-                Result := 0;
-          end;
-      end;
     end;
   end;
+end;
 
-  function CustomCompare2(Item1, Item2, ParamSort: LPARAM): Integer; stdcall;
-  begin
-    Result := -CustomCompare1(Item1, Item2, ParamSort);
-  end;
+function CustomCompare2(Item1, Item2, ParamSort: LPARAM): Integer; stdcall;
+begin
+  Result := -CustomCompare1(Item1, Item2, ParamSort);
+end;
 
+procedure TJvListView.ColClick(Column: TListColumn);
+var
+  Parm: TParamSort;
 begin
   inherited ColClick(Column);
   if FSortOnClick then
@@ -1306,12 +1306,12 @@ begin
     if FLast = Column.Index then
     begin
       FLast := -1;
-      CustomSort(TLVCompare(@CustomCompare2), LPARAM(@Parm));
+      CustomSort(CustomCompare2, LPARAM(@Parm));
     end
     else
     begin
       FLast := Column.Index;
-      CustomSort(TLVCompare(@CustomCompare1), LPARAM(@Parm));
+      CustomSort(CustomCompare1, LPARAM(@Parm));
     end;
   end;
 end;
