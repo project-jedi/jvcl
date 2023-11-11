@@ -394,19 +394,35 @@ procedure TJvMail.CreateMapiMessage;
   procedure MakeAttachments;
   var
     I: Integer;
+    NullPos: Integer;
+    FileName, PathName: string;
   begin
     if Attachment.Count > 0 then
     begin
       SetLength(FAttachArray, Attachment.Count);
       for I := 0 to Attachment.Count - 1 do
       begin
-        if not FileExists(Attachment[I]) then
-          raise EJclMapiError.CreateResFmt(@RsAttachmentNotFound, [Attachment[I]]);
+        // Look for #0 splitting parameter in physical filename (PathName) and virtual name (FileName)
+        NullPos := Pos(#0, Attachment[I]);
+        if NullPos > 0 then
+        begin
+          PathName := Copy(Attachment[i], 0, NullPos - 1);
+          FileName := Copy(Attachment[i], NullPos + 1, Length(Attachment[i]));
+        end
+        else
+        begin
+          // Use real filename in attachment if no #0 is found
+          PathName := Attachment[i];
+          FileName := ExtractFileName(PathName);
+        end;
+
+        if not FileExists(PathName) then
+          raise EJclMapiError.CreateResFmt(@RsAttachmentNotFound, [PathName]);
 
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
-        FAttachArray[I].lpszFileName := StrNewA(PAnsiChar(AnsiString(ExtractFileName(Attachment[I]))));
-        FAttachArray[I].lpszPathName := StrNewA(PAnsiChar(AnsiString(Attachment[I])));
+        FAttachArray[I].lpszFileName := StrNewA(PAnsiChar(AnsiString(FileName)));
+        FAttachArray[I].lpszPathName := StrNewA(PAnsiChar(AnsiString(PathName)));
       end;
     end
     else
