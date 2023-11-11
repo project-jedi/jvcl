@@ -85,6 +85,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -149,6 +152,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   end;
 
   TJvExLabel = class(TLabel, IJvExControl)
@@ -189,6 +195,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   end;
 
   {$UNDEF HASAUTOSIZE}
@@ -231,6 +240,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -314,6 +326,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -381,6 +396,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -443,6 +461,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -520,6 +541,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -582,6 +606,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -644,6 +671,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -706,6 +736,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -768,6 +801,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -830,6 +866,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -892,6 +931,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -954,6 +996,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -1016,6 +1061,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -1078,6 +1126,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected

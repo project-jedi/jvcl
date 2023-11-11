@@ -127,6 +127,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   end;
 
   TJvExWinControl = class(TWinControl, IJvExControl)
@@ -167,6 +170,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -229,6 +235,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -291,6 +300,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   end;
 
   TJvExHintWindow = class(THintWindow, IJvExControl)
@@ -331,6 +343,9 @@ type
     property HintWindowClass: THintWindowClass read FHintWindowClass write FHintWindowClass;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   private
     FDotNetHighlighting: Boolean;
   protected
@@ -362,6 +377,9 @@ type
     property DragKind;
     property DragMode;
     property ParentBiDiMode;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}	
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
     property OnEndDock;
     property OnStartDock;
   end;
