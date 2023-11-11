@@ -142,6 +142,9 @@ begin
   BorderWidth := 0;
   AutoSize := True;
   FormStyle := fsStayOnTop;
+  // We need to make the Left/Top values fix so that a RecreateHandle (DestroyHandle and CreateHandle)
+  // doesn't reposition the form. Delphi's StyleManager can cause this.
+  Position := poDesigned;
 
   FToolWindowStyle := False;
   ParentControl := Self;
