@@ -131,8 +131,8 @@ type
     function GetHotTrackFontOptions: TJvTrackFontOptions;
 
     procedure SetHotTrack(Value: Boolean);
-    procedure SetHotTrackFont( Value: TFont);
-    procedure SetHotTrackFontOptions( Value: TJvTrackFontOptions);
+    procedure SetHotTrackFont(Value: TFont);
+    procedure SetHotTrackFontOptions(Value: TJvTrackFontOptions);
     procedure SetHotTrackOptions(Value: TJvOfficeColorButtonHotTrackOptions);
     procedure IJvHotTrack_Assign(Source: IJvHotTrack);
     procedure IJvHotTrack.Assign = IJvHotTrack_Assign;
@@ -165,6 +165,7 @@ type
     procedure DoColorsListChanged(Sender: TObject);
     procedure DoHoldedCustomColor(Sender: TObject;AColor: TColor);
     function GetAddInControls: TList;
+    procedure AdjustChildBounds;
   protected
     procedure CMPopupCloseUp(var Msg: TMessage); message CM_POPUPCLOSEUP;
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
@@ -178,11 +179,14 @@ type
     procedure Loaded; override;
     procedure SetEnabled( Value: Boolean); override;
     procedure FontChanged; override;
+    procedure Resize; override;
 
     function CreateStandardColors(ColorList: TStrings): Integer; virtual;
     function CreateSystemColors(ColorList: TStrings): Integer; virtual;
     //if you wnat to create published color list by default,override this procedure.
     function CreateUserColors(ColorList: TStrings): Integer; virtual;
+
+    procedure DoPropertiesChanged(Sender: TObject; const PropName: string); virtual;
 
     //Do't change the following list, The result might unpredictability.
     property StandardColorDrawers: TList read GetStandardColorDrawers;
@@ -194,7 +198,6 @@ type
     property ButtonDefaultColor: TJvColorSpeedButton read GetButtonOfDefaultColor;
     property ButtonCustomColor: TJvColorSpeedButton read GetButtonOfCustomColor;
 
-    procedure DoPropertiesChanged(Sender: TObject; const PropName: string); virtual;
     property ColorPanel: TJvOfficeColorPanel read GetColorPanel;
     property ColorsForm: TJvOfficeColorForm read FColorsForm;
   public
@@ -326,6 +329,7 @@ const
 implementation
 
 uses
+  Types, // expand inlines
   JvResources, JvJVCLUtils, JvThemes, JvComponent;
 
 const
@@ -569,22 +573,33 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvCustomOfficeColorButton.Resize;
+begin
+  AdjustChildBounds;
+  inherited Resize;
+end;
+
+procedure TJvCustomOfficeColorButton.AdjustChildBounds;
+begin
+  with Properties do
+  begin
+    if ArrowWidth < MinArrowWidth then
+      ArrowWidth := MinArrowWidth;
+    if (Width - ArrowWidth) < MinButtonWidth then
+      Width := MinButtonWidth + ArrowWidth;
+    if Height < MinButtonHeight then
+      Height := MinButtonHeight;
+
+    FMainButton.SetBounds(0, 0, Width - FArrowWidth, Height);
+
+    FArrowButton.SetBounds(FMainButton.Width, 0, ArrowWidth, Height);
+  end;
+end;
+
 procedure TJvCustomOfficeColorButton.AdjustSize;
 begin
   if FInited then
-    with Properties do
-    begin
-      if ArrowWidth < MinArrowWidth then
-        ArrowWidth := MinArrowWidth;
-      if (Width - ArrowWidth) < MinButtonWidth then
-        Width := MinButtonWidth + ArrowWidth;
-      if Height < MinButtonHeight then
-        Height := MinButtonHeight;
-
-      FMainButton.SetBounds(0, 0, Width - FArrowWidth, Height);
-
-      FArrowButton.SetBounds(FMainButton.Width, 0, ArrowWidth, Height);
-    end;
+    AdjustChildBounds;
   inherited AdjustSize;
 end;
 
@@ -593,13 +608,11 @@ begin
   Result := TJvOfficeColorPanel;
 end;
 
-
 procedure TJvCustomOfficeColorButton.CreateWnd;
 begin
   inherited CreateWnd;
   AdjustSize;
 end;
-
 
 type
   TControlAccessProtected = class(TControl);
@@ -623,7 +636,6 @@ begin
   inherited FontChanged;
   FColorsForm.Font.Assign(Font);
 end;
-
 
 function TJvCustomOfficeColorButton.CreateStandardColors(ColorList: TStrings): Integer;
 begin
@@ -989,8 +1001,6 @@ begin
     FMainButton.Glyph := Value;
 end;
 
-
-
 function TJvCustomOfficeColorButton.GetColorDialogOptions: TColorDialogOptions;
 begin
   Result := ColorPanel.ColorDialogOptions;
@@ -1000,8 +1010,6 @@ procedure TJvCustomOfficeColorButton.SetColorDialogOptions(const Value: TColorDi
 begin
   ColorPanel.ColorDialogOptions := Value;
 end;
-
-
 
 function TJvCustomOfficeColorButton.GetProperties: TJvOfficeColorButtonProperties;
 begin
@@ -1063,7 +1071,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOfficeColorButton.SetHotTrack( Value: Boolean);
+procedure TJvCustomOfficeColorButton.SetHotTrack(Value: Boolean);
 begin
   if FHotTrack <> Value then
   begin
@@ -1099,8 +1107,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOfficeColorButton.IJvHotTrack_Assign(
-  Source: IJvHotTrack);
+procedure TJvCustomOfficeColorButton.IJvHotTrack_Assign(Source: IJvHotTrack);
 begin
   if (Source <> nil) and (IJvHotTrack(Self) <> Source) then
   begin
@@ -1248,7 +1255,7 @@ begin
 end;
 
 const
- cDragCaption = 'DragCaption';
+  cDragCaption = 'DragCaption';
 
 procedure TJvOfficeColorButtonProperties.DefineProperties(Filer: TFiler);
 begin
@@ -1389,13 +1396,13 @@ end;
 
 procedure TJvOfficeColorButton.ReadData(Reader: TReader);
 begin
-  if SameText(FFilerTag,'Color') then
+  if SameText(FFilerTag, 'Color') then
     BackColor := JvReaderReadColor(Reader)
   else
-  if SameText(FFilerTag,'CustomColors') then
+  if SameText(FFilerTag, 'CustomColors') then
     JvReaderReadStrings(Reader,ColorDlgCustomColors)
   else
-  if SameText(FFilerTag,'Options') then
+  if SameText(FFilerTag, 'Options') then
     ColorDialogOptions := JvReaderReadColorDialogOptions(Reader)
   ;
 end;
