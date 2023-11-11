@@ -895,7 +895,7 @@ begin
         for i := 0 to KeyNames.Count - 1 do
           if StrHasPrefix(KeyNames[i], [BDS19UpCoreCommonFilesPrefix]) then
           begin
-            CandidateEdition := Copy(KeyNames[i], Length(BDS19UpCoreCommonFilesPrefix) + 1);
+            CandidateEdition := Copy(KeyNames[i], Length(BDS19UpCoreCommonFilesPrefix) + 1, MaxInt);
             if Pos('_', CandidateEdition) = 0 then
             begin
               FEdition := Copy(CandidateEdition, 1, Pos('-', CandidateEdition) - 1);
