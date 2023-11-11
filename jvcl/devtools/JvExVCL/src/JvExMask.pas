@@ -45,6 +45,7 @@ type
   EDITCONTROL_DECL
   private
     FBeepOnError: Boolean;
+    FRaiseException: Boolean;
     {$IFNDEF COMPILER12_UP}
     FTextHint: string;
     procedure SetTextHint(const Value: string);
@@ -53,7 +54,9 @@ type
   protected
     procedure DoBeepOnError; dynamic;
     procedure SetBeepOnError(Value: Boolean); virtual;
+    procedure ValidateError; override;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
+    property RaiseException: Boolean read FRaiseException write FRaiseException default True;
 
     procedure DoSetTextHint(const Value: string); {$IFDEF COMPILER12_UP}override;{$ELSE}virtual;{$ENDIF}
     procedure PaintWindow(DC: HDC); override;
@@ -70,6 +73,7 @@ type
   EDITCONTROL_DECL
   private
     FBeepOnError: Boolean;
+    FRaiseException: Boolean;
     {$IFNDEF COMPILER12_UP}
     FTextHint: string;
     procedure SetTextHint(const Value: string);
@@ -78,6 +82,7 @@ type
   protected
     procedure DoBeepOnError; dynamic;
     procedure SetBeepOnError(Value: Boolean); virtual;
+    procedure ValidateError; override;
 
     procedure DoSetTextHint(const Value: string); {$IFDEF COMPILER12_UP}override;{$ELSE}virtual;{$ENDIF}
     procedure PaintWindow(DC: HDC); override;
@@ -92,6 +97,7 @@ type
     property TextHint: string read FTextHint write SetTextHint;
     {$ENDIF ~COMPILER12_UP}
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
+    property RaiseException: Boolean read FRaiseException write FRaiseException default True;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -123,6 +129,7 @@ type
 
 BEGIN_EDITCONTROL_CONSTRUCTOR(CustomMaskEdit)
   FBeepOnError := True;
+  FRaiseException := True;
   if UserTextHint then
     ControlState := ControlState + [csCustomPaint]; // needed for PaintWindow
 END_CONSTRUCTOR
@@ -140,6 +147,12 @@ end;
 procedure TJvExCustomMaskEdit.SetBeepOnError(Value: Boolean);
 begin
   FBeepOnError := Value;
+end;
+
+procedure TJvExCustomMaskEdit.ValidateError;
+begin
+  if FRaiseException then
+    inherited ValidateError;
 end;
 
 {$IFNDEF COMPILER12_UP}
@@ -222,6 +235,7 @@ end;
 
 BEGIN_EDITCONTROL_CONSTRUCTOR(MaskEdit)
   FBeepOnError := True;
+  FRaiseException := True;
   if UserTextHint then
     ControlState := ControlState + [csCustomPaint]; // needed for PaintWindow
 END_CONSTRUCTOR
@@ -239,6 +253,12 @@ end;
 procedure TJvExMaskEdit.SetBeepOnError(Value: Boolean);
 begin
   FBeepOnError := Value;
+end;
+
+procedure TJvExMaskEdit.ValidateError;
+begin
+  if FRaiseException then
+    inherited ValidateError;
 end;
 
 {$IFNDEF COMPILER12_UP}
