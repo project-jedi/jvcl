@@ -175,6 +175,11 @@ type
     DataOffset: DWORD; // Offset from beginning of record
   end;
 
+{$IFNDEF COMPILER12_UP}
+type
+  PByte = PAnsiChar; // Delphi 6-2007 don't have pointer arithmetic for PByte
+{$ENDIF ~COMPILER12_UP}
+
 //=== { TJvNTEventLog } ======================================================
 
 constructor TJvNTEventLog.Create(AOwner: TComponent);
@@ -466,7 +471,7 @@ begin
   GetMem(Args, Count * SizeOf(PChar));
   try
     PArgs := Args;
-    P := PEventLogRecord(FCurrentRecord)^.StringOffset + PChar(FCurrentRecord);
+    P := PChar(PByte(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.StringOffset);
     for I := 0 to Count - 1 do
     begin
       PArgs^ := P;
@@ -549,14 +554,14 @@ end;
 
 function TJvNTEventLogRecord.GetSource: string;
 begin
-  Result := PChar(FCurrentRecord) + SizeOf(TEventLogRecord);
+  Result := PChar(PByte(FCurrentRecord) + SizeOf(TEventLogRecord));
 end;
 
 function TJvNTEventLogRecord.GetComputer: string;
 var
   P: PChar;
 begin
-  P := PChar(FCurrentRecord) + SizeOf(TEventLogRecord);
+  P := PChar(PByte(FCurrentRecord) + SizeOf(TEventLogRecord));
   Result := P + StrLen(P) + 1;
 end;
 
@@ -579,7 +584,7 @@ function TJvNTEventLogRecord.GetSID: PSID;
 begin
   Result := nil;
   if PEventLogRecord(FCurrentRecord)^.UserSidLength > 0 then
-    Result := PSID(PChar(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.UserSidOffset);
+    Result := PSID(PByte(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.UserSidOffset);
 end;
 
 function TJvNTEventLogRecord.GetString(Index: Cardinal): string;
@@ -589,7 +594,7 @@ begin
   Result := '';
   if Index < StringCount then
   begin
-    P := PChar(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.StringOffset;
+    P := PChar(PByte(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.StringOffset);
     while Index > 0 do
     begin
       Inc(P, StrLen(P) + 1);
