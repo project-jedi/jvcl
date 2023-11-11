@@ -1781,7 +1781,7 @@ begin
   FPopupAlign := epaRight;
   FBtnControl := TJvBtnWinControl.Create(Self);
   with FBtnControl do
-    ControlStyle := ControlStyle + [csReplicatable];
+    ControlStyle := ControlStyle + [csReplicatable, csParentBackground];
   FBtnControl.Width := DefEditBtnWidth;
   FBtnControl.Height := 17;
   FBtnControl.Visible := True;
