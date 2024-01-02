@@ -1,6 +1,6 @@
 unit a;
 
-function main;
+procedure main;
 var
   pDlg: TForm;
   pControl: TControl;

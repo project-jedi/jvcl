@@ -4999,6 +4999,9 @@ var
   PVRes: PVariant;
   Names: string;
   I: Integer;
+  {$IFDEF UNICODE}
+  OleStrings: array of WideString;
+  {$ENDIF UNICODE}
 
   procedure AddParam(const Param: Variant);
   var
@@ -5006,13 +5009,10 @@ var
     Wrd: WordBool;
     Poin: Pointer;
     Dbl: Double;
-    TempDisp : IDispatch; //ComObj
+    TempDisp: IDispatch; //ComObj
 
     procedure AddParam1(Typ: Byte; ParamSize: Integer; const Param);
     begin
-     { CallDesc.ArgTypes[Ptr] := Typ;
-      Move(Param, ParamTypes[Ptr], ParamSize);
-      Inc(Ptr, ParamSize); }
       CallDesc.ArgTypes[TypePtr] := Typ;
       Move(Param, ParamTypes[Ptr], ParamSize);
       Inc(Ptr, ParamSize);
@@ -5036,6 +5036,22 @@ var
           Poin := V2P(Param);
           AddParam1(varStrArg, SizeOf(Poin), Poin);
         end;
+      varOleStr:
+        begin
+          Poin := V2P(Param);
+          AddParam1(varOleStr, SizeOf(Poin), Poin);
+        end;
+      {$IFDEF UNICODE}
+      varUString:
+        begin
+          // Convert UnicodeString to OleStr(WideString) and keep the WideString in memory during the call
+          Int := Length(OleStrings);
+          SetLength(OleStrings, Int + 1);
+          Poin := V2P(Param);
+          OleStrings[Int] := UnicodeString(Poin);
+          AddParam1(varOleStr, SizeOf(Poin), OleStrings[Int]);
+        end;
+      {$ENDIF UNICODE}
       varBoolean:
         begin
           Wrd := WordBool(Param);
@@ -5052,6 +5068,7 @@ var
 
 begin
   Result := True;
+  OleStrings := nil;
   { Call method through Ole Automation }
   with CallDesc do
   begin
