@@ -201,7 +201,7 @@ type
       // link the map file in the binary file
 
     function CompressMapFileToJdbg(const MapFileName: string): Boolean;
-      // compresses the map file to a jdbg file      
+      // compresses the map file to a jdbg file
 
     property TargetSymbol: string read GetTargetSymbol;
       // TargetSymbol returns the symbol that is used in the xml files for this
@@ -870,7 +870,7 @@ end;
 function TTargetConfig.IsUpToDate: Boolean;
 begin
   Result := True;
-  
+
   if Target.IsDelphi then
   begin
     if Target.Version = 6 then
@@ -896,7 +896,7 @@ begin
     end;
   end;}
 
-  // The IDE is up to date because the JCL Installer garantees this for us.
+  // The IDE is up to date because the JCL Installer guarantees this for us.
   // The JVCL requires an installed JCL, so this is no problem.
 //  Result := True;
 end;

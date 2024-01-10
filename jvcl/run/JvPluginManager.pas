@@ -61,7 +61,7 @@ Versionhistory:
         Removed OnBefore- and OnAfterLoading (REALLY unnecessary - OnBeforeLoad,
                 and OnAfterLoad are still here !)
         Removed Trigger-routines. Were only called once -> moved into code
- V 03 : removed unecessary Set/Get-routines for most properties
+ V 03 : removed unnecessary Set/Get-routines for most properties
  V 02 : new about-dialog, removed unnecessary CDK-auto-generated comments
         stupid fPluginHandles from TStringList -> TList
  V 01 : renamed objects, files, ressources
@@ -221,7 +221,7 @@ begin
     FPluginHostMessage(Self, PluginMessage, PluginParams, Nil);
 
   // Cant call orginal BroadcastMessage becasue we need to test for origonating sender plugin.
-  // Host never recieves messages it sends because bit of code above is missing in origonal BroadcastMessage.
+  // Host never receives messages it sends because bit of code above is missing in original BroadcastMessage.
 
   // Next rebroadcast message to loaded plugins skipping plugin that sent message.
   for I := 0 to FPluginInfos.Count - 1 do
@@ -241,7 +241,7 @@ begin
     FPluginHostMessage(Self, PluginMessage, PluginParams, AObj);
 
   // Cant call orginal BroadcastMessage becasue we need to test for origonating sender plugin.
-  // Host never recieves messages it sends because bit of code above is missing in origonal BroadcastMessage.
+  // Host never receives messages it sends because bit of code above is missing in original BroadcastMessage.
 
   // Next rebroadcast message to loaded plugins skipping plugin that sent message.
   for I := 0 to FPluginInfos.Count - 1 do

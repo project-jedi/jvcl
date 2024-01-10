@@ -6,7 +6,7 @@
  | For icons In TExIconImage, the memory is the bitmapinfo, followed by |
  | the color and mask bits.                                             |
  |                                                                      |
- | For cursors it is preceeded by word x and y hotspots                 |
+ | For cursors it is preceded by word x and y hotspots                 |
  |                                                                      |
  | This corresponds with what you find in resources, but not .CUR files |
  |                                                                      |
@@ -349,7 +349,7 @@ begin
     BI.biClrImportant := BI.biClrUsed;
 
   BI.biSizeImage := 0;  // SDK sample IconPro always sets biSizeImage to 0.  It
-                        // seems to be safer to calculate the size from hight * bytes per
+                        // seems to be safer to calculate the size from height * bytes per
                         // scan line.  So we'll do the same...
 end;
 

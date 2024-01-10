@@ -9,18 +9,18 @@
 
  Contributor(s): Michael Beck (mbeck1@compuserve.com)
  Settings part based on work of Angus Johnson - ajohnson@rpi.net.au
-                                                                  
+
  You may retrieve the latest version of this file at the JEDI-JVCL
  home page, located at http://jvcl.sourceforge.net
 
  The contents of this file are used with permission, subject to
- the Mozilla Public License Version 1.1 (the "License"); you may  
+ the Mozilla Public License Version 1.1 (the "License"); you may
  not use this file except in compliance with the License. You may 
  obtain a copy of the License at
  http://www.mozilla.org/MPL/MPL-1_1Final.html
 
  Software distributed under the License is distributed on an
- "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or   
+ "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  implied. See the License for the specific language governing
  rights and limitations under the License.
 
@@ -189,7 +189,7 @@ begin
     TheFormArray[ID].left := 0;
     TheFormArray[ID].top  := 25;
 
-    //take the with, heigth and caption from the form
+    //take the with, height and caption from the form
     JvCaptionPanel1.width  := TheFormArray[ID].Width + 5;
     JvCaptionPanel1.height := TheFormArray[ID].height + 30;
     JvCaptionPanel1.Caption:= TheFormArray[ID].Caption;

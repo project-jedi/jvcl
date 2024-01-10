@@ -65,7 +65,7 @@ Known Bugs:
      Please Process SYSTEM SETTING CHANGE Message,Set the property UseSystemColors:=False then
      Set the Property UseSystemColors := True
    - May be not compatibly with other program,Ex: ScreenSave,Meet it infrequent.
-   - Under Win9x,if not use the Gradient Propety,the IconBack has some problem.
+   - Under Win9x,if not use the Gradient Property, the IconBack has some problem.
    - Big Bug:Resource Not Free~~~~,Checking~~~~~~
      OK: Don't use FlatMenu,the property Cause the Memory hole when the program running~~~~
          But when the program exit,the Memory get back.
@@ -747,7 +747,7 @@ var
 
   /// Under Function Add By Kingron
 
-  function GetItemHeigth(Sender: TObject): integer;
+  function GetItemHeight(Sender: TObject): integer;
   var
     Width, Height   : Integer;
   begin
@@ -787,7 +787,7 @@ begin
           if FMenuItem.Parent.Items[i].IsLine then /// Is -------?
             Inc(FBarHeight, 4) /// The Line's Default Height!
           else
-            Inc(FBarHeight, GetItemHeigth(FMenuItem.Parent.Items[i])); /// Add Default ItemHeight;
+            Inc(FBarHeight, GetItemHeight(FMenuItem.Parent.Items[i])); /// Add Default ItemHeight;
 
     Dec(ARect.Right, FBarWidth); /// Adjust RECT for the Bar!
     /// if You wan't Left a room for bar between,please modify: FBarWidth to FBarWidth - 1
@@ -2245,7 +2245,7 @@ var
     Bmp := TBitmap.Create;
     Bmp.Height :=ARect.Bottom-ARect.Top;
     Bmp.Width := ARect.Right - ARect.Left;
-    
+
     R := GetRValue(ColorToRGB(FBarColorEnd));
     G := GetGValue(ColorToRGB(FBarColorEnd));
     B := GetBValue(ColorToRGB(FBarColorEnd));

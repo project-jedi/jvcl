@@ -1554,7 +1554,7 @@ begin
       Inc(liAlpha)
     else
     begin
-      // no wierd punctuation in dates!
+      // no weird punctuation in dates!
       lbDisqualify := True;
       Break;
     end;

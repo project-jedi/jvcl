@@ -71,7 +71,7 @@ begin
     if S.Count < 2 then
       // tdump.exe errors on some files, such as Shell32.dll
       // When it errors, it outputs less than 2 lines
-      S.Add(#13#10'An error occured running tdump.exe on this DLL')
+      S.Add(#13#10'An error occurred running tdump.exe on this DLL')
     else
       S.Insert(2, 'EXPORTED FUNCTIONS:'#13#10'===================');
     reInfo.Lines := S;

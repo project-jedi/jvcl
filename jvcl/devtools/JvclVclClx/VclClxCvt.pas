@@ -264,7 +264,7 @@ begin
   Filename := IniDirectory + PathDelim + 'convertvcl.ini';
   if FileExists(Filename) then
     FUnitReplaceList.AddFromIni(Filename);
-    
+
   Lines := TStringList.Create;
   try
     Filename := IniDirectory + PathDelim + 'convertprotected.ini';
@@ -352,7 +352,7 @@ var
 begin
   if AllowBeforeSave then
     BeforeSave(Filename, Lines);
-  
+
   lb := GetLineBreak;
   sb := StringBuilder('');
   for i := 0 to Lines.Count - 1 do
@@ -725,7 +725,7 @@ var
     if not KeepLines then
       Dec(ParserIndex, LineClean(Parser.Index - 1));
 
-    // restore next token start index  
+    // restore next token start index
     Parser.Index := ParserIndex;
   end;
 
@@ -910,7 +910,7 @@ begin
                 if SameText(Token.Value, 'end') then
                 begin
                   FStatistics.AddError('"end" found but "begin", "var", "const", "type" or "resourcestring" expected.');
-                  Exit; // something very strange happend
+                  Exit; // something very strange happened
                 end;
               end;
             end;
@@ -974,7 +974,7 @@ begin
               if SameText(Token.Value, 'end') then
               begin
                 FStatistics.AddError('"end" found but "begin", "var", "const", "type" or "resourcestring" expected.');
-                Exit; // something very strange happend
+                Exit; // something very strange happened
               end;
             end;
           end;

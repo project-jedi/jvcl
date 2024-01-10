@@ -40,7 +40,7 @@ type
     pWindowed_DeviceInfo: PD3DDeviceInfo;
     pWindowed_DeviceCombo: PD3DDeviceCombo;
 
-    Windowed_DisplayMode: TD3DDisplayMode; // not changable by the user
+    Windowed_DisplayMode: TD3DDisplayMode; // not changeable by the user
     Windowed_DepthStencilBufferFormat: TD3DFormat;
     Windowed_MultisampleType: TD3DMultiSampleType;
     Windowed_MultisampleQuality: DWORD;
@@ -53,7 +53,7 @@ type
     pFullscreen_DeviceInfo: PD3DDeviceInfo;
     pFullscreen_DeviceCombo: PD3DDeviceCombo;
 
-    Fullscreen_DisplayMode: TD3DDisplayMode; // changable by the user
+    Fullscreen_DisplayMode: TD3DDisplayMode; // changeable by the user
     Fullscreen_DepthStencilBufferFormat: TD3DFormat;
     Fullscreen_MultisampleType: TD3DMultiSampleType;
     Fullscreen_MultisampleQuality: DWORD;
@@ -838,7 +838,7 @@ begin
       ComboBoxSelectIndex(IDC_ADAPTERFORMAT_COMBO, 0);
     end;
     EnableWindow(GetDlgItem(m_hDlg, IDC_ADAPTERFORMAT_COMBO), True);
-        
+
     // Update resolution combo box
     EnableWindow(GetDlgItem(m_hDlg, IDC_RESOLUTION_COMBO), True);
 

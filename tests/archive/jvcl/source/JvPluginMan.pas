@@ -61,7 +61,7 @@ Versionhistory:
         Removed OnBefore- and OnAfterLoading (REALLY unnecessary - OnBeforeLoad,
                 and OnAfterLoad are still here !)
         Removed Trigger-routines. Were only called once -> moved into code
- V 03 : removed unecessary Set/Get-routines for most properties
+ V 03 : removed unnecessary Set/Get-routines for most properties
  V 02 : new about-dialog, removed unnecessary CDK-auto-generated comments
         stupid fPluginHandles from TStringList -> TList
  V 01 : renamed objects, files, ressources

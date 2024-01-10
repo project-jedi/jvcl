@@ -387,7 +387,7 @@ object FrameConfigPage: TFrameConfigPage
     Height = 17
     Hint = 
       'Activate this option if the installer should not stop when an er' +
-      'ror occured while'#13#10'compiling the packages.'
+      'ror occurred while'#13#10'compiling the packages.'
     Caption = 'D&o not stop on errors'
     ParentShowHint = False
     ShowHint = True

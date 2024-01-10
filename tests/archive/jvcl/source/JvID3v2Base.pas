@@ -460,7 +460,7 @@ type
 
     USLT - fiUnsyncedLyrics - Unsynchronized lyric/text transcription
 
-    There may be more than one 'Unsynchronised lyrics/text transcription' frame
+    There may be more than one 'Unsynchronized lyrics/text transcription' frame
     in each tag, but only one with the same language and content descriptor.
   }
 
@@ -4428,7 +4428,7 @@ begin
   else
   if (Controller.Version = ive2_4) and (fhfUnsynchronisationApplied in FFlags) then
   begin
-    { Stream is unsynchronised, remove the unsynchronisation scheme and
+    { Stream is unsynchronized, remove the unsynchronisation scheme and
       read the frame }
 
     Stream.BeginReadFrame(FrameSize);
@@ -6238,7 +6238,7 @@ class function TJvID3ContentFrame.CanAddFrame(Controller: TJvID3Controller;
 begin
   { There may be more than one comment frame in each tag, but only one with
     the same language and content descriptor.
-    There may be more than one 'Unsynchronised lyrics/text transcription' frame
+    There may be more than one 'Unsynchronized lyrics/text transcription' frame
     in each tag, but only one with the same language and content descriptor.
   }
   Result := (FrameID in [fiComment, fiUnsyncedLyrics]) or
@@ -6336,7 +6336,7 @@ function TJvID3ContentFrame.SameUniqueIDAs(const Frame: TJvID3Frame): Boolean;
 begin
   { There may be more than one comment frame in each tag, but only one with
     the same language and content descriptor.
-    There may be more than one 'Unsynchronised lyrics/text transcription' frame
+    There may be more than one 'Unsynchronized lyrics/text transcription' frame
     in each tag, but only one with the same language and content descriptor.
   }
   Result := (Frame is TJvID3ContentFrame) and

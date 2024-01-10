@@ -95,7 +95,7 @@ interface
 uses
   Windows;
 
-  
+
 (*==========================================================================;
  *
  *  Copyright (C) Microsoft Corporation.  All Rights Reserved.
@@ -198,7 +198,7 @@ type
   {$HPPEMIT 'DECLARE_DINTERFACE_TYPE(IDirectDrawClipper);'}
   {$HPPEMIT 'DECLARE_DINTERFACE_TYPE(IDirectDrawColorControl);'}
   {$HPPEMIT 'DECLARE_DINTERFACE_TYPE(IDirectDrawGammaControl);'}
-  
+
   IDirectDraw = interface;
   {$EXTERNALSYM IDirectDraw}
   IDirectDraw2 = interface;
@@ -2134,7 +2134,7 @@ const
   {$EXTERNALSYM DDSCAPS_ALLOCONLOAD}
 
 (*
- * Indicates that the surface will recieve data from a video port.
+ * Indicates that the surface will receive data from a video port.
  *)
   DDSCAPS_VIDEOPORT		          = $08000000;
   {$EXTERNALSYM DDSCAPS_VIDEOPORT}
@@ -5748,7 +5748,7 @@ function DirectDrawCreateClipper(dwFlags: DWORD; out lplpDDClipper: IDirectDrawC
 const
 (*
  * Flags for DirectDrawEnumerateEx
- * DirectDrawEnumerateEx supercedes DirectDrawEnumerate. You must use GetProcAddress to
+ * DirectDrawEnumerateEx supersedes DirectDrawEnumerate. You must use GetProcAddress to
  * obtain a function pointer (of type LPDIRECTDRAWENUMERATEEX) to DirectDrawEnumerateEx.
  * By default, only the primary display device is enumerated.
  * DirectDrawEnumerate is equivalent to DirectDrawEnumerate(,,DDENUM_NONDISPLAYDEVICES)
@@ -6627,7 +6627,7 @@ const
 
 (*
  * The specified height/width refer to the size of the video port data
- * written into memory, after prescaling has occured.
+ * written into memory, after prescaling has occurred.
  *)
   DDVPB_VIDEOPORT = $00000001;
   {$EXTERNALSYM DDVPB_VIDEOPORT}

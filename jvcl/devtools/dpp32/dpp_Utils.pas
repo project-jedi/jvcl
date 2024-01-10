@@ -23,7 +23,7 @@ uses
 {$ifdef MSWINDOWS}
   Windows, SysUtils, Classes, RTLConsts;
 {$endif}
-{$ifdef LINUX}  
+{$ifdef LINUX}
   Libc, SysUtils, Classes, RTLConsts;
 {$endif}
 
@@ -158,7 +158,7 @@ end;
 function TBooleanList.Add(Value: Boolean): Integer;
 begin
   if FCount >= Length(FList) then
-    SetLength(FList, FCount + 10); // allocate more than 1 saves some memory with SysMemoryManger
+    SetLength(FList, FCount + 10); // allocate more than 1 saves some memory with SysMemoryManager
   FList[FCount] := Value;
   Result := FCount;
   Inc(FCount);

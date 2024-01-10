@@ -88,7 +88,7 @@ type
   // Originally vary_length = SShort but if you need the correct length you
   // need to use isc_portable_integer that convert it to word so i simply convert
   // it directly to Word, Very strange.
-  
+
   PVary = ^TVary;
   vary = record
     vary_length : USHORT;
@@ -483,7 +483,7 @@ type
     buf_size: ISCUShort); stdcall;
 
   TBlobLSeekFn = function(hnd: PPointer; mode: ISCUShort; offset: ISCLong): ISCLong; stdcall;
-  
+
 {$IFDEF FB102ORYF867}
   PBlobCallBack = ^TBlobCallBack;
   BLOBCALLBACK = record
@@ -616,7 +616,7 @@ const
  * NOTE:These structure will no longer be available in future releases.
  * This is kept only for backward  compatability.
  * Please refrain from  using these old structures.
- * It is strongly  recomended  to use the newer SQLDA version
+ * It is strongly  recommended  to use the newer SQLDA version
  * and related XSQLVAR, ISC_BLOB_DESC, ISC_ARRAY_DESC structures.
  ***********************************************************************)
 type
@@ -2817,7 +2817,7 @@ const
         {$ELSE}
           isc_dpb_Max_Value = 67;
         {$ENDIF}
-      {$ENDIF}        
+      {$ENDIF}
     {$ENDIF}
   {$ENDIF}
 {$ENDIF}
@@ -4006,8 +4006,8 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISCCFG_WIN32_DISABLEFILECACHE_KEY} {$ENDIF}
   ISCCFG_LOCKMEM_RES_KEY            = 31;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISCCFG_LOCKMEM_RES_KEY} {$ENDIF}
-  ISCCFG_FORCERESHEDULE_KEY         = 32;
-  {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISCCFG_FORCERESHEDULE_KEY} {$ENDIF}
+  ISCCFG_FORCERESCHEDULE_KEY         = 32;
+  {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISCCFG_FORCERESCHEDULE_KEY} {$ENDIF}
   ISCCFG_LEGACY_DIALECT1_KEY        = 33;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM ISCCFG_LEGACY_DIALECT1_KEY} {$ENDIF}
 {$ENDIF}
@@ -6568,7 +6568,7 @@ var
     LoadGDS32(GDS32DLL);
     Result := _isc_service_start(status_vector, svc_handle, reserved, spb_length, spb);
   end;
-  
+
 {$IFDEF INTERBASEORFIREBIRD}
   procedure isc_set_debug(flag: integer);
   begin

@@ -129,7 +129,7 @@ type
         dialog is centered on the screen.  X and Y are relative to the screen. }
     property Position: TPoint read FPosition write SetPosition;
   published
-    { Set this before calling Execute to specify the starting folder. When returning succesfully
+    { Set this before calling Execute to specify the starting folder. When returning successfully
         from the @link(Execute) call, this property contains the name of the selected directory. }
     property Directory: string read FDirectory write FDirectory;
     { Sets the caption of the dialog. If left empty, the default caption is used

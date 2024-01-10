@@ -113,7 +113,7 @@ function PosStr(const FindString, SourceString: string;
   from www.torry.ru). }
 
 function PosStrLast(const FindString, SourceString: string): Integer;
-{finds the last occurance}
+{finds the last occurrence}
 
 function LastPosChar(const FindChar: Char; SourceString: string): Integer;
 
@@ -128,7 +128,7 @@ function PosText(const FindString, SourceString: string;
   (UK) (Faststrings unit from www.torry.ru). }
 
 function PosTextLast(const FindString, SourceString: string): Integer;
-{finds the last occurance}
+{finds the last occurrence}
 
 function NameValuesToXML(const AText: string): string;
 {$IFDEF MSWINDOWS}
@@ -658,13 +658,13 @@ begin
     with the sun }
   NCorX := ((3 * NCent) div 4 - 12);
 
-  { Special Correction to Syncronize Easter with the moon's orbit }
+  { Special Correction to Synchronize Easter with the moon's orbit }
   NCorZ := ((8 * NCent + 5) div 25 - 5);
 
   { Find Sunday }
   NSunday := ((5 * NYear) div 4 - NCorX - 10);
 
-  { Set Epact (specifies occurance of full moon }
+  { Set Epact (specifies occurrence of full moon }
   NEpact := ((11 * NGold + 20 + NCorZ - NCorX) mod 30);
 
   if (NEpact < 0) then
@@ -724,7 +724,7 @@ begin
   //calc number of weeks
   WeekNumber := Trunc(NumberOfDays / 7);
 
-  //Format year, needed to prevent millenium bug and keep the Fluffy Spangle happy
+  //Format year, needed to prevent millennium bug and keep the Fluffy Spangle happy
   YearNumber := FormatDateTime('yyyy', Present);
 
   YearNumber := YearNumber + 'W';
@@ -1869,7 +1869,7 @@ begin
 end;
 
 // insert a block template
-// the last occurance of {block:aBlockname}
+// the last occurrence of {block:aBlockname}
 // the block template is marked with {begin:aBlockname} and {end:aBlockname}
 
 function InsertLastBlock(var SourceStr: string; BlockStr: string): Boolean;
@@ -1960,7 +1960,7 @@ begin
   Result := S + Src;
 end;
 
-{finds the last occurance}
+{finds the last occurrence}
 
 function PosStrLast(const FindString, SourceString: string): Integer;
 var
@@ -1983,7 +1983,7 @@ begin
   end;
 end;
 
-{finds the last occurance}
+{finds the last occurrence}
 
 function PosTextLast(const FindString, SourceString: string): Integer;
 var

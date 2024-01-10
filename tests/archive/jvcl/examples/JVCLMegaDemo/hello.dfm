@@ -474,7 +474,7 @@ object WelcomeForm: TWelcomeForm
       'Ralf Grenzing '
       'Uwe Rupprecht'
       ''
-      'of cource using the existing demos ...')
+      'of course using the existing demos ...')
     BackgroundColor = clBtnFace
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText

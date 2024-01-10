@@ -54,14 +54,14 @@ Known Issues:
   1.21.2 (RALib 1.21 Update 2):
    - fixed bug with multiple external functions defintions
      (greetings to Peter Fischer-Haaser)
-   - fixed AV-bug in TJvInterpreterFunction.InFunction1 if errors in source occured
+   - fixed AV-bug in TJvInterpreterFunction.InFunction1 if errors in source occurred
      (greetings to Andre N Belokon)
   1.21.4 (RALib 1.21 Update 4):
    - fixed bugs in "if" and "while" with "begin" statements;
    - "div" and "mod" now working;
   1.21.6 (RALib 1.21 Update 6):
    - fixed bug with incorrect error line and unit name if erorr
-     occured in used unit
+     occurred in used unit
      (greetings to Dmitry Mokrushin)
    - add parameters check (not fully functional - only count checked)
      in source fucntion calls;

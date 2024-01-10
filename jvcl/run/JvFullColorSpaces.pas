@@ -1430,7 +1430,7 @@ begin
   else
   if (NewColor and JvSystemColorMask) = 0 then
     Result := ColorSpaceManager.ColorSpace[csRGB].ConvertFromColor(NewColor)
-    // should never happend because there should be no way ...
+    // should never happen because there should be no way ...
   else
     raise EJvColorSpaceError.CreateResFmt(@RsEInconvertibleColor, [Cardinal(NewColor)]);
 end;

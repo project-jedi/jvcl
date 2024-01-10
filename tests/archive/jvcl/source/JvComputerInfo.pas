@@ -39,7 +39,7 @@ Known Issues:
       JvComputerInfo1.Company := 'New company';
 
     to update a registry value, will not work anymore (the value is just ignored) and
-    you will not recieve any error messages telling you so. You must check
+    you will not receive any error messages telling you so. You must check
     through your code and manually change the code to
 
       JvComputerInfo1.SetCompany('New company');

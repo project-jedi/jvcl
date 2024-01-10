@@ -604,10 +604,10 @@ object MainForm: TMainForm
         Height = 49
         ItemHeight = 13
         Items.Strings = (
-          
+
             'Item 1 <b>bold <i>italic</b>ITALIC <c:Red>red <c:Green>green <c:' +
             'blue>blue </i>'
-          
+
             '<c:Green>There are no closing tag for color.<c:WindowText>Use c:' +
             'WindowText tag')
         TabOrder = 0
@@ -624,10 +624,10 @@ object MainForm: TMainForm
         Font.Name = 'MS Sans Serif'
         Font.Style = []
         Items.Strings = (
-          
+
             'Item 1 <b>bold <i>italic</b>ITALIC <c:Red>red <c:Green>green <c:' +
             'blue>blue </i>'
-          
+
             '<c:Green>There are no closing tag for color.<c:WindowText>Use c:' +
             'WindowText tag')
         ParentFont = False
@@ -677,10 +677,10 @@ object MainForm: TMainForm
         HideSel = False
         DropWidth = 193
         Items.Strings = (
-          
+
             'Item 1 <b>bold <i>italic</b>ITALIC <c:Red>red <c:Green>green <c:' +
             'blue>blue </i>'
-          
+
             '<c:Green>There are no closing tag for color.<c:WindowText>Use c:' +
             'WindowText tag')
         TabOrder = 6
@@ -6263,7 +6263,7 @@ object MainForm: TMainForm
       'TJvProgressForm is a "Progress" dialog with'
       'customizable caption and message label. When'
       'method Execute called, form will be displayed and'
-      'OnShow events occured. You must write all'
+      'OnShow events occurred. You must write all'
       'specific code in this event and periodically'
       'update ProgressPosition property.'
       ''
@@ -6306,7 +6306,7 @@ object MainForm: TMainForm
       ''
       '[TJvaSQLScript\Descript]'
       'TJvaSQLScript allows multiple SQL statements in one query.'
-      
+
         '"Set term" and "Commit work" statements and comments are respons' +
         'e.'
       ''
@@ -6340,7 +6340,7 @@ object MainForm: TMainForm
       '[TJvNoFrameButton]'
       'Page=JvButtons'
       '[TJvNoFrameButton\Descript]'
-      
+
         'TJvNoFrameButton - TSpeedButton with Color and (optional) withou' +
         't border.'
       ''
@@ -6374,7 +6374,7 @@ object MainForm: TMainForm
       'TJvComponentPanel - for GUI developers'
       ''
       '[TRADBRadioGroupS\Descript]'
-      
+
         'TRADBRadioGroupS is a TDBRadioGroup descendant with Beveled prop' +
         'erty.'
       'If Beveled set to true, it looks like standard TDBRadioGroup.'
@@ -6431,10 +6431,10 @@ object MainForm: TMainForm
       'See RADBInter for more information.'
       ''
       '[TRADBTextS\Descript]'
-      
+
         'TRADBTextS is a TDBRadioGroup descendant with published Layot pr' +
         'operty'
-      
+
         '(In Delphi 3 Borland add this property to TCustomLabel, but forg' +
         'et publish'
       'Layot in it descendants).'
@@ -6456,7 +6456,7 @@ object MainForm: TMainForm
       '[TRACheckBox\Descript]'
       'TRACheckBox disables children then unchecked.'
       'Very simple, but useful.'
-      'We recomend use it with TCheckBox95 component.'
+      'We recommend use it with TCheckBox95 component.'
       ''
       '[TJvhtListBox]'
       'Page=RAht'

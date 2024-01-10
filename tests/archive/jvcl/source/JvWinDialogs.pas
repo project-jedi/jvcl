@@ -367,7 +367,7 @@ type
     property AssociatedApp: string read FAssociatedApp;
     // Value returned by the function called by Execute.
     // Possible return values:
-    // S_OK -  content type succesfully associated with the extnesion
+    // S_OK -  content type successfully associated with the extnesion
     // S_FALSE - nothing was registered (f ex a one time registration)
     property ReturnValue: HResult read FReturnValue;
   published
@@ -401,7 +401,7 @@ type
     property AssociatedApp: string read FAssociatedApp;
     // Value returned by the function called by Execute.
     // Possible return values:
-    // S_OK -  content type succesfully associated with the extnesion
+    // S_OK -  content type successfully associated with the extnesion
     // S_FALSE - nothing was registered
     // E_ABORT - user cancelled
     // E_FLAGS - invalid flag combination

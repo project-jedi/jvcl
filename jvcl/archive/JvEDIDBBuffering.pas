@@ -737,7 +737,7 @@ begin
   FieldDef.DataType := ftInteger;
   FieldDef.MaximumLength := 1;
   FieldDef.UpdateStatus := DefaultUpdateStatus;
-  //Foriegn Key
+  //Foreign Key
   FieldDef := FieldDefs.Add;
   if (ParentLoopId = NA_LoopId) or (ParentLoopId = '') then
     FieldDef.FieldName := TransactionSetKeyName + FKeySuffix // Transaction Set Foreign Key

@@ -38,15 +38,15 @@
 
 {* ----------------------------------------------------------------
                      NOTES ON INTEGRATION
-                     
+
  This file is specific to the JVCL and works well with the current
  version of the library.
  Note however that is not complete and might well be out of date
  with respect to the official windows API.
  If you want a more up to date version, you should look for 
  SetupApi.pas inside the JEDI WinAPI project at this address:
- 
- http://blog.delphi-jedi.net/jedi-api-headers/                    
+
+ http://blog.delphi-jedi.net/jedi-api-headers/
 ---------------------------------------------------------------- *}
 
 unit JvSetupApi;
@@ -936,7 +936,7 @@ type
 
 //
 // Structure for detailed information on a device information set (used for
-// SetupDiGetDeviceInfoListDetail which supercedes the functionality of
+// SetupDiGetDeviceInfoListDetail which supersedes the functionality of
 // SetupDiGetDeviceInfoListClass).
 //
   PSPDevInfoListDetailDataA = ^TSPDevInfoListDetailDataA;
@@ -5077,7 +5077,7 @@ function SetupDiGetCustomDeviceProperty(DeviceInfoSet: HDEVINFO;
   const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PAnsiChar;
   Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PBYTE;
   PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
-  
+
 {$ENDIF WINXP_UP}
 
 {$ELSE}

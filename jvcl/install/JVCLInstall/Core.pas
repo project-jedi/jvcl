@@ -50,7 +50,7 @@ type
         SubTitle means no header. }
     function NextPage: IInstallerPage;
       { NextPage returns the next page that should be displayed. All options are
-        garanteed to be transitted before calling NextPage. The installer can
+        guaranteed to be transitted before calling NextPage. The installer can
         go back to another page by it's page cache. Return nil if this is
         the very last page. }
     function CanNext: Boolean;

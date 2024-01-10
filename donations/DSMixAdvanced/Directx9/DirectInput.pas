@@ -235,7 +235,7 @@ const
   SID_IDirectInputDevice8A = '{54D41080-DC15-4833-A41B-748F73A38179}';
   SID_IDirectInputDevice8W = '{54D41081-DC15-4833-A41B-748F73A38179}';
   SID_IDirectInputEffect   = '{E7E1F7C0-88D2-11D0-9AD0-00A0C9A06E35}';
-  
+
 (****************************************************************************
  *
  *      Predefined object types
@@ -323,7 +323,7 @@ const
   GUID_CustomForce   : TGUID = '{13541C2B-8E33-11D0-9AD0-00A0C9A06E35}';
   {$EXTERNALSYM GUID_CustomForce}
 
-  
+
 (****************************************************************************
  *
  *      Interfaces and Structures...
@@ -1651,7 +1651,7 @@ const
 
 // #define DISEQUENCE_COMPARE(dwSequence1, cmp, dwSequence2) \
 //                         ((int)((dwSequence1) - (dwSequence2)) cmp 0)
-// Translator: This is not convertable to pascal   
+// Translator: This is not convertable to pascal
 
 const
   DISCL_EXCLUSIVE     = $00000001;
@@ -3464,7 +3464,7 @@ const
   {$EXTERNALSYM DIERR_NOINTERFACE}
 
 (*
- * An undetermined error occured inside the DInput subsystem
+ * An undetermined error occurred inside the DInput subsystem
  *)
   DIERR_GENERIC                   = E_FAIL;
   {$EXTERNALSYM DIERR_GENERIC}

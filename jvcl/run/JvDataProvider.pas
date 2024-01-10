@@ -5125,7 +5125,7 @@ begin
     // Parent found, retrieve the IJVDataItems reference
     Item(ParIdx).QueryInterface(IJvDataItems, Items)
   else
-    // Apparantly this item is at the root of the view; retrieve the proper IJvDataItems reference
+    // Apparently this item is at the root of the view; retrieve the proper IJvDataItems reference
     Items := RootItems;
   if Supports(Items, IJvDataIDSearch, Finder) then
     Result := Finder.Find(FViewItems[Index].ItemID, False);

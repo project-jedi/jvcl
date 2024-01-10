@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: RAFDAlignPalette.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s): 
@@ -55,7 +55,7 @@ type
     FProgressStep,
     FProgressPosition : integer;
     EE : Exception;
-    
+
     procedure SetCaption(ACaption : TCaption);
     procedure SetInfoLabel(ACaption : TCaption);
     procedure FormOnShow(Sender : TObject);
@@ -91,7 +91,7 @@ type
   end;
 begin
   { CBuilder 3 Warning !}
-  { if linker error occured with message "unresolved external 'System::RaiseList'" try
+  { if linker error occurred with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
 {$IFDEF COMPLIB_VCL}
@@ -197,7 +197,7 @@ begin
     end;
   finally
     ModalResult := mrOk;
-  end;  
+  end;
 end;
 
 procedure TJvProgressForm.SetCaption(ACaption : TCaption);

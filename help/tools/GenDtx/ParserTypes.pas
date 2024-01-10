@@ -1070,7 +1070,7 @@ end;
 
 function TAbstractItem.DtxDataWithoutHeader: string;
 const
-  CSeeAlsoDescription = 'See Also'#13#10'  List here other properties, methods (comma seperated)'#13#10 +
+  CSeeAlsoDescription = 'See Also'#13#10'  List here other properties, methods (comma separated)'#13#10 +
     '  Remove the ''See Also'' section if there are no references';
   CValueReference = '(Value = %Value - for reference)';
 begin

@@ -2254,7 +2254,7 @@ end;
 type
   TShowModalMethod = function: Integer of object; // So we can call the original ShowModal method.
 
-  TPatchedForm = class(TCustomForm) // To replace the orignal ShowModal method.
+  TPatchedForm = class(TCustomForm) // To replace the original ShowModal method.
   public
     function ShowModal: Integer; override;
   end;

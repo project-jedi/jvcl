@@ -351,8 +351,8 @@ const
   CSIDL_COMMON_MUSIC         = $0035; // All Users\My Music
   CSIDL_COMMON_PICTURES      = $0036; // All Users\My Pictures
   CSIDL_COMMON_VIDEO         = $0037; // All Users\My Video
-  CSIDL_RESOURCES            = $0038; // Resource Direcotry
-  CSIDL_RESOURCES_LOCALIZED  = $0039; // Localized Resource Direcotry
+  CSIDL_RESOURCES            = $0038; // Resource Directory
+  CSIDL_RESOURCES_LOCALIZED  = $0039; // Localized Resource Directory
   CSIDL_COMMON_OEM_LINKS     = $003A; // Links to All Users OEM specific apps
   CSIDL_CDBURN_AREA          = $003B; // USERPROFILE\Local Settings\Application Data\Microsoft\CD Burning
   CSIDL_COMPUTERSNEARME      = $003D; // Computers Near Me (computered from Workgroup membership)

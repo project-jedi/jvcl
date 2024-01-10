@@ -1995,7 +1995,7 @@ const
 //    any string command can be used if needed.
 //
 //    Note: unlike the mciSendString() API, no alias or file name needs
-//    to be specifed, since the device to use is implied by the window handle.
+//    to be specified, since the device to use is implied by the window handle.
 //
 //          MCIWndSendString(hwnd, "setaudio stream to 2");
 //
@@ -2027,7 +2027,7 @@ const
 
 function    MCIWndSM(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): DWORD;
 
-const                               
+const
     MCIWND_WINDOW_CLASS             = 'MCIWndClass' ;
 
 function    MCIWndCreateA(hwndParent: HWND; hInstance: HINST; dwStyle: DWORd; szFile: LPCSTR): HWND; cdecl;

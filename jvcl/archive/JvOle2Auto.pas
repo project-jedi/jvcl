@@ -302,7 +302,7 @@ const
   SOleNotSupport = 'Method or property %s not supported by OLE object';
   SOleNotReference = 'Variant does not reference an OLE automation object';
   {$IFNDEF COMPILER3_UP}
-  SOleError = 'OLE2 error occured. Error code: %.8xH';
+  SOleError = 'OLE2 error occurred. Error code: %.8xH';
   {$ENDIF}
 
 // (rom) changed to var

@@ -62,7 +62,7 @@ type
     function GetItems: IJvDataItems;
     { Notify clients a change is about to occur. }
     procedure Changing(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
-    { Notify clients a changes has just occured. }
+    { Notify clients a changes has just occurred. }
     procedure Changed(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
     { Return an array of consumer setting classes to add to the consumer. Returned array may depend
       on the currently selected consumer/context pair. }
@@ -90,7 +90,7 @@ type
   ['{5B9D1847-6D35-4D9C-8BC2-2054997AB120}']
     { Called when a change is about to occur at the provider. }
     procedure DataProviderChanging(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
-    { Called when a change has occured at the provider. }
+    { Called when a change has occurred at the provider. }
     procedure DataProviderChanged(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
   end;
 

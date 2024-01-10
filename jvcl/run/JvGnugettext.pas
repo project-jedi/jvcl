@@ -24,7 +24,7 @@ unit JvGnugettext;
 
 {*------------------------------------------------------------------------------
   NOTE ON JVCL INTEGRATION:
-  
+
   The original file name is "gnugexttext.pas" but has been renamed to 
   JvGnugettext.pas so as to not conflict with other packages that might
   use the gnugettext.pas file directly
@@ -366,7 +366,7 @@ type
   IGnuGettextInstanceWhenNewLanguageListener = interface
     procedure WhenNewLanguage (const LanguageID:LanguageString);
   end;
-    
+
 {*------------------------------------------------------------------------------
   The main translation engine.
 -------------------------------------------------------------------------------}
@@ -579,7 +579,7 @@ type
 var
   // System information
   Win32PlatformIsUnicode:boolean=False;
-  
+
   // Information about files embedded inside .exe file
   FileLocator:TFileLocator;
 
@@ -1173,7 +1173,7 @@ var
   s:string;
 begin
   Propertyname:=uppercase(Propertyname)+': ';
-  sl:=TStringList.Create;    
+  sl:=TStringList.Create;
   try
     sl.Text:=utf8decode(gettext(''));
     for i:=0 to sl.Count-1 do begin
@@ -2170,7 +2170,7 @@ begin
               for I := 0 to sl.Count - 1 do
                 sl.Objects[I] := nil;
 
-            // same here, we don't want to modify the properties of the orignal string list
+            // same here, we don't want to modify the properties of the original string list
             sl.Clear;
             sl.AddStrings(s);
           end
@@ -2465,7 +2465,7 @@ begin
     end else begin
       Result := '';
       Len := 0;
-      While Length(Result)<=Len+1 do begin     
+      While Length(Result)<=Len+1 do begin
         if Length(Result) = 0 then
           SetLength(Result, 1024)
         else
@@ -2686,7 +2686,7 @@ begin
   SetLength (a, bufsize);
   SetLength (b, bufsize);
   str.Read(a[1],bufsize);
-  
+
   while true do begin
     rd:=str.Read(b[1],bufsize);
     p:=pos(signature,a+b);
@@ -2776,7 +2776,7 @@ begin
 
         // go to beginning of embedded block
         fs.Seek(headerbeginpos, soFromBeginning);
-        
+
         offset := tableoffset;
         Assert(sizeof(offset)=8);
         while (true) and (fs.Position<headerendpos) do begin
@@ -2914,7 +2914,7 @@ var
   i:integer;
 begin
   Assert (mofile<>nil);
-  
+
   MoFilesCS.BeginWrite;
   try
     dec (mofile.Users);

@@ -708,7 +708,7 @@ type
 
 //
 // Structure for detailed information on a device information set (used for
-// SetupDiGetDeviceInfoListDetail which supercedes the functionality of
+// SetupDiGetDeviceInfoListDetail which supersedes the functionality of
 // SetupDiGetDeviceInfoListClass).
 //
   PSPDevInfoListDetailDataA = ^TSPDevInfoListDetailDataA;

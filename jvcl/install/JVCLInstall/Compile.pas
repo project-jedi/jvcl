@@ -201,9 +201,9 @@ resourcestring
   RsErrorGeneratingTemplates = 'Error while generating templates.';
   RsErrorCompilingResources = 'Error while compiling resources.';
   RsErrorGeneratingTemplatesForDir = 'Error generating templates for the %s directory.';
-  RsErrorCompilingPackages = 'An error occured while compiling the packages.'; // this must not be the doubt of the installer
-  RsErrorLinkingMapFiles = 'An error occured while linking the map files into binaries.';
-  RsErrorDeletingMapFiles = 'An error occured while deleting the map files after the linking.';
+  RsErrorCompilingPackages = 'An error occurred while compiling the packages.'; // this must not be the doubt of the installer
+  RsErrorLinkingMapFiles = 'An error occurred while linking the map files into binaries.';
+  RsErrorDeletingMapFiles = 'An error occurred while deleting the map files after the linking.';
 
   RsCommandNotFound = 'Command could not be executed.'#10#10#10'Cmdline: %s'#10#0'Start directory: %s';
 
@@ -1848,7 +1848,7 @@ var
   Project: TPackageTarget;
   DebugProgress: string;
   FilesCompiled: Boolean;
-  
+
   function GetProjectIndex: Integer;
   begin
     Result := AProjectIndex;

@@ -188,7 +188,7 @@ type
     function GetVersionInfoLocationPathList: TStrings;
     procedure SetVersionInfoLocationPathList(Value: TStrings);
     { If the location has a list of possible pathes, this property contains
-    the path where the last valid download has happend}
+    the path where the last valid download has happened}
     property ValidLocationPath: string read FValidLocationPath;
     { List of locations-path where the remote files could be found
     The application loops throuh all path from the top }

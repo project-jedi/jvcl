@@ -608,7 +608,7 @@ begin
   begin
     MessageBox(
       TFindDialog(Sender).Handle,
-      PChar(Format(RsXOccurencesReplaced, [FNumberReplaced, FFindText])),
+      PChar(Format(RsXOccurrencesReplaced, [FNumberReplaced, FFindText])),
       PChar(RsReplaceCaption), MB_OK or MB_ICONINFORMATION);
   end;
 

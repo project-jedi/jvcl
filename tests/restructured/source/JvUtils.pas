@@ -12,7 +12,7 @@ The Original Code is: JvUtils.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
 					   	  	  		   			 Roman Tkachev <whiteman@infa.ru>
-Copyright (c) 1999, 2002 Andrei Prygounkov, Roman Tkachev   
+Copyright (c) 1999, 2002 Andrei Prygounkov, Roman Tkachev
 All Rights Reserved.
 
 Contributor(s): 
@@ -66,10 +66,10 @@ const
 type
   TSetOfChar = set of char;
 {$ENDIF Delphi}
-{$IFDEF BCB}   
+{$IFDEF BCB}
 type
   TSetOfChar = string;
-{$ENDIF BCB}   
+{$ENDIF BCB}
 
   { GetWordOnPos returns word from string, S,
     on the cursor position, P}
@@ -183,7 +183,7 @@ type
   function CountOfChar(const Ch : Char; const S : string) : Integer;
 
   function DefStr(const S: string; Default: string): string;
-  
+
  {#### string handling routines}
 
 
@@ -1485,7 +1485,7 @@ var
 begin
   i := 0;
   S := SubStr(PathList, i, ';');
-  while S <> '' do                  
+  while S <> '' do
   begin
     Result := AddSlash2(S) + FileName;
     if FileExists(Result) then
@@ -1658,9 +1658,9 @@ begin
 {$IFDEF Delphi}
   Result := Ch in SetOfChar;
 {$ENDIF Delphi}
-{$IFDEF BCB}   
+{$IFDEF BCB}
   Result := Pos(Ch, SetOfChar) > 0;
-{$ENDIF BCB}   
+{$ENDIF BCB}
 end;
 
 function IntPower(Base, Exponent : integer) : integer;
@@ -1699,7 +1699,7 @@ type
   end;
 begin
   { CBuilder 3 Warning !}
-  { if linker error occured with message "unresolved external 'System::RaiseList'" try
+  { if linker error occurred with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
   if RaiseList <> nil then

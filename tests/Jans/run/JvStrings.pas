@@ -104,7 +104,7 @@ function PosStr(const FindString, SourceString: string;
   from www.torry.ru). }
 
 function PosStrLast(const FindString, SourceString: string): integer;
-{finds the last occurance}
+{finds the last occurrence}
 
 function PosText(const FindString, SourceString: string;
   StartPos: Integer = 1): Integer;
@@ -117,7 +117,7 @@ function PosText(const FindString, SourceString: string;
   (UK) (FastStrings unit from www.torry.ru). }
 
 function PosTextLast(const FindString, SourceString: string): integer;
-{finds the last occurance}
+{finds the last occurrence}
 
 function NameValuesToXML(aText: string): string;
 procedure LoadResourceFile(aFile: string; ms: TMemoryStream);
@@ -263,7 +263,7 @@ begin
   if p = 0 then exit;
   p2 := PosStr('"', aText, p + L);
   if p2 = 0 then exit;
-  if p > 1 then dec(p); // include the preceeding space if not the first one
+  if p > 1 then dec(p); // include the preceding space if not the first one
   delete(aText, p, p2 - p + 1);
 end;
 
@@ -608,13 +608,13 @@ begin
     with the sun }
   nCorx := ((3 * nCent) div 4 - 12);
 
-  { Special Correction to Syncronize Easter with the moon's orbit }
+  { Special Correction to Synchronize Easter with the moon's orbit }
   nCorz := ((8 * nCent + 5) div 25 - 5);
 
   { Find Sunday }
   nSunday := ((5 * nYear) div 4 - nCorx - 10);
 
-  { Set Epact (specifies occurance of full moon }
+  { Set Epact (specifies occurrence of full moon }
   nEpact := ((11 * nGold + 20 + nCorz - nCorx) mod 30);
 
   if (nEpact < 0) then
@@ -678,7 +678,7 @@ begin
   //calc number of weeks
   weekNumber := trunc(numberOfDays / 7);
 
-  //Format year, needed to prevent millenium bug and keep the Fluffy Spangle happy
+  //Format year, needed to prevent millennium bug and keep the Fluffy Spangle happy
   YearNumber := formatDateTime('yyyy', present);
 
   YearNumber := YearNumber + 'W';
@@ -1882,7 +1882,7 @@ begin
 end;
 
 // insert a block template
-// the last occurance of {block:aBlockname}
+// the last occurrence of {block:aBlockname}
 // the block template is marked with {begin:aBlockname} and {end:aBlockname}
 
 function InsertLastBlock(var sourceStr: string; blockStr: string): boolean;
@@ -1970,7 +1970,7 @@ begin
   result := s + src;
 end;
 
-{finds the last occurance}
+{finds the last occurrence}
 
 function PosStrLast(const FindString, SourceString: string): integer;
 var
@@ -1990,7 +1990,7 @@ begin
   end;
 end;
 
-{finds the last occurance}
+{finds the last occurrence}
 
 function PosTextLast(const FindString, SourceString: string): integer;
 var

@@ -257,7 +257,7 @@ begin
           // Move lines
           if offset > 0 then
           begin
-            // Scroll if neccessary
+            // Scroll if necessary
             if minoffset - offset < TopIndex then
               TopIndex := minoffset - offset;
             Self.Perform(WM_SETREDRAW, 0, 0);    // Disable redraw
@@ -266,7 +266,7 @@ begin
           end
           else if offset < 0 then
           begin
-            // Scroll if neccessary
+            // Scroll if necessary
             if Count + maxoffset - offset >= TopIndex + ClientHeight div ItemHeight then
               TopIndex := Count + maxoffset - offset - ClientHeight div ItemHeight + 1;
             Self.Perform(WM_SETREDRAW, 0, 0);    // Disable redraw

@@ -99,7 +99,7 @@ function CheckUrlForSpaces(const Url: string): string;
 var
   i: Integer;
 begin
-  // Replace all occurences of '%20' with a space
+  // Replace all occurrence of '%20' with a space
   Result := Url;
   i := Pos('%20', Result);
 

@@ -252,13 +252,13 @@ const
   STimeElapsed = 'Time elapsed:';
   SNoRows = 'No rows selected.';
   SDatabase = 'Database: %s';
-  SCommited = 'Changes successfully commited to a database.';
+  SCommitted = 'Changes successfully committed to a database.';
   SSqlDatabase = 'Cannot perform this operation on a SQL database';
   SCheckComplete = 'Verification complete.';
   STabCreated = 'Table %s successfully created.';
   SQueryRunning = 'You cannot close database while query is running.';
   SUndeleteConfirm = 'Undelete current record?';
-  SCommitConfirm = 'You have uncommited changes in %s session. Commit changes to a database?';
+  SCommitConfirm = 'You have uncommitted changes in %s session. Commit changes to a database?';
   SMainSession = 'main';
   SQuerySession = 'query';
   SQueryHint = '%s: query running...|';
@@ -569,7 +569,7 @@ begin
   if TransOperEnabled(ASession, teCommit) then
   try
     SessionDB(ASession).Commit;
-    MessageDlg(SCommited, mtInformation, [mbOk], 0);
+    MessageDlg(SCommitted, mtInformation, [mbOk], 0);
   finally
     TDBExplorerMainForm(Application.MainForm).UpdateMenus;
   end;

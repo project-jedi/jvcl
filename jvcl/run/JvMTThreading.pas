@@ -611,7 +611,7 @@ begin
   // running from inside the main VCL thread?
   if GetCurrentThreadID = MainThreadID then
   begin
-    //  use CheckSynchronise to process the OnFinished events
+    //  use CheckSynchronize to process the OnFinished events
     while ActiveThreads do
     begin
       CheckSynchronize;

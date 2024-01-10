@@ -358,7 +358,7 @@ end;
 
 procedure TDSADialogsMainForm.FormDestroy(Sender: TObject);
 begin
-  { It would be better to unregister the dialogs here, but it's not neccessary; the registration is
+  { It would be better to unregister the dialogs here, but it's not necessary; the registration is
     removed on application shut down. }
 end;
 
