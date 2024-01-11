@@ -49,7 +49,7 @@ type
     property Name: string read FName write FName;
     property OnExecute: TNotifyEvent read FOnExecute write FOnExecute;
   end;
-
+  
   TMTThread = class (TObject)
   private
     FFinished: Boolean;
@@ -91,7 +91,7 @@ type
     property ThreadManager: TMTManager read FManager;
     property Ticket: TMTTicket read FTicket;
   end;
-
+  
   TMTManager = class (TObject)
   private
     FGenTicket: TCriticalSection;
@@ -114,7 +114,7 @@ type
     procedure TerminateThreads;
     procedure WaitThreads;
   end;
-
+  
 
 function  CurrentMTThread: TMTThread;
 
@@ -195,7 +195,7 @@ procedure TMTThread.CheckTerminate;
 begin
   if CurrentMTThread <> Self then
     raise EMTThread.Create('CheckTerminate can only be called by the same thread');
-
+  
   if GetStatus = tsTerminating then
     raise EMTTerminate.Create('');
 end;
@@ -249,7 +249,7 @@ begin
   // set the CurrentMTThread variable.
   //  this variable is global, but only to this thread.
   _CurrentMTThread := Self;
-
+  
   // run OnExecute event
   try
     if Assigned(FOnExecute) then FOnExecute(Self);
@@ -257,10 +257,10 @@ begin
     on E: EMTTerminate do {nothing};
     on E: Exception do Log('OnExecute Exception: "'+E.Message+'"');
   end;
-
+  
   // make sure terminate flag is set
   FIntThread.Terminate;
-
+  
   // run OnTerminating event
   try
     if Assigned(FOnTerminating) then FOnTerminating(Self);
@@ -277,16 +277,16 @@ begin
   finally
     FStatusChange.Release;
   end;
-
+  
   if Assigned(FOnFinished) then FOnFinished(Self);
-
+  
   FStatusChange.Acquire;
   try
     FIntThread := nil;
   finally
     FStatusChange.Release;
   end;
-
+  
   // After a call to OnThreadFinished, this object might be destroyed.
   // So don't access any fields after this call.
   FManager.OnThreadFinished(Self);
@@ -316,14 +316,14 @@ procedure TMTThread.SetName(const Value: string);
 begin
   FStatusChange.Acquire;
   try
-
+  
     if GetStatus in [tsInitializing, tsFinished] then
       FName := Value
     else
     begin
       if CurrentMTThread <> Self then
         raise EMTThread.Create('Can not change name of other active thread.');
-
+  
       FName := Value;
       if FIntThread <> nil then
       begin
@@ -349,14 +349,14 @@ end;
 procedure TMTThread.Terminate;
 begin
   if (GetStatus in [tsTerminating,tsFinished]) then exit;
-
+  
   FStatusChange.Acquire;
   try
     if FIntThread <> nil then
       FIntThread.Terminate  {thread was Running}
     else
       FFinished := True;    {thread was initializing}
-
+  
     // make sure thread escapes from any Wait() calls
     ReleaseSemaphore(FTerminateSignal, 1, nil);
   finally
@@ -405,7 +405,7 @@ begin
   TerminateThreads;
   // wait for them to finish
   WaitThreads;
-
+  
   FThreadsChange.Acquire;
   try
     for I := 0 to FThreads.Count-1 do
@@ -413,7 +413,7 @@ begin
   finally
     FThreadsChange.Release;
   end;
-
+  
   FThreads.Free;
   FThreadsChange.Free;
   FGenTicket.Free;
@@ -475,13 +475,13 @@ begin
     I := FThreads.Count-1;
     while (I <> -1) and (TMTThread(FThreads[I]).Ticket <> Ticket) do
       Dec(I);
-
+  
     Result := I <> -1;
     if Result then
       Thread := TMTThread(FThreads[I])
     else
       Thread := nil;
-
+  
   finally
     FThreadsChange.Release;
   end;
@@ -518,7 +518,7 @@ begin
       Thread.DecRef
     else
       raise EMTThread.Create('Release of unused ticket');
-
+  
     // if this was the last reference then the thread must be removed
     TryRemoveThread(Thread);
   finally
@@ -551,14 +551,14 @@ begin
 end;
 
 procedure TMTManager.WaitThreads;
-
+  
   // wait until the threads are all finished
-
+  
 begin
   // running from inside the main VCL thread?
   if GetCurrentThreadID = MainThreadID then
   begin
-    //  use CheckSynchronize to process the OnFinished events
+    //  use CheckSynchronise to process the OnFinished events
     while ActiveThreads do
     begin
       CheckSynchronize;
@@ -568,7 +568,7 @@ begin
   else begin
     {TODO: If current thread is part of this manager then deadlock
            will occur. Detect and raise exception.}
-
+  
     //running in a MTThread, just wait for all threads to finish
     while ActiveThreads do
         Sleep(0);

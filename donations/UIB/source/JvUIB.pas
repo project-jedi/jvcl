@@ -71,7 +71,7 @@ type
  {Oo.........................................................................oO
                               TUIBComponent
 
-      Synchronize Databases, Transactions and Queries.
+      Synchronise Databases, Transactions and Queries.
 
     Library        | TUIBDatabase     | TUIBTransaction  | TUIBQuery
    ==========================================================================
@@ -84,7 +84,7 @@ type
                    | UnLock <---------|------------------|---------------o
     UnLock <-------|------------------|------------------|-----------------o
 
-      Note: With Interbase 7, no need to synchronize anything but removing
+      Note: With Interbase 7, no need to synchronise anything but removing
       Synchronisation you have exactly the same performance than IB6.01 with
       Synchronisation on a single CPU !
 
@@ -618,7 +618,7 @@ begin
   Lock;
   try
     I := FParams.IndexOfName(Param);
-    if I >= 0 then
+    if I >= 0 then             
     begin
       Result := Copy(FParams[I], Length(Param) + 2, Maxint);
       Exit;

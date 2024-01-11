@@ -145,7 +145,7 @@
 
   The compiler settings directives indicate whether a specific compiler setting
   is in effect. This facilitates changing compiler settings locally in a more
-  compact and readable manner.
+  compact and readible manner.
 
   Directive              Description
   ------------------------------------------------------------------------------

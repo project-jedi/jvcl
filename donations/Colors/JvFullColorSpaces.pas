@@ -53,7 +53,7 @@ const
   JvSystemFullColorMask  = $01000000;
   JvSpecialFullColorMask = $03000000;
 
-
+  
 
 const
   csRGB = TJvFullColorSpaceID(1 shl 2);
@@ -68,7 +68,7 @@ const
   csDEF = TJvFullColorSpaceID(10 shl 2);
 
   csID_MASK = $FC;
-
+  
   csMIN = $04 and csID_MASK;
   csMAX = $FF and csID_MASK;
 
@@ -245,7 +245,7 @@ type
     function ConvertFromColor(AColor: TColor): TJvFullColor; override;
     function ConvertToColor(AColor: TJvFullColor): TColor; override;
   end;
-
+  
   TJvDEFColorSpace = class(TJvColorSpace)
   private
     FDelphiColors: TStringList;
@@ -1620,7 +1620,7 @@ begin
 
   else if ((NewColor and JvSystemColorMask)=0) then
     Result := ColorSpaceManager.ColorSpace[csRGB].ConvertFromColor(NewColor)
-    // should never happen because there should be no way ...
+    // should never happend because there should be no way ...
   else raise EJvColorSpaceError.CreateResFmt(@RsErr_InconvertibleColor,
                                               [Cardinal(NewColor)]);
 end;

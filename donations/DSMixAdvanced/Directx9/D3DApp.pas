@@ -31,7 +31,7 @@ uses
 //-----------------------------------------------------------------------------
 type
  TAppMsgType = (msg_None, msgErr_AppMustExit, msgWarn_SwitchedToRef);
-
+ 
 const
   D3DAPPERR_NODIRECT3D          = HRESULT($82000001);
   D3DAPPERR_NOWINDOW            = HRESULT($82000002);
@@ -594,7 +594,7 @@ EndFullscreenDeviceComboSearch:
   begin
     pdm := PD3DDisplayMode(pBestAdapterInfo.pDisplayModeList.GetPtr(idm));
     if (pdm.Format <> pBestDeviceCombo.AdapterFormat) then Continue;
-
+    
     if (pdm.Width = bestAdapterDesktopDisplayMode.Width) and
        (pdm.Height = bestAdapterDesktopDisplayMode.Height) and
        (pdm.RefreshRate = bestAdapterDesktopDisplayMode.RefreshRate) then
@@ -864,7 +864,7 @@ begin
 
         IDM_EXIT:
         begin
-          // Received key/menu command to exit app
+          // Recieved key/menu command to exit app
           SendMessage(hWnd, WM_CLOSE, 0, 0);
           Result := 0;
           Exit;
@@ -1448,7 +1448,7 @@ begin
   if FAILED(Result) then
   begin
     if (Result <> D3DERR_OUTOFVIDEOMEMORY) then Result:= D3DAPPERR_RESETFAILED;
-
+    
     if not m_bWindowed then
     begin
       // Restore window type to windowed mode
@@ -1491,7 +1491,7 @@ begin
   // Load keyboard accelerators
   hAccel := LoadAccelerators(0, MAKEINTRESOURCE(IDR_MAIN_ACCEL));
 
-  // Now we're ready to receive and process Windows messages.
+  // Now we're ready to recieve and process Windows messages.
   msg.message := WM_NULL;
   PeekMessage(msg, 0, 0, 0, PM_NOREMOVE);
 
@@ -1856,7 +1856,7 @@ begin
 
     D3DERR_DRIVERINTERNALERROR:
       begin
-        StrCopy(strMsg, 'A serious problem occurred inside the display driver.');
+        StrCopy(strMsg, 'A serious problem occured inside the display driver.');
         dwType:= MSGERR_APPMUSTEXIT;
       end;
 

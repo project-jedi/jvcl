@@ -1049,7 +1049,7 @@ const
  * DMUS_PLAYMODE_FIXEDTOCHORD and DMUS_PLAYMODE_FIXEDTOKEY, both of
  * which store MIDI values in wMusicValue. With MusicToMIDI(), it is
  * valid for all play modes.
- * Of course, DMUS_PLAYMODE_FIXED will never return this success code.
+ * Ofcourse, DMUS_PLAYMODE_FIXED will never return this success code.
  *)
   DMUS_S_UP_OCTAVE                 = (MAKE_DMHRESULTSUCCESS_R + $213);
   {$EXTERNALSYM DMUS_S_UP_OCTAVE}
@@ -1065,7 +1065,7 @@ const
  * DMUS_PLAYMODE_FIXEDTOCHORD and DMUS_PLAYMODE_FIXEDTOKEY, both of
  * which store MIDI values in wMusicValue. With MusicToMIDI(), it is
  * valid for all play modes.
- * Of course, DMUS_PLAYMODE_FIXED will never return this success code.
+ * Ofcourse, DMUS_PLAYMODE_FIXED will never return this success code.
  *)
   DMUS_S_DOWN_OCTAVE               = (MAKE_DMHRESULTSUCCESS_R + $214);
   {$EXTERNALSYM DMUS_S_DOWN_OCTAVE}
@@ -1731,7 +1731,7 @@ const
 
 (* DMUS_E_SCRIPT_LOADSCRIPT_ERROR
  *
- * An error occurred while parsing a script loaded using LoadScript.  The script that
+ * An error occured while parsing a script loaded using LoadScript.  The script that
  * was loaded contains an error.
  *)
   DMUS_E_SCRIPT_LOADSCRIPT_ERROR       = (MAKE_DMHRESULTERROR_R + $0217);
@@ -2077,7 +2077,7 @@ type
   {$EXTERNALSYM DMUS_BUFFERDESC}
   TDMusBufferDesc = _DMUS_BUFFERDESC;
 
-const
+const  
 (* DMUS_EFFECT_ flags are used in the dwEffectFlags fields of both DMUS_PORTCAPS
  * and DMUS_PORTPARAMS.
  *)
@@ -2772,7 +2772,7 @@ type
   {$EXTERNALSYM IID_IDirectMusicPort8}
 
 
-const
+const   
 (* Property Query GUID_DMUS_PROP_GM_Hardware - Local GM set, no need to download
  * Property Query GUID_DMUS_PROP_GS_Hardware - Local GS set, no need to download
  * Property Query GUID_DMUS_PROP_XG_Hardware - Local XG set, no need to download
@@ -3737,7 +3737,7 @@ const
   DMUSB_DEFAULT   = (1 shl 1);        (* Set when band is default band for a style *)
   {$EXTERNALSYM DMUSB_DEFAULT}
 
-
+  
 type
   IDirectMusicTrack = interface;
   IDirectMusicSegment = interface;
@@ -4923,7 +4923,7 @@ type
   {$EXTERNALSYM DMUS_VARIATIONS_PARAM}
   TDMusVariationsParam = _DMUS_VARIATIONS_PARAM;
 
-const
+const  
   (* Download bands/waves for the IDirectMusicSegment, passed an IDirectMusicAudioPath instead of an IDirectMusicPerformance *)
   GUID_DownloadToAudioPath: TGUID = '{9f2c0341-c5c4-11d3-9bd1-444553540000}';
   {$EXTERNALSYM GUID_DownloadToAudioPath}
@@ -6572,12 +6572,12 @@ RIFF
     [<DMAP-form>]   // Optional Audio Path
 )
 
-    // <segh-ck>
+    // <segh-ck>        
     'segh'
     (
         <DMUS_IO_SEGMENT_HEADER>
     )
-
+    
     // <guid-ck>
     'guid'
     (
@@ -6792,7 +6792,7 @@ const
   DMUS_SPOSTCADENCEF_2  = 4;   // Use the second cadence chord.
   {$EXTERNALSYM DMUS_SPOSTCADENCEF_2}
 
-type
+type  
   // run time data structs
   PDMusIoChordMap = ^TDMusIoChordMap;
   _DMUS_IO_CHORDMAP = packed record
@@ -7531,7 +7531,7 @@ type
   PDMusIoParamControlTrackObjectHeader = ^TDMusIoParamControlTrackObjectHeader;
   _DMUS_IO_PARAMCONTROLTRACK_OBJECTHEADER = packed record
     dwFlags: DWORD;              (* Reserved.  Must be zero. *)
-    guidTimeFormat: TGUID;        (* Time format to set the object to.  Must be GUID_TIME_REFERENCE or GUID_TIME_MUSIC from medparam.h. *)
+    guidTimeFormat: TGUID;        (* Time format to set the object to.  Must be GUID_TIME_REFERNCE or GUID_TIME_MUSIC from medparam.h. *)
     (* Path for finding the object. These fields correspond to the first five parameters of IDirectMusicSegmentState::GetObjectInPath. *)
     dwPChannel: DWORD;
     dwStage: DWORD;
