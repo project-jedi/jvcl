@@ -5068,7 +5068,9 @@ var
 
 begin
   Result := True;
+  {$IFDEF UNICODE}
   OleStrings := nil;
+  {$ENDIF UNICODE}
   { Call method through Ole Automation }
   with CallDesc do
   begin
