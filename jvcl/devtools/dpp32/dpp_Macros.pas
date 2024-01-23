@@ -415,7 +415,7 @@ begin
   end;
 
   Result := True;
-  
+
   if P[0] = #0 then Exit;
   while (P[0] <> #0) and (P[0] <= #32) do Inc(P);
   FReplacement := TrimRight(P);
@@ -696,7 +696,7 @@ var MacroFilename: string;
 begin
  // Assert(UnitIndex >= 0);
   // Objects[]:
-  //   -1: no macros file existance tested
+  //   -1: no macros file existence tested
   //    0: no macros file
   //    1: macros file exists
   Result := Integer(FUnits.Objects[UnitIndex]);

@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -129,7 +129,7 @@ type
         dialog is centered on the screen.  X and Y are relative to the screen. }
     property Position: TPoint read FPosition write SetPosition;
   published
-    { Set this before calling Execute to specify the starting folder. When returning succesfully
+    { Set this before calling Execute to specify the starting folder. When returning successfully
         from the @link(Execute) call, this property contains the name of the selected directory. }
     property Directory: string read FDirectory write FDirectory;
     { Sets the caption of the dialog. If left empty, the default caption is used
@@ -159,7 +159,7 @@ function BrowseForFolder(const ACaption: string; var ADirectory: string): boolea
 implementation
 uses
   JvComponentFunctions;
-  
+
 
 function BrowseForFolder(const ACaption: string; var ADirectory: string): boolean;
 begin

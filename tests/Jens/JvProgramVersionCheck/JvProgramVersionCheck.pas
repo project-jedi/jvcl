@@ -454,13 +454,13 @@ resourcestring
   RsPVCOperationDownloadInstall = 'Download/Copy and &Install';
   RsPVCWhatNewInS      = 'What'' new in %s';
   RsPVCChangesBetween  = 'Changes between %s and %s';
-  RsPVCFileDownloadNotSuccessfull =
-    'The File Download was not Successfull!' + #13 + #10 + 'Please try again manually.';
+  RsPVCFileDownloadNotSuccessful =
+    'The File Download was not Successful!' + #13 + #10 + 'Please try again manually.';
   RsPVCDownloadSuccessfulInstallManually =
-    'The file download was successfull.' + #13 + #10 + 'Install manually from : %s';
+    'The file download was successful.' + #13 + #10 + 'Install manually from : %s';
   RsPVCErrorStartingSetup = 'Error starting the setup process.';
   RsPVCDownloadSuccessfullInstallNow =
-    'The file download was successfull.' + #13 + #10 +
+    'The file download was successful.' + #13 + #10 +
     'Do you want to close and install?';
 
 
@@ -1237,7 +1237,7 @@ end;
 procedure TJvProgramVersionCheck.DownloadThreadOnFinishAll(Sender: TObject);
 begin
   if fExecuteDownloadInstallFilename = '' then
-    MessageDlg(RsPVCFileDownloadNotSuccessfull, mtError, [mbOK], 0)
+    MessageDlg(RsPVCFileDownloadNotSuccessful, mtError, [mbOK], 0)
   else if fExecuteOperation = rvoCopy then
     MessageDlg(Format(RsPVCDownloadSuccessfulInstallManually,
       [fExecuteDownloadInstallFilename]), mtInformation, [mbOK], 0)

@@ -115,7 +115,7 @@ begin
   AddBool('--forceinstall', 'Force installing JVCL 3 for all installed IDEs.', FForceInstall);
   AddBool('--forceuninstall', 'Force uninstalling JVCL 3 for all installed IDEs.', FForceUninstall);
   AddBool('--build', 'Rebuilds the packages by default', FRebuildPackages);
-  AddBool('--autoclose', 'Automatically close the installer after a successfull installation', FAutoCloseAfterSuccess);
+  AddBool('--autoclose', 'Automatically close the installer after a successful installation', FAutoCloseAfterSuccess);
   AddBool('--autoclose-error', 'Automatically close the installer after a failed installation', FAutoCloseAfterError);
   AddBool('--continue-on-error', 'Automatically continue compilation of other targets should the current one fail', FContinueOnError);
   AddBool('--delete-previous-log-files', 'Delete log files from previous installations before starting this one', FDeletePreviousLogFiles);

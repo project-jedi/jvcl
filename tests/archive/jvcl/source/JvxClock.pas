@@ -223,7 +223,7 @@ const
     $58, $F6, $48, $E2, $81, $F9, $6F, $E1, $BC, $FC, $EC, $E0);
 
 const
-  AlarmSecDelay = 60; { seconds for try alarm event after alarm time occured }
+  AlarmSecDelay = 60; { seconds for try alarm event after alarm time occurred }
   MaxDotWidth = 25; { maximum Hour-marking dot width  }
   MinDotWidth = 2; { minimum Hour-marking dot width  }
   MinDotHeight = 1; { minimum Hour-marking dot height }

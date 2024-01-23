@@ -30,7 +30,7 @@ const
     'combine all "Parameter" lists into 1 list, and leave the "Summary", "Description" ' +
     'etc. fields empty for all other overloaded functions with the same name.';
   cSeeAlsoDefaultText =
-    'List here other properties, methods (comma seperated) Remove the ''See Also'' ' +
+    'List here other properties, methods (comma separated) Remove the ''See Also'' ' +
     'section if there are no references';
   cParameterDefaultText = 'Description for this parameter';
   cParameterDefaultTextForBuild = cSummaryDefaultTextForBuild;

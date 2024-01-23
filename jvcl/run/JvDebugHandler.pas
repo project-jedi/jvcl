@@ -74,14 +74,14 @@
                    the name:  Application.Title + 'ERRORLOG.txt'  and will be placed in
                    the application's directory.
    AppendLogFile = True will append the exception information generated to the beginning
-                   of any logfile for this project already in existance.  If one doesn't
+                   of any logfile for this project already in existence.  If one doesn't
                    yet exist, it will be created.  Each new exception logged will appear
-                   above the last and seperated by two blank lines.
+                   above the last and separated by two blank lines.
    OnOtherDestination/OnException event:  are the only events provided.  When assigned, by double-
                    clicking it in the object inspector, a procedure of this name will
                    be created for you in your mainform's unit.  Any code you write here
                    will be run immeadiatly upon any exception information being generated,
-                   before and completely independant of the component's own logfile and
+                   before and completely independent of the component's own logfile and
                    whether or not "CreateLogFile" is set to True or False.
                    From here you may access the "ExceptionStringList" which holds this
                    information and do with it as wanted.  You may for example, have the

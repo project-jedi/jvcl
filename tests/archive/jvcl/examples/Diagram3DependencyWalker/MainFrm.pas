@@ -1556,7 +1556,7 @@ begin
       // copy to clipboard as well
       Clipboard.SetTextBuf(PChar(Errors.Text));
     end;
-    if aCount = FFileShapes.Count then // nothing happended, so reset FLeft
+    if aCount = FFileShapes.Count then // nothing happened, so reset FLeft
       Dec(FLeft, FOffsetX);
   finally
     Errors.Free;

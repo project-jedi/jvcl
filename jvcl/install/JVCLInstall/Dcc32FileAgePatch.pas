@@ -252,7 +252,7 @@ type
   PMem = ^TMem;
   TMem = packed record
     jmp: Word;
-    LoadLibaryAddr: Pointer;
+    LoadLibraryAddr: Pointer;
     GetModuleHandleAddr: Pointer;
     DllName: PChar;
   end;
@@ -337,9 +337,9 @@ begin
     if not ReadProcessMemory(GetCurrentProcess, @LoadHookInjDll, Buf, Size, n) then
       Exit;
     {$IFDEF UNICODE}
-    PMem(Buf)^.LoadLibaryAddr := GetProcAddress(hKernel, 'LoadLibraryW');
+    PMem(Buf)^.LoadLibraryAddr := GetProcAddress(hKernel, 'LoadLibraryW');
     {$ELSE}
-    PMem(Buf)^.LoadLibaryAddr := GetProcAddress(hKernel, 'LoadLibraryA');
+    PMem(Buf)^.LoadLibraryAddr := GetProcAddress(hKernel, 'LoadLibraryA');
     {$ENDIF UNICODE}
     PMem(Buf)^.GetModuleHandleAddr := nil;
     PMem(Buf)^.DllName := DllNameMem;

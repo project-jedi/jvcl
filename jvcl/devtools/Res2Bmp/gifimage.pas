@@ -348,7 +348,7 @@ var
   GIFMinimumDelay: integer = 3;		// Minimum delay - Tweaked.
 {$ENDIF}
 					// * GIFMinimumDelay:
-					// The minumum delay used in the Mozilla
+					// The minimum delay used in the Mozilla
                                         // source is 10mS. This corresponds to a
                                         // value of 1. However, since our paint
                                         // routines are much faster than
@@ -8581,7 +8581,7 @@ end;
 
 type
   // Dummy class used to gain access to protected method TCanvas.Changed
-  TChangableCanvas = class(TCanvas)
+  TChangeableleCanvas = class(TCanvas)
   end;
 
 procedure TGIFSubImage.StretchDraw(ACanvas: TCanvas; const Rect: TRect;
@@ -8638,7 +8638,7 @@ begin
 
       // Since we are not using any of the TCanvas functions (only handle)
       // we need to fire the TCanvas.Changed method "manually".
-      TChangableCanvas(ACanvas).Changed;
+      TChangeableCanvas(ACanvas).Changed;
 
     finally
       if (Save <> 0) then

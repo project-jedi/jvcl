@@ -7060,7 +7060,7 @@ begin
   if Str = '' then
     Exit; { hows this for a nice optimization?  WPostma. }
 
-  { Locale Handling logic October 2008 supercedes former StrToFloatUS functionality. }
+  { Locale Handling logic October 2008 supersedes former StrToFloatUS functionality. }
   {$IFDEF RTL150_UP}
   LocalFormatSettings.ThousandSeparator := GetLocaleChar(LOCALE_USER_DEFAULT, LOCALE_STHOUSAND, '.');
   LocalFormatSettings.DecimalSeparator := GetLocaleChar(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, '.');
@@ -7312,7 +7312,7 @@ begin
       Inc(liAlpha)
     else
     begin
-      // no wierd punctuation in dates!
+      // no weird punctuation in dates!
       lbDisqualify := True;
       Break;
     end;

@@ -372,7 +372,7 @@ begin
   myslinetol := 5;
 
   mypenstyle := psSolid;
-  // number of Blocks wide and heigh
+  // number of Blocks wide and height
   Blocks := 32;
   // rounding of roundrect
   myround := 10;

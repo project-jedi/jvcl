@@ -732,7 +732,7 @@ var
     begin
       Result := FixupString(AVal1);
       bChanged := FixupString(AVal2);
-      Result := Result or bChanged; //ensure that both Fixups are executed regardless of optimisations
+      Result := Result or bChanged; //ensure that both Fixups are executed regardless of optimizations
     end;
   end;
 

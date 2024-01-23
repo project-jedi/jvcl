@@ -426,7 +426,7 @@ begin
   tst := completepath(extractFiledir(AName));
   if tst = AName then
   begin // No FileName included only A Directory;
-    // the user wants us to Create A seperate file for each
+    // the user wants us to Create A separate file for each
     // Directory it opens in A pre-specified path
     FN := ReplaceChar(FDirectory, '\', '_', 0, False); //Create the FileName from the path
     FN := ReplaceChar(FN, ':', '_', 0, False); //Create the FileName from the path

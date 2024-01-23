@@ -13,7 +13,7 @@ The Original Code is: JvResExp.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -871,7 +871,7 @@ begin
     fnProjectDesktopSave:
       FProjectResources.SaveDesktop(FileName);
 {$ENDIF}
-  end;  
+  end;
 end;
 
 {$IFDEF Delphi3_Up}
@@ -1377,7 +1377,7 @@ begin
             Cnt := -1;
             FResFileName := '';
           end;
-          { Access violation error is occured when specified }
+          { Access violation error is occurred when specified }
           { resource file doesn't exist }
         end
         else begin

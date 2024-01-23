@@ -92,7 +92,7 @@ type
     FCanDrawGlyph: Boolean;
     FCanDrawColorQuad: Boolean;
     FColorQuadLayOut: TJvColorQuadLayOut;
-    FOnEnabledChagned: TNotifyEvent;
+    FOnEnabledChanged: TNotifyEvent;
     procedure SetDrawColor(const Value: TColor);
     procedure SetDisabledDrawColor(const Value: TColor);
     procedure SetEdgeWidth(const Value: Integer);
@@ -115,7 +115,7 @@ type
     property DrawColor: TColor read FDrawColor write SetDrawColor default clDefault;
     property DisabledDrawColor: TColor read FDisabledDrawColor write SetDisabledDrawColor default clGray;
     property EdgeWidth: Integer read GetEdgeWidth write SetEdgeWidth;
-    property OnEnabledChagned: TNotifyEvent read FOnEnabledChagned write FOnEnabledChagned;
+    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
   end;
 
   TJvOfficeColorDrawer = class(TJvColorSpeedButton)
@@ -1034,8 +1034,8 @@ end;
 procedure TJvColorSpeedButton.EnabledChanged;
 begin
   inherited EnabledChanged;
-  if Assigned(OnEnabledChagned) then
-    OnEnabledChagned(Self);
+  if Assigned(OnEnabledChanged) then
+    OnEnabledChanged(Self);
 end;
 
 procedure TJvColorSpeedButton.SetDrawColor(const Value: TColor);
@@ -1288,7 +1288,7 @@ begin
     CanDrawGlyph := False;
     CanDrawInnerFrame := False;
     OnClick := DoColorButtonClick;
-    OnEnabledChagned := DoColorDrawersEnabledChange;
+    OnEnabledChanged := DoColorDrawersEnabledChange;
   end;
   FAddInControls.Add(FButtonNoneColor);
 
@@ -1307,7 +1307,7 @@ begin
     ColorQuadLayOut := cqlLeft;
     OnClick := DoColorButtonClick;
     OnMouseUp := RedirectToColorButtonClick;
-    OnEnabledChagned := DoColorDrawersEnabledChange;
+    OnEnabledChanged := DoColorDrawersEnabledChange;
   end;
   FAddInControls.Add(FButtonDefaultColor);
   FPriorCheckedButton := FButtonDefaultColor;
@@ -1325,7 +1325,7 @@ begin
     CanDrawInnerFrame := True;
     OnClick := DoColorButtonClick;
     OnMouseUp := RedirectToColorButtonClick;
-    OnEnabledChagned := DoColorDrawersEnabledChange;
+    OnEnabledChanged := DoColorDrawersEnabledChange;
   end;
   FAddInControls.Add(FButtonCustomColor);
 
@@ -1344,7 +1344,7 @@ begin
     ColorQuadLayOut := cqlClient;
     OnClick := DoColorButtonClick;
     OnMouseUp := RedirectToColorButtonClick;
-    OnEnabledChagned := DoColorDrawersEnabledChange;
+    OnEnabledChanged := DoColorDrawersEnabledChange;
   end;
   FAddInControls.Add(FCustomColorDrawer);
 
@@ -1545,7 +1545,7 @@ begin
       HotTrackOptions := Self.HotTrackOptions;
 
       OnClick := DoColorButtonClick;
-      OnEnabledChagned := DoColorDrawersEnabledChange;
+      OnEnabledChanged := DoColorDrawersEnabledChange;
       OnMouseUp := RedirectToColorButtonClick;
     end;
   end;

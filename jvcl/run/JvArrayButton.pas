@@ -88,7 +88,7 @@ type
 
     {this procedure can be used in response to a Application.OnShowHint event
      button hints are stored in the hints property from array top-left to array bottom right
-     in your application create a seperate OnShowHint event Handler
+     in your application create a separate OnShowHint event Handler
      within that Handler test HintInfo.HintControl is this object. If it is dispatch to this objects doShowHint.
      In the FormCreate event handler include:
        Application.OnShowHint := DrawHint;

@@ -106,10 +106,10 @@ type
     // of the move. That is, you cannot move an element to itself.
     function MoveTo(const OldName,NewName:string;Dest:TJvStorageFolder):boolean;
     // Commits any changes when smTransacted is true
-    // When smTransacted  is false, changes are comitted immediately and thus cannot be comitted
+    // When smTransacted  is false, changes are committed immediately and thus cannot be committed
     function Commit:boolean;
     // Reverts any changes when smTransacted is true
-    // When smTransacted  is false, changes are comitted immediately and thus cannot be reverted
+    // When smTransacted  is false, changes are committed immediately and thus cannot be reverted
     function Revert:boolean;
     // Create a new or open an existing structured file (or subfolder) depending on AccessMode.
     // NOTE that the file will not actually be opened or created until you call
@@ -267,7 +267,7 @@ begin
        = STGM_READWRITE or STGM_SHARE_EXCLUSIVE
 
     These restrictions pretty much exist for transacted files as well with the difference that most
-    errors are not reported until a call is made to Commit...  
+    errors are not reported until a call is made to Commit...
   }
 
   // creation:
@@ -376,7 +376,7 @@ begin
   if FStorage = nil then
   begin
     AName := StrToWChar(FFileName);
-    try                                       
+    try
       if FConvertedMode and STGM_CREATE = STGM_CREATE then
         hr := StgCreateDocfile(AName, FConvertedMode, 0, FStorage)
       else

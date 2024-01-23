@@ -2466,7 +2466,7 @@ begin
 
       ProcResult := inflate(zlib, 0);
 
-      {In case the result was not sucessfull}
+      {In case the result was not successful}
       if (ProcResult < 0) then
       begin
         Result := -1;
@@ -3170,7 +3170,7 @@ begin
         Row_Buffer[RowUsed][Col] := (pp + vv) and $FF;
       end {for};
     end;
-      
+
   end {case};
 end;
 

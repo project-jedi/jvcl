@@ -49,7 +49,7 @@ procedure TForm1.Button2Click(Sender: TObject);
 var
   ObjPicker: IDsObjectPicker;             // the Object Picker COM object
   InitInfo: TDsOpInitInfo;                // the initalization record
-  ScopeInitInfo: array [0..1] of TDsOpScopeInitInfo; // the scopes  
+  ScopeInitInfo: array [0..1] of TDsOpScopeInitInfo; // the scopes
   DataObj: IDataObject;                   // used to retrieve the selection list
   Format: TFormatEtc;                     // used to retrieve the selection list
   Medium: TStgMedium;                     // used to retrieve the selection list
@@ -154,7 +154,7 @@ begin
       end
       else
       begin
-        // an error occured, the user never saw the dialog, raise an exception
+        // an error occurred, the user never saw the dialog, raise an exception
         OleCheck(HR);
       end;
     end;

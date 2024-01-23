@@ -59,7 +59,7 @@ implementation
 uses
   DSAExamplesCustom1, DSAExamplesCustom2, DSAExamplesProgressDlg,
   JclBase;
-  
+
 const
   ctkMyMark: TDSACheckTextKind = 25;
 
@@ -284,7 +284,7 @@ procedure TfrmDSAExamples.FormCreate(Sender: TObject);
 begin
   // Alter registry location
   DSARegStore.Key := 'Software\JEDI-VCL\DSAExamples';
-  
+
   // Add custom checkmark text
   RegisterDSACheckMarkText(ctkMyMark, 'Check to suppress this dialog');
 
@@ -315,7 +315,7 @@ end;
 
 procedure TfrmDSAExamples.FormDestroy(Sender: TObject);
 begin
-  { It would be better to unregister the dialogs here, but it's not neccessary; the registration is
+  { It would be better to unregister the dialogs here, but it's not necessary; the registration is
     removed on application shut down. }
 end;
 

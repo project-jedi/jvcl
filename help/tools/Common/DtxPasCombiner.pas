@@ -1269,7 +1269,7 @@ begin
 //          Topic.SeeAlso.Parse(cSeeAlsoDefaultText);
            {special }
            Topic.SeeAlso.Add(TSpecialStringSymbol.CreateNew(
-    'List here other properties, methods (comma seperated)'#13#10'Remove the ''See Also'' section if there are no references'));
+    'List here other properties, methods (comma separated)'#13#10'Remove the ''See Also'' section if there are no references'));
         if Topic.DelphiType = dtMethodFunc then
           Topic.ReturnValue.Parse(cReturnValueDefaultText);
       end;
@@ -1451,7 +1451,7 @@ begin
   { JCL specific stuff }
   Result := ExpandPasDuplicates;
   if not Result then Exit;
-  
+
   Result := RemovePasDuplicates;
   if not Result then Exit;
 
@@ -1487,7 +1487,7 @@ begin
 
   Result := AddExpandCombines;
   if not Result then Exit;
-  
+
 
   Result := SetHASPASFILEENTRYForJCLTopics;
   if not Result then Exit;

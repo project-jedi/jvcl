@@ -68,7 +68,7 @@
   DELPHI4      Defined when compiling with Delphi 4
   DELPHI5      Defined when compiling with Delphi 5
   DELPHI6      Defined when compiling with Delphi 6
-  DELPHI7      Defined when compiling with Delphi 7  
+  DELPHI7      Defined when compiling with Delphi 7
   DELPHI1_UP   Defined when compiling with Delphi 1 or higher
   DELPHI2_UP   Defined when compiling with Delphi 2 or higher
   DELPHI3_UP   Defined when compiling with Delphi 3 or higher
@@ -113,7 +113,7 @@
   COMPILER4    Defined when compiling with Delphi 4 or C++ Builder 4
   COMPILER5    Defined when compiling with Delphi 5 or C++ Builder 5
   COMPILER6    Defined when compiling with Delphi 6 or C++ Builder 6
-  COMPILER7    Defined when compiling with Delphi 7 or C++ Builder 7  
+  COMPILER7    Defined when compiling with Delphi 7 or C++ Builder 7
   COMPILER1_UP Defined when compiling with Delphi 1 or higher
   COMPILER2_UP Defined when compiling with Delphi 2 or C++ Builder 1 or higher
   COMPILER3_UP Defined when compiling with Delphi 3 or higher
@@ -122,7 +122,7 @@
   COMPILER5_UP Defined when compiling with Delphi 5 or C++ Builder 5 or higher
   COMPILER6_UP Defined when compiling with Delphi 6 or C++ Builder 6 or higher
   COMPILER7_UP Defined when compiling with Delphi 7 or C++ Builder 7 or higher
-  
+
 - Feature Directives
 
   The features directives are used to test if the compiler supports specific
@@ -145,7 +145,7 @@
 
   The compiler settings directives indicate whether a specific compiler setting
   is in effect. This facilitates changing compiler settings locally in a more
-  compact and readible manner.
+  compact and readable manner.
 
   Directive              Description
   ------------------------------------------------------------------------------

@@ -64,7 +64,7 @@ type
     FRestorePos: Integer;
     // For internal use to avoid calling GetButtonRect when not necessary
     FLastKnownButtonRect: TRect;
-    // Internal use to avoid unecessary painting
+    // Internal use to avoid unnecessary painting
     FIsHighlighted: Boolean;
     // Internal for detecting real clicks
     FGotMouseDown: Boolean;

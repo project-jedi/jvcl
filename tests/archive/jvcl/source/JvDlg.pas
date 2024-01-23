@@ -14,7 +14,7 @@ The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov
 Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s):                
+Contributor(s):
 Zinvob
 boerema
 
@@ -92,7 +92,7 @@ type
   end;
 begin
   { CBuilder 3 Warning !}
-  { if linker error occured with message "unresolved external 'System::RaiseList'" try
+  { if linker error occurred with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
 {$IFDEF COMPLIB_VCL}

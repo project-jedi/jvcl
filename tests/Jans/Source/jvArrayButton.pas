@@ -72,7 +72,7 @@ type
       var HintInfo: THintInfo);
     {this procedure can be used in response to a application.onshowhint event
      button hints are stored in the hints property from arry top-left to array bottom right
-     in your application create a seperate onshowhint event handler
+     in your application create a separate onshowhint event handler
      within that handler test hintinfo.hintcontrol is this object. If it is dispatch to this objects doShowHint.
      In the formcreate eventhandler include:
        application.OnShowHint:=drawhint;

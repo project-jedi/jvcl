@@ -432,7 +432,7 @@ var
   i: Integer;
   InputStream: TFileStream;
   OutputStream: TMemoryStream;
-  PSFound, PLFound: Boolean; // Optimisation Variables to remember if the PS or PL is found once inside the line
+  PSFound, PLFound: Boolean; // Optimization Variables to remember if the PS or PL is found once inside the line
   intWholeWord, intIgnoreInsideString, intIgnoreInsideComments: Boolean;
   Def: TConvertDefinition;
   LineComment: string;

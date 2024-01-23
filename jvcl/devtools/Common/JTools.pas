@@ -16,7 +16,7 @@ function ParseCmdLine(ACmdLine: PChar; List: TStrings; QuoteChar: char = '"'): b
 // the value associated with the switch (if found). Set IgnoreCase to true if Switch should be searched for
 // without case-sensitivity.
 // Switch is the character(s) making up the "switch ID", SwitchChars are the characters that can
-// preceed Switch, Value is filled with any value remaining after the switch character ( f ex in the command-line
+// precede Switch, Value is filled with any value remaining after the switch character ( f ex in the command-line
 //  -f"C:\Program Files\find.txt", 'f' is the Switch, '-' is a SwitchChars and Value will be filled with
 // "C:\Program Files\find.txt"
 function GetCmdSwitchValue(const Switch: string; SwitchChars: TSysCharSet; var
@@ -87,7 +87,7 @@ end;
 function InRange(Value,Min,Max:integer):boolean;
 begin
   Result := (Value >= Min) and (Value <= Max);
-end;  
+end;
 
 function GetCmdSwitchValue(const Switch: string; SwitchChars: TSysCharSet; var
   Value: string; IgnoreCase: boolean): boolean;

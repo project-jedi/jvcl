@@ -505,7 +505,7 @@ type
     procedure Assign(const Source: TPoint); reintroduce; overload;
     procedure CopyToPoint(var Point: TPoint);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property AsPoint: TPoint read GetAsPoint write SetAsPoint;  
+    property AsPoint: TPoint read GetAsPoint write SetAsPoint;
   published
     property X: Longint read FX write SetX default 0;
     property Y: Longint read FY write SetY default 0;
@@ -662,7 +662,7 @@ procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 {$ENDIF MSWINDOWS}
 
 function GetAppHandle: THandle;
-// DrawArrow draws a standard arrow in any of four directions and with the specifed color.
+// DrawArrow draws a standard arrow in any of four directions and with the specified color.
 // Rect is the area to draw the arrow in and also defines the size of the arrow
 // Note that this procedure might shrink Rect so that it's width and height is always
 // the same and the width and height are always even, i.e calling with
@@ -678,7 +678,7 @@ procedure DrawArrow(Canvas: TCanvas; X, Y: Integer;  Size: Integer;
 
 
 procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
-  
+
 function IsPositiveResult(Value: TModalResult): Boolean;
 function IsNegativeResult(Value: TModalResult): Boolean;
 function IsAbortResult(const Value: TModalResult): Boolean;
@@ -2304,7 +2304,7 @@ function ScreenWorkArea: TRect;
 begin
   if Assigned(Screen.ActiveCustomForm) then
     Result := Screen.MonitorFromWindow(Screen.ActiveCustomForm.Handle).WorkareaRect
-  else  
+  else
   {$IFDEF MSWINDOWS}
   if not SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0) then
   {$ENDIF MSWINDOWS}
@@ -6877,7 +6877,7 @@ var
       try
         if ScriptPosition <> spNormal then
           Canvas.Font.Size := Round(Canvas.Font.Size * SuperSubScriptRatio);
-          
+
         Width  := Canvas.TextWidth(M);
         Height := CanvasMaxTextHeight(Canvas);
 

@@ -487,7 +487,7 @@ type
     procedure CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
       Y: Integer);
-    procedure CustomShow(Sender: TObject);  
+    procedure CustomShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure TimerEvent(Sender: TObject);
     procedure WriteToClipBoard(Text: String);
@@ -2061,7 +2061,7 @@ end;
 type
   TShowModalMethod = function: Integer of object; // So we can call the original ShowModal method.
 
-  TPatchedForm = class(TCustomForm) // To replace the orignal ShowModal method.
+  TPatchedForm = class(TCustomForm) // To replace the original ShowModal method.
   public
     function ShowModal: Integer; override;
   end;

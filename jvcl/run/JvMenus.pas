@@ -37,7 +37,7 @@ uses
   Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Classes,
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
-  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}  
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   ExtCtrls, ImgList, Menus,
   JvWndProcHook, JVCLVer;
 
@@ -1713,7 +1713,7 @@ begin
     if IsOwnerDrawMenu then
       RefreshMenu(True);
 
-    // Those three lines are as close as we can get to the orignal source
+    // Those three lines are as close as we can get to the original source
     // code in the VCL. Note that for the "Items.Handle" line, it seems
     // it does nothing as it does not store the property value, but there is
     // a getter on that property and will eventually make a series of calls
@@ -3135,7 +3135,7 @@ begin
   if not IsPopup(FItem) then
   begin
     Canvas.Font.Color := clMenuText;
-    
+
     if (FCurrentState * [mdSelected, mdFocused, mdHotlight] = []) then
     begin
       if SystemParametersInfo(SPI_GETFLATMENU, 0, @FlatMenus, 0) and FlatMenus then

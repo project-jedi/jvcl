@@ -28,7 +28,7 @@
   2002-08-01 - * NEW * Support for Delphi 3 and C++ Builder 3
                Implements mostly some things that were missing,
                a few tweaks and fixes.
-               
+
   Version 1.428
   2002-07-24 - More minor fixes (thanks to Ian Boyd)
                Bit transparency fixes
@@ -2174,7 +2174,7 @@ begin
 
       ProcResult := inflate(zlib, 0);
 
-      {In case the result was not sucessfull}
+      {In case the result was not successful}
       if (ProcResult < 0) then
       begin
         Result := -1;
@@ -2811,7 +2811,7 @@ begin
         Row_Buffer[RowUsed][Col] := (pp + vv) and $FF;
       end {for};
     end;
-      
+
   end {case};
 end;
 
@@ -2976,7 +2976,7 @@ begin
       begin
         {Writes this IDAT chunk}
         WriteIDAT(fStream, Data, ZLIBAllocate);
-        
+
         {Restore buffer}
         next_out := Data;
         avail_out := ZLIBAllocate;

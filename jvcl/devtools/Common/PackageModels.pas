@@ -81,7 +81,7 @@ type
     property TargetNames: TStringList read FTargetNames;
     property TargetCount: Integer read GetTargetCount;
     property Targets[Index: Integer]: TModelTarget read GetTargets; default;
-    property Value: string read GetValue; // comma seperated list
+    property Value: string read GetValue; // comma separated list
 
     property Owner: TPackageModel read FOwner;
   end;

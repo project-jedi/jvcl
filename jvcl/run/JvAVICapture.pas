@@ -68,7 +68,7 @@ type
     FCompression: Integer;      // compression used
   public
     procedure Update;   // Update from the AVICap window
-    function Apply: Boolean; // apply the format to the window, returns True if successfull
+    function Apply: Boolean; // apply the format to the window, returns True if successful
 
     property Width: Cardinal read FWidth write FWidth;
     property Height: Cardinal read FHeight write FHeight;
@@ -92,7 +92,7 @@ type
   public
     // updates from the AVICap window
     procedure Update;
-    // apply the format to the window, returns True if successfull
+    // apply the format to the window, returns True if successful
     function Apply: Boolean;
     // fill in a PWaveFormatEx structure to use with API calls
     procedure FillWaveFormatEx(var wfex: PWaveFormatEx);
@@ -167,7 +167,7 @@ type
     // the size of an audio buffer
     FAudioBufferSize: Cardinal;
     // if True, the audio stream is the master one with respect to time
-    // alignment. if False, the video stream is the master (recommanded)
+    // alignment. if False, the video stream is the master (recommended)
     FAudioMaster: Boolean;
     // if True, the capture will controll a MCI device as its source
     FMCIControl: Boolean;
@@ -417,11 +417,11 @@ type
     procedure SetDriverIndex(nIndex: TJvDriverIndex);
     // tries to starts or stops capture according to the value
     // immediately check the value of FCapturing to see if capture
-    // started succesfuly
+    // started successfully
     procedure SetCapturing(nCapturing: Boolean);
     // tries starts or stops single frame capture according to the value
     // immediately check the value of FSingleFrameCapturing to see
-    // if capture started succesfuly
+    // if capture started successfully
     procedure SetSingleFrameCapturing(const Value: Boolean);
     // sets the FNoFile flag
     procedure SetNoFile(nNoFile: Boolean);
@@ -1477,7 +1477,7 @@ begin
   // then the result is the result of capPreview
   Result := (FHWnd <> 0) and FPreviewing and capPreview(FHWnd, False);
 
-  // if succesfully stopped preview, update internal values
+  // if successfully stopped preview, update internal values
   if Result then
   begin
     UpdateCaptureStatus;

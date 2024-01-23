@@ -488,7 +488,7 @@ begin
     TheFormArray[ID].left := 0;
     TheFormArray[ID].top := 25;
 
-    //take the with, heigth and caption from the form
+    //take the with, height and caption from the form
     JvCaptionPanel1.width := TheFormArray[ID].Width + 5;
     JvCaptionPanel1.height := TheFormArray[ID].height + 30;
     JvCaptionPanel1.Caption := TheFormArray[ID].Caption;
@@ -630,7 +630,7 @@ begin
   begin
     addWithFormat(JvListBoxDemosCompNameSorted.Items[JvListBoxDemosCompNameSorted.ItemIndex]);
     JvRichEditHints.Lines.add(' is used in following Demos:');
-   // we have one the Comonent Name, so we have to search in whole ini, in the comma seperated valuues
+   // we have one the Comonent Name, so we have to search in whole ini, in the comma separated valuues
     allSections := TStringList.create;
     tempSL := TStringList.create;
     IniFile.ReadSections(allSections);

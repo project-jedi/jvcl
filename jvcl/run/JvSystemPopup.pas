@@ -392,7 +392,7 @@ begin
     MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or
       MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
     MenuItemInfo.fType := MFT_SEPARATOR;
-    { Give the seperator menu id $EFFF so we can seperate these from the
+    { Give the seperator menu id $EFFF so we can separate these from the
       normal seperators (with id=0), that we don't want to remove in procedure
       RemoveNonDefaultItems }
     MenuItemInfo.wID := $EFFF;

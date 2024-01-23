@@ -149,14 +149,14 @@ object Form1: TForm1
       'insert into "Tree.dbf" values(4, 0, '#39'Ukraine'#39', '#39#39');'
       'insert into "Tree.dbf" values(5, 0, '#39'Japan'#39', '#39#39');'
       ''
-      'insert into "Tree.dbf" values(6, 1, '#39'Goverment'#39', '#39#39');'
+      'insert into "Tree.dbf" values(6, 1, '#39'Government'#39', '#39#39');'
       'insert into "Tree.dbf" values(7, 1, '#39'President'#39', '#39#39');'
       'insert into "Tree.dbf" values(8, 1, '#39'Duma'#39', '#39#39');'
       'insert into "Tree.dbf" values(9, 1, '#39'Police'#39', '#39#39');'
       'insert into "Tree.dbf" values(10, 1, '#39'Programmers'#39', '#39#39');'
       ''
       'insert into "Tree.dbf" values(11, 10, '#39'JVCL'#39', '#39#39');'
-      
+
         'insert into "Tree.dbf" values(12, 11, '#39'black'#39', '#39'blackbs@chat.ru'#39 +
         ');'
       'insert into "Tree.dbf" values(13, 11, '#39'roman'#39', '#39#39');'

@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: RAFDAlignPalette.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s): 
@@ -50,14 +50,14 @@ Known Issues:
   1.21.2 (RALib 1.21 Update 2):
    - fixed bug with multiple external functions defintions
      (greetings to Peter Fischer-Haaser)
-   - fixed AV-bug in TJvInterpreterFunction.InFunction1 if errors in source occured
+   - fixed AV-bug in TJvInterpreterFunction.InFunction1 if errors in source occurred
      (greetings to Andre N Belokon)
   1.21.4 (RALib 1.21 Update 4):
    - fixed bugs in "if" and "while" with "begin" statements;
    - "div" and "mod" now working;
   1.21.6 (RALib 1.21 Update 6):
    - fixed bug with incorrect error line and unit name if erorr
-     occured in used unit
+     occurred in used unit
      (greetings to Dmitry Mokrushin)
    - add parameters check (not fully functional - only count checked)
      in source fucntion calls;
@@ -527,7 +527,7 @@ type
   end;
 
   TStackPtr = - 1..99;
-  
+
  { Expression evaluator }
   TJvInterpreterExpression = class(TComponent)
   private
@@ -1290,7 +1290,7 @@ begin
 end; { ErrorNotImplemented }
 
 //RWare: added check for "char", otherwise function with ref variable 
-//of type char causes AV, like KeyPress event handler    
+//of type char causes AV, like KeyPress event handler
 function TypeName2VarTyp(TypeName: string): Word;
 begin
   if Cmp(TypeName, 'integer') or Cmp(TypeName, 'longint') or
@@ -1608,7 +1608,7 @@ var
   i: integer;
   Aint: integer;
  // Abyte : byte;
-  Aword : word;              
+  Aword : word;
   Apointer: pointer;
   Str: string;
 begin
@@ -1729,7 +1729,7 @@ type
     Size: Integer; {number of elements in array}
     Memory: Pointer; {pointer to memory representation of array}
   end;
-  
+
 function GetArraySize(Dimension: Integer; BeginPos,
   EndPos: TJvInterpreterArrayValues): Integer;
 var
@@ -3739,7 +3739,7 @@ begin
           if JvInterpreterRecord.Fields[j].Typ = varString then
             PString(PString(Rec + JvInterpreterRecord.Fields[j].Offset)^) := @EmptyStr;
       end;
-      JvInterpreterVarCopy(Value, R2V(RecordType, Rec));                               
+      JvInterpreterVarCopy(Value, R2V(RecordType, Rec));
       Result := SetRecord(Value);
       Exit;
     end;
@@ -5699,7 +5699,7 @@ begin
           end
           else
             SkipStatement1;
-        end;    
+        end;
       ttElse:
         begin
           NextToken;

@@ -12,7 +12,7 @@ The Original Code is: JvOle2Auto.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -299,7 +299,7 @@ const
   SOleNotSupport   = 'Method or property %s not supported by OLE object';
   SOleNotReference = 'Variant does not reference an OLE automation object';
 {$IFNDEF COMPILER3_UP}
-  SOleError        = 'OLE2 error occured. Error code: %.8xH';
+  SOleError        = 'OLE2 error occurred. Error code: %.8xH';
 {$ENDIF}
 
 const

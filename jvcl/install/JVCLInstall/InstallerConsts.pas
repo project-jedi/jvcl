@@ -86,7 +86,7 @@ resourcestring
  // FrmInstall.pas
 resourcestring
   RsErrorOpeningFile = 'Error opening the file.';
-  RsInstallError = 'An error occured.';
+  RsInstallError = 'An error occurred.';
   RsComplete = 'Complete.';
   RsError = '%s - Error';
   RsCompiling = 'Compiling: %s';
@@ -146,7 +146,7 @@ resourcestring
   RsJVCLDirsFromPathLists = 'JVCL directories from path lists';
   RsJVCLPackages = 'JVCL 3 packages';
   RsJVCLFiles = 'JVCL 3 files';
-  
+
  // PgConfig.pas
 resourcestring
   RsConfigPageTitle = 'Configuration';

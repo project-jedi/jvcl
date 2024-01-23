@@ -2126,7 +2126,7 @@ end;
 type
   TShowModalMethod = function: Integer of object; // So we can call the original ShowModal method.
 
-  TPatchedForm = class(TCustomForm) // To replace the orignal ShowModal method.
+  TPatchedForm = class(TCustomForm) // To replace the original ShowModal method.
   public
     function ShowModal: Integer; override;
   end;
@@ -2165,7 +2165,7 @@ begin
         CheckCaption := CheckCaption + '.';
       SetStrProp(JvDSADialog.CheckControl, 'Caption', CheckCaption);
     end;
-    
+
     // Show the dialog by calling the original ShowModal method: setting up the method pointers.
     TMethod(ShowModalMethod).Data := Self;
     TMethod(ShowModalMethod).Code := JvDSADialog.GetOrgShowModalPtr;
