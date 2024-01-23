@@ -528,6 +528,9 @@ type
   protected
     procedure Reinitialize; virtual;
     procedure DoCheckedChange;
+    {$IFDEF RTL360_UP}
+    class constructor Create;
+    {$ENDIF RTL360_UP}
   public
     class function CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
 
@@ -2472,6 +2475,16 @@ begin
 end;
 
 //=== { TJvTreeNode } ========================================================
+
+{$IFDEF RTL360_UP}
+class constructor TJvTreeNode.Create;
+begin
+  // TTreeNodes.ReadNodeData no longer relies on its internal FClassNames (it clears it)
+  // but rahter requires that the node class is present in the list of registered classes
+  // for the indirectly called TTreeNodes.ReadNodeClass to find it.
+  RegisterClass(TJvTreeNode);
+end;
+{$ENDIF RTL360_UP}
 
 class function TJvTreeNode.CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
 begin
