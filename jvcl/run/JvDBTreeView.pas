@@ -1040,7 +1040,7 @@ begin
       dsEdit:
         FDataLink.DataSet.Edit;
       dsInsert:
-        FDataLink.DataSet.Insert;
+        FDataLink.DataSet.Edit;
     end;
   end;
   inherited Change(Node);
