@@ -138,6 +138,7 @@ begin
   FBitmap.Width := 24;
   FBitmap.Height := 24;
   FBitmap.PixelFormat := pf24bit;
+  FBitmap.Transparent := True;
   FBitmap.Canvas.Brush.Color := clGray;
   FBitmap.Canvas.FillRect(Rect(1, 1, 23, 23));
   FBitmap.OnChange := DoBitmapChange;
@@ -167,8 +168,10 @@ end;
 procedure TJvBitmapButton.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  FPushDown := not FBitmap.Transparent and
-    (FBitmap.Canvas.Pixels[X, Y] <> FBitmap.Canvas.Pixels[0, FBitmap.Height - 1]);
+  if FBitmap.Transparent then
+    FPushDown := (FBitmap.Canvas.Pixels[X, Y] <> FBitmap.Canvas.Pixels[0, FBitmap.Height - 1])
+  else
+    FPushDown := True;
   Repaint;
   inherited MouseDown(Button, Shift, X, Y);
 end;
