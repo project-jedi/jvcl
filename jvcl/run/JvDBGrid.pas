@@ -2881,7 +2881,7 @@ begin
       OnColumnResized(Self, FSizingIndex + Byte(not (dgIndicator in Options)) - 1,
         ColWidths[FSizingIndex]);
   end
-  else
+  else if FCurrentControl = nil then
   begin
     OriginalScrollInfo.cbSize := SizeOf(OriginalScrollInfo);
     OriginalScrollInfo.fMask := SIF_POS;

@@ -104,8 +104,8 @@ type
     function FormatDisplayText(Value: Extended): string;
     function GetDisplayText: string; virtual;
     procedure Reset; override;
-    procedure CheckRange;
-    procedure UpdateData;
+    procedure CheckRange; virtual;
+    procedure UpdateData; virtual;
     procedure UpdatePopup; virtual;
     property Formatting: Boolean read FFormatting;
     property Alignment: TAlignment read FAlignment write SetAlignment default taRightJustify;
