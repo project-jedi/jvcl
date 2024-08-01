@@ -1684,7 +1684,7 @@ begin
     if (Height <= 0) or (ArrangeSettings.AutoSize in [asHeight, asBoth]) then
       if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
         if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
-          TForm(ParameterDialog).ClientHeight := MaxHeight + 10
+          TForm(ParameterDialog).ClientHeight := MaxHeight + DialogPPIScale(10)
         else
           TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + DialogPPIScale(10)
       else
