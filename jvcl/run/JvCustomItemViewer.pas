@@ -41,6 +41,7 @@ uses
   Contnrs,
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ComCtrls,
   ExtCtrls,
+  JclBase,
   JvConsts,  // for clSkyBlue
   JvExControls, JvExForms;
 
@@ -170,10 +171,10 @@ type
 
   TJvViewerItemList = class(TObjectList)
   private
-    function GetItem(Index: Integer): TJvViewerItem;
-    procedure SetItem(Index: Integer; const Value: TJvViewerItem);
+    function GetItem(Index: TJclListSize): TJvViewerItem;
+    procedure SetItem(Index: TJclListSize; const Value: TJvViewerItem);
   public
-    property Items[Index: Integer]: TJvViewerItem read GetItem write SetItem; default;
+    property Items[Index: TJclListSize]: TJvViewerItem read GetItem write SetItem; default;
   end;
 
   TJvViewerItemClass = class of TJvViewerItem;
@@ -1980,12 +1981,12 @@ end;
 
 { TJvViewerItemList }
 
-function TJvViewerItemList.GetItem(Index: Integer): TJvViewerItem;
+function TJvViewerItemList.GetItem(Index: TJclListSize): TJvViewerItem;
 begin
   Result := inherited Items[Index] as TJvViewerItem;
 end;
 
-procedure TJvViewerItemList.SetItem(Index: Integer; const Value: TJvViewerItem);
+procedure TJvViewerItemList.SetItem(Index: TJclListSize; const Value: TJvViewerItem);
 begin
   inherited Items[Index] := Value;
 end;

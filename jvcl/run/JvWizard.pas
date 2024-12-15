@@ -339,6 +339,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Controls, Forms, Graphics, Buttons, ImgList, Types,
+  JclBase,
   JvComponent, JvThemes, JvWizardCommon;
 
 type
@@ -747,13 +748,13 @@ type
   TJvWizardPageList = class(TList)
   private
     FWizard: TJvWizard;
-    function GetItems(Index: Integer): TJvWizardCustomPage;
+    function GetItems(Index: TJclListSize): TJvWizardCustomPage;
   protected
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
     property Wizard: TJvWizard read FWizard write FWizard;
   public
     destructor Destroy; override;
-    property Items[Index: Integer]: TJvWizardCustomPage read GetItems; default;
+    property Items[Index: TJclListSize]: TJvWizardCustomPage read GetItems; default;
   end;
 
   { JvWizard Control }
@@ -2505,7 +2506,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvWizardPageList.GetItems(Index: Integer): TJvWizardCustomPage;
+function TJvWizardPageList.GetItems(Index: TJclListSize): TJvWizardCustomPage;
 begin
   Result := TJvWizardCustomPage(inherited Items[Index]);
 end;

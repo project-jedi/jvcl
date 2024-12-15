@@ -40,7 +40,8 @@ unit JvExprParser;
 interface
 
 uses
-  SysUtils, Contnrs;
+  SysUtils, Contnrs,
+  JclBase;
 
 type
   TOnGetVariableValue = function(Sender: TObject; const VarName: string;
@@ -140,10 +141,10 @@ type
   TScan = class(TObjectList)
   private
     FErrorMessage: string;
-    function GetItem(Index: Integer): TLex;
+    function GetItem(Index: TJclListSize): TLex;
   public
     constructor Create();
-    property Items[Index: Integer]: TLex read GetItem; default;
+    property Items[Index: TJclListSize]: TLex read GetItem; default;
     function Parse(const Str: string): Boolean;
     {$IFDEF TESTING_PARSER}
     procedure DebugPrint();
@@ -304,7 +305,7 @@ begin
   FErrorMessage := '';
 end;
 
-function TScan.GetItem(Index: Integer): TLex;
+function TScan.GetItem(Index: TJclListSize): TLex;
 begin
   Result := inherited Items[Index] as TLex;
 end;

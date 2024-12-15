@@ -1073,8 +1073,8 @@ type
     FOnChange: TIntegerListChange;
     FLoading: Boolean;
 
-    function GetItem(Index: Integer): Integer;
-    procedure SetItem(Index: Integer; const Value: Integer);
+    function GetItem(Index: TJclListSize): Integer;
+    procedure SetItem(Index: TJclListSize; const Value: Integer);
   protected
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
     procedure DoChange(Item: Integer; Action: TListNotification);
@@ -1085,14 +1085,14 @@ type
     property Loading: Boolean read FLoading;
 
     // Overloaded to accept/return Integer instead of Pointer.
-    function Add(Value: Integer): Integer;
+    function Add(Value: Integer): TJclListSize;
     function Extract(Item: Integer): Integer;
     function First: Integer;
-    function IndexOf(Item: Integer): Integer;
-    procedure Insert(Index: Integer; Item: Integer);
+    function IndexOf(Item: Integer): TJclListSize;
+    procedure Insert(Index: TJclListSize; Item: Integer);
     function Last: Integer;
-    function Remove(Item: Integer): Integer;
-    property Items[Index: Integer]: Integer read GetItem write SetItem; default;
+    function Remove(Item: Integer): TJclListSize;
+    property Items[Index: TJclListSize]: Integer read GetItem write SetItem; default;
 
     property OnChange: TIntegerListChange read FOnChange write FOnChange;
   end;
@@ -8674,7 +8674,7 @@ end;
 
 { TIntegerList }
 
-function TIntegerList.Add(Value: Integer): Integer;
+function TIntegerList.Add(Value: Integer): TJclListSize;
 begin
   Result := inherited Add(TObject(Value));
 end;
@@ -8695,17 +8695,17 @@ begin
   Result := Integer(inherited First);
 end;
 
-function TIntegerList.GetItem(Index: Integer): Integer;
+function TIntegerList.GetItem(Index: TJclListSize): Integer;
 begin
   Result := Integer(inherited Items[Index]);
 end;
 
-function TIntegerList.IndexOf(Item: Integer): Integer;
+function TIntegerList.IndexOf(Item: Integer): TJclListSize;
 begin
   Result := inherited IndexOf(TObject(Item));
 end;
 
-procedure TIntegerList.Insert(Index, Item: Integer);
+procedure TIntegerList.Insert(Index: TJclListSize; Item: Integer);
 begin
   inherited Insert(Index, TObject(Item));
 end;
@@ -8734,12 +8734,12 @@ begin
   end;
 end;
 
-function TIntegerList.Remove(Item: Integer): Integer;
+function TIntegerList.Remove(Item: Integer): TJclListSize;
 begin
   Result := Integer(inherited Remove(TObject(Item)));
 end;
 
-procedure TIntegerList.SetItem(Index: Integer; const Value: Integer);
+procedure TIntegerList.SetItem(Index: TJclListSize; const Value: Integer);
 begin
   inherited Items[Index] := TObject(Value);
 end;

@@ -43,6 +43,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Types, Classes, SysUtils, Windows, Graphics,
+  JclBase,
   JvLinkLabelTools, JvTypes;
 
 type
@@ -254,14 +255,14 @@ type
 
   TNodeList = class(TList)
   private
-    function Get(Index: Integer): TNode;
-    procedure Put(Index: Integer; const Value: TNode);
+    function Get(Index: TJclListSize): TNode;
+    procedure Put(Index: TJclListSize; const Value: TNode);
   public
-    function Add(Item: TNode): Integer;
-    procedure Insert(Index: Integer; Item: TNode);
-    function Remove(Item: TNode): Integer;
-    function IndexOf(Item: TNode): Integer;
-    property Items[Index: Integer]: TNode read Get write Put; default;
+    function Add(Item: TNode): TJclListSize;
+    procedure Insert(Index: TJclListSize; Item: TNode);
+    function Remove(Item: TNode): TJclListSize;
+    function IndexOf(Item: TNode): TJclListSize;
+    property Items[Index: TJclListSize]: TNode read Get write Put; default;
   end;
 
   TNodeTree = class(TObject)
@@ -493,32 +494,32 @@ end;
 
 //=== { TNodeList } ==========================================================
 
-function TNodeList.Add(Item: TNode): Integer;
+function TNodeList.Add(Item: TNode): TJclListSize;
 begin
   Result := inherited Add(Item);
 end;
 
-function TNodeList.Get(Index: Integer): TNode;
+function TNodeList.Get(Index: TJclListSize): TNode;
 begin
   Result := inherited Get(Index);
 end;
 
-function TNodeList.IndexOf(Item: TNode): Integer;
+function TNodeList.IndexOf(Item: TNode): TJclListSize;
 begin
   Result := inherited IndexOf(Item);
 end;
 
-procedure TNodeList.Insert(Index: Integer; Item: TNode);
+procedure TNodeList.Insert(Index: TJclListSize; Item: TNode);
 begin
   inherited Insert(Index, Item);
 end;
 
-procedure TNodeList.Put(Index: Integer; const Value: TNode);
+procedure TNodeList.Put(Index: TJclListSize; const Value: TNode);
 begin
   inherited Put(Index, Value);
 end;
 
-function TNodeList.Remove(Item: TNode): Integer;
+function TNodeList.Remove(Item: TNode): TJclListSize;
 begin
   Result := inherited Remove(Item);
 end;
