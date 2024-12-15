@@ -41,7 +41,7 @@ uses
 
 type
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvADOQuery = class(TADOQuery, IJvThreadedDatasetInterface)
     procedure BreakExecution;
@@ -110,7 +110,7 @@ type
   end;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvADODataSet = class(TADODataSet, IJvThreadedDatasetInterface)
     procedure BreakExecution;

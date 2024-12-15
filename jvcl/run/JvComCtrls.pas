@@ -174,7 +174,7 @@ type
   end;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvIPAddress = class(TJvCustomControl)
   private
@@ -329,7 +329,7 @@ type
   end;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvTabDefaultPainter = class(TJvTabControlPainter)
   private
@@ -393,7 +393,7 @@ type
   end;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvTabControl = class(TJvExTabControl)
   private
@@ -418,7 +418,7 @@ type
   end;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvPageControl = class(TJvExPageControl)
   private
@@ -468,7 +468,7 @@ type
   TJvTrackToolTipEvent = procedure(Sender: TObject; var ToolTipText: string) of object;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvTrackBar = class(TJvExTrackBar)
   private
@@ -559,7 +559,7 @@ type
     Cause: TJvNodeSelectCause; var Allow: Boolean) of object;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvTreeView = class(TJvExTreeView)
   private

@@ -207,7 +207,7 @@ type
 
   { Location Class for Local Network Location }
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionNetworkLocation = class(TJvCustomProgramVersionFileBasedLocation)
   protected
@@ -262,7 +262,7 @@ type
   { Simple HTTP location class with no http logic.
   The logic must be implemented manually in the OnLoadFileFromRemote event }
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionHTTPLocation = class(TJvCustomProgramVersionInternetLocation)
   private
@@ -285,7 +285,7 @@ type
 
   {$IFDEF USE_3RDPARTY_INDY}
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionHTTPLocationIndy = class(TJvProgramVersionHTTPLocation)
   private
@@ -313,7 +313,7 @@ type
 
   {$IFDEF USE_3RDPARTY_ICS}
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionHTTPLocationICS = class(TJvProgramVersionHTTPLocation)
   private
@@ -346,7 +346,7 @@ type
   { Simple FTP location class with no http logic.
   The logic must be implemented manually in the OnLoadFileFromRemote event }
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionFTPLocation = class(TJvCustomProgramVersionInternetLocation)
   private
@@ -417,7 +417,7 @@ type
     The logic must be implemented manually in the OnLoadFileFromRemote event }
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionDatabaseLocation = class(TJvCustomProgramVersionLocation)
   private
@@ -474,7 +474,7 @@ type
   end;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionCheck = class(TJvCustomPropertyStore)
   private

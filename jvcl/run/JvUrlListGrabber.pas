@@ -104,7 +104,7 @@ type
   // in parallel in the background, leaving the user's application free
   // to continue its operations
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvUrlListGrabber = class(TJvComponent)
   private

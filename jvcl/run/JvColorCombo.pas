@@ -57,7 +57,7 @@ type
   TJvColorComboOptions = set of TJvColorComboOption;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvColorComboBox = class(TJvCustomComboBox)
   private
@@ -202,7 +202,7 @@ type
     var APreviewText: string; ATextWidth: Integer; var DrawPreview: Boolean) of object;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvFontComboBox = class(TJvCustomComboBox)
   private
