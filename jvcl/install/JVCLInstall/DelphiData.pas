@@ -188,6 +188,7 @@ type
     function GetDccil: string;
     function GetBcc32: string;
     function GetBcc64: string;
+    function GetBcc64x: string;
     function GetIlink32: string;
     function GetTlib: string;
     function GetBplDir: string;
@@ -208,6 +209,7 @@ type
     function IsPersonal: Boolean;
     function DisplayName: string;
     function HasBDE: Boolean;
+    function HasWin64x: Boolean;
 
     function IsInEnvPath(const Dir: string): Boolean;
       { IsInEnvPath returns True if Dir is in the EnvPath. (ShortPaths and
@@ -254,6 +256,7 @@ type
     property Dccil: string read GetDccil;
     property Bcc32: string read GetBcc32;
     property Bcc64: string read GetBcc64;
+    property Bcc64x: string read GetBcc64x;
     property Ilink32: string read GetIlink32;
     property Tlib: string read GetTlib;
 
@@ -1449,6 +1452,11 @@ begin
   Result := RootDir + '\Bin\bcc64.exe'; // do not localize
 end;
 
+function TCompileTarget.GetBcc64x: string;
+begin
+  Result := RootDir + '\Bin64\bcc64x.exe'; // do not localize
+end;
+
 function TCompileTarget.GetIlink32: string;
 begin
   Result := RootDir + '\Bin\ilink32.exe'; // do not localize
@@ -1462,6 +1470,11 @@ end;
 function TCompileTarget.HasBDE: Boolean;
 begin
   Result := (Platform = ctpWin32) and ((Version < 21) or FileExists(PathAddSeparator(RootLibReleaseDir) + 'bdertl.dcp'));
+end;
+
+function TCompileTarget.HasWin64x: Boolean;
+begin
+  Result := (Platform = ctpWin64) and (Version >= 29) and FileExists(Bcc64x);
 end;
 
 function TCompileTarget.GetDcpDir: string;
