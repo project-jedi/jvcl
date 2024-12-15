@@ -91,7 +91,7 @@ type
     property FormName: string read FFormName;
   end;
 
-  TPlatformType = (pftWin32, pftWin64);
+  TPlatformType = (pftWin32, pftWin64, pftWin64x);
   TPlatformTypes = set of TPlatformType;
 
   TPlatform = class(TPackageXmlInfoItem)
@@ -761,6 +761,9 @@ begin
   else
   if APlatformName = 'Win64' then
     Result := pftWin64
+  else
+  if APlatformName = 'Win64x' then
+    Result := pftWin64x
   else
     raise Exception.Create('Invalid platform type');
 end;
