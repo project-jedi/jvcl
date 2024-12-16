@@ -183,7 +183,7 @@ type
 
   // the main menu class
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvMainMenu = class(TMainMenu)
   private
@@ -303,7 +303,7 @@ type
   // The Popup counterpart of TJvMainMenu
   // does basically the same thing, but in a popup menu
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvPopupMenu = class(TPopupMenu)
   private
@@ -623,7 +623,7 @@ type
 
   // This painter draws an item using the office style
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvOfficeMenuItemPainter = class(TJvCustomMenuItemPainter)
   private
@@ -651,7 +651,7 @@ type
 
   // this painter draws an item as a lowered or raised button
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvBtnMenuItemPainter = class(TJvCustomMenuItemPainter)
   private
@@ -673,7 +673,7 @@ type
   // this painter is the standard one and as such doesn't do anything
   // more than the ancestor class except publishing properties
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvStandardMenuItemPainter = class(TJvCustomMenuItemPainter)
   protected
@@ -690,7 +690,7 @@ type
 
   // this painter calls the user supplied events to render the item
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvOwnerDrawMenuItemPainter = class(TJvCustomMenuItemPainter)
   public
@@ -701,7 +701,7 @@ type
   // this painter draws an item using the XP style (white menus,
   // shadows below images...)
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvXPMenuItemPainter = class(TJvCustomMenuItemPainter)
   private

@@ -15,7 +15,9 @@ type
     clbBuilds: TCheckListBox;
     lblPleaseIndicate: TLabel;
     lblOnlyChanged: TLabel;
+    btnToggle: TButton;
     procedure FormShow(Sender: TObject);
+    procedure btnToggleClick(Sender: TObject);
   private
     { Private declarations }
     FTargets: TStrings;
@@ -39,6 +41,14 @@ uses
   GenerateUtils;
 
 { TfrmTargets }
+
+procedure TfrmTargets.btnToggleClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i := 0 to clbBuilds.Items.Count - 1 do
+    clbBuilds.Checked[i] := not clbBuilds.Checked[i];
+end;
 
 constructor TfrmTargets.Create(AOwner: TComponent);
 begin

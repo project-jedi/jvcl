@@ -40,6 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, WinInet, Classes, SysUtils, Contnrs,
+  JclBase,
   JvComponentBase, JvTypes;
 
 type
@@ -104,7 +105,7 @@ type
   // in parallel in the background, leaving the user's application free
   // to continue its operations
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvUrlListGrabber = class(TJvComponent)
   private
@@ -565,12 +566,12 @@ type
   // the objects in charge of every URLs it has to grab
   TJvUrlGrabberList = class(TObjectList)
   private
-    function GetItem(Index: Integer): TJvCustomUrlGrabber;
-    procedure SetItem(Index: Integer; const AGrabber: TJvCustomUrlGrabber);
+    function GetItem(Index: TJclListSize): TJvCustomUrlGrabber;
+    procedure SetItem(Index: TJclListSize; const AGrabber: TJvCustomUrlGrabber);
   public
-    function Add(AGrabber: TJvCustomUrlGrabber): Integer;
-    procedure Insert(Index: Integer; AGrabber: TJvCustomUrlGrabber);
-    property Items[Index: Integer]: TJvCustomUrlGrabber read GetItem write SetItem; default;
+    function Add(AGrabber: TJvCustomUrlGrabber): TJclListSize;
+    procedure Insert(Index: TJclListSize; AGrabber: TJvCustomUrlGrabber);
+    property Items[Index: TJclListSize]: TJvCustomUrlGrabber read GetItem write SetItem; default;
   end;
 
   TJvCustomUrlGrabberClass = class of TJvCustomUrlGrabber;
@@ -582,15 +583,15 @@ type
   // class is best suited for handling a given URL
   TJvUrlGrabberClassList = class(TClassList)
   private
-    function GetItem(Index: Integer): TJvCustomUrlGrabberClass;
-    procedure SetItem(Index: Integer; const AGrabberClass: TJvCustomUrlGrabberClass);
+    function GetItem(Index: TJclListSize): TJvCustomUrlGrabberClass;
+    procedure SetItem(Index: TJclListSize; const AGrabberClass: TJvCustomUrlGrabberClass);
   public
     procedure Populate(DefaultPropertiesList: TJvUrlGrabberDefaultPropertiesList);
-    function Add(AGrabberClass: TJvCustomUrlGrabberClass): Integer;
-    procedure Insert(Index: Integer; AGrabberClass: TJvCustomUrlGrabberClass);
+    function Add(AGrabberClass: TJvCustomUrlGrabberClass): TJclListSize;
+    procedure Insert(Index: TJclListSize; AGrabberClass: TJvCustomUrlGrabberClass);
     function CreateFor(Owner: TComponent; Url: string; DefaultPropertiesList: TJvUrlGrabberDefaultPropertiesList):
       TJvCustomUrlGrabber;
-    property Items[Index: Integer]: TJvCustomUrlGrabberClass read GetItem write SetItem; default;
+    property Items[Index: TJclListSize]: TJvCustomUrlGrabberClass read GetItem write SetItem; default;
   end;
 
 function JvUrlGrabberClassList: TJvUrlGrabberClassList;
@@ -1181,29 +1182,29 @@ end;
 
 //=== { TJvUrlGrabberList } ==================================================
 
-function TJvUrlGrabberList.Add(AGrabber: TJvCustomUrlGrabber): Integer;
+function TJvUrlGrabberList.Add(AGrabber: TJvCustomUrlGrabber): TJclListSize;
 begin
   Result := inherited Add(AGrabber);
 end;
 
-function TJvUrlGrabberList.GetItem(Index: Integer): TJvCustomUrlGrabber;
+function TJvUrlGrabberList.GetItem(Index: TJclListSize): TJvCustomUrlGrabber;
 begin
   Result := TJvCustomUrlGrabber(inherited Items[Index]);
 end;
 
-procedure TJvUrlGrabberList.Insert(Index: Integer; AGrabber: TJvCustomUrlGrabber);
+procedure TJvUrlGrabberList.Insert(Index: TJclListSize; AGrabber: TJvCustomUrlGrabber);
 begin
   inherited Insert(Index, AGrabber);
 end;
 
-procedure TJvUrlGrabberList.SetItem(Index: Integer; const AGrabber: TJvCustomUrlGrabber);
+procedure TJvUrlGrabberList.SetItem(Index: TJclListSize; const AGrabber: TJvCustomUrlGrabber);
 begin
   inherited Items[Index] := AGrabber;
 end;
 
 //=== { TJvCustomUrlGrabberClassList } =======================================
 
-function TJvUrlGrabberClassList.Add(AGrabberClass: TJvCustomUrlGrabberClass): Integer;
+function TJvUrlGrabberClassList.Add(AGrabberClass: TJvCustomUrlGrabberClass): TJclListSize;
 begin
   Result := inherited Add(AGrabberClass);
 end;
@@ -1223,12 +1224,12 @@ begin
   end;
 end;
 
-function TJvUrlGrabberClassList.GetItem(Index: Integer): TJvCustomUrlGrabberClass;
+function TJvUrlGrabberClassList.GetItem(Index: TJclListSize): TJvCustomUrlGrabberClass;
 begin
   Result := TJvCustomUrlGrabberClass(inherited Items[Index]);
 end;
 
-procedure TJvUrlGrabberClassList.Insert(Index: Integer;
+procedure TJvUrlGrabberClassList.Insert(Index: TJclListSize;
   AGrabberClass: TJvCustomUrlGrabberClass);
 begin
   inherited Insert(Index, AGrabberClass);
@@ -1243,7 +1244,7 @@ begin
     DefaultPropertiesList.Add(Items[I].GetDefaultPropertiesClass.Create(DefaultPropertiesList));
 end;
 
-procedure TJvUrlGrabberClassList.SetItem(Index: Integer;
+procedure TJvUrlGrabberClassList.SetItem(Index: TJclListSize;
   const AGrabberClass: TJvCustomUrlGrabberClass);
 begin
   inherited Items[Index] := AGrabberClass;

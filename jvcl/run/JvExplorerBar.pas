@@ -35,7 +35,8 @@ interface
 uses
   Windows, Messages, Types,
   SysUtils, Classes, Contnrs, Math,
-  Graphics, Controls, ExtCtrls, Forms, ImgList;
+  Graphics, Controls, ExtCtrls, Forms, ImgList,
+  JclBase;
 
 const
   JvExplorerConstDefaultWidth = 218;
@@ -239,14 +240,14 @@ type
   TJvExplorerBarGroupItems = class(TComponentList)
   private
     FGroup: TJvExplorerBarGroup;
-    function GetItem(Index: Integer): TJvExplorerBarGroupItem;
+    function GetItem(Index: TJclListSize): TJvExplorerBarGroupItem;
   public
     constructor Create(AGroup: TJvExplorerBarGroup);
     function Add(AItem: TJvExplorerBarGroupItem): TJvExplorerBarGroupItem;
-    function Remove(AItem: TJvExplorerBarGroupItem): Integer;
-    function IndexOf(AItem: TJvExplorerBarGroupItem): Integer;
+    function Remove(AItem: TJvExplorerBarGroupItem): TJclListSize;
+    function IndexOf(AItem: TJvExplorerBarGroupItem): TJclListSize;
 
-    property Items[Index: Integer]: TJvExplorerBarGroupItem read GetItem; default;
+    property Items[Index: TJclListSize]: TJvExplorerBarGroupItem read GetItem; default;
     property Group: TJvExplorerBarGroup read FGroup;
   end;
 
@@ -393,7 +394,7 @@ type
 
   { a complete bar }
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvExplorerBar = class(TScrollingWinControl)
   private
@@ -1852,17 +1853,17 @@ begin
   FGroup := AGroup;
 end;
 
-function TJvExplorerBarGroupItems.GetItem(Index: Integer): TJvExplorerBarGroupItem;
+function TJvExplorerBarGroupItems.GetItem(Index: TJclListSize): TJvExplorerBarGroupItem;
 begin
   Result := TJvExplorerBarGroupItem(inherited Items[Index]);
 end;
 
-function TJvExplorerBarGroupItems.IndexOf(AItem: TJvExplorerBarGroupItem): Integer;
+function TJvExplorerBarGroupItems.IndexOf(AItem: TJvExplorerBarGroupItem): TJclListSize;
 begin
   Result := inherited IndexOf(AItem);
 end;
 
-function TJvExplorerBarGroupItems.Remove(AItem: TJvExplorerBarGroupItem): Integer;
+function TJvExplorerBarGroupItems.Remove(AItem: TJvExplorerBarGroupItem): TJclListSize;
 begin
   Result := inherited Remove(AItem);
 end;

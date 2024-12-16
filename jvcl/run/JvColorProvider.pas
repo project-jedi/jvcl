@@ -250,16 +250,16 @@ type
   private
     FProvider: TJvColorProvider;
   protected
-    function GetItem(Index: Integer): TJvColorProviderNameMapping;
-    procedure SetItem(Index: Integer; AObject: TJvColorProviderNameMapping);
+    function GetItem(Index: TJclListSize): TJvColorProviderNameMapping;
+    procedure SetItem(Index: TJclListSize; AObject: TJvColorProviderNameMapping);
 
     property Provider: TJvColorProvider read FProvider;
   public
     constructor Create(AProvider: TJvColorProvider);
-    function Add(Item: TJvColorProviderNameMapping): Integer;
+    function Add(Item: TJvColorProviderNameMapping): TJclListSize;
     procedure Clear; override;
-    procedure Delete(Index: Integer);
-    property Items[Index: Integer]: TJvColorProviderNameMapping read GetItem write SetItem; default;
+    procedure Delete(Index: TJclListSize);
+    property Items[Index: TJclListSize]: TJvColorProviderNameMapping read GetItem write SetItem; default;
   end;
 
   TJvColorProviderNameMapping = class(TObject)
@@ -2806,18 +2806,18 @@ begin
   FProvider := AProvider;
 end;
 
-function TJvColorProviderNameMappings.GetItem(Index: Integer): TJvColorProviderNameMapping;
+function TJvColorProviderNameMappings.GetItem(Index: TJclListSize): TJvColorProviderNameMapping;
 begin
   Result := TJvColorProviderNameMapping(inherited GetItem(Index));
 end;
 
-procedure TJvColorProviderNameMappings.SetItem(Index: Integer;
+procedure TJvColorProviderNameMappings.SetItem(Index: TJclListSize;
   AObject: TJvColorProviderNameMapping);
 begin
   inherited SetItem(Index, AObject);
 end;
 
-function TJvColorProviderNameMappings.Add(Item: TJvColorProviderNameMapping): Integer;
+function TJvColorProviderNameMappings.Add(Item: TJvColorProviderNameMapping): TJclListSize;
 begin
   Provider.MappingAdding;
   Result := inherited Add(Item);
@@ -2836,7 +2836,7 @@ begin
   end;
 end;
 
-procedure TJvColorProviderNameMappings.Delete(Index: Integer);
+procedure TJvColorProviderNameMappings.Delete(Index: TJclListSize);
 begin
   if (Index >= 0) and (Index < Count) then
   begin
