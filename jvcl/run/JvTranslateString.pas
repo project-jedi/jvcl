@@ -59,7 +59,7 @@ type
     var CommandResult: string; var Changed: Boolean) of object;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvTranslateString = class(TJvComponent)
   private
