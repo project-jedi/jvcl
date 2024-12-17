@@ -32,7 +32,8 @@ unit DelphiData;
 interface
 
 uses
-  Windows, SysUtils, Classes, Contnrs, Registry, PackageInformation;
+  Windows, SysUtils, Classes, Contnrs, Registry, PackageInformation,
+  JclSimpleXml;
 
 const
   BDSVersions: array[1..23] of record
@@ -199,6 +200,8 @@ type
     function GetRootLibDir: string;
     function GetRootLibReleaseDir: string;
     function GetProjectDir: string;
+
+    function GetEnvOptionsPropertyGroupNode(AEnvOptions: TJclSimpleXML; const APlatformStrSuffix: string): TJclSimpleXMLElem;
   protected
     property DCPOutputDir: string read FDCPOutputDir; // with macros, could contain double backslashes when resolving the macro
     property BPLOutputDir: string read FBPLOutputDir; // with macros, could contain double backslashes when resolving the macro
@@ -340,7 +343,7 @@ uses
   {$ENDIF ~COMPILER12_UP}
   CmdLineUtils, Utils,
   JvConsts,
-  JclBase, JclSysInfo, JclSimpleXml, JclSysUtils, JclFileUtils, JclIDEUtils, JclStrings;
+  JclBase, JclSysInfo, JclSysUtils, JclFileUtils, JclIDEUtils, JclStrings;
 
 function DequoteStr(const S: string): string;
 begin
@@ -868,7 +871,6 @@ var
   i: Integer;
   EnvOptions: TJclSimpleXml;
   PropertyGroupNode, PropertyNode: TJclSimpleXMLElem;
-  ConditionProperty: TJclSimpleXMLProp;
   ForceEnvOptionsUpdate: Boolean;
   LibraryKey: string;
   ValueInfo: TRegDataInfo;
@@ -1017,22 +1019,7 @@ begin
         EnvOptions.Options := EnvOptions.Options - [sxoAutoCreate];
         EnvOptions.Options := EnvOptions.Options + [sxoDoNotSaveProlog];
 
-        if IDEVersion >= 9 then
-        begin
-          PropertyGroupNode := nil;
-          for I := 0 to EnvOptions.Root.Items.Count - 1 do
-          begin
-            ConditionProperty := EnvOptions.Root.Items[I].Properties.ItemNamed['Condition'];
-            if Assigned(ConditionProperty) and
-              (ConditionProperty.Value = Format('''$(Platform)''==''%s''', [GetPlatformStr])) then
-            begin
-              PropertyGroupNode := EnvOptions.Root.Items[I];
-              Break;
-            end;
-          end;
-        end
-        else
-          PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
+        PropertyGroupNode := GetEnvOptionsPropertyGroupNode(EnvOptions, GetPlatformStr);
 
         if Assigned(PropertyGroupNode) then
         begin
@@ -1300,7 +1287,6 @@ var
   i: Integer;
   EnvOptions: TJclSimpleXml;
   PropertyGroupNode: TJclSimpleXMLElem;
-  ConditionProperty: TJclSimpleXMLProp;
 begin
   // save both the registry and EnvOptions.proj for Delphi 2007
   if IsBDS and (IDEVersion >= 5) then
@@ -1312,22 +1298,7 @@ begin
       EnvOptions.Options := EnvOptions.Options + [sxoAutoCreate];
       EnvOptions.Options := EnvOptions.Options + [sxoDoNotSaveProlog];
 
-      if IDEVersion >= 9 then
-      begin
-        PropertyGroupNode := nil;
-        for I := 0 to EnvOptions.Root.Items.Count - 1 do
-        begin
-          ConditionProperty := EnvOptions.Root.Items[I].Properties.ItemNamed['Condition'];
-          if Assigned(ConditionProperty) and
-            (ConditionProperty.Value = Format('''$(Platform)''==''%s''', [GetPlatformStr])) then
-          begin
-            PropertyGroupNode := EnvOptions.Root.Items[I];
-            Break;
-          end;
-        end;
-      end
-      else
-        PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
+      PropertyGroupNode := GetEnvOptionsPropertyGroupNode(EnvOptions, GetPlatformStr);
 
       if IDEVersion >= 8 then
       begin
@@ -1645,6 +1616,31 @@ begin
     Result := Format('%s\Borland\BDS\%d.0\EnvOptions.proj', [ExcludeTrailingPathDelimiter(GetAppdataFolder), IDEVersion])
   else
     Result := '';
+end;
+
+function TCompileTarget.GetEnvOptionsPropertyGroupNode(
+  AEnvOptions: TJclSimpleXML;
+  const APlatformStrSuffix: string): TJclSimpleXMLElem;
+var
+  I: Integer;
+  ConditionProperty: TJclSimpleXMLProp;
+begin
+  if IDEVersion >= 9 then
+  begin
+    Result := nil;
+    for I := 0 to AEnvOptions.Root.Items.Count - 1 do
+    begin
+      ConditionProperty := AEnvOptions.Root.Items[I].Properties.ItemNamed['Condition'];
+      if Assigned(ConditionProperty) and
+        (ConditionProperty.Value = Format('''$(Platform)''==''%s''', [GetPlatformStr + APlatformStrSuffix])) then
+      begin
+        Result := AEnvOptions.Root.Items[I];
+        Break;
+      end;
+    end;
+  end
+  else
+    Result := AEnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
 end;
 
 function TCompileTarget.ReadCommonProjectsDir: string;
