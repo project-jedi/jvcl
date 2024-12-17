@@ -161,7 +161,10 @@ type
     FGlobalIncludePaths: TStringList;
     FGlobalCppBrowsingPaths: TStringList;
     FGlobalCppLibraryPaths: TStringList;
-    
+    FGlobalIncludePathsClang32: TStringList;
+    FGlobalCppBrowsingPathsClang32: TStringList;
+    FGlobalCppLibraryPathsClang32: TStringList;
+
     FOrgEnvVars: TEnvVarStrings;
     FEnvVars: TEnvVarStrings;
     FDefaultBDSProjectsDir: string;
@@ -285,6 +288,9 @@ type
     property GlobalIncludePaths: TStringList read FGlobalIncludePaths; // BDS only, with macros
     property GlobalCppBrowsingPaths: TStringList read FGlobalCppBrowsingPaths; // BDS only, with macros
     property GlobalCppLibraryPaths: TStringList read FGlobalCppLibraryPaths;  // BDS v5 and upper only, with macros
+    property GlobalIncludePathsClang32: TStringList read FGlobalIncludePathsClang32; // BDS v23 and upper only, with macros
+    property GlobalCppBrowsingPathsClang32: TStringList read FGlobalCppBrowsingPathsClang32; // BDS v23 and upper  only, with macros
+    property GlobalCppLibraryPathsClang32: TStringList read FGlobalCppLibraryPathsClang32;  // BDS v23 and upper, with macros
 
     property BDSProjectsDir: string read GetBDSProjectsDir;
     property CommonProjectsDir: string read GetCommonProjectsDir;
@@ -597,6 +603,9 @@ begin
   FGlobalIncludePaths := TStringList.Create;
   FGlobalCppBrowsingPaths := TStringList.Create;
   FGlobalCppLibraryPaths := TStringList.Create;
+  FGlobalIncludePathsClang32 := TStringList.Create;
+  FGlobalCppBrowsingPathsClang32 := TStringList.Create;
+  FGlobalCppLibraryPathsClang32 := TStringList.Create;
 
   FBrowsingPaths.Duplicates := dupIgnore;
   FPackageSearchPaths.Duplicates := dupIgnore;
@@ -605,6 +614,9 @@ begin
   FGlobalIncludePaths.Duplicates := dupIgnore;
   FGlobalCppBrowsingPaths.Duplicates := dupIgnore;
   FGlobalCppLibraryPaths.Duplicates := dupIgnore;
+  FGlobalIncludePathsClang32.Duplicates := dupIgnore;
+  FGlobalCppBrowsingPathsClang32.Duplicates := dupIgnore;
+  FGlobalCppLibraryPathsClang32.Duplicates := dupIgnore;
 
   FDisabledPackages := TDelphiPackageList.Create;
   FKnownIDEPackages := TDelphiPackageList.Create;
@@ -626,6 +638,9 @@ begin
   FGlobalIncludePaths.Free;
   FGlobalCppBrowsingPaths.Free;
   FGlobalCppLibraryPaths.Free;
+  FGlobalIncludePathsClang32.Free;
+  FGlobalCppBrowsingPathsClang32.Free;
+  FGlobalCppLibraryPathsClang32.Free;
 
   FDisabledPackages.Free;
   FKnownIDEPackages.Free;
@@ -956,6 +971,10 @@ begin
     FDebugDcuPaths.Clear;
     FGlobalIncludePaths.Clear;
     FGlobalCppBrowsingPaths.Clear;
+    FGlobalCppLibraryPaths.Clear;
+    FGlobalIncludePathsClang32.Clear;
+    FGlobalCppBrowsingPathsClang32.Clear;
+    FGlobalCppLibraryPathsClang32.Clear;
 
     // Must read personalities before using library paths.
     if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\Personalities') then  // do not localize
@@ -1014,6 +1033,7 @@ begin
         end
         else
           PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
+
         if Assigned(PropertyGroupNode) then
         begin
           if IDEVersion >= 8 then
@@ -1072,6 +1092,19 @@ begin
             PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath']; // do not localize
             if Assigned(PropertyNode) then
               ConvertPathList(PropertyNode.Value, FGlobalCppLibraryPaths); // do not localize
+
+            if (IDEVersion >= 23) and (Platform = ctpWin32) then
+            begin
+              PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderIncludePath_Clang32']; // do not localize
+              if Assigned(PropertyNode) then
+                ConvertPathList(PropertyNode.Value, FGlobalIncludePathsClang32); // do not localize
+              PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderBrowsingPath_Clang32']; // do not localize
+              if Assigned(PropertyNode) then
+                ConvertPathList(PropertyNode.Value, FGlobalCppBrowsingPathsClang32); // do not localize
+              PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath_Clang32']; // do not localize
+              if Assigned(PropertyNode) then
+                ConvertPathList(PropertyNode.Value, FGlobalCppLibraryPathsClang32); // do not localize
+            end;
           end;
         end;
       finally
@@ -1133,7 +1166,7 @@ begin
           ConvertPathList(Reg.ReadString('LibraryPath'), FGlobalCppLibraryPaths); // do not localize
         Reg.CloseKey;
       end;
-      // C++Builder XE2 only supports Win32
+      // C++Builder XE2 only supports Win32, later versions support other platforms, in different flavours
       if (IDEVersion >= 9) and Reg.OpenKeyReadOnly(RegistryKey + '\C++\Paths\' + GetPlatformStr) then // do not localize
       begin
         if FGlobalIncludePaths.Count = 0 then
@@ -1142,6 +1175,17 @@ begin
           ConvertPathList(Reg.ReadString('BrowsingPath'), FGlobalCppBrowsingPaths); // do not localize
         if FGlobalCppLibraryPaths.Count = 0 then
           ConvertPathList(Reg.ReadString('LibraryPath'), FGlobalCppLibraryPaths); // do not localize
+
+        if (IDEVersion >= 23) and (Platform = ctpWin32) then
+        begin
+          if FGlobalIncludePathsClang32.Count = 0 then
+            ConvertPathList(Reg.ReadString('IncludePath_Clang32'), FGlobalIncludePathsClang32); // do not localize
+          if FGlobalCppBrowsingPathsClang32.Count = 0 then
+            ConvertPathList(Reg.ReadString('BrowsingPath_Clang32'), FGlobalCppBrowsingPathsClang32); // do not localize
+          if FGlobalCppLibraryPathsClang32.Count = 0 then
+            ConvertPathList(Reg.ReadString('LibraryPath_Clang32'), FGlobalCppLibraryPathsClang32); // do not localize
+        end;
+
         Reg.CloseKey;
       end;
     end;
@@ -1256,6 +1300,7 @@ var
   i: Integer;
   EnvOptions: TJclSimpleXml;
   PropertyGroupNode: TJclSimpleXMLElem;
+  ConditionProperty: TJclSimpleXMLProp;
 begin
   // save both the registry and EnvOptions.proj for Delphi 2007
   if IsBDS and (IDEVersion >= 5) then
@@ -1267,7 +1312,22 @@ begin
       EnvOptions.Options := EnvOptions.Options + [sxoAutoCreate];
       EnvOptions.Options := EnvOptions.Options + [sxoDoNotSaveProlog];
 
-      PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
+      if IDEVersion >= 9 then
+      begin
+        PropertyGroupNode := nil;
+        for I := 0 to EnvOptions.Root.Items.Count - 1 do
+        begin
+          ConditionProperty := EnvOptions.Root.Items[I].Properties.ItemNamed['Condition'];
+          if Assigned(ConditionProperty) and
+            (ConditionProperty.Value = Format('''$(Platform)''==''%s''', [GetPlatformStr])) then
+          begin
+            PropertyGroupNode := EnvOptions.Root.Items[I];
+            Break;
+          end;
+        end;
+      end
+      else
+        PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
 
       if IDEVersion >= 8 then
       begin
@@ -1287,6 +1347,13 @@ begin
         PropertyGroupNode.Items.ItemNamed['CBuilderIncludePath'].Value := ConvertPathList(FGlobalIncludePaths); // do not localize
         PropertyGroupNode.Items.ItemNamed['CBuilderBrowsingPath'].Value := ConvertPathList(FGlobalCppBrowsingPaths); // do not localize
         PropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath'].Value := ConvertPathList(FGlobalCppLibraryPaths); // do not localize
+
+        if (IDEVersion >= 23) and (Platform = ctpWin32) then
+        begin
+          PropertyGroupNode.Items.ItemNamed['CBuilderIncludePath_Clang32'].Value := ConvertPathList(FGlobalIncludePathsClang32); // do not localize
+          PropertyGroupNode.Items.ItemNamed['CBuilderBrowsingPath_Clang32'].Value := ConvertPathList(FGlobalCppBrowsingPathsClang32); // do not localize
+          PropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath_Clang32'].Value := ConvertPathList(FGlobalCppLibraryPathsClang32); // do not localize
+        end;
       end;
 
       EnvOptions.SaveToFile(GetEnvOptionsFileName);
@@ -1331,6 +1398,20 @@ begin
       S := ConvertPathList(FGlobalCppLibraryPaths);
       if not Reg.ValueExists('LibraryPath') or (S <> Reg.ReadString('LibraryPath')) then
         Reg.WriteString('LibraryPath', S);
+
+      if (IDEVersion >= 23) and (Platform = ctpWin32) then
+      begin
+        S := ConvertPathList(FGlobalIncludePathsClang32);
+        if not Reg.ValueExists('IncludePath_Clang32') or (S <> Reg.ReadString('IncludePath_Clang32')) then
+          Reg.WriteString('IncludePath_Clang32', S);
+        S := ConvertPathList(FGlobalCppBrowsingPathsClang32);
+        if not Reg.ValueExists('BrowsingPath_Clang32') or (S <> Reg.ReadString('BrowsingPath_Clang32')) then
+          Reg.WriteString('BrowsingPath_Clang32', S);
+        S := ConvertPathList(FGlobalCppLibraryPathsClang32);
+        if not Reg.ValueExists('LibraryPath_Clang32') or (S <> Reg.ReadString('LibraryPath_Clang32')) then
+          Reg.WriteString('LibraryPath_Clang32', S);
+      end;
+
       Reg.CloseKey;
     end;
 
