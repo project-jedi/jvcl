@@ -1389,6 +1389,7 @@ begin
       try
         XML.Options := [sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
         XML.Root.Name := 'JvclInstall';
+        XML.Root.Properties.Add('timestamp', FormatDateTime('yyyy-mm-dd hh:nn:ss', Now));
         CompiledConfigIndex := 0;
         for I := 0 to Data.Targets.Count - 1 do
         begin
