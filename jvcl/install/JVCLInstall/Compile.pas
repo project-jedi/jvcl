@@ -1224,11 +1224,8 @@ begin
           Files.Add(ExtractFileName(ChangeFileExt(Project.SourceName, '.dpk'))); // readd, dcc removes items from the Files list
           Win64xResult := Dcc(TargetConfig, Project, DccOpt, DebugUnits, Files, nil, True);
           if Win64xResult <> 0 then
-            {$IFDEF DELPHI12_UP}
-            Exit(Win64xResult);
-            {$ELSE}
+            Result := Win64xResult;
             Exit;
-            {$ENDIF}
         end;
 
         FilesCompiled := True;
