@@ -207,7 +207,7 @@ type
 
   { Location Class for Local Network Location }
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionNetworkLocation = class(TJvCustomProgramVersionFileBasedLocation)
   protected
@@ -262,7 +262,7 @@ type
   { Simple HTTP location class with no http logic.
   The logic must be implemented manually in the OnLoadFileFromRemote event }
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionHTTPLocation = class(TJvCustomProgramVersionInternetLocation)
   private
@@ -285,7 +285,7 @@ type
 
   {$IFDEF USE_3RDPARTY_INDY}
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionHTTPLocationIndy = class(TJvProgramVersionHTTPLocation)
   private
@@ -313,7 +313,7 @@ type
 
   {$IFDEF USE_3RDPARTY_ICS}
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionHTTPLocationICS = class(TJvProgramVersionHTTPLocation)
   private
@@ -346,7 +346,7 @@ type
   { Simple FTP location class with no http logic.
   The logic must be implemented manually in the OnLoadFileFromRemote event }
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionFTPLocation = class(TJvCustomProgramVersionInternetLocation)
   private
@@ -417,7 +417,7 @@ type
     The logic must be implemented manually in the OnLoadFileFromRemote event }
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionDatabaseLocation = class(TJvCustomProgramVersionLocation)
   private
@@ -474,7 +474,7 @@ type
   end;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvProgramVersionCheck = class(TJvCustomPropertyStore)
   private
@@ -1486,6 +1486,7 @@ begin
   ParameterList := TJvParameterList.Create(Self);
   try
     ParameterList.MaxWidth := PPIScale(460);
+    ParameterList.MaxHeight := PPIScale(400);
     ParameterList.Messages.Caption :=
       Format(RsPVCDialogCaption, [CurrentApplicationName]);
     ParameterList.Messages.OkButton := RsPVCDialogExecuteButton;
@@ -1495,7 +1496,7 @@ begin
     Parameter.Caption := Format(RsPVCNewVersionAvailable,
       [GetAllowedRemoteProgramVersionReleaseType, CurrentApplicationName]);
     Parameter.Width := PPIScale(350);
-    Parameter.Height := PPIScale(45);
+    Parameter.Height := PPIScale(35);
     ParameterList.AddParameter(Parameter);
 
     GroupParameter := TJvGroupBoxParameter.Create(ParameterList);
@@ -1516,6 +1517,7 @@ begin
           Parameter.SearchName := SParamNameRadioButton + IntToStr(Ord(I));
           Parameter.Caption := RemoteProgramVersionHistory.CurrentProgramVersion[I].ProgramVersionInfo;
           Parameter.Width := PPIScale(250);
+          Parameter.Height := PPIScale(25);
           Parameter.AsBoolean := GroupParameter.Height <= PPIScale(10);
           ParameterList.AddParameter(Parameter);
 
@@ -1524,11 +1526,10 @@ begin
           Parameter.SearchName := SParamNameVersionButtonInfo + IntToStr(Ord(I));
           Parameter.Caption := RsPVInfoButtonCaption;
           Parameter.Width := PPIScale(80);
+          Parameter.Height := PPIScale(22);
           Parameter.Tag := Ord(I);
           TJvButtonParameter(Parameter).OnClick := VersionInfoButtonClick;
           ParameterList.AddParameter(Parameter);
-
-          GroupParameter.Height := GroupParameter.Height + PPIScale(25);
         end;
     Parameter := TJvBaseParameter(TJvRadioGroupParameter.Create(ParameterList));
     Parameter.SearchName := SParamNameOperation;
@@ -1681,12 +1682,14 @@ var
 begin
   ParameterList := TJvParameterList.Create(Self);
   try
+    ParameterList.MaxWidth := PPIScale(460);
+    ParameterList.MaxHeight := PPIScale(400);
     ParameterList.Messages.Caption := Format(RsPVCWhatNewInS, [CurrentApplicationName]);
     ParameterList.CancelButtonVisible := False;
     Parameter := TJvMemoParameter.Create(ParameterList);
     Parameter.SearchName := SParamNameMemo;
     Parameter.Caption := Format(RsPVCChangesBetween, [AFromVersion, AToVersion]);
-    Parameter.Width := PPIScale(340);
+    Parameter.Width := PPIScale(400);
     Parameter.Height := PPIScale(200);
     Parameter.AsString := RemoteProgramVersionHistory.GetVersionsDescription(AFromVersion, AToVersion);
     Parameter.Scrollbars := ssBoth;

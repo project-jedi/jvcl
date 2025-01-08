@@ -86,7 +86,7 @@ type
     Rect: TRect; var NoDefaultPaint: Boolean) of object;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvPageSetupDialog = class(TJvCommonDialog)
   private
@@ -148,6 +148,7 @@ implementation
 
 uses
   SysUtils, Controls, Forms, Printers,
+  JclPrint,
   JvJCLUtils, JvResources;
 
 //=== { TJvMarginSize } ======================================================
@@ -308,26 +309,26 @@ end;
 
 procedure GetPrinter(var DeviceMode, DeviceNames: THandle);
 var
-  Device, Driver, Port: array [0..79] of Char;
+  Device, Driver, Port: string;
   DevNames: PDevNames;
   Offset: PChar;
 begin
-  Printer.GetPrinter(Device, Driver, Port, DeviceMode);
+  GetPrinterDetails(Printer, Device, Driver, Port, DeviceMode);
   if DeviceMode <> 0 then
   begin
     DeviceNames := GlobalAlloc(GHND, SizeOf(Char) * (SizeOf(TDevNames) +
-      StrLen(Device) + StrLen(Driver) + StrLen(Port) + 3));
+      Length(Device) + Length(Driver) + Length(Port) + 3));
     DevNames := PDevNames(GlobalLock(DeviceNames));
     try
       Offset := PChar(DevNames) + SizeOf(TDevNames);
       with DevNames^ do
       begin
         wDriverOffset := LONG_PTR(Offset) - LONG_PTR(DevNames);
-        Offset := StrECopy(Offset, Driver) + 1;
+        Offset := StrECopy(Offset, PChar(Driver)) + 1;
         wDeviceOffset := LONG_PTR(Offset) - LONG_PTR(DevNames);
-        Offset := StrECopy(Offset, Device) + 1;
+        Offset := StrECopy(Offset, PChar(Device)) + 1;
         wOutputOffset := LONG_PTR(Offset) - LONG_PTR(DevNames);
-        StrCopy(Offset, Port);
+        StrCopy(Offset, PChar(Port));
       end;
     finally
       GlobalUnlock(DeviceNames);

@@ -8,7 +8,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Contnrs;
+  SysUtils, Contnrs,
+  JclBase;
 
 type
   TJvLogEventSeverity = (lesError, lesWarning, lesInformation);
@@ -25,10 +26,10 @@ type
 
   TJvLogRecordList = class(TObjectList)
   private
-    function GetItem(Index: Integer): TJvLogRecord;
-    procedure SetItem(Index: Integer; const ALogRecord: TJvLogRecord);
+    function GetItem(Index: TJclListSize): TJvLogRecord;
+    procedure SetItem(Index: TJclListSize; const ALogRecord: TJvLogRecord);
   public
-    property Items[Index: Integer]: TJvLogRecord read GetItem write SetItem; default;
+    property Items[Index: TJclListSize]: TJvLogRecord read GetItem write SetItem; default;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -84,12 +85,12 @@ end;
 
 // === { TJvLogRecordList } ===================================
 
-function TJvLogRecordList.GetItem(Index: Integer): TJvLogRecord;
+function TJvLogRecordList.GetItem(Index: TJclListSize): TJvLogRecord;
 begin
   Result := TJvLogRecord(inherited Items[Index]);
 end;
 
-procedure TJvLogRecordList.SetItem(Index: Integer;
+procedure TJvLogRecordList.SetItem(Index: TJclListSize;
   const ALogRecord: TJvLogRecord);
 begin
   inherited Items[Index] := ALogRecord;

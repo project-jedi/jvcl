@@ -45,7 +45,7 @@ type
   TJvOpenDialogAS = (asSmallIcon, asReport);
   TDialogErrorEvent = procedure(Sender: TObject; ErrorCode:Cardinal) of object;
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvOpenDialog = class(TOpenDialog)
   private
@@ -105,7 +105,7 @@ type
   end;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvSaveDialog = class(TJvOpenDialog)
     function TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool; override;
@@ -114,7 +114,7 @@ type
   TJvCDQueryEvent = procedure(Sender: TObject; SelectedColor: TColor; var Accept: Boolean) of object;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvColorDialog = class(TColorDialog)
   private

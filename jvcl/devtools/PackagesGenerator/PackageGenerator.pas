@@ -601,9 +601,10 @@ type
     PlatformType: TPlatformType;
   end;
 const
-  ProjectPlatforms: array [0..1] of TPlatformConditional =
+  ProjectPlatforms: array [0..2] of TPlatformConditional =
     ( ( StartLine:'<%%% START PLATFORM WIN32 %%%>'; EndLine:'<%%% END PLATFORM WIN32 %%%>'; PlatformType: pftWin32),
-      ( StartLine:'<%%% START PLATFORM WIN64 %%%>'; EndLine:'<%%% END PLATFORM WIN64 %%%>'; PlatformType: pftWin64) );
+      ( StartLine:'<%%% START PLATFORM WIN64 %%%>'; EndLine:'<%%% END PLATFORM WIN64 %%%>'; PlatformType: pftWin64),
+      ( StartLine:'<%%% START PLATFORM WIN64X %%%>'; EndLine:'<%%% END PLATFORM WIN64X %%%>'; PlatformType: pftWin64x) );
 var
   OutFileName : string;
   oneLetterType : string;
@@ -774,6 +775,7 @@ begin
     AddProperty(Properties, 'DEFINECOUNT', IntToStr(DefineCount));
     AddProperty(Properties, 'WIN32ENABLED', Iff(pftWin32 in XML.PlatformTypes, 'True', 'False'));
     AddProperty(Properties, 'WIN64ENABLED', Iff(pftWin64 in XML.PlatformTypes, 'True', 'False'));
+    AddProperty(Properties, 'WIN64XENABLED', Iff(pftWin64x in XML.PlatformTypes, 'True', 'False'));
     SetLength(Replacements, Properties.Count * 2);
     for i := 0 to Properties.Count - 1 do
     begin

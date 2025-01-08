@@ -52,7 +52,7 @@ type
   TJvDragAcceptEvent = procedure(Sender: TJvDropTarget; var Accept: Boolean) of object;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvDropTarget = class(TJvComponent, IDropTarget)
   private
@@ -101,6 +101,14 @@ type
     function GetFileDescrCount: Integer;
     // GetFileContent returns the file content of the File Descriptor
     function GetFileContent(Index: Integer; Stream: TStream): Boolean;
+
+    // Returns True if the DataObject has a HDROP format and it supports IDataObjectAsyncCapability and
+    // GetAsyncMode is True. In that case GetFilenames/W only returns something when it is called from
+    // the DoDragDrop method.
+    // Chromium based browsers use async drops to download the data to the temp directory while the
+    // drag operation is happening.
+    function IsAsyncHDrop: Boolean;
+
     property DataObject: IDataObject read FDataObject;
   published
     property AcceptDrag: Boolean read FAcceptDrag write SetAcceptDrag default True; // should have be named 'AllowDrop'
@@ -114,7 +122,7 @@ type
   end;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvDragDrop = class(TJvComponent)
   private
@@ -176,6 +184,21 @@ uses
   ShlObj, SysUtils, Forms,
   JvJCLUtils,
   JvWndProcHook, JvJVCLUtils;
+
+{$IF not declared(IDataObjectAsyncCapability)}
+const
+  SID_IAsyncOperation = '{3D8B0590-F691-11D2-8EA9-006097DF5BD4}';
+
+type
+  IDataObjectAsyncCapability = interface(IUnknown)
+    [SID_IAsyncOperation]
+    function SetAsyncMode(fDoOpAsync: BOOL): HRESULT; stdcall;
+    function GetAsyncMode(var pfIsOpAsync: Bool): HRESULT; stdcall;
+    function StartOperation(pbcReserved: IBindCtx): HRESULT; stdcall;
+    function InOperation(var pfInAsyncOp: Bool): HRESULT; stdcall;
+    function EndOperation(hResult: HRESULT; pbcReserved: IBindCtx; dwEffects: DWORD): HRESULT; stdcall;
+  end;
+{$IFEND}
 
 var
   GlobalCF_FILEDESCRIPTOR: UINT = $FFFFFFF;
@@ -469,7 +492,7 @@ begin
     cfFormat := CF_HDROP;
     ptd := nil;
     dwAspect := DVASPECT_CONTENT;
-    lindex := 0;
+    lindex := -1;
     tymed := TYMED_HGLOBAL;
   end;
 
@@ -487,7 +510,7 @@ begin
     cfFormat := CF_FILECONTENTS;
     ptd := nil;
     dwAspect := DVASPECT_CONTENT;
-    lindex := 0;
+    lindex := -1;
     tymed := TYMED_ISTREAM or TYMED_ISTORAGE;
   end;
 end;
@@ -547,6 +570,9 @@ end;
 
 function TJvDropTarget.DragEnter(const dataObj: IDataObject; grfKeyState: Longint;
   pt: TPoint; var dwEffect: Longint): HRESULT;
+var
+  DataObjectAsync: IDataObjectAsyncCapability;
+  OpAsync: LongBool;
 begin
   FDataObject := dataObj;
   Result := S_OK;
@@ -563,6 +589,15 @@ begin
       DoDragEnter(dwEffect);
     except
       Result := E_UNEXPECTED;
+    end;
+
+    if FDataObject.QueryGetData(FileDropFormatEtc) = S_OK then
+    begin
+      // Notify the drop source so it can start the async operation and allows
+      // us to get file filenames in the DoDragDrop method.
+      if Supports(FDataObject, IDataObjectAsyncCapability, DataObjectAsync) then
+        if (DataObjectAsync.GetAsyncMode(OpAsync) = S_OK) and OpAsync then
+          DataObjectAsync.StartOperation(nil);
     end;
   end;
 end;
@@ -979,6 +1014,19 @@ begin
     except
       Result := False;
     end;
+  end;
+end;
+
+function TJvDropTarget.IsAsyncHDrop: Boolean;
+var
+  DataObjectAsync: IDataObjectAsyncCapability;
+  OpAsync: LongBool;
+begin
+  Result := False;
+  if FDataObject.QueryGetData(FileDropFormatEtc) = S_OK then
+  begin
+    if Supports(FDataObject, IDataObjectAsyncCapability, DataObjectAsync) then
+      Result := (DataObjectAsync.GetAsyncMode(OpAsync) = S_OK) and OpAsync;
   end;
 end;
 

@@ -32,7 +32,8 @@ unit DelphiData;
 interface
 
 uses
-  Windows, SysUtils, Classes, Contnrs, Registry, PackageInformation;
+  Windows, SysUtils, Classes, Contnrs, Registry, PackageInformation,
+  JclSimpleXml;
 
 const
   BDSVersions: array[1..23] of record
@@ -161,7 +162,13 @@ type
     FGlobalIncludePaths: TStringList;
     FGlobalCppBrowsingPaths: TStringList;
     FGlobalCppLibraryPaths: TStringList;
-    
+    FGlobalIncludePathsClang32: TStringList;
+    FGlobalCppBrowsingPathsClang32: TStringList;
+    FGlobalCppLibraryPathsClang32: TStringList;
+    FGlobalIncludePathsWin64x: TStringList;
+    FGlobalCppBrowsingPathsWin64x: TStringList;
+    FGlobalCppLibraryPathsWin64x: TStringList;
+
     FOrgEnvVars: TEnvVarStrings;
     FEnvVars: TEnvVarStrings;
     FDefaultBDSProjectsDir: string;
@@ -188,6 +195,7 @@ type
     function GetDccil: string;
     function GetBcc32: string;
     function GetBcc64: string;
+    function GetBcc64x: string;
     function GetIlink32: string;
     function GetTlib: string;
     function GetBplDir: string;
@@ -195,6 +203,8 @@ type
     function GetRootLibDir: string;
     function GetRootLibReleaseDir: string;
     function GetProjectDir: string;
+
+    function GetEnvOptionsPropertyGroupNode(AEnvOptions: TJclSimpleXML; const APlatformStrSuffix: string): TJclSimpleXMLElem;
   protected
     property DCPOutputDir: string read FDCPOutputDir; // with macros, could contain double backslashes when resolving the macro
     property BPLOutputDir: string read FBPLOutputDir; // with macros, could contain double backslashes when resolving the macro
@@ -208,6 +218,7 @@ type
     function IsPersonal: Boolean;
     function DisplayName: string;
     function HasBDE: Boolean;
+    function HasWin64x: Boolean;
 
     function IsInEnvPath(const Dir: string): Boolean;
       { IsInEnvPath returns True if Dir is in the EnvPath. (ShortPaths and
@@ -254,6 +265,7 @@ type
     property Dccil: string read GetDccil;
     property Bcc32: string read GetBcc32;
     property Bcc64: string read GetBcc64;
+    property Bcc64x: string read GetBcc64x;
     property Ilink32: string read GetIlink32;
     property Tlib: string read GetTlib;
 
@@ -282,6 +294,12 @@ type
     property GlobalIncludePaths: TStringList read FGlobalIncludePaths; // BDS only, with macros
     property GlobalCppBrowsingPaths: TStringList read FGlobalCppBrowsingPaths; // BDS only, with macros
     property GlobalCppLibraryPaths: TStringList read FGlobalCppLibraryPaths;  // BDS v5 and upper only, with macros
+    property GlobalIncludePathsClang32: TStringList read FGlobalIncludePathsClang32; // BDS v23 and upper only, with macros
+    property GlobalCppBrowsingPathsClang32: TStringList read FGlobalCppBrowsingPathsClang32; // BDS v23 and upper  only, with macros
+    property GlobalCppLibraryPathsClang32: TStringList read FGlobalCppLibraryPathsClang32;  // BDS v23 and upper, with macros
+    property GlobalIncludePathsWin64x: TStringList read FGlobalIncludePathsWin64x; // BDS v23 and upper only, with macros
+    property GlobalCppBrowsingPathsWin64x: TStringList read FGlobalCppBrowsingPathsWin64x; // BDS v23 and upper  only, with macros
+    property GlobalCppLibraryPathsWin64x: TStringList read FGlobalCppLibraryPathsWin64x;  // BDS v23 and upper, with macros
 
     property BDSProjectsDir: string read GetBDSProjectsDir;
     property CommonProjectsDir: string read GetCommonProjectsDir;
@@ -331,7 +349,7 @@ uses
   {$ENDIF ~COMPILER12_UP}
   CmdLineUtils, Utils,
   JvConsts,
-  JclBase, JclSysInfo, JclSimpleXml, JclSysUtils, JclFileUtils, JclIDEUtils, JclStrings;
+  JclBase, JclSysInfo, JclSysUtils, JclFileUtils, JclIDEUtils, JclStrings;
 
 function DequoteStr(const S: string): string;
 begin
@@ -594,6 +612,12 @@ begin
   FGlobalIncludePaths := TStringList.Create;
   FGlobalCppBrowsingPaths := TStringList.Create;
   FGlobalCppLibraryPaths := TStringList.Create;
+  FGlobalIncludePathsClang32 := TStringList.Create;
+  FGlobalCppBrowsingPathsClang32 := TStringList.Create;
+  FGlobalCppLibraryPathsClang32 := TStringList.Create;
+  FGlobalIncludePathsWin64x := TStringList.Create;
+  FGlobalCppBrowsingPathsWin64x := TStringList.Create;
+  FGlobalCppLibraryPathsWin64x := TStringList.Create;
 
   FBrowsingPaths.Duplicates := dupIgnore;
   FPackageSearchPaths.Duplicates := dupIgnore;
@@ -602,6 +626,12 @@ begin
   FGlobalIncludePaths.Duplicates := dupIgnore;
   FGlobalCppBrowsingPaths.Duplicates := dupIgnore;
   FGlobalCppLibraryPaths.Duplicates := dupIgnore;
+  FGlobalIncludePathsClang32.Duplicates := dupIgnore;
+  FGlobalCppBrowsingPathsClang32.Duplicates := dupIgnore;
+  FGlobalCppLibraryPathsClang32.Duplicates := dupIgnore;
+  FGlobalIncludePathsWin64x.Duplicates := dupIgnore;
+  FGlobalCppBrowsingPathsWin64x.Duplicates := dupIgnore;
+  FGlobalCppLibraryPathsWin64x.Duplicates := dupIgnore;
 
   FDisabledPackages := TDelphiPackageList.Create;
   FKnownIDEPackages := TDelphiPackageList.Create;
@@ -623,6 +653,12 @@ begin
   FGlobalIncludePaths.Free;
   FGlobalCppBrowsingPaths.Free;
   FGlobalCppLibraryPaths.Free;
+  FGlobalIncludePathsClang32.Free;
+  FGlobalCppBrowsingPathsClang32.Free;
+  FGlobalCppLibraryPathsClang32.Free;
+  FGlobalIncludePathsWin64x.Free;
+  FGlobalCppBrowsingPathsWin64x.Free;
+  FGlobalCppLibraryPathsWin64x.Free;
 
   FDisabledPackages.Free;
   FKnownIDEPackages.Free;
@@ -804,6 +840,33 @@ begin
   Result := FIsPersonal;
 end;
 
+procedure LoadCppPaths(APropertyGroupNode: TJclSimpleXMLElem; AIncludePaths, ABrowsingPaths, ALibraryPaths: TStrings; const AItemNameSuffix: string); overload;
+var
+  PropertyNode: TJclSimpleXMLElem;
+begin
+  PropertyNode := APropertyGroupNode.Items.ItemNamed['CBuilderIncludePath' + AItemNameSuffix]; // do not localize
+  if Assigned(PropertyNode) then
+    ConvertPathList(PropertyNode.Value, AIncludePaths); // do not localize
+
+  PropertyNode := APropertyGroupNode.Items.ItemNamed['CBuilderBrowsingPath' + AItemNameSuffix]; // do not localize
+  if Assigned(PropertyNode) then
+    ConvertPathList(PropertyNode.Value, ABrowsingPaths); // do not localize
+
+  PropertyNode := APropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath' + AItemNameSuffix]; // do not localize
+  if Assigned(PropertyNode) then
+    ConvertPathList(PropertyNode.Value, ALibraryPaths); // do not localize
+end;
+
+procedure LoadCppPaths(AReg: TRegistry; AIncludePaths, ABrowsingPaths, ALibraryPaths: TStrings; const AItemNameSuffix: string); overload;
+begin
+  if AIncludePaths.Count = 0 then
+    ConvertPathList(AReg.ReadString('IncludePath' + AItemNameSuffix), AIncludePaths); // do not localize
+  if ABrowsingPaths.Count = 0 then
+    ConvertPathList(AReg.ReadString('BrowsingPath' + AItemNameSuffix), ABrowsingPaths); // do not localize
+  if ALibraryPaths.Count = 0 then
+    ConvertPathList(AReg.ReadString('LibraryPath' + AItemNameSuffix), ALibraryPaths); // do not localize
+end;
+
 procedure TCompileTarget.LoadFromRegistry;
 
   procedure ReadUpdateState(Reg: TRegistry);
@@ -850,7 +913,6 @@ var
   i: Integer;
   EnvOptions: TJclSimpleXml;
   PropertyGroupNode, PropertyNode: TJclSimpleXMLElem;
-  ConditionProperty: TJclSimpleXMLProp;
   ForceEnvOptionsUpdate: Boolean;
   LibraryKey: string;
   ValueInfo: TRegDataInfo;
@@ -953,6 +1015,13 @@ begin
     FDebugDcuPaths.Clear;
     FGlobalIncludePaths.Clear;
     FGlobalCppBrowsingPaths.Clear;
+    FGlobalCppLibraryPaths.Clear;
+    FGlobalIncludePathsClang32.Clear;
+    FGlobalCppBrowsingPathsClang32.Clear;
+    FGlobalCppLibraryPathsClang32.Clear;
+    FGlobalIncludePathsWin64x.Clear;
+    FGlobalCppBrowsingPathsWin64x.Clear;
+    FGlobalCppLibraryPathsWin64x.Clear;
 
     // Must read personalities before using library paths.
     if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\Personalities') then  // do not localize
@@ -995,22 +1064,8 @@ begin
         EnvOptions.Options := EnvOptions.Options - [sxoAutoCreate];
         EnvOptions.Options := EnvOptions.Options + [sxoDoNotSaveProlog];
 
-        if IDEVersion >= 9 then
-        begin
-          PropertyGroupNode := nil;
-          for I := 0 to EnvOptions.Root.Items.Count - 1 do
-          begin
-            ConditionProperty := EnvOptions.Root.Items[I].Properties.ItemNamed['Condition'];
-            if Assigned(ConditionProperty) and
-              (ConditionProperty.Value = Format('''$(Platform)''==''%s''', [GetPlatformStr])) then
-            begin
-              PropertyGroupNode := EnvOptions.Root.Items[I];
-              Break;
-            end;
-          end;
-        end
-        else
-          PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
+        PropertyGroupNode := GetEnvOptionsPropertyGroupNode(EnvOptions, '');
+
         if Assigned(PropertyGroupNode) then
         begin
           if IDEVersion >= 8 then
@@ -1060,15 +1115,18 @@ begin
             
           if SupportsPersonalities([persBCB]) then
           begin
-            PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderIncludePath']; // do not localize
-            if Assigned(PropertyNode) then
-              ConvertPathList(PropertyNode.Value, FGlobalIncludePaths); // do not localize
-            PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderBrowsingPath']; // do not localize
-            if Assigned(PropertyNode) then
-              ConvertPathList(PropertyNode.Value, FGlobalCppBrowsingPaths); // do not localize
-            PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath']; // do not localize
-            if Assigned(PropertyNode) then
-              ConvertPathList(PropertyNode.Value, FGlobalCppLibraryPaths); // do not localize
+            LoadCppPaths(PropertyGroupNode, FGlobalIncludePaths, FGlobalCppBrowsingPaths, FGlobalCppLibraryPaths, '');
+
+            if IDEVersion >= 23 then
+            begin
+              case Platform of
+                ctpWin32:
+                  LoadCppPaths(PropertyGroupNode, FGlobalIncludePathsClang32, FGlobalCppBrowsingPathsClang32, FGlobalCppLibraryPathsClang32, '_Clang32');
+                ctpWin64:
+                  if HasWin64x then
+                    LoadCppPaths(GetEnvOptionsPropertyGroupNode(EnvOptions, 'x'), FGlobalIncludePathsWin64x, FGlobalCppBrowsingPathsWin64x, FGlobalCppLibraryPathsWin64x, '');
+              end;
+            end;
           end;
         end;
       finally
@@ -1130,15 +1188,22 @@ begin
           ConvertPathList(Reg.ReadString('LibraryPath'), FGlobalCppLibraryPaths); // do not localize
         Reg.CloseKey;
       end;
-      // C++Builder XE2 only supports Win32
+      // C++Builder XE2 only supports Win32, later versions support other platforms, in different flavours
       if (IDEVersion >= 9) and Reg.OpenKeyReadOnly(RegistryKey + '\C++\Paths\' + GetPlatformStr) then // do not localize
       begin
-        if FGlobalIncludePaths.Count = 0 then
-          ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
-        if FGlobalCppBrowsingPaths.Count = 0 then
-          ConvertPathList(Reg.ReadString('BrowsingPath'), FGlobalCppBrowsingPaths); // do not localize
-        if FGlobalCppLibraryPaths.Count = 0 then
-          ConvertPathList(Reg.ReadString('LibraryPath'), FGlobalCppLibraryPaths); // do not localize
+        LoadCppPaths(Reg, FGlobalIncludePaths, FGlobalCppBrowsingPaths, FGlobalCppLibraryPaths, '');
+
+        if IDEVersion >= 23 then
+        begin
+          case Platform of
+            ctpWin32:
+              LoadCppPaths(Reg, FGlobalIncludePathsClang32, FGlobalCppBrowsingPathsClang32, FGlobalCppLibraryPathsClang32, '_Clang32');
+            ctpWin64:
+              if HasWin64x and Reg.OpenKeyReadOnly(RegistryKey + '\C++\Paths\' + GetPlatformStr + 'x') then
+                LoadCppPaths(Reg, FGlobalIncludePathsWin64x, FGlobalCppBrowsingPathsWin64x, FGlobalCppLibraryPathsWin64x, '');
+          end;
+        end;
+
         Reg.CloseKey;
       end;
     end;
@@ -1246,6 +1311,29 @@ begin
   SavePackagesToRegistry(FDisabledPackages, 'Disabled Packages'); // do not localize
 end;
 
+procedure ApplyCppPaths(APropertyGroupNode: TJclSimpleXMLElem; AIncludePaths, ABrowsingPaths, ALibraryPaths: TStrings; const AItemNameSuffix: string); overload;
+begin
+  APropertyGroupNode.Items.ItemNamed['CBuilderIncludePath' + AItemNameSuffix].Value := ConvertPathList(AIncludePaths); // do not localize
+  APropertyGroupNode.Items.ItemNamed['CBuilderBrowsingPath' + AItemNameSuffix].Value := ConvertPathList(ABrowsingPaths); // do not localize
+  APropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath' + AItemNameSuffix].Value := ConvertPathList(ALibraryPaths); // do not localize
+end;
+
+procedure ApplyCppPaths(AReg: TRegistry; APaths: TStrings; const AName: string); overload;
+var
+  S: string;
+begin
+  S := ConvertPathList(APaths);
+  if not AReg.ValueExists(AName) or (S <> AReg.ReadString(AName)) then
+    AReg.WriteString(AName, S);
+end;
+
+procedure ApplyCppPaths(AReg: TRegistry; AIncludePaths, ABrowsingPaths, ALibraryPaths: TStrings; const ANameSuffix: string); overload;
+begin
+  ApplyCppPaths(AReg, AIncludePaths, 'IncludePath' + ANameSuffix);
+  ApplyCppPaths(AReg, ABrowsingPaths, 'BrowsingPath' + ANameSuffix);
+  ApplyCppPaths(AReg, ALibraryPaths, 'LibraryPath' + ANameSuffix);
+end;
+
 procedure TCompileTarget.SavePaths;
 var
   Reg: TRegistry;
@@ -1264,7 +1352,7 @@ begin
       EnvOptions.Options := EnvOptions.Options + [sxoAutoCreate];
       EnvOptions.Options := EnvOptions.Options + [sxoDoNotSaveProlog];
 
-      PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
+      PropertyGroupNode := GetEnvOptionsPropertyGroupNode(EnvOptions, '');
 
       if IDEVersion >= 8 then
       begin
@@ -1281,9 +1369,18 @@ begin
 
       if SupportsPersonalities([persBCB]) then
       begin
-        PropertyGroupNode.Items.ItemNamed['CBuilderIncludePath'].Value := ConvertPathList(FGlobalIncludePaths); // do not localize
-        PropertyGroupNode.Items.ItemNamed['CBuilderBrowsingPath'].Value := ConvertPathList(FGlobalCppBrowsingPaths); // do not localize
-        PropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath'].Value := ConvertPathList(FGlobalCppLibraryPaths); // do not localize
+        ApplyCppPaths(PropertyGroupNode, FGlobalIncludePaths, FGlobalCppBrowsingPaths, FGlobalCppLibraryPaths, '');
+
+        if (IDEVersion >= 23) then
+        begin
+          case Platform of
+            ctpWin32:
+              ApplyCppPaths(PropertyGroupNode, FGlobalIncludePathsClang32, FGlobalCppBrowsingPathsClang32, FGlobalCppLibraryPathsClang32, '_Clang32');
+            ctpWin64:
+              if HasWin64x then
+                ApplyCppPaths(GetEnvOptionsPropertyGroupNode(EnvOptions, 'x'), FGlobalIncludePathsWin64x, FGlobalCppBrowsingPathsWin64x, FGlobalCppLibraryPathsWin64x, '');
+          end;
+        end;
       end;
 
       EnvOptions.SaveToFile(GetEnvOptionsFileName);
@@ -1319,15 +1416,19 @@ begin
         ((IDEVersion >= 9) and Reg.OpenKey(RegistryKey + '\C++\Paths\' + GetPlatformStr, False)) or // may not exist  // do not localize
         Reg.OpenKey(RegistryKey + '\CppPaths', False)) then     // may not exist  // do not localize
     begin
-      S := ConvertPathList(FGlobalIncludePaths);
-      if not Reg.ValueExists('IncludePath') or (S <> Reg.ReadString('IncludePath')) then
-        Reg.WriteString('IncludePath', S);
-      S := ConvertPathList(FGlobalCppBrowsingPaths);
-      if not Reg.ValueExists('BrowsingPath') or (S <> Reg.ReadString('BrowsingPath')) then
-        Reg.WriteString('BrowsingPath', S);
-      S := ConvertPathList(FGlobalCppLibraryPaths);
-      if not Reg.ValueExists('LibraryPath') or (S <> Reg.ReadString('LibraryPath')) then
-        Reg.WriteString('LibraryPath', S);
+      ApplyCppPaths(Reg, FGlobalIncludePaths, FGlobalCppBrowsingPaths, FGlobalCppLibraryPaths, '');
+
+      if IDEVersion >= 23 then
+      begin
+        case Platform of
+          ctpWin32:
+            ApplyCppPaths(Reg, FGlobalIncludePathsClang32, FGlobalCppBrowsingPathsClang32, FGlobalCppLibraryPathsClang32, '_Clang32');
+          ctpWin64:
+            if HasWin64x and Reg.OpenKey(RegistryKey + '\C++\Paths\' + GetPlatformStr + 'x', False) then
+              ApplyCppPaths(Reg, FGlobalIncludePathsWin64x, FGlobalCppBrowsingPathsWin64x, FGlobalCppLibraryPathsWin64x, '');
+        end;
+      end;
+
       Reg.CloseKey;
     end;
 
@@ -1449,6 +1550,11 @@ begin
   Result := RootDir + '\Bin\bcc64.exe'; // do not localize
 end;
 
+function TCompileTarget.GetBcc64x: string;
+begin
+  Result := RootDir + '\Bin64\bcc64x.exe'; // do not localize
+end;
+
 function TCompileTarget.GetIlink32: string;
 begin
   Result := RootDir + '\Bin\ilink32.exe'; // do not localize
@@ -1462,6 +1568,11 @@ end;
 function TCompileTarget.HasBDE: Boolean;
 begin
   Result := (Platform = ctpWin32) and ((Version < 21) or FileExists(PathAddSeparator(RootLibReleaseDir) + 'bdertl.dcp'));
+end;
+
+function TCompileTarget.HasWin64x: Boolean;
+begin
+  Result := (Platform = ctpWin64) and (Version >= 29) and FileExists(Bcc64x);
 end;
 
 function TCompileTarget.GetDcpDir: string;
@@ -1551,6 +1662,31 @@ begin
     Result := Format('%s\Borland\BDS\%d.0\EnvOptions.proj', [ExcludeTrailingPathDelimiter(GetAppdataFolder), IDEVersion])
   else
     Result := '';
+end;
+
+function TCompileTarget.GetEnvOptionsPropertyGroupNode(
+  AEnvOptions: TJclSimpleXML;
+  const APlatformStrSuffix: string): TJclSimpleXMLElem;
+var
+  I: Integer;
+  ConditionProperty: TJclSimpleXMLProp;
+begin
+  if IDEVersion >= 9 then
+  begin
+    Result := nil;
+    for I := 0 to AEnvOptions.Root.Items.Count - 1 do
+    begin
+      ConditionProperty := AEnvOptions.Root.Items[I].Properties.ItemNamed['Condition'];
+      if Assigned(ConditionProperty) and
+        (ConditionProperty.Value = Format('''$(Platform)''==''%s''', [GetPlatformStr + APlatformStrSuffix])) then
+      begin
+        Result := AEnvOptions.Root.Items[I];
+        Break;
+      end;
+    end;
+  end
+  else
+    Result := AEnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
 end;
 
 function TCompileTarget.ReadCommonProjectsDir: string;

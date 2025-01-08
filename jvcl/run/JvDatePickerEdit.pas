@@ -250,7 +250,7 @@ type
   end;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
   {$ENDIF RTL230_UP}
   TJvDatePickerEdit = class(TJvCustomDatePickerEdit)
   public
@@ -1358,6 +1358,9 @@ begin
   begin
     FPopup.SetBounds(Origin.X, Origin.Y, FPopup.Width, FPopup.Height);
     FPopup.Visible := True; // overriden CM_SHOWINGCHANGED will take care of SW_SHOWNOACTIVATE
+
+    // Sometimes the popup windows is placed behind the window, so bring it to the top
+    SetWindowPos(FPopup.Handle, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE or SWP_NOACTIVATE);
 
     // Emulate a LButton-Click to give the month calendar the look of being focused
     SendMessage(TJvDropCalendar(FPopup).FCal.Handle, WM_LBUTTONDOWN, MK_LBUTTON, MakeLong(Word(-1), Word(-1)));

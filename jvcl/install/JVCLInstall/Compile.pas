@@ -92,7 +92,7 @@ type
     procedure SortProjectGroup(Group: TProjectGroup; List: TList);
   protected
     function Dcc(TargetConfig: ITargetConfig; Project: TPackageTarget;
-      const DccOpt: string; DebugUnits: Boolean; Files, ObjFiles: TStrings): Integer;
+      const DccOpt: string; DebugUnits: Boolean; Files, ObjFiles: TStrings; Win64x: Boolean): Integer;
     function Bcc32(TargetConfig: ITargetConfig; Project: TPackageTarget;
       const BccOpt: string; DebugUnits: Boolean; Files: TStrings; ObjFiles: TStrings): Integer;
     function Ilink32(TargetConfig: ITargetConfig; Project: TPackageTarget;
@@ -107,7 +107,7 @@ type
       const DccOpt: string; DebugUnits: Boolean; var FilesCompiled: Boolean): Integer;
 
     function WriteDccCfg(const Directory: string; TargetConfig: ITargetConfig;
-      const DccOpt: string; DebugUnits: Boolean): string; // returns the dcc32.cfg filename
+      const DccOpt: string; DebugUnits: Boolean; Win64x: Boolean): string; // returns the dcc32.cfg filename
     procedure DoIdle(Sender: TObject);
 
     procedure LinkMapFile(TargetConfig: ITargetConfig; Project: TPackageTarget;
@@ -483,7 +483,7 @@ end;*)
 /// WriteDccCfg() writes the dcc32.cfg or dcc64.cfg file to the directory
 /// </summary>
 function TCompiler.WriteDccCfg(const Directory: string; TargetConfig: ITargetConfig;
-  const DccOpt: string; DebugUnits: Boolean): string;
+  const DccOpt: string; DebugUnits: Boolean; Win64x: Boolean): string;
 var
   Lines: TStrings;
   SearchPaths, S: string;
@@ -491,6 +491,8 @@ var
   OutDirs: TOutputDirs;
   Target: TCompileTarget;
   BDSLibDir: string;
+  DcpDir: string;
+  UnitOutDir: string;
 begin
   OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
 
@@ -543,16 +545,26 @@ begin
     Lines.Add('-O"' + SearchPaths + '"');
 
     // output directories
+    DcpDir := OutDirs.DcpDir;
+    UnitOutDir := OutDirs.UnitOutDir;
+
+    if Win64x then
+    begin
+      Lines.Add('-jf:coffi');
+      DcpDir := StringReplace(DcpDir, '\win64', '\win64x', [ rfIgnoreCase ]);
+      UnitOutDir := StringReplace(UnitOutDir, '\win64', '\win64x', [ rfIgnoreCase ]);
+    end;
+
     Lines.Add('-LE"' + OutDirs.BplDir + '"'); // .exe output
-    Lines.Add('-LN"' + OutDirs.DcpDir + '"'); // .dcp output
-    Lines.Add('-N0"' + OutDirs.UnitOutDir + '"'); // .dcu output
+    Lines.Add('-LN"' + DcpDir + '"'); // .dcp output
+    Lines.Add('-N0"' + UnitOutDir + '"'); // .dcu output
     Lines.Add('-N1"' + OutDirs.HppDir + '"'); // .hpp output
     if TargetConfig.Target.IsBDS then
       Lines.Add('-NH"' + OutDirs.HppDir + '"'); // .hpp output
-    Lines.Add('-N2"' + OutDirs.UnitOutDir + '"'); // .obj output
+    Lines.Add('-N2"' + UnitOutDir + '"'); // .obj output
     if TargetConfig.Target.IsBDS then
-      Lines.Add('-NO"' + OutDirs.UnitOutDir + '"'); // .obj output
-    Lines.Add('-NB"' + OutDirs.DcpDir + '"'); // .bpi output
+      Lines.Add('-NO"' + UnitOutDir + '"'); // .obj output
+    Lines.Add('-NB"' + DcpDir + '"'); // .bpi output
 
     { dcc32.exe crashes if the path is too long }
     if IsDcc32BugDangerous(TargetConfig) then
@@ -578,7 +590,7 @@ end;
 /// the ExitCode of the last/failed command.
 /// </summary>
 function TCompiler.Dcc(TargetConfig: ITargetConfig; Project: TPackageTarget;
-  const DccOpt: string; DebugUnits: Boolean; Files, ObjFiles: TStrings): Integer;
+  const DccOpt: string; DebugUnits: Boolean; Files, ObjFiles: TStrings; Win64x: Boolean): Integer;
 const
   MaxCmdLineLength = 2048 - 1;
 var
@@ -591,7 +603,7 @@ begin
   OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
   PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
   if Files.Count > 0 then
-    DccCfg := WriteDccCfg(ExtractFileDir(PrjFilename), TargetConfig, DccOpt, DebugUnits);
+    DccCfg := WriteDccCfg(ExtractFileDir(PrjFilename), TargetConfig, DccOpt, DebugUnits, Win64x);
 
   PathEnvVar := TargetConfig.GetPathEnvVar;
   CmdLine := '';
@@ -1068,6 +1080,7 @@ var
   Filename, DcuFilename: string;
   Changed: Boolean;
   OutDirs: TOutputDirs;
+  Win64xResult: Integer;
 begin
   OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
 
@@ -1202,9 +1215,21 @@ begin
     Files := TStringList.Create;
     try
       Files.Add(ExtractFileName(ChangeFileExt(Project.SourceName, '.dpk'))); // force .dpk
-      Result := Dcc(TargetConfig, Project, DccOpt, DebugUnits, Files, nil);
+      Result := Dcc(TargetConfig, Project, DccOpt, DebugUnits, Files, nil, False);
+
       if Result = 0 then
+      begin
+        if TargetConfig.Target.HasWin64x then
+        begin
+          Files.Add(ExtractFileName(ChangeFileExt(Project.SourceName, '.dpk'))); // readd, dcc removes items from the Files list
+          Win64xResult := Dcc(TargetConfig, Project, DccOpt, DebugUnits, Files, nil, True);
+          if Win64xResult <> 0 then
+            Exit(Win64xResult);
+        end;
+
         FilesCompiled := True;
+      end;
+
     finally
       Files.Free;
     end;
@@ -1364,6 +1389,7 @@ begin
       try
         XML.Options := [sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
         XML.Root.Name := 'JvclInstall';
+        XML.Root.Properties.Add('timestamp', FormatDateTime('yyyy-mm-dd hh:nn:ss', Now));
         CompiledConfigIndex := 0;
         for I := 0 to Data.Targets.Count - 1 do
         begin

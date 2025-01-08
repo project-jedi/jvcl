@@ -3,18 +3,19 @@ object frmTargets: TfrmTargets
   Top = 187
   BorderStyle = bsDialog
   Caption = 'Indicate the targets to generate'
-  ClientHeight = 300
-  ClientWidth = 305
+  ClientHeight = 325
+  ClientWidth = 295
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   Position = poMainFormCenter
   OnShow = FormShow
-  PixelsPerInch = 96
+  DesignSize = (
+    295
+    325)
   TextHeight = 13
   object lblPleaseIndicate: TLabel
     Left = 20
@@ -36,14 +37,12 @@ object frmTargets: TfrmTargets
   end
   object bbtOk: TBitBtn
     Left = 62
-    Top = 259
+    Top = 284
     Width = 83
     Height = 29
     Anchors = [akLeft, akBottom]
     Caption = 'Ok'
     Default = True
-    ModalResult = 1
-    TabOrder = 0
     Glyph.Data = {
       42060000424D4206000000000000360400002800000020000000100000000100
       0800010000000C020000F00A0000F00A00000001000000010000006F00000F6F
@@ -96,18 +95,18 @@ object frmTargets: TfrmTargets
       CCC6C2BFBDB9B5B036291CDF00000020DED8A9A297928B85867C746D6654CBDE
       DEDBC8C0B8B4B03BAE3835322B25D0DE000001DD01DE0CDF0004DEDDDDDE0CDF
       01DE01DD0001}
+    ModalResult = 1
     NumGlyphs = 2
+    TabOrder = 0
   end
   object bbtCancel: TBitBtn
     Left = 158
-    Top = 259
+    Top = 284
     Width = 85
     Height = 29
     Anchors = [akLeft, akBottom]
     Cancel = True
     Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 1
     Glyph.Data = {
       1E060000424D1E06000000000000360400002800000020000000100000000100
       080001000000E8010000F00A0000F00A00000001000000010000434547004747
@@ -159,7 +158,9 @@ object frmTargets: TfrmTargets
       87876908011A7100058700055C016A85870000000006874D48336A860B870005
       1401126A86000A8700000005874C517686000C8700040E1B70860B8700002087
       0001}
+    ModalResult = 2
     NumGlyphs = 2
+    TabOrder = 1
   end
   object clbBuilds: TCheckListBox
     Left = 20
@@ -168,5 +169,15 @@ object frmTargets: TfrmTargets
     Height = 201
     ItemHeight = 13
     TabOrder = 2
+  end
+  object btnToggle: TButton
+    Left = 20
+    Top = 251
+    Width = 61
+    Height = 22
+    Anchors = [akTop, akBottom]
+    Caption = 'Toggle'
+    TabOrder = 3
+    OnClick = btnToggleClick
   end
 end
