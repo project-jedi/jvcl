@@ -22,7 +22,7 @@
     <Package Name="vcl" Targets="C,D,help" Condition=""/>
     <Package Name="vclx" Targets="C,D" Condition=""/>
     <Package Name="vcldb" Targets="DB" Condition=""/>
-    <Package Name="bdertl" Targets="DB" Condition="USE_BDE"/>
+    <Package Name="bdertl" Targets="BDE" Condition="USE_BDE"/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvPascalInterpreterReg.pas" Targets="all_win32" Formname="" Condition=""/>
