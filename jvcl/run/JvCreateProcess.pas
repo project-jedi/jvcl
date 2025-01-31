@@ -164,6 +164,7 @@ type
     FHandle: THandle;
     FExitCode: Cardinal;
     FRunningThreadCount: Integer;
+    FCodePage: UINT;
     function GetConsoleOutput: TStrings;
     function GetEnvironment: TStrings;
     procedure SetWaitForTerminate(const Value: Boolean);
@@ -184,6 +185,7 @@ type
     procedure GotoReadyState;
     procedure GotoWaitState(const AThreadCount: Integer);
     procedure SetCommandLine(const Value: string);
+    procedure SetCodePage(const Value: UINT);
   protected
     procedure CheckReady;
     procedure CheckRunning;
@@ -211,6 +213,7 @@ type
     property ConsoleOutput: TStrings read GetConsoleOutput;
     property InputReader: TJvBaseReader read FInputReader;
     property ErrorReader: TJvBaseReader read FErrorReader;
+    property CodePage: UINT read FCodePage write SetCodePage;
   published
     property ApplicationName: string read FApplicationName write FApplicationName;
     property CommandLine: string read FCommandLine write SetCommandLine;
@@ -324,6 +327,7 @@ type
     FCursorPosition: Integer; // Position of the cursor on FCurrentLine
     FStartsOnNewLine: Boolean;
     FParseBuffer: TJvCPSBuffer;
+    FCodePage: UINT;
     procedure ThreadTerminated(Sender: TObject);
   protected
     procedure DoReadEvent(const EndsWithNewLine: Boolean);
@@ -334,6 +338,7 @@ type
     procedure CreateThread(const AReadHandle: THandle);
     procedure CloseRead;
     procedure Terminate;
+    property  CodePage: UINT read FCodePage write FCodePage;
   end;
 
 //=== Local procedures =======================================================
@@ -1115,6 +1120,7 @@ begin
   FConsoleOptions := [coOwnerData];
   FErrorReader := TJvReader.Create(Self);
   FInputReader := TJvReader.Create(Self);
+  SetCodePage(GetACP);
 end;
 
 destructor TJvCreateProcess.Destroy;
@@ -1384,6 +1390,13 @@ begin
   FInputReader.OnRead := Value;
 end;
 
+procedure TJvCreateProcess.SetCodePage(const Value: UINT);
+begin
+  FCodePage := Value;
+  TJvReader(FInputReader).CodePage := Value;
+  TJvReader(FErrorReader).CodePage := Value;
+end;
+
 procedure TJvCreateProcess.SetStartupInfo(Value: TJvCPSStartupInfo);
 begin
   FStartupInfo.Assign(Value);
@@ -1518,17 +1531,32 @@ begin
 end;
 
 procedure TJvReader.DoReadEvent(const EndsWithNewLine: Boolean);
+var
+  CurrentLine: String;
 begin
+{$IFDEF UNICODE}
+  if FCurrentLine <> '' then
+  begin
+    SetCodePage(RawByteString(FCurrentLine), FCodePage, False);
+    CurrentLine := String(FCurrentLine);
+  end
+  else
+  begin
+    CurrentLine := '';
+  end;
+{$ELSE}
+  CurrentLine := FCurrentLine;
+{$ENDIF UNICODE}
   // Notify user and update current line & cursor
   if not (coOwnerData in FCreateProcess.ConsoleOptions) then
   begin
     if FStartsOnNewLine or (ConsoleOutput.Count = 0) then
-      ConsoleOutput.Add(string(FCurrentLine))
+      ConsoleOutput.Add(CurrentLine)
     else
-      ConsoleOutput[ConsoleOutput.Count - 1] := string(FCurrentLine);
+      ConsoleOutput[ConsoleOutput.Count - 1] := CurrentLine;
   end;
   if Assigned(FOnRead) then
-    FOnRead(FCreateProcess, string(FCurrentLine), FStartsOnNewLine);
+    FOnRead(FCreateProcess, CurrentLine, FStartsOnNewLine);
   if EndsWithNewLine then
   begin
     FCurrentLine := '';
