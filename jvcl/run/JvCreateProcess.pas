@@ -1537,7 +1537,7 @@ begin
 {$IFDEF UNICODE}
   if FCurrentLine <> '' then
   begin
-    SetCodePage(RawByteString(FCurrentLine),FCodePage,False);
+    SetCodePage(RawByteString(FCurrentLine), FCodePage, False);
     CurrentLine := String(FCurrentLine);
   end
   else
