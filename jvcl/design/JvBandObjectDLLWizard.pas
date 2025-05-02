@@ -52,7 +52,7 @@ type
     function GetAuthor: string;
     function GetComment: string;
     function GetPage: string;
-    function GetGlyph: Cardinal;
+    function GetGlyph: {$IFDEF Win64}THandle{$ELSE}Cardinal{$ENDIF};
   end;
 
   TJvBandObjectProjectCreator = class(TInterfacedObject,
@@ -210,7 +210,7 @@ begin
   Result := RsCreatesABandObjectDLLProject;
 end;
 
-function TJvBandObjectDLLWizard.GetGlyph: Cardinal;
+function TJvBandObjectDLLWizard.GetGlyph: {$IFDEF Win64}THandle{$ELSE}Cardinal{$ENDIF};
 begin
   Result := 0;
 end;
