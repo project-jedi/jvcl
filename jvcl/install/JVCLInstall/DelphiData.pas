@@ -35,15 +35,19 @@ uses
   Windows, SysUtils, Classes, Contnrs, Registry, PackageInformation,
   JclSimpleXml;
 
+type
+  TBDSVersion = record
+    Name: string;
+    VersionStr: string;
+    Version: Integer;
+    CIV: string; // coreide version
+    ProjectDirResId: Integer;
+    Supported: Boolean;
+  end;
+  PBDSVersion = ^TBDSVersion;
+
 const
-  BDSVersions: array[1..23] of record
-                                Name: string;
-                                VersionStr: string;
-                                Version: Integer;
-                                CIV: string; // coreide version
-                                ProjectDirResId: Integer;
-                                Supported: Boolean;
-                              end = (
+  BDSVersions: array[1..24] of TBDSVersion = (
     (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId: 64507; Supported: False),
     (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId: 64460; Supported: False),
     (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True),
@@ -66,7 +70,8 @@ const
     (Name: 'Embarcadero RAD Studio'; VersionStr: '10.3'; Version: 26; CIV: '260'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: '10.4'; Version: 27; CIV: '270'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: '11'; Version: 28; CIV: '280'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '12'; Version: 29; CIV: '290'; Supported: True)
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '12'; Version: 29; CIV: '290'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '13'; Version: 37; CIV: '370'; Supported: True)
   );
 
 type
@@ -466,6 +471,20 @@ begin
   end;
 end;
 
+function GetBDSVersionByVersion(Version: Integer): PBDSVersion;
+var
+  BDSVersionIndex: Integer;
+  BDSVersion: PBDSVersion;
+begin
+  Result := nil;
+  for BDSVersionIndex := Low(BDSVersions) to High(BDSVersions) do
+  begin
+    BDSVersion := @BDSVersions[BDSVersionIndex];
+    if Version = BDSVersion.Version then
+      Result := BDSVersion;
+  end;
+end;
+
 { TCompileTargetList }
 
 function SortTargetsByVersionNumber(Item1, Item2: Pointer): Integer;
@@ -561,6 +580,7 @@ end;
 function TCompileTargetList.IsBDSSupported(const IDEVersionStr: string): Boolean;
 var
   P, IDEVersion: Integer;
+  BDSVersion: PBDSVersion;
 begin
   Result := False;
   P := Pos('.', IDEVersionStr);
@@ -568,8 +588,10 @@ begin
     IDEVersion := StrToInt(Copy(IDEVersionStr, 1, P - 1))
   else
     IDEVersion := StrToInt(IDEVersionStr[1]);
-  if (IDEVersion >= Low(BDSVersions)) and (IDEVersion <= High(BDSVersions)) then
-    Result := BDSVersions[IDEVersion].Supported;
+
+  BDSVersion := GetBDSVersionByVersion(IDEVersion);
+  if Assigned(BDSVersion) then
+    Result := BDSVersion.Supported;
 end;
 
 { TCompileTarget }
@@ -1660,12 +1682,15 @@ begin
 end;
 
 procedure TCompileTarget.GetBDSVersion(out Name: string; out Version: Integer; out VersionStr: string);
+var
+  BDSVersion: PBDSVersion;
 begin
-  if (IDEVersion >= Low(BDSVersions)) and (IDEVersion <= High(BDSVersions)) then
+  BDSVersion := GetBDSVersionByVersion(IDEVersion);
+  if Assigned(BDSVersion) then
   begin
-    Name := BDSVersions[IDEVersion].Name;
-    VersionStr := BDSVersions[IDEVersion].VersionStr;
-    Version := BDSVersions[IDEVersion].Version;
+    Name := BDSVersion.Name;
+    VersionStr := BDSVersion.VersionStr;
+    Version := BDSVersion.Version;
   end
   else
   begin
@@ -1676,14 +1701,15 @@ begin
 end;
 
 function TCompileTarget.ReadBDSProjectsDir: string;
+var
+  BDSVersion: PBDSVersion;
 begin
-  if IsBDS and (IDEVersion >= Low(BDSVersions)) and (IDEVersion <= High(BDSVersions)) then
+  BDSVersion := GetBDSVersionByVersion(IDEVersion);
+  if IsBDS and Assigned(BDSVersion) then
   begin
     if IDEVersion < 4 then
     begin
-      Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersion].CIV + '.',
-        [BDSVersions[IDEVersion].ProjectDirResId]);
-
+      Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersion.CIV + '.', [BDSVersion.ProjectDirResId]);
       if Result = '' then
         Result := 'Borland Studio Projects'; // do not localize
       Result := ExcludeTrailingPathDelimiter(FixBackslashBackslash(ExcludeTrailingPathDelimiter(GetPersonalFolder) + '\' + Result));

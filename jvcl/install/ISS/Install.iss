@@ -4,7 +4,7 @@
 ;    Include_Binaries    Create an installer that can install a precompiled JVCL
 ;    Include_Examples    Add the Examples directory to the installer (user can then select the component)
 ;    DEBUGGING           Development. Fast compression (script debugging)
-;    Include_DelphiX     Include the binaries for Delphi X (X in 6..29)
+;    Include_DelphiX     Include the binaries for Delphi X (X in 6..37)
 
 #ifndef CmdLineBuild
 #define JvclRoot "..\.."
@@ -93,6 +93,9 @@
 #define JvclLib29    JvclLib
 #define   JvclBpl29  JvclBpl
 #define   JvclHpp29  JvclHpp
+#define JvclLib37    JvclLib
+#define   JvclBpl37  JvclBpl
+#define   JvclHpp37  JvclHpp
 #endif
 
 ;---------------------------------------------------
@@ -310,6 +313,12 @@ Name: "{app}\lib\d29\win32"
 Name: "{app}\lib\d29\win32\debug"
 Name: "{app}\lib\d29\win64"
 Name: "{app}\lib\d29\win64\debug"
+; 13
+Name: "{app}\lib\d37"
+Name: "{app}\lib\d37\win32"
+Name: "{app}\lib\d37\win32\debug"
+Name: "{app}\lib\d37\win64"
+Name: "{app}\lib\d37\win64\debug"
 
 [Files]
 Source: {#JvclRoot}\*; DestDir: "{app}"; Excludes: ".git"; Flags: ignoreversion
@@ -482,6 +491,13 @@ Source: {#JvclLib29}\*; DestDir: "{app}\lib\d29"; Excludes: "__history,*.txt"; C
 Source: {#JvclBpl29}\*; DestDir: "{code:GetDelphiBplDir|29}"; Components: "IDE\Delphi29"; Flags: ignoreversion sortfilesbyextension
 Source: {#JvclBpl29}\Win64\*; DestDir: "{code:GetDelphiBplDir|29}\Win64"; Components: "IDE\Delphi29"; Flags: ignoreversion sortfilesbyextension
 Source: {#JvclHpp29}\*; DestDir: "{app}\include\d29"; Components: "IDE\Delphi29"; Flags: ignoreversion sortfilesbyextension
+#endif
+#ifdef Include_Delphi37
+; SolidBreak; lib\Delphi 12
+Source: {#JvclLib37}\*; DestDir: "{app}\lib\d37"; Excludes: "__history,*.txt"; Components: "IDE\Delphi37"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#JvclBpl37}\*; DestDir: "{code:GetDelphiBplDir|37}"; Components: "IDE\Delphi37"; Flags: ignoreversion sortfilesbyextension
+Source: {#JvclBpl37}\Win64\*; DestDir: "{code:GetDelphiBplDir|37}\Win64"; Components: "IDE\Delphi37"; Flags: ignoreversion sortfilesbyextension
+Source: {#JvclHpp37}\*; DestDir: "{app}\include\d37"; Components: "IDE\Delphi37"; Flags: ignoreversion sortfilesbyextension
 #endif
 
 #endif
@@ -697,6 +713,16 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|29}\Jedi\JVCL\IDE"; ValueType: dword;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|29}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi29";
 #endif
 
+#ifdef Include_Delphi37
+; Delphi 13
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|37}\Jedi\JVCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|37}; Components: "IDE\Delphi37"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|37}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d37; Components: "IDE\Delphi37"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|37}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi37"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|37}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\Delphi37"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|37}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|37}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi37";
+#endif
+
 #endif
 
 
@@ -859,6 +885,14 @@ Type: files; Name: "{app}\lib\d29\win64\debug\*"
 Type: files; Name: "{app}\include\d29\*"
 Type: files; Name: "{code:GetDelphiBplDir|29}\Jv*.*"
 Type: files; Name: "{code:GetDelphiBplDir|29}\Win64\Jv*.*"
+; lib\Delphi/C++Builder 13
+Type: files; Name: "{app}\lib\d37\win32\*"
+Type: files; Name: "{app}\lib\d37\win32\debug\*"
+Type: files; Name: "{app}\lib\d37\win64\*"
+Type: files; Name: "{app}\lib\d37\win64\debug\*"
+Type: files; Name: "{app}\include\d37\*"
+Type: files; Name: "{code:GetDelphiBplDir|37}\Jv*.*"
+Type: files; Name: "{code:GetDelphiBplDir|37}\Win64\Jv*.*"
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
