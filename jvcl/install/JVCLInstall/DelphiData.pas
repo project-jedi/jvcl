@@ -40,6 +40,7 @@ type
     Name: string;
     VersionStr: string;
     Version: Integer;
+    IDEVersion: Integer;
     CIV: string; // coreide version
     ProjectDirResId: Integer;
     Supported: Boolean;
@@ -47,31 +48,30 @@ type
   PBDSVersion = ^TBDSVersion;
 
 const
-  BDSVersions: array[1..24] of TBDSVersion = (
-    (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId: 64507; Supported: False),
-    (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId: 64460; Supported: False),
-    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True),
-    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; Supported: True),
-    (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '100'; Supported: True),
-    (Name: 'CodeGear RAD Studio'; VersionStr: '2009'; Version: 12; CIV: '120'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '2010'; Version: 14; CIV: '140'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE'; Version: 15; CIV: '150'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE2'; Version: 16; CIV: '160'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE3'; Version: 17; CIV: '170'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE4'; Version: 18; CIV: '180'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE5'; Version: 19; CIV: '190'; Supported: True),
-    (Name: 'skipped'; VersionStr: 'skipped'; Version: 19; CIV: '190'; Supported: False),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE6'; Version: 20; CIV: '200'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE7'; Version: 21; CIV: '210'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE8'; Version: 22; CIV: '220'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '10'; Version: 23; CIV: '230'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.1'; Version: 24; CIV: '240'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.2'; Version: 25; CIV: '250'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.3'; Version: 26; CIV: '260'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.4'; Version: 27; CIV: '270'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '11'; Version: 28; CIV: '280'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '12'; Version: 29; CIV: '290'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '13'; Version: 37; CIV: '370'; Supported: True)
+  BDSVersions: array[0..22] of TBDSVersion = (
+    (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; IDEVersion: 1; CIV: '71'; ProjectDirResId: 64507; Supported: False),
+    (Name: 'Delphi'; VersionStr: '8'; Version: 8; IDEVersion: 2; CIV: '71'; ProjectDirResId: 64460; Supported: False),
+    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; IDEVersion: 3; CIV: '90'; ProjectDirResId: 64431; Supported: True),
+    (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; IDEVersion: 4; CIV: '100'; Supported: True),
+    (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; IDEVersion: 5; CIV: '100'; Supported: True),
+    (Name: 'CodeGear RAD Studio'; VersionStr: '2009'; Version: 12; IDEVersion: 6; CIV: '120'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '2010'; Version: 14; IDEVersion: 7; CIV: '140'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE'; Version: 15; IDEVersion: 8; CIV: '150'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE2'; Version: 16; IDEVersion: 9; CIV: '160'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE3'; Version: 17; IDEVersion: 10; CIV: '170'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE4'; Version: 18; IDEVersion: 11; CIV: '180'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE5'; Version: 19; IDEVersion: 12; CIV: '190'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE6'; Version: 20; IDEVersion: 14; CIV: '200'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE7'; Version: 21; IDEVersion: 15; CIV: '210'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE8'; Version: 22; IDEVersion: 16; CIV: '220'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '10'; Version: 23; IDEVersion: 17; CIV: '230'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.1'; Version: 24; IDEVersion: 18; CIV: '240'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.2'; Version: 25; IDEVersion: 19; CIV: '250'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.3'; Version: 26; IDEVersion: 20; CIV: '260'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '10.4'; Version: 27; IDEVersion: 21; CIV: '270'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '11'; Version: 28; IDEVersion: 22; CIV: '280'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '12'; Version: 29; IDEVersion: 23; CIV: '290'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '13'; Version: 37; IDEVersion: 37; CIV: '370'; Supported: True)
   );
 
 type
@@ -471,7 +471,7 @@ begin
   end;
 end;
 
-function GetBDSVersionByVersion(Version: Integer): PBDSVersion;
+function GetBDSVersionByIDEVersion(IDEVersion: Integer): PBDSVersion;
 var
   BDSVersionIndex: Integer;
   BDSVersion: PBDSVersion;
@@ -480,7 +480,7 @@ begin
   for BDSVersionIndex := Low(BDSVersions) to High(BDSVersions) do
   begin
     BDSVersion := @BDSVersions[BDSVersionIndex];
-    if Version = BDSVersion.Version then
+    if IDEVersion = BDSVersion.IDEVersion then
       Result := BDSVersion;
   end;
 end;
@@ -589,7 +589,7 @@ begin
   else
     IDEVersion := StrToInt(IDEVersionStr[1]);
 
-  BDSVersion := GetBDSVersionByVersion(IDEVersion);
+  BDSVersion := GetBDSVersionByIDEVersion(IDEVersion);
   if Assigned(BDSVersion) then
     Result := BDSVersion.Supported;
 end;
@@ -1685,7 +1685,7 @@ procedure TCompileTarget.GetBDSVersion(out Name: string; out Version: Integer; o
 var
   BDSVersion: PBDSVersion;
 begin
-  BDSVersion := GetBDSVersionByVersion(IDEVersion);
+  BDSVersion := GetBDSVersionByIDEVersion(IDEVersion);
   if Assigned(BDSVersion) then
   begin
     Name := BDSVersion.Name;
@@ -1704,7 +1704,7 @@ function TCompileTarget.ReadBDSProjectsDir: string;
 var
   BDSVersion: PBDSVersion;
 begin
-  BDSVersion := GetBDSVersionByVersion(IDEVersion);
+  BDSVersion := GetBDSVersionByIDEVersion(IDEVersion);
   if IsBDS and Assigned(BDSVersion) then
   begin
     if IDEVersion < 4 then
