@@ -774,7 +774,7 @@ begin
     AddProperty(Properties, 'LIBCOUNT', IntToStr(LibCount));
     AddProperty(Properties, 'DEFINECOUNT', IntToStr(DefineCount));
     AddProperty(Properties, 'WIN32ENABLED', Iff(pftWin32 in XML.PlatformTypes, 'True', 'False'));
-    AddProperty(Properties, 'WIN64ENABLED', Iff(pftWin64 in XML.PlatformTypes, 'True', 'False'));
+    AddProperty(Properties, 'WIN64ENABLED', Iff((pftWin64 in XML.PlatformTypes) and (FDefinesConditionParser.Parse(XML.PlatformByType[pftWin64].Condition)), 'True', 'False'));
     AddProperty(Properties, 'WIN64XENABLED', Iff(pftWin64x in XML.PlatformTypes, 'True', 'False'));
     SetLength(Replacements, Properties.Count * 2);
     for i := 0 to Properties.Count - 1 do
@@ -1018,7 +1018,10 @@ begin
             end;
 
             if ProjectPlatforms[ProjectPlatformIdx].PlatformType in xml.PlatformTypes then
+            begin
+              FDefinesConditionParser.EnsureCondition(repeatLines, xml.PlatformByType[ProjectPlatforms[ProjectPlatformIdx].PlatformType].Condition);
               outFile.AddStrings(repeatLines);
+            end;
           end;
         end
         else for j := Low(ProjectConditionals) to High(ProjectConditionals) do
