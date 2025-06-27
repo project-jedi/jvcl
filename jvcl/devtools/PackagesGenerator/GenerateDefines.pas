@@ -74,7 +74,8 @@ const
   EndIfMarker  : string = '{$ENDIF';
   ElseMarker   : string = '{$ELSE';
   DefineMarker : string = '{$DEFINE';
-  IfMarker : string = '{$IF';
+  IfMarker     : string = '{$IF';
+  IfEndMarker  : string = '{$IFEND';
 var
   i: Integer;
   curLine: string;
@@ -82,6 +83,7 @@ var
   ClosePos: Integer;
   LastIfIsIfDef: Boolean;
   PrefixUsed: Boolean;
+  MarkerName: string;
 begin
   LastIfIsIfDef := False;
   IfDefs := TStringList.Create;
@@ -96,13 +98,15 @@ begin
           PrefixUsed := False;
           if StrHasPrefix(curLine, [IfDefMarker]) then
           begin
-            IfDefs.AddObject(Copy(curLine, Length(IfDefMarker)+2, Pos('}', curLine) - Length(IfDefMarker) - 2), TObject(True));
+            MarkerName := Copy(curLine, Length(IfDefMarker)+2, Pos('}', curLine) - Length(IfDefMarker) - 2);
+            IfDefs.AddObject(MarkerName, TObject(True));
             LastIfIsIfDef := True;
             PrefixUsed := True;
           end
           else if StrHasPrefix(curLine, [IfNDefMarker]) then
           begin
-            IfDefs.AddObject(Copy(curLine, Length(IfNDefMarker)+2, Pos('}', curLine) - Length(IfNDefMarker) - 2), TObject(False));
+            MarkerName := Copy(curLine, Length(IfNDefMarker)+2, Pos('}', curLine) - Length(IfNDefMarker) - 2);
+            IfDefs.AddObject(MarkerName, TObject(False));
             LastIfIsIfDef := True;
             PrefixUsed := True;
           end
@@ -119,8 +123,13 @@ begin
           end
           else if StrHasPrefix(curLine, [DefineMarker]) then
           begin
-            Add(TDefine.Create(Copy(curLine, Length(DefineMarker)+2, Pos('}', curLine) - Length(DefineMarker) - 2), IfDefs));
+            MarkerName := Copy(curLine, Length(DefineMarker)+2, Pos('}', curLine) - Length(DefineMarker) - 2);
+            Add(TDefine.Create(MarkerName, IfDefs));
             PrefixUsed := True;
+          end
+          else if StrHasPrefix(curLine, [IfEndMarker]) then
+          begin
+            LastIfIsIfDef := IfDefs.Count > 0;
           end
           else if StrHasPrefix(curLine, [IfMarker]) then
           begin
