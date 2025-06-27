@@ -147,6 +147,7 @@ type
     function GetReleaseNumber: string;
     function GetVersionMajorNumber: string;
     function GetVersionMinorNumber: string;
+    function GetPlatformByType(PlatformType: TPlatformType): TPlatform;
   public
     constructor Create(const AFilename: string);
     destructor Destroy; override;
@@ -162,6 +163,7 @@ type
     property Contains[Index: Integer]: TContainedFile read GetContains;
     property PlatformCount: Integer read GetPlatformCount;
     property Platforms[Index: Integer]: TPlatform read GetPlatforms;
+    property PlatformByType[PlatformType: TPlatformType]: TPlatform read GetPlatformByType;
     property PlatformTypes: TPlatformTypes read GetPlatformTypes;
     property RequiresDB: Boolean read FRequiresDB;
     property ProjectType: TProjectType read FProjectType;
@@ -916,6 +918,21 @@ end;
 function TPackageXmlInfo.GetImageBase: string;
 begin
   Result := FProperties.Values[ImageBaseKnownPackageProperty];
+end;
+
+function TPackageXmlInfo.GetPlatformByType(
+  PlatformType: TPlatformType): TPlatform;
+var
+  I: Integer;
+begin
+  for I := 0 to PlatformCount - 1 do
+  begin
+    Result := Platforms[I];
+    if Result.PlatformType = PlatformType then
+      Exit;
+  end;
+
+  Result := nil;
 end;
 
 function TPackageXmlInfo.GetPlatformCount: Integer;
