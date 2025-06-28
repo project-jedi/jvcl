@@ -713,7 +713,7 @@ begin
                    Extension;
 
     // project-wide properties if not redefined in xml
-    CompilerDefines.Assign(FTargetList[GetNonPersoTarget(Target)].Defines);
+    CompilerDefines.Assign(FTargetList[GetNonPersoTarget(Target)].XmlDefines);
     CompilerDefines.AddStrings(xml.CompilerDefines);
     DefineCount := CompilerDefines.Count;
 
@@ -1195,7 +1195,7 @@ begin
   end;
 
   if Length(Target) <> 0 then
-    TargetDefines := FTargetList[GetNonPersoTarget(Target)].Defines
+    TargetDefines := FTargetList[GetNonPersoTarget(Target)].TechnicalDefines
   else
     TargetDefines := nil;
 
