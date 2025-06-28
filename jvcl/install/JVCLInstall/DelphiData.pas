@@ -152,9 +152,12 @@ type
     FBPLOutputDir: string;
     FPackageSearchPaths: TStringList;
     FSearchPaths: TStringList;
-    FDisabledPackages: TDelphiPackageList;
-    FKnownPackages: TDelphiPackageList;
-    FKnownIDEPackages: TDelphiPackageList;
+    FDisabledPackages32: TDelphiPackageList;
+    FDisabledPackages64: TDelphiPackageList;
+    FKnownPackages32: TDelphiPackageList;
+    FKnownIDEPackages32: TDelphiPackageList;
+    FKnownPackages64: TDelphiPackageList;
+    FKnownIDEPackages64: TDelphiPackageList;
     FHKLMRegistryKey: string;
     FRegistryKey: string;
     FDebugDcuPaths: TStringList;
@@ -253,6 +256,10 @@ type
     procedure SavePackagesLists;
       { writes KnownPackages and DisabledPackages to the registry }
 
+    function GetDisabledPackages: TDelphiPackageList;
+    function GetKnownPackages: TDelphiPackageList;
+    function GetKnownIDEPackages: TDelphiPackageList;
+
     property Homepage: string read GetHomepage;
     property RegistryKey: string read FRegistryKey;
     property HKLMRegistryKey: string read FHKLMRegistryKey;
@@ -307,9 +314,12 @@ type
     property BplDir: string read GetBplDir; // macros are expanded
     property DcpDir: string read GetDcpDir; // macros are expanded
 
-    property KnownIDEPackages: TDelphiPackageList read FKnownIDEPackages;
-    property KnownPackages: TDelphiPackageList read FKnownPackages;
-    property DisabledPackages: TDelphiPackageList read FDisabledPackages;
+    property KnownIDEPackages32: TDelphiPackageList read FKnownIDEPackages32;
+    property KnownPackages32: TDelphiPackageList read FKnownPackages32;
+    property DisabledPackages32: TDelphiPackageList read FDisabledPackages32;
+    property KnownIDEPackages64: TDelphiPackageList read FKnownIDEPackages64;
+    property KnownPackages64: TDelphiPackageList read FKnownPackages64;
+    property DisabledPackages64: TDelphiPackageList read FDisabledPackages64;
   end;
 
   TDelphiPackageList = class(TObjectList)
@@ -633,9 +643,12 @@ begin
   FGlobalCppBrowsingPathsWin64x.Duplicates := dupIgnore;
   FGlobalCppLibraryPathsWin64x.Duplicates := dupIgnore;
 
-  FDisabledPackages := TDelphiPackageList.Create;
-  FKnownIDEPackages := TDelphiPackageList.Create;
-  FKnownPackages := TDelphiPackageList.Create;
+  FDisabledPackages32 := TDelphiPackageList.Create;
+  FKnownIDEPackages32 := TDelphiPackageList.Create;
+  FKnownPackages32 := TDelphiPackageList.Create;
+  FDisabledPackages64 := TDelphiPackageList.Create;
+  FKnownIDEPackages64 := TDelphiPackageList.Create;
+  FKnownPackages64 := TDelphiPackageList.Create;
 
   LoadFromRegistry;
   FIsEvaluation := not FileExists(RootDir + '\bin\dcc32.exe');
@@ -660,9 +673,12 @@ begin
   FGlobalCppBrowsingPathsWin64x.Free;
   FGlobalCppLibraryPathsWin64x.Free;
 
-  FDisabledPackages.Free;
-  FKnownIDEPackages.Free;
-  FKnownPackages.Free;
+  FDisabledPackages32.Free;
+  FKnownIDEPackages32.Free;
+  FKnownPackages32.Free;
+  FDisabledPackages64.Free;
+  FKnownIDEPackages64.Free;
+  FKnownPackages64.Free;
 
   FInstalledPersonalities.Free;
   inherited Destroy;
@@ -770,9 +786,9 @@ function TCompileTarget.FindPackage(const PackageName: string): TDelphiPackage;
   end;
 
 begin
-  Result := Find(KnownIDEPackages);
+  Result := Find(GetKnownIDEPackages);
   if Result = nil then
-    Result := Find(KnownPackages);
+    Result := Find(GetKnownPackages);
 end;
 
 function TCompileTarget.FindPackageEx(const PackageNameStart: string): TDelphiPackage;
@@ -791,9 +807,9 @@ function TCompileTarget.FindPackageEx(const PackageNameStart: string): TDelphiPa
   end;
 
 begin
-  Result := Find(KnownIDEPackages);
+  Result := Find(GetKnownIDEPackages);
   if Result = nil then
-    Result := Find(KnownPackages);
+    Result := Find(GetKnownPackages);
 end;
 
 function TCompileTarget.IsBCB: Boolean;
@@ -1222,9 +1238,12 @@ begin
   if FProductVersion = '' then
     FProductVersion := Format('%d.%d', [Version, LatestUpdate]);
 
-  LoadPackagesFromRegistry(FKnownIDEPackages, 'Known IDE Packages'); // do not localize
-  LoadPackagesFromRegistry(FKnownPackages, 'Known Packages'); // do not localize
-  LoadPackagesFromRegistry(FDisabledPackages, 'Disabled Packages'); // do not localize
+  LoadPackagesFromRegistry(FKnownIDEPackages32, 'Known IDE Packages'); // do not localize
+  LoadPackagesFromRegistry(FKnownPackages32, 'Known Packages'); // do not localize
+  LoadPackagesFromRegistry(FKnownIDEPackages64, 'Known IDE Packages x64'); // do not localize
+  LoadPackagesFromRegistry(FKnownPackages64, 'Known Packages x64'); // do not localize
+  LoadPackagesFromRegistry(FDisabledPackages32, 'Disabled Packages'); // do not localize
+  LoadPackagesFromRegistry(FDisabledPackages64, 'Disabled Packages x64'); // do not localize
 end;
 
 procedure TCompileTarget.LoadPackagesFromRegistry(APackageList: TDelphiPackageList;
@@ -1307,8 +1326,10 @@ end;
 
 procedure TCompileTarget.SavePackagesLists;
 begin
-  SavePackagesToRegistry(FKnownPackages, 'Known Packages'); // do not localize
-  SavePackagesToRegistry(FDisabledPackages, 'Disabled Packages'); // do not localize
+  SavePackagesToRegistry(FKnownPackages32, 'Known Packages'); // do not localize
+  SavePackagesToRegistry(FKnownPackages64, 'Known Packages x64'); // do not localize
+  SavePackagesToRegistry(FDisabledPackages32, 'Disabled Packages'); // do not localize
+  SavePackagesToRegistry(FDisabledPackages64, 'Disabled Packages x64'); // do not localize
 end;
 
 procedure ApplyCppPaths(APropertyGroupNode: TJclSimpleXMLElem; AIncludePaths, ABrowsingPaths, ALibraryPaths: TStrings; const AItemNameSuffix: string); overload;
@@ -1560,6 +1581,22 @@ begin
   Result := RootDir + '\Bin\ilink32.exe'; // do not localize
 end;
 
+function TCompileTarget.GetKnownIDEPackages: TDelphiPackageList;
+begin
+  if Platform = ctpWin64 then
+    Result := FKnownIDEPackages64
+  else
+    Result := FKnownIDEPackages32;
+end;
+
+function TCompileTarget.GetKnownPackages: TDelphiPackageList;
+begin
+  if Platform = ctpWin64 then
+    Result := FKnownPackages64
+  else
+    Result := FKnownPackages32;
+end;
+
 function TCompileTarget.GetTlib: string;
 begin
   Result := RootDir + '\Bin\tlib.exe'; // do not localize
@@ -1578,6 +1615,14 @@ end;
 function TCompileTarget.GetDcpDir: string;
 begin
   Result := ExpandDirMacros(DCPOutputDir);
+end;
+
+function TCompileTarget.GetDisabledPackages: TDelphiPackageList;
+begin
+  if Platform = ctpWin64 then
+    Result := FDisabledPackages64
+  else
+    Result := FDisabledPackages32;
 end;
 
 function TCompileTarget.GetEnvPath: string;

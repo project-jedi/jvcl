@@ -254,6 +254,7 @@ type
     FPackagesXmlDir: string;
     FTargetSymbol: string;
     FTargetPlatform: TCompileTargetPlatform;
+    FIDEVersion: Integer;
     FPackageXmlDirFileNames: TStringList;
 
     function GetCount: Integer;
@@ -269,7 +270,7 @@ type
     procedure LoadFile;
     function XmlFileExists(const XmlName: string): Boolean;
   public
-    constructor Create(const AFilename, APackagesXmlDir, ATargetSymbol: string; ATargetPlatform: TCompileTargetPlatform);
+    constructor Create(const AFilename, APackagesXmlDir, ATargetSymbol: string; ATargetPlatform: TCompileTargetPlatform; AIDEVersion: Integer);
       { Set AFilename to '' if you want a PackageGroup instance that does not
         own the TBpgPackageTarget objects. }
     destructor Destroy; override;
@@ -1096,7 +1097,7 @@ end;
 
 { TPackageGroup }
 
-constructor TPackageGroup.Create(const AFilename, APackagesXmlDir, ATargetSymbol: string; ATargetPlatform: TCompileTargetPlatform);
+constructor TPackageGroup.Create(const AFilename, APackagesXmlDir, ATargetSymbol: string; ATargetPlatform: TCompileTargetPlatform; AIDEVersion: Integer);
 begin
   inherited Create;
 
@@ -1106,6 +1107,7 @@ begin
 
   FTargetSymbol := ATargetSymbol;
   FTargetPlatform := ATargetPlatform;
+  FIDEVersion := AIDEVersion;
   FFilename := AFilename;
   FPackageXmlDirFileNames := TStringList.Create;
 
@@ -1132,8 +1134,8 @@ begin
     try
       Result := GetPackageTargetClass.Create(Self, TargetName, SourceName);
 
-      // IDE is only Win32 so there can't be any design package if it's not Win32
-      if (FTargetPlatform <> ctpWin32) and ProjectTypeIsDesign(Result.Info.ProjectType) then
+      // IDE is only Win32 until Delphi 12.3 so there can't be any design package if it's not Win32 before that
+      if (FTargetPlatform <> ctpWin32) and (FIDEVersion < 23) and ProjectTypeIsDesign(Result.Info.ProjectType) then
         FreeAndNil(Result);
     except
       on E: EFOpenError do
