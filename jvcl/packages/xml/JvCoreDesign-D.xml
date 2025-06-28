@@ -16,39 +16,39 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvProviderTreeListDsgnFrame.pas" Targets="all_win32" Formname="fmeJvProviderTreeListDsgn: TFrame" Condition=""/>
-    <File Name="..\..\design\JvProviderTreeListFrame.pas" Targets="all_win32" Formname="fmeJvProviderTreeList: TFrame" Condition=""/>
-    <File Name="..\..\design\JvStdToolbarDsgnFrame.pas" Targets="all_win32" Formname="fmeJvStdToolbarDesign: TFrame" Condition=""/>
-    <File Name="..\..\design\JvStringsForm.pas" Targets="all_win32" Formname="JvStrEditDlg" Condition=""/>
-    <File Name="..\..\design\JvBaseDlgEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBaseDsgnForm.pas" Targets="all_win32" Formname="JvBaseDesign" Condition=""/>
-    <File Name="..\..\design\JvBaseDsgnFrame.pas" Targets="all_win32" Formname="fmeJvBaseDesign: TFrame" Condition=""/>
-    <File Name="..\..\design\JvBaseDsgnToolbarFrame.pas" Targets="all_win32" Formname="fmeJvBaseToolbarDesign: TFrame" Condition=""/>
-    <File Name="..\..\design\JvColorEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvColorProviderDesignerForm.pas" Targets="all_win32" Formname="frmJvColorProviderDesigner" Condition=""/>
-    <File Name="..\..\design\JvColorProviderEditors.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDsgnConfig.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCoreReg.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDataConsumerContextSelectForm.pas" Targets="all_win32" Formname="frmDataConsumerContextSelect" Condition=""/>
-    <File Name="..\..\design\JvDataConsumerItemSelectForm.pas" Targets="all_win32" Formname="frmJvDataConsumerItemSelect" Condition=""/>
-    <File Name="..\..\design\JvDataContextManagerForm.pas" Targets="all_win32" Formname="frmJvDataContextManager" Condition=""/>
-    <File Name="..\..\design\JvDataProviderDesignerForm.pas" Targets="all_win32" Formname="frmDataProviderDesigner" Condition=""/>
-    <File Name="..\..\design\JvDataProviderEditors.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDataProviderItemDesign.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDateTimeForm.pas" Targets="all_win32" Formname="frmSelectDateTimeDlg" Condition=""/>
-    <File Name="..\..\design\JvDesignerUtils.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDsgnConsts.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDsgnEditors.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvIDEZoom.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvJVCLAboutEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvPaintBoxEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvProviderToolbarFrame.pas" Targets="all_win32" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
-    <File Name="..\..\design\JvDsgnTypes.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvColorProviderDsgnTreeFrame.pas" Targets="all_win32" Formname="fmeJvColorProviderDsgnTree: TFrame" Condition=""/>
-    <File Name="..\..\design\JvColorProviderAddDialogForm.pas" Targets="all_win32" Formname="frmAddColor" Condition=""/>
-    <File Name="..\..\design\JvActnResForm.pas" Targets="all_win32" Formname="JvStandardActions: TDataModule" Condition=""/>
-    <File Name="..\..\design\JvBackgroundEditors.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBackgroundEditForm.pas" Targets="all_win32" Formname="JvBackgroundClientsEditor" Condition=""/>
-    <File Name="..\..\design\JvValidatorsEditorForm.pas" Targets="all_win32" Formname="frmValidatorsEditor" Condition=""/>
+    <File Name="..\..\design\JvProviderTreeListDsgnFrame.pas" Targets="ide" Formname="fmeJvProviderTreeListDsgn: TFrame" Condition=""/>
+    <File Name="..\..\design\JvProviderTreeListFrame.pas" Targets="ide" Formname="fmeJvProviderTreeList: TFrame" Condition=""/>
+    <File Name="..\..\design\JvStdToolbarDsgnFrame.pas" Targets="ide" Formname="fmeJvStdToolbarDesign: TFrame" Condition=""/>
+    <File Name="..\..\design\JvStringsForm.pas" Targets="ide" Formname="JvStrEditDlg" Condition=""/>
+    <File Name="..\..\design\JvBaseDlgEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBaseDsgnForm.pas" Targets="ide" Formname="JvBaseDesign" Condition=""/>
+    <File Name="..\..\design\JvBaseDsgnFrame.pas" Targets="ide" Formname="fmeJvBaseDesign: TFrame" Condition=""/>
+    <File Name="..\..\design\JvBaseDsgnToolbarFrame.pas" Targets="ide" Formname="fmeJvBaseToolbarDesign: TFrame" Condition=""/>
+    <File Name="..\..\design\JvColorEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvColorProviderDesignerForm.pas" Targets="ide" Formname="frmJvColorProviderDesigner" Condition=""/>
+    <File Name="..\..\design\JvColorProviderEditors.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDsgnConfig.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCoreReg.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDataConsumerContextSelectForm.pas" Targets="ide" Formname="frmDataConsumerContextSelect" Condition=""/>
+    <File Name="..\..\design\JvDataConsumerItemSelectForm.pas" Targets="ide" Formname="frmJvDataConsumerItemSelect" Condition=""/>
+    <File Name="..\..\design\JvDataContextManagerForm.pas" Targets="ide" Formname="frmJvDataContextManager" Condition=""/>
+    <File Name="..\..\design\JvDataProviderDesignerForm.pas" Targets="ide" Formname="frmDataProviderDesigner" Condition=""/>
+    <File Name="..\..\design\JvDataProviderEditors.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDataProviderItemDesign.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDateTimeForm.pas" Targets="ide" Formname="frmSelectDateTimeDlg" Condition=""/>
+    <File Name="..\..\design\JvDesignerUtils.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDsgnConsts.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDsgnEditors.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvIDEZoom.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvJVCLAboutEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPaintBoxEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvProviderToolbarFrame.pas" Targets="ide" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
+    <File Name="..\..\design\JvDsgnTypes.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvColorProviderDsgnTreeFrame.pas" Targets="ide" Formname="fmeJvColorProviderDsgnTree: TFrame" Condition=""/>
+    <File Name="..\..\design\JvColorProviderAddDialogForm.pas" Targets="ide" Formname="frmAddColor" Condition=""/>
+    <File Name="..\..\design\JvActnResForm.pas" Targets="ide" Formname="JvStandardActions: TDataModule" Condition=""/>
+    <File Name="..\..\design\JvBackgroundEditors.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBackgroundEditForm.pas" Targets="ide" Formname="JvBackgroundClientsEditor" Condition=""/>
+    <File Name="..\..\design\JvValidatorsEditorForm.pas" Targets="ide" Formname="frmValidatorsEditor" Condition=""/>
   </Contains>
 </Package>
