@@ -227,7 +227,7 @@ type
     function GetAuthor: string; virtual;
     function GetComment: string; virtual;
     function GetPage: string; virtual;
-    function GetGlyph: Cardinal; virtual;
+    function GetGlyph: {$IFDEF RTL360_UP}THandle{$ELSE}Cardinal{$ENDIF RTL360_UP}; virtual;
 
     { IOTAMenuWizard methods }
     function GetMenuText: string; virtual;
@@ -532,7 +532,7 @@ begin
   Result := RsNewPlugin;
 end;
 
-function TJvPluginWizard.GetGlyph: Cardinal; 
+function TJvPluginWizard.GetGlyph: {$IFDEF RTL360_UP}THandle{$ELSE}Cardinal{$ENDIF RTL360_UP};
 begin
   Result := LoadIcon(HInstance, 'XJVPLUGINWIZ');
 end;

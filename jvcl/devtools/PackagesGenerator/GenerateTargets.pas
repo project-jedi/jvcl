@@ -17,7 +17,8 @@ type
     FPDir   : string;
     FEnv    : string;
     FVer    : string;
-    FDefines: TStringList;
+    FXmlDefines: TStringList;
+    FTechnicalDefines: TStringList;
     FPathSep: string;
     FIsCLX  : Boolean;
     FIsBDS  : Boolean;
@@ -36,7 +37,8 @@ type
     property PDir   : string      read GetPDir;
     property Env    : string      read GetEnv;
     property Ver    : string      read GetVer;
-    property Defines: TStringList read FDefines;
+    property XmlDefines: TStringList read FXmlDefines;
+    property TechnicalDefines: TStringList read FTechnicalDefines;
     property PathSep: string      read FPathSep;
     property IsCLX  : Boolean     read FIsCLX;
     property IsBDS  : Boolean     read FIsBDS;
@@ -119,12 +121,15 @@ begin
   if Assigned(Node.Properties.ItemNamed['ver']) then
     FVer := AnsiLowerCase(Node.Properties.ItemNamed['ver'].Value);
 
-  FDefines := TStringList.Create;
+  FXmlDefines := TStringList.Create;
   if Assigned(Node.Properties.ItemNamed['defines']) then
     StrToStrings(Node.Properties.ItemNamed['defines'].Value,
                  ',',
-                 FDefines,
+                 FXmlDefines,
                  False);
+
+  FTechnicalDefines := TStringList.Create;
+  FTechnicalDefines.AddStrings(FXmlDefines);
 
   FPathSep := '\';
   if Assigned(Node.Properties.ItemNamed['pathsep']) then
@@ -140,10 +145,10 @@ begin
     FIsDotNet := Node.Properties.ItemNamed['IsDotNet'].BoolValue;
 
   if StrHasSuffix(Name, ['_x64']) then
-    FDefines.Add('WIN64')
+    FTechnicalDefines.Add('WIN64')
   else
-    FDefines.Add('WIN32');
-  FDefines.Add('CONDITIONALEXPRESSIONS');
+    FTechnicalDefines.Add('WIN32');
+  FTechnicalDefines.Add('CONDITIONALEXPRESSIONS');
 
   for I := Low(TargetDefines) to High(TargetDefines) do
     if SameText(TargetDefines[I].TargetName, Name) then
@@ -155,7 +160,7 @@ begin
                  Tmp,
                  False);
 
-        FDefines.AddStrings(Tmp);
+        FTechnicalDefines.AddStrings(Tmp);
       finally
         Tmp.Free;
       end;
@@ -164,7 +169,8 @@ end;
 
 destructor TTarget.Destroy;
 begin
-  FDefines.Free;
+  FXmlDefines.Free;
+  FTechnicalDefines.Free;
   inherited Destroy;
 end;
 

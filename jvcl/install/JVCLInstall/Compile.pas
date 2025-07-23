@@ -1227,7 +1227,7 @@ begin
           begin
             Result := Win64xResult;
             Exit;
-	  end;
+          end;
         end;
 
         FilesCompiled := True;

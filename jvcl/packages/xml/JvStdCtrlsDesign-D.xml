@@ -18,9 +18,9 @@
     <Package Name="dclstd" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvCheckedItemsForm.pas" Targets="all_win32" Formname="JvCheckItemsEditor" Condition=""/>
-    <File Name="..\..\design\JvProgressEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvIPAddressEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvStdCtrlsReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCheckedItemsForm.pas" Targets="ide" Formname="JvCheckItemsEditor" Condition=""/>
+    <File Name="..\..\design\JvProgressEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvIPAddressEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvStdCtrlsReg.pas" Targets="ide" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -12,6 +12,6 @@
     <Package Name="vcl" Targets="C,D,help" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvCryptReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCryptReg.pas" Targets="ide" Formname="" Condition=""/>
   </Contains>
 </Package>

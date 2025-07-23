@@ -503,7 +503,7 @@ begin
       CheckBoxAddBplDirToPath.Checked := TargetConfig.AddBplDirToPath;
     end;
 
-    CheckBoxIDERegister.Visible := (ItemIndex = 0) or (SelTargetConfig.Target.Platform <> ctpWin64);
+    CheckBoxIDERegister.Visible := (ItemIndex = 0) or (SelTargetConfig.Target.Platform <> ctpWin64) or (SelTargetConfig.Target.IDEVersion >= 23);
     CheckBoxCleanPalettes.Visible := CheckBoxIDERegister.Visible;
     CheckBoxCleanPalettes.Enabled := CheckBoxIDERegister.Checked;
     CheckBoxDebugUnits.Enabled := not CheckBoxDeveloperInstall.Checked;

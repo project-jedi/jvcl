@@ -22,6 +22,8 @@ type
     destructor Destroy; override;
 
     procedure EnsureCondition(lines: TStrings; Condition: string);
+    function Parse(const Condition: string): Boolean;
+
     function EnsurePFlagsCondition(const pflags: string): string;
 
     procedure Append(incfile, ATargetDefines: TStrings);
@@ -59,6 +61,12 @@ end;
 procedure TDefinesConditionParser.MissingRightParenthesis;
 begin
   raise Exception.Create('Missing ")" in conditional expression');
+end;
+
+function TDefinesConditionParser.Parse(const Condition: string): Boolean;
+begin
+  // No condition is a success
+  Result := (Condition = '') or inherited Parse(Condition);
 end;
 
 function TDefinesConditionParser.GetIdentValue(const Ident: String): Boolean;
@@ -105,8 +113,7 @@ end;
 
 procedure TDefinesConditionParser.EnsureCondition(lines: TStrings; Condition: string);
 begin
-  // if there is a condition
-  if (Condition <> '') and not Parse(Condition) then
+  if not Parse(Condition) then
     lines.Clear;
 end;
 

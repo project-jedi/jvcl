@@ -147,6 +147,7 @@ type
     function GetReleaseNumber: string;
     function GetVersionMajorNumber: string;
     function GetVersionMinorNumber: string;
+    function GetPlatformByType(PlatformType: TPlatformType): TPlatform;
   public
     constructor Create(const AFilename: string);
     destructor Destroy; override;
@@ -162,6 +163,7 @@ type
     property Contains[Index: Integer]: TContainedFile read GetContains;
     property PlatformCount: Integer read GetPlatformCount;
     property Platforms[Index: Integer]: TPlatform read GetPlatforms;
+    property PlatformByType[PlatformType: TPlatformType]: TPlatform read GetPlatformByType;
     property PlatformTypes: TPlatformTypes read GetPlatformTypes;
     property RequiresDB: Boolean read FRequiresDB;
     property ProjectType: TProjectType read FProjectType;
@@ -252,6 +254,7 @@ type
     FPackagesXmlDir: string;
     FTargetSymbol: string;
     FTargetPlatform: TCompileTargetPlatform;
+    FIDEVersion: Integer;
     FPackageXmlDirFileNames: TStringList;
 
     function GetCount: Integer;
@@ -267,7 +270,7 @@ type
     procedure LoadFile;
     function XmlFileExists(const XmlName: string): Boolean;
   public
-    constructor Create(const AFilename, APackagesXmlDir, ATargetSymbol: string; ATargetPlatform: TCompileTargetPlatform);
+    constructor Create(const AFilename, APackagesXmlDir, ATargetSymbol: string; ATargetPlatform: TCompileTargetPlatform; AIDEVersion: Integer);
       { Set AFilename to '' if you want a PackageGroup instance that does not
         own the TBpgPackageTarget objects. }
     destructor Destroy; override;
@@ -918,6 +921,21 @@ begin
   Result := FProperties.Values[ImageBaseKnownPackageProperty];
 end;
 
+function TPackageXmlInfo.GetPlatformByType(
+  PlatformType: TPlatformType): TPlatform;
+var
+  I: Integer;
+begin
+  for I := 0 to PlatformCount - 1 do
+  begin
+    Result := Platforms[I];
+    if Result.PlatformType = PlatformType then
+      Exit;
+  end;
+
+  Result := nil;
+end;
+
 function TPackageXmlInfo.GetPlatformCount: Integer;
 begin
   Result := FPlatforms.Count;
@@ -1079,7 +1097,7 @@ end;
 
 { TPackageGroup }
 
-constructor TPackageGroup.Create(const AFilename, APackagesXmlDir, ATargetSymbol: string; ATargetPlatform: TCompileTargetPlatform);
+constructor TPackageGroup.Create(const AFilename, APackagesXmlDir, ATargetSymbol: string; ATargetPlatform: TCompileTargetPlatform; AIDEVersion: Integer);
 begin
   inherited Create;
 
@@ -1089,6 +1107,7 @@ begin
 
   FTargetSymbol := ATargetSymbol;
   FTargetPlatform := ATargetPlatform;
+  FIDEVersion := AIDEVersion;
   FFilename := AFilename;
   FPackageXmlDirFileNames := TStringList.Create;
 
@@ -1115,8 +1134,8 @@ begin
     try
       Result := GetPackageTargetClass.Create(Self, TargetName, SourceName);
 
-      // IDE is only Win32 so there can't be any design package if it's not Win32
-      if (FTargetPlatform <> ctpWin32) and ProjectTypeIsDesign(Result.Info.ProjectType) then
+      // IDE is only Win32 until Delphi 12.3 so there can't be any design package if it's not Win32 before that
+      if (FTargetPlatform <> ctpWin32) and (FIDEVersion < 23) and ProjectTypeIsDesign(Result.Info.ProjectType) then
         FreeAndNil(Result);
     except
       on E: EFOpenError do
