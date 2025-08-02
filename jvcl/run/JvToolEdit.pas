@@ -2168,7 +2168,7 @@ end;
 
 procedure TJvCustomComboEdit.WMClear(var Msg: TMessage);
 begin
-  Text := '';
+  SelText := '';
 end;
 
 procedure TJvCustomComboEdit.WMCut(var Msg: TMessage);
