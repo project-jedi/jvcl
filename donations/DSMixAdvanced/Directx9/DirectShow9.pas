@@ -158,7 +158,7 @@ const
   DV_NTSCPAL	 = $00200000;
   DV_STYPE	 = $001f0000;
 
-//There are NTSC or PAL DV camcorders  
+//There are NTSC or PAL DV camcorders
   DV_NTSC	 = 0;
   DV_PAL	 = 1;
 //DV camcorder can output sd/hd/sl
@@ -619,7 +619,7 @@ const
   AM_SEEKING_CanDoSegments          = $80;
   AM_SEEKING_Source                 = $100;
 
-//lookat  
+//lookat
 type
   IMediaSeeking = interface(IUnknown)
     ['{36B73880-C2C8-11CF-8B46-00805F6CEF60}']
@@ -1344,7 +1344,7 @@ const
   VideoControlFlag_ExternalTriggerEnable = $4;
   VideoControlFlag_Trigger	         = $8;
 
-type  
+type
   IAMVideoControl = interface(IUnknown)
     ['{6a2e0670-28e4-11d0-a18c-00a0c9118956}']
     function GetCaps(pPin: IPin; out pCapsFlags: Longint): HRESULT; stdcall;
@@ -2285,7 +2285,7 @@ const
 	DVD_Mix_Lto1	= $2000;
 	DVD_Mix_Rto1	= $4000;
 
-type        
+type
   TDVD_AUDIO_LANG_EXT = (
 //...modified by henri (before DVD_AUD_EXT_NotSpecified0 oups)
     DVD_AUD_EXT_NotSpecified,
@@ -2901,7 +2901,7 @@ type
 //   (see the diagram below) can be in a filter chain because each one has at 
 //   most one connected input pin and one connected output pin.
 // 
-// - Any filter in a chain is reachable by any other filter in the chain.  
+// - Any filter in a chain is reachable by any other filter in the chain.
 //   For example, in the filter chain F-G-H, F can reach H by following the F-
 //   G connection to G and then following the G-H connection to H.  Filters F 
 //   and J cannot be in the same filter chain because J is not reachable from 
@@ -2920,7 +2920,7 @@ type
 //   filter chain.
 //
 //
-//            --->|---|    |---|--->                   
+//            --->|---|    |---|--->
 //                | C |--->| D |
 // |---|    |---|--->|---|    |---|--->|---|    |---|    |---|    |---|
 // | A |--->| B |                      | E |--->| F |--->| G |--->| H |
@@ -2954,8 +2954,8 @@ type
 //      The last filter in the filter chain.  Note that this can be the same 
 // filter as pStartFilter.  If pEndFilter is NULL then the filter chain extends 
 // from pStartFilter to the last downstream filter which can be in a filter chain.
-// For example, IFilterChain::StartChain( A, NULL ) would start filter A.   
-// IFilterChain::StartChain( G, NULL ) would start filters G and H.  
+// For example, IFilterChain::StartChain( A, NULL ) would start filter A.
+// IFilterChain::StartChain( G, NULL ) would start filters G and H.
 // IFilterChain::StartChain( C, NULL ) would start filters C and D.  Finally, 
 // IFilterChain::StartChain( E, NULL ) would fail because E cannot be in a 
 // filter chain (see the Filter Chain Definition section for more information).
@@ -2982,8 +2982,8 @@ type
 //      The last filter in the filter chain.  Note that this can be the same 
 // filter as pStartFilter.  If pEndFilter is NULL then the filter chain extends 
 // from pStartFilter to the last downstream filter which can be in a filter chain.
-// For example, IFilterChain::StopChain( A, NULL ) would stop filter A.   
-// IFilterChain::StopChain( G, NULL ) would stop filters G and H.  
+// For example, IFilterChain::StopChain( A, NULL ) would stop filter A.
+// IFilterChain::StopChain( G, NULL ) would stop filters G and H.
 // IFilterChain::StopChain( C, NULL ) would stop filters C and D.  Finally, 
 // IFilterChain::StopChain( E, NULL ) would fail because E cannot be in a filter 
 // chain (see the Filter Chain Definition section for more information).
@@ -3008,8 +3008,8 @@ type
 //      The last filter in the filter chain.  Note that this can be the same 
 // filter as pStartFilter.  If pEndFilter is NULL then the filter chain extends 
 // from pStartFilter to the last downstream filter which can be in a filter chain.
-// For example, IFilterChain::StopChain( A, NULL ) would stop filter A.   
-// IFilterChain::StopChain( G, NULL ) would stop filters G and H.  
+// For example, IFilterChain::StopChain( A, NULL ) would stop filter A.
+// IFilterChain::StopChain( G, NULL ) would stop filters G and H.
 // IFilterChain::StopChain( C, NULL ) would stop filters C and D.  Finally, 
 // IFilterChain::StopChain( E, NULL ) would fail because E cannot be in a filter 
 // chain (see the Filter Chain Definition section for more information).
@@ -3025,7 +3025,7 @@ type
 // 
 // HRESULT RemoveChain( [in] IBaseFilter *pStartFilter, [in] IBaseFilter *pEndFilter );
 // 
-//      RemoveChain() removes every filter in a chain from the filter graph.  
+//      RemoveChain() removes every filter in a chain from the filter graph.
 // The filters can be removed while the graph is running.
 // 
 // Parameters:
@@ -3779,7 +3779,7 @@ type
     function GetEndOfStreamEventHandle(out phEOS: THandle): HRESULT; stdcall;
   end;
 
- 
+
   IMediaStream = interface(IUnknown)
     ['{B502D1BD-9A57-11d0-8FDE-00C04FD9189D}']
     function GetMultiMediaStream(out ppMultiMediaStream: IMultiMediaStream):
@@ -4943,7 +4943,7 @@ TAM_FRAMESTEP_STEP = packed record
     //  n (n > 1) means skip n - 1 frames and show the nth
      dwFramesToStep: DWORD;
      end;
-     
+
 (*==========================================================================;
  *
  *  Copyright (C) 1996-1997 Microsoft Corporation.  All Rights Reserved.
@@ -6566,8 +6566,8 @@ const
   ED_TCR_FTC				 = ED_BASE+420;
 
 // ED_MODE_NOTIFY_ENABLE can be OATRUE or OAFALSE (defined in transport mode
-//  section of this file).  
-  ED_TCR_LAST_VALUE		         = ED_BASE+421;   
+//  section of this file).
+  ED_TCR_LAST_VALUE		         = ED_BASE+421;
 
 // TimeCode Display Mode params and values:
 //
@@ -11426,7 +11426,7 @@ type
   end;
 
   IAMTimelineGroup = interface;
-  
+
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 // TIMELINE TIMELINE TIMELINE TIMELINE TIMELINE TIMELINE
@@ -11576,7 +11576,7 @@ type
     // GetTransAtTime - find a transition forwards or backwards from
     //        a given spot. See DEXTERF_TRACK_SEARCH_FLAGS enum.
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  
+
   IAMTimelineTransable = interface(IUnknown)
     ['{378FA386-622E-11D2-8CAD-00A024580902}']
     function TransAdd(pTrans: IAMTimelineObj): HResult; stdcall;
@@ -11897,7 +11897,7 @@ type
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Xml2Dex - converts back and forth between XML and a dexter project
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  
+
   IXml2Dex = interface(IDispatch)
     ['{18C628ED-962A-11D2-8D08-00A0C9441E20}']
     function CreateGraphFromFile(out ppGraph: IUnknown; pTimeline: IUnknown;
@@ -11944,7 +11944,7 @@ type
     function  SampleCB(SampleTime: Double; pSample: IMediaSample): HResult; stdcall;
     function  BufferCB(SampleTime: Double; pBuffer: PByte; BufferLen: longint): HResult; stdcall;
   end;
-  
+
   ISampleGrabber = interface(IUnknown)
     ['{6B652FFF-11FE-4FCE-92AD-0266B5D7C78F}']
     // set this to have the filter immediate stop after
@@ -12556,7 +12556,7 @@ type
     function Reset: HRESULT; stdcall;
     function Clone(out ppEnum: IEnumDMO): HRESULT; stdcall;
   end;
-    
+
 
   TDMO_INPLACE_PROCESS_FLAGS = LongWord;
 const
@@ -19085,7 +19085,7 @@ type
 
 //******************************************************************************
 //
-//  IGuideDataPropery
+//  IGuideDataProperty
 //
 // {88EC5E58-BB73-41d6-99CE-66C524B8B591}
 //
@@ -19990,7 +19990,7 @@ type
   // IMpeg2FilterControl Interface
   //
   ////////////////////////////////////
-  
+
   // Defined in DX9 RC0 but removed in RC1 ???
   IMpeg2FilterControl = interface(IUnknown)
     ['{7066CCDA-5C09-4e4f-85BC-2A2D6E0E310D}']
