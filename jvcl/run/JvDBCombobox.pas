@@ -201,6 +201,7 @@ type
     { The "AutoSize" property was published what it never should have been. TComboBox doesn't
       support it and TJvCustomComboBox/TJvDBCustomComboBox do not support it either. }
     procedure ReadIgnoredBoolean(Reader: TReader);
+    procedure ReadOldUpdateFieldImmediately(Reader: TReader);
   protected
     procedure DefineProperties(Filer: TFiler); override;
   published
@@ -1106,10 +1107,17 @@ begin
   Reader.ReadBoolean;
 end;
 
+procedure TJvDBComboBox.ReadOldUpdateFieldImmediately(Reader: TReader);
+begin
+  FUpdateFieldImmediately := Reader.ReadBoolean;
+end;
+
 procedure TJvDBComboBox.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('AutoSize', ReadIgnoredBoolean, nil, False);
+  // Read DFM with typo in property name and set the correct field.
+  Filer.DefineProperty('UpdateFieldImmediatelly', ReadOldUpdateFieldImmediately, nil, False);
 end;
 
 {$IFDEF UNITVERSIONING}
