@@ -118,7 +118,7 @@ type
     FPaintControl: TPaintControl;
     FBeepOnError: Boolean;
     FResetValue: Boolean;
-    FUpdateFieldImmediatelly: Boolean;
+    FUpdateFieldImmediately: Boolean;
     FListSettings: TJvDBComboBoxListSettings;
     FValues: TStringList;
     FEnableValues: Boolean;
@@ -188,7 +188,7 @@ type
     property Field: TField read GetField;
     property Items write SetItems;
     property Text;
-    property UpdateFieldImmediatelly: Boolean read FUpdateFieldImmediatelly write FUpdateFieldImmediatelly default False;
+    property UpdateFieldImmediately: Boolean read FUpdateFieldImmediately write FUpdateFieldImmediately default False;
     property PreserveItemSelectionOnInsert: Boolean read FPreserveItemSelectionOnInsert write FPreserveItemSelectionOnInsert default False;
     property CaseSensitiveValues: Boolean read GetCaseSensitiveValues write SetCaseSensitiveValues default false;
   end;
@@ -201,6 +201,7 @@ type
     { The "AutoSize" property was published what it never should have been. TComboBox doesn't
       support it and TJvCustomComboBox/TJvDBCustomComboBox do not support it either. }
     procedure ReadIgnoredBoolean(Reader: TReader);
+    procedure ReadOldUpdateFieldImmediately(Reader: TReader);
   protected
     procedure DefineProperties(Filer: TFiler); override;
   published
@@ -240,7 +241,7 @@ type
     property Sorted;
     property TabOrder;
     property TabStop;
-    property UpdateFieldImmediatelly;
+    property UpdateFieldImmediately;
     property Values;
     property Visible;
     property CaseSensitiveValues;
@@ -446,7 +447,7 @@ end;
 procedure TJvCustomDBComboBox.Change;
 begin
   FDataLink.Edit;
-  if UpdateFieldImmediatelly then
+  if UpdateFieldImmediately then
     FDataLink.UpdateRecord;
   inherited Change;
   FDataLink.Modified;
@@ -455,7 +456,7 @@ end;
 procedure TJvCustomDBComboBox.Click;
 begin
   FDataLink.Edit;
-  if UpdateFieldImmediatelly then
+  if UpdateFieldImmediately then
     FDataLink.UpdateRecord;
   inherited Click;
   FDataLink.Modified;
@@ -526,7 +527,7 @@ begin
     Esc:
       begin
         FDataLink.Reset;
-        if UpdateFieldImmediatelly and (FDataLink.Field <> nil) and FDataLink.Editing then
+        if UpdateFieldImmediately and (FDataLink.Field <> nil) and FDataLink.Editing then
           FDataLink.Field.Value := FDataLink.Field.OldValue;
         SelectAll;
       end;
@@ -1034,7 +1035,7 @@ begin
   begin
     FFilter := Value;
     ComboBox.UpdateDropDownItems;
-    if ComboBox.UpdateFieldImmediatelly then
+    if ComboBox.UpdateFieldImmediately then
       ComboBox.DataChange(Self);
   end;
 end;
@@ -1094,7 +1095,7 @@ begin
   if FListDataLink.Active and (DataSource.State = dsBrowse) then
   begin
     ComboBox.UpdateDropDownItems;
-    if ComboBox.UpdateFieldImmediatelly then
+    if ComboBox.UpdateFieldImmediately then
       ComboBox.DataChange(Self);
   end;
 end;
@@ -1106,10 +1107,17 @@ begin
   Reader.ReadBoolean;
 end;
 
+procedure TJvDBComboBox.ReadOldUpdateFieldImmediately(Reader: TReader);
+begin
+  FUpdateFieldImmediately := Reader.ReadBoolean;
+end;
+
 procedure TJvDBComboBox.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('AutoSize', ReadIgnoredBoolean, nil, False);
+  // Read DFM with typo in property name and set the correct field.
+  Filer.DefineProperty('UpdateFieldImmediatelly', ReadOldUpdateFieldImmediately, nil, False);
 end;
 
 {$IFDEF UNITVERSIONING}
