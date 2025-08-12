@@ -17,13 +17,13 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvTipOfDayEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvAppletEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCustomFileMessageDialogEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDesktopAlertEditors.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvProgressComponentEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvFindReplaceEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDlgsReg.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDialogActnResForm.pas" Targets="all_win32" Formname="JvDialogActions: TDataModule" Condition=""/>
+    <File Name="..\..\design\JvTipOfDayEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvAppletEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCustomFileMessageDialogEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDesktopAlertEditors.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvProgressComponentEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFindReplaceEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDlgsReg.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDialogActnResForm.pas" Targets="ide" Formname="JvDialogActions: TDataModule" Condition=""/>
   </Contains>
 </Package>

@@ -159,29 +159,58 @@ var
   R: TRect;
   I, Size: Integer;
 begin
-  with Splitter do
+  if Splitter.Align in [alLeft, alTop] then
   begin
-    if Align in [alLeft, alTop] then
-    begin
-      Control := nil;
-      Pt := Point(Left, Top);
-      if Align = alLeft then
-        Dec(Pt.X)
-      else //if Align = alTop then
-        Dec(Pt.Y);
+    Control := nil;
+    Pt := Point(Splitter.Left, Splitter.Top);
+    if Splitter.Align = alLeft then
+      Dec(Pt.X)
+    else //if Align = alTop then
+      Dec(Pt.Y);
 
-      for I := 0 to Parent.ControlCount - 1 do
+    for I := 0 to Splitter.Parent.ControlCount - 1 do
+    begin
+      Control := Splitter.Parent.Controls[I];
+      R := Control.BoundsRect;
+      if Splitter.Align = alLeft then
+        Size := R.Right - R.Left
+      else //if Align = alTop then
+        Size := R.Bottom - R.Top;
+
+      if Control.Visible and Control.Enabled and (Size = 0) then
       begin
-        Control := Parent.Controls[I];
+        if Splitter.Align = alLeft then
+          Dec(R.Left)
+        else // Align = alTop then
+          Dec(R.Top);
+
+        if PtInRect(R, Pt) then
+          Break;
+      end;
+      Control := nil;
+    end;
+
+    if Control = nil then
+    begin
+      // Check for the control that is zero-sized but after the splitter.
+      // TWinControl.AlignControls does not work properly with alLeft/alTop.
+      if Splitter.Align = alLeft then
+        Pt := Point(Splitter.Left + Splitter.Width - 1, Splitter.Top)
+      else // if Align = alTop then
+        Pt := Point(Splitter.Left, Splitter.Top + Splitter.Height - 1);
+
+      for I := 0 to Splitter.Parent.ControlCount - 1 do
+      begin
+        Control := Splitter.Parent.Controls[I];
         R := Control.BoundsRect;
-        if Align = alLeft then
+        if Splitter.Align = alLeft then
           Size := R.Right - R.Left
         else //if Align = alTop then
           Size := R.Bottom - R.Top;
 
         if Control.Visible and Control.Enabled and (Size = 0) then
         begin
-          if Align = alLeft then
+          if Splitter.Align = alLeft then
             Dec(R.Left)
           else // Align = alTop then
             Dec(R.Top);
@@ -192,45 +221,13 @@ begin
         Control := nil;
       end;
 
-      if Control = nil then
+      if Control <> nil then
       begin
-        // Check for the control that is zero-sized but after the splitter.
-        // TWinControl.AlignControls does not work properly with alLeft/alTop.
-        if Align = alLeft then
-          Pt := Point(Left + Width - 1, Top)
+        // realign left/top control
+        if Splitter.Align = alLeft then
+          Control.Left := -1
         else // if Align = alTop then
-          Pt := Point(Left, Top + Height - 1);
-
-        for I := 0 to Parent.ControlCount - 1 do
-        begin
-          Control := Parent.Controls[I];
-          R := Control.BoundsRect;
-          if Align = alLeft then
-            Size := R.Right - R.Left
-          else //if Align = alTop then
-            Size := R.Bottom - R.Top;
-
-          if Control.Visible and Control.Enabled and (Size = 0) then
-          begin
-            if Align = alLeft then
-              Dec(R.Left)
-            else // Align = alTop then
-              Dec(R.Top);
-
-            if PtInRect(R, Pt) then
-              Break;
-          end;
-          Control := nil;
-        end;
-
-        if Control <> nil then
-        begin
-          // realign left/top control
-          if Align = alLeft then
-            Control.Left := -1
-          else // if Align = alTop then
-            Control.Top := -1;
-        end;
+          Control.Top := -1;
       end;
     end;
   end;

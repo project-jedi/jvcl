@@ -19,13 +19,13 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvLookoutEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvOutlookBarEditors.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvOutlookBarForm.pas" Targets="all_win32" Formname="FrmOLBEditor" Condition=""/>
-    <File Name="..\..\design\JvScheduleEditorForm.pas" Targets="all_win32" Formname="FrmScheduleEditor" Condition=""/>
-    <File Name="..\..\design\JvScheduleEditors.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvTimeLineEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCustomReg.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvHLEditEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvLookoutEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvOutlookBarEditors.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvOutlookBarForm.pas" Targets="ide" Formname="FrmOLBEditor" Condition=""/>
+    <File Name="..\..\design\JvScheduleEditorForm.pas" Targets="ide" Formname="FrmScheduleEditor" Condition=""/>
+    <File Name="..\..\design\JvScheduleEditors.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTimeLineEditor.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCustomReg.pas" Targets="ide" Formname="" Condition=""/>
+    <File Name="..\..\design\JvHLEditEditor.pas" Targets="ide" Formname="" Condition=""/>
   </Contains>
 </Package>

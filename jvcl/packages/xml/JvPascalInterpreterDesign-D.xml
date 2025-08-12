@@ -25,6 +25,6 @@
     <Package Name="bdertl" Targets="BDE" Condition="USE_BDE"/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvPascalInterpreterReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPascalInterpreterReg.pas" Targets="ide" Formname="" Condition=""/>
   </Contains>
 </Package>

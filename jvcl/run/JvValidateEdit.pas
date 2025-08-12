@@ -698,7 +698,7 @@ begin
       else
       if (OldFormat in [dfInteger, dfYear]) and
         (NewValue in [dfBinary, dfHex, dfOctal]) then
-        SetAsInteger(StrToIntDef(FEditText, 0))
+        SetAsInteger(StrToInt64Def(FEditText, 0))
       else
       if (OldFormat = dfOctal) and
         (NewValue in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger, dfPercent, dfScientific, dfYear, dfFloatFixed, dfBcd]) then
@@ -925,7 +925,7 @@ begin
     dfFloat, dfFloatGeneral, dfDecimal, dfPercent, dfScientific, dfFloatFixed:
       Result := FloatRangeValue(JvSafeStrToFloatDef(FEditText, 0));
     dfInteger, dfYear:
-      Result := IntRangeValue(StrToIntDef(FEditText, 0));
+      Result := IntRangeValue(StrToInt64Def(FEditText, 0));
     dfHex:
       Result := IntRangeValue(StrToUIntDef('$' + FEditText, 0));
     dfBcd:

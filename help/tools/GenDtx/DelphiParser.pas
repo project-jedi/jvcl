@@ -1921,7 +1921,7 @@ var
 begin
   { Bv:
 
-    propery P1: X1 read Get1 write Get2
+    property P1: X1 read Get1 write Get2
     property P1;
     property P1 default X;
     property Bold[Year, Month, Day: Word]: Boolean read IsBold write SetBold;
@@ -3994,7 +3994,7 @@ procedure TDelphiParser.SkipClass_Property;
 begin
   { Bv:
 
-    propery P1: X1 read Get1 write Get2
+    property P1: X1 read Get1 write Get2
     property P1;
     property P1 default X;
     property Bold[Year, Month, Day: Word]: Boolean read IsBold write SetBold;
