@@ -56,8 +56,6 @@ unit JvSetupApi;
 
 interface
 
-{$WEAKPACKAGEUNIT ON}
-
 // (rom) this is the switch to change between static and dynamic linking.
 // (rom) it is enabled by default here.
 // (rom) To disable simply change the '$' to a '.'.
@@ -3188,6 +3186,7 @@ const
 {$ENDIF WINXP_UP}
 
 {$IFNDEF SETUPAPI_LINKONREQUEST}
+{$WEAKPACKAGEUNIT ON}
 
 {$IFDEF WINXP_UP}
 function SetupGetFileQueueCount(FileQueue: HSPFILEQ; SubQueueFileOp: UINT; var NumOperations: UINT): BOOL; stdcall;

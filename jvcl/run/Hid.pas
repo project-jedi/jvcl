@@ -40,7 +40,6 @@ unit Hid;
 
 interface
 
-{$WEAKPACKAGEUNIT}
 
 // (rom) loads HID.DLL dynamically
 {$DEFINE HID_LINKONREQUEST}
@@ -430,6 +429,7 @@ type
    ): Boolean; stdcall;
 
 {$IFNDEF HID_LINKONREQUEST}
+{$WEAKPACKAGEUNIT}  
 
 // (rom) undocumented easter egg function
 // (rom) fills buffer with "Hello\nI hate Jello\n"
