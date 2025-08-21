@@ -142,7 +142,9 @@ end;
 
 function TJvgFileIterator.CheckResult(Value: Integer): Boolean;
 begin
+  {$IFNDEF COMPILER37_UP}
   Result := True;
+  {$ENDIF ~COMPILER37_UP}
   case Value of
     0:
       Result := True;
