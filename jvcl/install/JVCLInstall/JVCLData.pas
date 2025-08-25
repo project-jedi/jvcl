@@ -707,7 +707,7 @@ begin
   FGenerateMapFiles := True;
   FLinkMapFiles := Target.Platform = ctpWin32;  // linking map files into anything but x86 binaries is not yet supported
   FDeleteMapFiles := True;
-  FCompileOnly := (Target.Platform <> ctpWin32) or (Target.IDEVersion >= 23);  // by default, only install under Win32 or with Delphi 12.3 and upper
+  FCompileOnly := (Target.Platform <> ctpWin32) and (Target.IDEVersion < 23);  // by default, only install under Win32 or with Delphi 12.3 and upper
 
   FBplDir := Target.BplDir;
   // DcpDir matches the DCU output directory.
