@@ -1086,16 +1086,16 @@ begin
   begin
     BplName := ProjectGroup.Packages[PkgIndex].Info.BplName;
 
-    for i := 0 to Target.GetKnownPackages.Count - 1 do
-      if CompareText(Target.GetKnownPackages[i].Name, BplName) = 0 then
+    for i := 0 to Target.KnownPackages.Count - 1 do
+      if CompareText(Target.KnownPackages[i].Name, BplName) = 0 then
       begin
         ProjectGroup.Packages[PkgIndex].Install := True;
         IsInstalled := True;
         Break;
       end;
 
-    for i := 0 to Target.GetDisabledPackages.Count - 1 do
-      if CompareText(Target.GetDisabledPackages[i].Name, BplName) = 0 then
+    for i := 0 to Target.DisabledPackages.Count - 1 do
+      if CompareText(Target.DisabledPackages[i].Name, BplName) = 0 then
       begin
         // shouldn't the following value be False?
         ProjectGroup.Packages[PkgIndex].Install := True;
@@ -1526,8 +1526,8 @@ var
   BplFilename: string;
 begin
   Target := ProjectGroup.Target;
-  KnownPackages := Target.GetKnownPackages;
-  DisabledPackages := Target.GetDisabledPackages;
+  KnownPackages := Target.KnownPackages;
+  DisabledPackages := Target.DisabledPackages;
 
   // remove JVCL packages
   for i := DisabledPackages.Count - 1 downto 0 do
@@ -1728,13 +1728,13 @@ begin
   // remove JVCL packages
   with Target do
   begin
-    for i := GetDisabledPackages.Count - 1 downto 0 do
-      if StartsWith(GetDisabledPackages.Items[i].Name, 'Jv', True) then // do not localize
-        GetDisabledPackages.Delete(i);
+    for i := DisabledPackages.Count - 1 downto 0 do
+      if StartsWith(DisabledPackages.Items[i].Name, 'Jv', True) then // do not localize
+        DisabledPackages.Delete(i);
 
-    for i := GetKnownPackages.Count - 1 downto 0 do
-      if StartsWith(GetKnownPackages.Items[i].Name, 'Jv', True) then // do not localize
-        GetKnownPackages.Delete(i);
+    for i := KnownPackages.Count - 1 downto 0 do
+      if StartsWith(KnownPackages.Items[i].Name, 'Jv', True) then // do not localize
+        KnownPackages.Delete(i);
   end;
   Target.SavePackagesLists;
 
