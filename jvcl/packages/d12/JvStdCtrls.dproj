@@ -1,4 +1,4 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{1C1476C2-A01A-44DE-A7D5-34E47E811C5B}</ProjectGuid>
 			<MainSource>JvStdCtrls.dpk</MainSource>
@@ -78,7 +78,7 @@
 						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">3</VersionInfo>
-						<VersionInfo Name="MinorVer">41</VersionInfo>
+						<VersionInfo Name="MinorVer">51</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
 						<VersionInfo Name="Build">0</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
@@ -92,14 +92,14 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">JVCL Standard Controls Runtime Package</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">3.51.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JvStdCtrls</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2025 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JvStdCtrls120.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">3.41.0.0</VersionInfoKeys>
-						<VersionInfoKeys Name="Comments">3.41 Build 0</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">3.51.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments">3.51 Build 0</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">JvStdCtrls.dpk</Source>

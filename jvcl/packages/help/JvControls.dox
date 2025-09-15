@@ -152,9 +152,9 @@ File112=..\..\..\help\JvVersionControlActionsEngine.dtx
 File113=..\..\..\help\JvVersionControlActionsEngineFileListBox.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2013 Project JEDI
+Copyright=Copyright (C) 1999, 2025 Project JEDI
 Summary=Documentation of the JVCL Visual Controls Runtime Package
 Title=JVCL Visual Controls Runtime Package
 VersionBuild=0
 VersionMajor=3
-VersionMinor=41
+VersionMinor=51
