@@ -147,10 +147,10 @@
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="3"/>
-        <ProjectProperty name="VersionMinorNumber" value="41"/>
+        <ProjectProperty name="VersionMinorNumber" value="50"/>
         <ProjectProperty name="ReleaseNumber" value="0"/>
         <ProjectProperty name="BuildNumber" value="0"/>
-        <ProjectProperty name="Copyright" Value="Copyright (C) 1999, 2013 Project JEDI"/>
+        <ProjectProperty name="Copyright" Value="Copyright (C) 1999, 2025 Project JEDI"/>
       </ProjectProperties>
     </model>
   </models>

@@ -33,7 +33,7 @@ File3=JEDI.doxdb
 File4=vcl.doxdb
 
 [Source Files]
-Count=49
+Count=47
 File0=..\..\run\JvMouseGesture.pas
 File1=..\..\run\JvPageManager.pas
 File2=..\..\run\JvPatchFile.pas
@@ -78,15 +78,14 @@ File40=..\..\..\help\JvLogFile.dtx
 File41=..\..\..\help\JvLogClasses.dtx
 File42=..\..\..\help\JvLogForm.dtx
 File43=..\..\..\help\JvMergeManager.dtx
-File44=..\..\..\help\JvControlComponent.dtx
-File45=..\..\..\help\JvSpellChecker.dtx
-File46=..\..\..\help\JvSpellerForm.dtx
-File47=..\..\..\help\JvSpellIntf.dtx
+File44=..\..\..\help\JvSpellChecker.dtx
+File45=..\..\..\help\JvSpellerForm.dtx
+File46=..\..\..\help\JvSpellIntf.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2013 Project JEDI
+Copyright=Copyright (C) 1999, 2025 Project JEDI
 Summary=Documentation of the JVCL Non-Visual Components Runtime Package
 Title=JVCL Non-Visual Components Runtime Package
 VersionBuild=0
 VersionMajor=3
-VersionMinor=41
+VersionMinor=50

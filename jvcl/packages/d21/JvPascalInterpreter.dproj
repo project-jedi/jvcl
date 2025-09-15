@@ -68,6 +68,7 @@
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="dbrtl.dcp"/>
+        <DCCReference Include="bdertl.dcp"/>
         <DCCReference Include="vcldb.dcp"/>
         <DCCReference Include="vclx.dcp"/>
         <DCCReference Include="vclimg.dcp"/>
@@ -82,6 +83,7 @@
         <DCCReference Include="..\..\run\JvInterpreter_Db.pas"/>
         <DCCReference Include="..\..\run\JvInterpreter_DbCtrls.pas"/>
         <DCCReference Include="..\..\run\JvInterpreter_DbGrids.pas"/>
+        <DCCReference Include="..\..\run\JvInterpreter_DBTables.pas"/>
         <DCCReference Include="..\..\run\JvInterpreter_Dialogs.pas"/>
         <DCCReference Include="..\..\run\JvInterpreter_ExtCtrls.pas"/>
         <DCCReference Include="..\..\run\JvInterpreter_Forms.pas"/>
@@ -125,7 +127,7 @@
                     <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
                     <VersionInfo Name="AutoIncBuild">False</VersionInfo>
                     <VersionInfo Name="MajorVer">3</VersionInfo>
-                    <VersionInfo Name="MinorVer">41</VersionInfo>
+                    <VersionInfo Name="MinorVer">50</VersionInfo>
                     <VersionInfo Name="Release">0</VersionInfo>
                     <VersionInfo Name="Build">0</VersionInfo>
                     <VersionInfo Name="Debug">False</VersionInfo>
@@ -139,14 +141,14 @@
                 <VersionInfoKeys>
                     <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
                     <VersionInfoKeys Name="FileDescription">JVCL Interpreter Components Runtime Package</VersionInfoKeys>
-                    <VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
+                    <VersionInfoKeys Name="FileVersion">3.50.0.0</VersionInfoKeys>
                     <VersionInfoKeys Name="InternalName">JvPascalInterpreter</VersionInfoKeys>
-                    <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
+                    <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2025 Project JEDI</VersionInfoKeys>
                     <VersionInfoKeys Name="LegalTrademarks"/>
                     <VersionInfoKeys Name="OriginalFilename">JvPascalInterpreter210.bpl</VersionInfoKeys>
                     <VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
-                    <VersionInfoKeys Name="ProductVersion">3.41.0.0</VersionInfoKeys>
-                    <VersionInfoKeys Name="Comments">3.41 Build 0</VersionInfoKeys>
+                    <VersionInfoKeys Name="ProductVersion">3.50.0.0</VersionInfoKeys>
+                    <VersionInfoKeys Name="Comments">3.50 Build 0</VersionInfoKeys>
                 </VersionInfoKeys>
                 <Source>
                     <Source Name="MainSource">JvPascalInterpreter.dpk</Source>
