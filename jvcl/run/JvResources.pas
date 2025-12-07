@@ -569,7 +569,7 @@ resourcestring
 
 //=== JvDatePickerEdit.pas ===================================================
 resourcestring
-  RsDefaultNoDateShortcut = 'Alt+Del';
+  RsDefaultNoDateShortcut = 'Alt+Del'; // not used anymore in JvDatePickerEdit.pas
 
   RsEMustHaveADate = '%s must have a date!';
 
