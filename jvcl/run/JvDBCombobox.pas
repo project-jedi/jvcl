@@ -692,6 +692,13 @@ var
   OldFont: HFONT;
   Index: Integer;
 begin
+  { Avoid data access during component destruction - can cause AV if dataset is closing }
+  if csDestroying in ComponentState then
+  begin
+    inherited;
+    Exit;
+  end;
+
   { If the field value is not part of the DataSource }
   if (Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable]) and
      ListSettings.ShowOutfilteredValue and (ItemIndex = -1) and
