@@ -4320,6 +4320,7 @@ begin
   try
     // Get useable width
     ColLineWidth := Ord(dgColLines in Options) * GridLineWidth;
+    ColLineWidth := PPIScale(Self, ColLineWidth);
     AvailableWidth := ClientWidth;
     if (dgIndicator in Options) then
       Dec(AvailableWidth, PPIScale(Self, IndicatorWidth) + ColLineWidth);
