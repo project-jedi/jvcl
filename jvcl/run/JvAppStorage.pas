@@ -3868,7 +3868,8 @@ begin
     FFileLoaded := True;
     FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
     {$IFDEF DELPHI2006_UP}
-    FileAge(FullFileName, FFileAge);
+    if not FileAge(FullFileName, FFileAge) then
+      FFileAge := -1;
     {$ELSE}
     FFileAge:= FileAge(FullFileName);
     {$ENDIF}
