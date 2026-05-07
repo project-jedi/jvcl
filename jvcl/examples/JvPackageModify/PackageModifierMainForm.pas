@@ -221,16 +221,17 @@ end;
 
 procedure TPackageModifierMainFrm.WMDropFiles(var Message: TWMDropFiles);
 var
-  Count:integer;buf:array[0..MAX_PATH] of char;
+  Count: Integer;
+  Buf: array[0..MAX_PATH] of Char;
 begin
   with Message do
   begin
-    Count := DragQueryFile(Drop,DWORD(-1),nil,0) - 1;
+    Count := DragQueryFile(Drop, DWORD(-1), nil, 0) - 1;
     while Count >= 0 do
     begin
-      DragQueryFile(Drop,Count,buf,sizeof(buf));
-      if FileExists(string(buf)) then
-        reFiles.Lines.Add(string(buf));
+      DragQueryFile(Drop, Count, Buf, MAX_PATH);
+      if FileExists(string(Buf)) then
+        reFiles.Lines.Add(string(Buf));
       Dec(Count);
     end;
     DragFinish(Drop);

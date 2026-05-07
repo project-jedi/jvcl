@@ -162,15 +162,15 @@ end;
 
 procedure TfrmSpeedTest.WMDropFiles(var Message: TWMDropFiles);
 var
-  Count, i: integer;
-  buf: array[0..MAX_PATH] of char;
+  Count, I: Integer;
+  Buf: array[0..MAX_PATH] of Char;
 begin
   WaitCursor;
   Count := DragQueryFile(Message.Drop, $FFFFFFFF, nil, 0);
   try
-    for i := 0 to Count - 1 do
+    for I := 0 to Count - 1 do
     begin
-      DragQueryFile(Message.Drop, i, buf, sizeof(buf));
+      DragQueryFile(Message.Drop, I, Buf, MAX_PATH);
       if FileExists(buf) then
         memFiles.Lines.Add(buf);
     end;

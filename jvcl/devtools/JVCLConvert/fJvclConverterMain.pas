@@ -1019,36 +1019,29 @@ begin
 end;
 
 procedure TfrmMain.WMDropFiles(var Msg: TWMDropFiles);
-{$IFDEF Windows}
-const
-  MAX_PATH = 255;
-{$ENDIF}
 var
   Pt: TPoint;
   Count, Loop: Integer;
-  Buf: array [0 .. MAX_PATH] of char;
+  Buf: array [0..MAX_PATH] of char;
 begin
   try
     Msg.Result := 0;
     DragQueryPoint(Msg.Drop, Pt);
-    Count := DragQueryFile(Msg.Drop, Cardinal( - 1), Buf, sizeof(Buf));
+    Count := DragQueryFile(Msg.Drop, Cardinal( - 1), Buf, MAX_PATH);
     for Loop := 0 to Pred(Count) do
     begin
-      DragQueryFile(Msg.Drop, Loop, Buf, sizeof(Buf));
+      DragQueryFile(Msg.Drop, Loop, Buf, MAX_PATH);
       AddFiles(StrPas(Buf));
     end
   finally
-    DragFinish(Msg.Drop)
+    DragFinish(Msg.Drop);
   end
-
 end;
 
 initialization
-
-Lines := TStringlist.Create;
+  Lines := TStringlist.Create;
 
 finalization
-
-Lines.Free;
+  Lines.Free;
 
 end.

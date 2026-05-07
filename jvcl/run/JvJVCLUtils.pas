@@ -3456,7 +3456,7 @@ begin
       Result := psl.QueryInterface(IPersistFile, ppf);
       if Succeeded(Result) then
       begin
-        StringToWideChar(LinkFile, WLinkFile, SizeOf(WLinkFile) - 1);
+        StringToWideChar(LinkFile, WLinkFile, Length(WLinkFile) - 1);
         // Load the shortcut.
         Result := ppf.Load(WLinkFile, STGM_READ);
         if Succeeded(Result) then

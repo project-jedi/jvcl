@@ -39,8 +39,6 @@ uses
   ActiveX, ComObj, ShlObj, FileCtrl, JclBase, JclWin32;
 
 type
-{ TBrowseFolderDialog }
-
   TBrowseKind = (bfFolders, bfComputers);
   TDialogPosition = (dpDefault, dpScreenCenter);
 
@@ -120,14 +118,14 @@ resourcestring
   STR_HELPBTN = '&Help';
 
 procedure CenterWindow(wnd: HWND);
-var r: TRect;
+var
+  R: TRect;
 begin
-  GetWindowRect(wnd, r);
-  r := Rect((GetSystemMetrics(SM_CXSCREEN) - r.Right + r.Left) div 2,
-            (GetSystemMetrics(SM_CYSCREEN) - r.Bottom + r.Top) div 2,
-            r.Right - r.Left, r.Bottom - r.Top);
-  SetWindowPos(wnd, 0, r.Left, r.Top, 0, 0, SWP_NOACTIVATE or
-    SWP_NOSIZE or SWP_NOZORDER);
+  GetWindowRect(wnd, R);
+  R := Rect((GetSystemMetrics(SM_CXSCREEN) - R.Right + R.Left) div 2,
+            (GetSystemMetrics(SM_CYSCREEN) - R.Bottom + R.Top) div 2,
+            R.Right - R.Left, R.Bottom - R.Top);
+  SetWindowPos(wnd, 0, R.Left, R.Top, 0, 0, SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOZORDER);
 end;
 
 function ExplorerHook(wnd: HWnd; Msg: UINT; LParam: LPARAM; Data: LPARAM): Integer; stdcall;
@@ -140,9 +138,9 @@ begin
     TBrowseFolderDialog(Data).FDefWndProc := Pointer(SetWindowLongPtr(wnd, GWLP_WNDPROC,
      LONG_PTR(TBrowseFolderDialog(Data).FObjectInstance)));
     TBrowseFolderDialog(Data).DoInitialized;
-   end
-   else if Msg = BFFM_SELCHANGED then
-   begin
+  end
+  else if Msg = BFFM_SELCHANGED then
+  begin
      TBrowseFolderDialog(Data).FHandle := wnd;
      TBrowseFolderDialog(Data).DoSelChanged(PItemIDList(LParam));
   end;
@@ -166,8 +164,8 @@ begin
   Result := (Attr <> $FFFFFFFF) and (Attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
 end;
 
+{ TBrowseFolderDialog }
 
-// *****************************************************************************
 constructor TBrowseFolderDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -185,7 +183,8 @@ end;
 
 destructor TBrowseFolderDialog.Destroy;
 begin
-  if FObjectInstance <> nil then FreeObjectInstance(FObjectInstance);
+  if FObjectInstance <> nil then
+    FreeObjectInstance(FObjectInstance);
   inherited Destroy;
 end;
 
@@ -197,7 +196,8 @@ end;
 function TBrowseFolderDialog.GetOKBtn: THandle;
 begin
   Result := 0;
-  if FHandle = 0 then Exit;
+  if FHandle = 0 then
+    Exit;
   Result := FindWindowEx(FHandle, 0, 'BUTTON', 'OK');
 end;
 
@@ -228,12 +228,14 @@ begin
       UpdateWindow(FHandle);
     end;
   end;
-  if Assigned(FOnInitialized) then FOnInitialized(Self);
+  if Assigned(FOnInitialized) then
+    FOnInitialized(Self);
   DoCustomize;
 end;
 
 procedure TBrowseFolderDialog.DoSelChanged(Param: PItemIDList);
-var Temp: Array[0..MAX_PATH] of Char;
+var
+  Temp: Array[0..MAX_PATH] of Char;
 begin
   if (FBrowseKind = bfComputers) then
     FSelectedName := DisplayName
@@ -250,18 +252,22 @@ begin
       SetOkEnable(False);
     end;
   end;
-  if Assigned(FOnSelChanged) then FOnSelChanged(Self);
+  if Assigned(FOnSelChanged) then
+    FOnSelChanged(Self);
 end;
 
 procedure TBrowseFolderDialog.DoCustomize;
 begin
-  if Assigned(FOnCustomize) then FOnCustomize(Self, Handle);
+  if Assigned(FOnCustomize) then
+    FOnCustomize(Self, Handle);
 end;
+
 function TBrowseFolderDialog.DoWndProc(var Msg: TMessage): Boolean;
 begin
   Result := False;
   if Assigned(FOnWndProc) then FOnWndProc(Self, Msg, Result);
 end;
+
 function TBrowseFolderDialog.DoCommand(var Msg: TMessage): Boolean;
 begin
   Result := False;
@@ -311,7 +317,7 @@ function TBrowseFolderDialog.Execute: Boolean;
 var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
-  Temp: Array[0..MAX_PATH] of Char;
+  Temp: array[0..MAX_PATH] of Char;
 begin
   if FDesktopRoot and (FBrowseKind = bfFolders) then
     BrowseInfo.pidlRoot := nil
@@ -353,7 +359,8 @@ begin
       CoTaskMemFree(ItemIDList);
     end;
   finally
-    if BrowseInfo.pidlRoot <> nil then CoTaskMemFree(BrowseInfo.pidlRoot);
+    if BrowseInfo.pidlRoot <> nil then
+      CoTaskMemFree(BrowseInfo.pidlRoot);
   end;
 end;
 
@@ -407,7 +414,8 @@ begin
     FolderName := ComputerName;
     HelpContext := AHelpContext;
     Result := Execute;
-    if Result then ComputerName := FolderName;
+    if Result then
+      ComputerName := FolderName;
   finally
     Free;
   end;

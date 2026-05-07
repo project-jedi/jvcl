@@ -100,7 +100,7 @@ begin
   if not Activated then
   begin
     Activated := True;
-    GetWindowsDirectory(Buffer, SizeOf(Buffer));
+    GetWindowsDirectory(Buffer, MAX_PATH);
     DirectoryListBox1.Directory := Buffer + '\Cursors';
   end;
 end;

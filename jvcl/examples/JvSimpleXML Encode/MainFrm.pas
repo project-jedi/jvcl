@@ -171,11 +171,11 @@ end;
 
 procedure TForm1.WMDropFiles(var Message: TWMDropFiles);
 var
-  i, Count: integer;
+  I, Count: Integer;
   FileList: TStringlist;
-  FileBuf: array[0..MAX_PATH] of char;
+  FileBuf: array[0..MAX_PATH] of Char;
 
-  function StringFromFile(const FileName: string): string;
+  function StringFromFile(const FileName: string): AnsiString;
   begin
     with TFileStream.Create(FileName, fmOpenRead) do
     try
@@ -194,17 +194,17 @@ begin
     begin
       FileList := TStringlist.Create;
       try
-        for i := 0 to Count - 1 do
+        for I := 0 to Count - 1 do
         begin
-          DragQueryFile(Message.Drop, i, FileBuf, sizeof(FileBuf));
+          DragQueryFile(Message.Drop, I, FileBuf, MAX_PATH);
           FileList.Add(FileBuf);
         end;
         FileList.Sort;
         reSource.Lines.BeginUpdate;
         try
           reSource.Lines.Clear;
-          for i := 0 to FileList.Count - 1 do
-            reSource.Lines.Add(StringFromFile(FileList[i]));
+          for I := 0 to FileList.Count - 1 do
+            reSource.Lines.Add(string(StringFromFile(FileList[I])));
         finally
           reSource.Lines.EndUpdate;
         end;
