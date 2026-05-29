@@ -476,7 +476,11 @@ begin
     else
       DelphiVersion := Trunc(CompilerVersion - 8);
 
-    RunningInIDE := SameText(ParamStr(0), Installations.DelphiInstallationFromVersion[DelphiVersion].IdeExeFileName);
+{$IF Defined(CPU64BITS) or Defined(CPUX64)}
+    RunningInIDE := SameText(ParamStr(0), Installations.DelphiInstallationFromVersion[DelphiVersion].IdeExeFileName[true]);
+{$ELSE}
+    RunningInIDE := SameText(ParamStr(0), Installations.DelphiInstallationFromVersion[DelphiVersion].IdeExeFileName[false]);
+{$ENDIF}
   finally
     Installations.Free;
   end;
