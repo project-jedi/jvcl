@@ -71,7 +71,7 @@ type
     FImageIndex: TImageIndex;
     FEnabled: Boolean;
     FVisible: Boolean;
-    FTag: Integer;
+    FTag: NativeInt;
     FData: TObject;
     FHint: TCaption;
     FName: string;
@@ -128,7 +128,7 @@ type
     property Modified: Boolean read GetModified write SetModified default False;
     property Hint: TCaption read FHint write FHint;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
-    property Tag: Integer read FTag write FTag default 0;
+    property Tag: NativeInt read FTag write FTag default 0;
     property Visible: Boolean read FVisible write SetVisible default True;
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
     property ShowHint: Boolean read FShowHint write FShowHint default True;
