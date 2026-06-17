@@ -38,22 +38,10 @@ uses
   {$IFDEF COMPILER9_UP}
   Types,
   {$ENDIF COMPILER9_UP}
-  JvComponent, JvThemes;
+  JvComponent, JvThemes, JvPageListInterface;
 
 type
   EPageListError = class(Exception);
-
-  IPageList = interface
-    ['{6BB90183-CFB1-4431-9CFD-E9A032E0C94C}']
-    function CanChange(AIndex: Integer): Boolean;
-    procedure SetActivePageIndex(AIndex: Integer);
-    function GetPageCount: Integer;
-    function GetPageCaption(AIndex: Integer): string;
-    procedure AddPage(const ACaption: string);
-    procedure DeletePage(Index: Integer);
-    procedure MovePage(CurIndex, NewIndex: Integer);
-    procedure PageCaptionChanged(Index: Integer; const NewCaption: string);
-  end;
 
   TJvCustomPageList = class;
 

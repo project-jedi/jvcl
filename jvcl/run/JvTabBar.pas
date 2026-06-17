@@ -39,7 +39,7 @@ uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
-  JvThemes;
+  JvThemes, JvPageListInterface;
 
 type
   TJvCustomTabBar = class;
@@ -51,18 +51,6 @@ type
 
   TJvGetModifiedEvent = procedure(Sender: TJvTabBarItem; var Modified: Boolean) of object;
   TJvGetEnabledEvent = procedure(Sender: TJvTabBarItem; var Enabled: Boolean) of object;
-
-  IPageList = interface
-    ['{6BB90183-CFB1-4431-9CFD-E9A032E0C94C}']
-    function CanChange(AIndex: Integer): Boolean;
-    procedure SetActivePageIndex(AIndex: Integer);
-    function GetPageCount: Integer;
-    function GetPageCaption(AIndex: Integer): string;
-    procedure AddPage(const ACaption: string);
-    procedure DeletePage(Index: Integer);
-    procedure MovePage(CurIndex, NewIndex: Integer);
-    procedure PageCaptionChanged(Index: Integer; const NewCaption: string);
-  end;
 
   TJvTabBarItem = class(TCollectionItem)
   private
