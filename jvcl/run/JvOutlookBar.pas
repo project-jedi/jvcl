@@ -59,7 +59,8 @@ uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
-  JvJCLUtils, JvThemes, JvComponent, JvExButtons;
+  JvJCLUtils, JvThemes, JvComponent, JvExButtons,
+  Vcl.Themes;
 
 const
   CM_CAPTION_EDITING = CM_BASE + 756;
@@ -317,6 +318,8 @@ type
     procedure SetBorderStyle(const Value: TBorderStyle);
     {$IFDEF JVCLThemesEnabled}
     procedure SetThemedBackground(const Value: Boolean);
+    function GetPageButtonTextColor(const Details: TThemedElementDetails): TColor;
+    function GetPageButtonFaceColor(const Details: TThemedElementDetails): TColor;
     {$ENDIF JVCLThemesEnabled}
     function DrawTopPages: Integer;
     procedure DrawCurrentPage(PageIndex: Integer);
@@ -1646,10 +1649,12 @@ begin
     begin
       OffsetRect(R, 1, 1);
       Canvas.Font.Color := FDisabledFontColor1; //clWhite;
+      SetTextColor(Canvas.Handle, ColorToRGB(Canvas.Font.Color));
       DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
       OffsetRect(R, -1, -1);
       Canvas.Font.Color := FDisabledFontColor2; //clGrayText;
     end;
+    SetTextColor(Canvas.Handle, ColorToRGB(Canvas.Font.Color));
     DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
   finally
     Canvas.Font.Color := SavedColor;
@@ -1664,7 +1669,7 @@ var
   ToolBar: TThemedToolBar;
   Details: TThemedElementDetails;
   ClipRect: TRect;
-  LColor: Cardinal;
+  //LColor: Cardinal;
   {$ENDIF JVCLThemesEnabled}
 begin
   Result := -1;
@@ -1679,12 +1684,24 @@ begin
       {$IFDEF JVCLThemesEnabled}
       if Themed then // Warren changed.
       begin
-        if (FPressedPageBtn = I) or (FHotPageBtn = I) then
+//        if (FPressedPageBtn = I) or (FHotPageBtn = I) then
+//          ToolBar := ttbButtonPressed
+//        else
+//          ToolBar := ttbButtonHot;
+        if FPressedPageBtn = I then
           ToolBar := ttbButtonPressed
         else
-          ToolBar := ttbButtonHot;
+          if FHotPageBtn = I then
+            ToolBar := ttbButtonHot
+          else
+            ToolBar := ttbButtonNormal;
         Details := StyleServices.GetElementDetails(ToolBar);
 
+        // For styles with transparent background
+        Canvas.Brush.Color := GetPageButtonFaceColor(Details);
+        Canvas.Brush.Style := bsSolid;
+        Canvas.FillRect(R); 
+        
         if BorderStyle = bsNone then
         begin
           ClipRect := R;
@@ -1705,9 +1722,10 @@ begin
           ToolBar := ttbButtonNormal;
         Details := StyleServices.GetElementDetails(ToolBar);
 
-        with Details do
-          GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
-        Canvas.Font.Color := LColor;
+//        with Details do
+//          GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
+//        Canvas.Font.Color := LColor;
+        Canvas.Font.Color := GetPageButtonTextColor(Details);
       end
       else
       {$ENDIF JVCLThemesEnabled}
@@ -1752,9 +1770,14 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if Themed then
   begin
-    Details := StyleServices.GetElementDetails(ttbButtonNormal);
-    with Details do
-      GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_TEXTCOLOR, ThemedColor);
+    if StyleServices.Enabled and not StyleServices.IsSystemStyle then // color from style
+      ThemedColor := Cardinal(StyleServices.GetSystemColor(clWindowText))
+    else
+    begin 
+      Details := StyleServices.GetElementDetails(ttbButtonNormal);
+      with Details do
+        GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_TEXTCOLOR, ThemedColor);
+    end;
   end;
   {$ENDIF JVCLThemesEnabled}
   try
@@ -1925,7 +1948,13 @@ begin
       if not DrawPicture(R, Pages[PageIndex].Picture) then
       begin
         {$IFDEF JVCLThemesEnabled}
-        if (Canvas.Brush.Color = clDefault) and ThemedBackground and Themed then
+        if ThemedBackground and Themed and
+           StyleServices.Enabled and not StyleServices.IsSystemStyle then
+        begin
+          Details := StyleServices.GetElementDetails(tpPageRoot);
+          StyleServices.DrawElement(Canvas.Handle, Details, R);
+        end
+        else if (Canvas.Brush.Color = clDefault) and ThemedBackground and Themed then
         begin
           Details := StyleServices.GetElementDetails(tebHeaderBackgroundNormal);
           StyleServices.DrawElement(Canvas.Handle, Details, R);
@@ -1957,7 +1986,7 @@ var
   Details: TThemedElementDetails;
   ClipRect: TRect;
   ToolBar: TThemedToolBar;
-  LColor: Cardinal;
+  //LColor: Cardinal;
   {$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
@@ -1970,11 +1999,23 @@ begin
       {$IFDEF JVCLThemesEnabled}
       if Themed then
       begin
-        if (FPressedPageBtn = I) or (FHotPageBtn = I) then
+//        if (FPressedPageBtn = I) or (FHotPageBtn = I) then
+//          ToolBar := ttbButtonPressed
+//        else
+//          ToolBar := ttbButtonHot;
+        if FPressedPageBtn = I then
           ToolBar := ttbButtonPressed
         else
-          ToolBar := ttbButtonHot;
+          if FHotPageBtn = I then
+            ToolBar := ttbButtonHot
+          else
+            ToolBar := ttbButtonNormal;
         Details := StyleServices.GetElementDetails(ToolBar);
+
+         // For styles with transparent background
+        Canvas.Brush.Color := GetPageButtonFaceColor(Details);
+        Canvas.Brush.Style := bsSolid;
+        Canvas.FillRect(R);
 
         if BorderStyle = bsNone then
         begin
@@ -1996,9 +2037,10 @@ begin
           ToolBar := ttbButtonNormal;
         Details := StyleServices.GetElementDetails(ToolBar);
 
-        with Details do
-          GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
-        Canvas.Font.Color := LColor;
+//        with Details do
+//          GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
+//        Canvas.Font.Color := LColor;
+        Canvas.Font.Color := GetPageButtonTextColor(Details);
       end
       else
       {$ENDIF JVCLThemesEnabled}
@@ -2817,6 +2859,37 @@ begin
     if ([csDesigning, csLoading] * ComponentState = []) and Themed then
       Repaint;
   end;
+end;
+
+function TJvCustomOutlookBar.GetPageButtonTextColor(
+  const Details: TThemedElementDetails): TColor;
+var LColor: TColor;
+    LCColor: Cardinal;
+begin
+  if StyleServices.Enabled and not StyleServices.IsSystemStyle then // color from style
+    if StyleServices.GetElementColor(Details, ecTextColor, LColor) and
+       (LColor <> clNone) and (LColor <> clDefault) then
+      Result := LColor
+    else
+      Result := StyleServices.GetSystemColor(clBtnText)
+  else
+  begin                                                            // native color (old code)
+    with Details do
+      GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LCColor);
+    Result := TColor(LCColor);
+  end;
+end;
+
+function TJvCustomOutlookBar.GetPageButtonFaceColor(
+  const Details: TThemedElementDetails): TColor;
+var
+  LColor: TColor;
+begin
+  if StyleServices.GetElementColor(Details, ecFillColor, LColor) and
+     (LColor <> clNone) and (LColor <> clDefault) then
+    Result := LColor
+  else
+    Result := StyleServices.GetSystemColor(clBtnFace);
 end;
 {$ENDIF JVCLThemesEnabled}
 
