@@ -19,7 +19,7 @@ Contributor(s):
   Polaris Software
   Lionel Reynaud
   Flemming Brandt Clausen
-  Frï¿½dï¿½ric Leneuf-Magaud
+  Frédéric Leneuf-Magaud
   Andreas Hausladen
   Ronald Hoek
 
@@ -51,9 +51,55 @@ KNOWN ISSUES:
   a gap after the last column). This bug comes from DBGrid.pas.
 
 -----------------------------------------------------------------------------
-2004/07/08 - WPostma merged changes by Frï¿½dï¿½ric Leneuf-Magaud and ahuser.}
+2004/07/08 - WPostma merged changes by Frédéric Leneuf-Magaud and ahuser.}
 
 // $Id$
+
+{------------------------------------------------------------------------------
+  Atténuation du scintillement de TJvDBGrid sous VCL Styles - Jeff 06/02/2026
+
+  Lorsqu’un style VCL personnalisé est actif, TJvDBGrid peut présenter
+  un scintillement important, notamment :
+   - lors du redimensionnement des colonnes (cellules fixes / en-têtes),
+   - lors de l’apparition ou disparition des barres de défilement,
+   - après certains recalculs internes de mise en page.
+
+  Cause probable :
+   Certaines opérations internes de la grille (ex. redimensionnement
+   des colonnes) peuvent réinitialiser des indicateurs liés au rendu
+   (DoubleBuffered, csOpaque) ou réactiver l’effacement du fond,
+   ce qui provoque un scintillement visible sous VCL Styles.
+
+  Stratégie :
+   Réappliquer une configuration de rendu stable à chaque fois que
+   la grille atteint un état "post-mise en page" cohérent.
+
+  Hooks utilisés :
+   - CreateWnd :
+       Garantit la bonne configuration du rendu après la création
+       ou la recréation du handle Windows.
+   - Loaded :
+       Garantit l’application de l’atténuation après le chargement
+       complet des propriétés issues du DFM.
+   - ColWidthsChanged :
+       Hook critique : réapplique l’atténuation après la fin du
+       redimensionnement des colonnes, moment où le scintillement
+       peut réapparaître.
+
+  Remarques :
+   - L’atténuation n’est appliquée que lorsqu’un style VCL personnalisé
+     est actif.
+   - L’effacement du fond est désactivé sous VCL Styles, la grille
+     repeignant entièrement sa surface.
+   - Cette approche évite toute action utilisateur (ex. désactiver/
+     réactiver AlternateRow) pour restaurer un affichage stable.
+
+  Le comportement reste strictement inchangé avec le thème Windows
+  standard (sans VCL Styles).
+------------------------------------------------------------------------------}
+
+
+
 
 unit JvDBGrid;
 
@@ -224,7 +270,7 @@ type
   end;
 
   {$IFDEF RTL230_UP}
-  [ComponentPlatformsAttribute(pidWin32 or pidWin64{$IFDEF RTL360_UP} or pidWin64x{$ENDIF RTL360_UP})]
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
   TJvDBGrid = class(TJvExDBGrid, IJvDataControl)
   private
@@ -422,6 +468,12 @@ type
 
     function GetMaxDisplayText: string;
     function GetColumnMaxWidth: Integer;
+
+    // AntiFlickering VCL Style et AlternateRow !!!
+
+    procedure UpdateStyleFlickerMitigation; // ajouté par Jeff le 06/02/2026
+    function IsVclCustomStyleActive: Boolean;  // ajouté par Jeff le 06/02/2026
+
   protected
     FCurrentDrawRow: Integer;
     procedure MouseLeave(Control: TControl); override;
@@ -519,6 +571,9 @@ type
 
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND; //  antiflickering - Jeff le 06/02/2026
+
   public
     {$IFDEF SUPPORTS_CLASS_CTORDTORS}
     class destructor Destroy;
@@ -642,6 +697,7 @@ type
     property AutoSizeRows: Boolean read FAutoSizeRows write SetAutoSizeRows default True;
     { ReduceFlicker: improve (but slow) the display when painting/scrolling ? }
     property ReduceFlicker: Boolean read FReduceFlicker write FReduceFlicker default True;
+    { MouseWheelRows: number of records moved by one normal mouse-wheel step }
     property MouseWheelRows: Integer read FMouseWheelRows write SetMouseWheelRows default 2;
     { RowResize: can rows be resized with the mouse ? }
     property RowResize: Boolean read FRowResize write SetRowResize default False;
@@ -710,7 +766,7 @@ uses
   JvDBLookup,
   JvConsts, JvResources, JvThemes, JvJCLUtils, JvJVCLUtils,
   {$IFDEF COMPILER16_UP}
-  Themes,
+  Vcl.Themes, Vcl.Styles,
   {$ENDIF COMPILER16_UP}
   {$IFDEF COMPILER7_UP}
   // => TScrollDirection, DrawArray(must be after JvJVCLUtils)
@@ -751,6 +807,40 @@ var
     (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   FirstGridBitmaps: Boolean = True;
   MsIndicators: TImageList;
+
+
+function TJvDBGrid.IsVclCustomStyleActive: Boolean;
+begin
+{$IFDEF COMPILER16_UP}
+  Result := TStyleManager.IsCustomStyleActive and StyleServices.Enabled;
+{$ELSE}
+  Result := False;
+{$ENDIF}
+end;
+
+
+procedure TJvDBGrid.UpdateStyleFlickerMitigation;
+begin
+  ParentDoubleBuffered := False;
+  DoubleBuffered := True;
+  // csOpaque seulement sous VCL Styles si tu veux limiter l’impact :
+  if IsVclCustomStyleActive then
+    ControlStyle := ControlStyle + [csOpaque];
+
+end;
+
+procedure TJvDBGrid.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+begin
+  if IsVclCustomStyleActive then
+  begin
+    Msg.Result := 1;
+    Exit;
+  end;
+  inherited;
+end;
+
+
+
 
 procedure FinalizeGridBitmaps;
 var
@@ -1382,7 +1472,7 @@ begin
   DoMinColWidth;
   DoMaxColWidth;
   DoAutoSizeColumns;
-
+  UpdateStyleFlickerMitigation;
   NotifyLayoutChange(lcLayoutChanged);
 end;
 
@@ -1458,6 +1548,7 @@ begin
   DoMinColWidth;
   DoMaxColWidth;
   DoAutoSizeColumns;
+  UpdateStyleFlickerMitigation; //AJouté par Jeff le 06/02/2026
 end;
 
 function TJvDBGrid.CreateEditor: TInplaceEdit;
@@ -2004,6 +2095,7 @@ begin
     if not Value then
       SelectedRows.Clear;
   end;
+end;
 
 procedure TJvDBGrid.SetMouseWheelRows(const Value: Integer);
 begin
@@ -2011,7 +2103,6 @@ begin
     FMouseWheelRows := 1
   else
     FMouseWheelRows := Value;
-end;
 end;
 
 function TJvDBGrid.GetStorage: TJvFormPlacement;
@@ -2422,6 +2513,8 @@ end;
 procedure TJvDBGrid.LinkActive(Value: Boolean);
 begin
   inherited LinkActive(Value);
+  if Value  then updateStyleFlickerMitigation;
+  
   if Value and FAlwaysShowEditor then
     ShowEditor;
 end;
@@ -2893,24 +2986,20 @@ begin
       OnColumnResized(Self, FSizingIndex + Byte(not (dgIndicator in Options)) - 1,
         ColWidths[FSizingIndex]);
   end
-  else if FCurrentControl = nil then
+  else
   begin
-    OriginalScrollInfo.cbSize := SizeOf(OriginalScrollInfo);
-    OriginalScrollInfo.fMask := SIF_POS;
+  // corrigé par Jeff le 02/02/2025 - Si un Edit Control comme JvDBDateTime / bug click souris 
+  //  OriginalScrollInfo.cbSize := SizeOf(OriginalScrollInfo);
+  //  OriginalScrollInfo.fMask := SIF_POS;
     // Store scrollbar position
-    GetScrollInfo(Handle, SB_HORZ, OriginalScrollInfo); //
-    LockWindowUpdate(Handle);
-    try
+  //  GetScrollInfo(Handle, SB_HORZ, OriginalScrollInfo); //
+  //  LockWindowUpdate(Handle);
+//    try
       inherited MouseUp(Button, Shift, X, Y);
-      // If the form or a parent control was closed in OnMouseDown/OnDblClick we end up throwing a "Cannot focus"
-      // EInvalidOperation in TCustomGrid.ModifyScrollBar.
-      // "if Showing then" does not work because the parent form's "Showing" is false but the grid still has
-      // Showing=True.
-      if HandleAllocated and IsWindowVisible(Handle) then
-        Perform(WM_HSCROLL, MakeWParam(SB_THUMBPOSITION, OriginalScrollInfo.nPos), 0); //Repos
-    finally
-      LockWindowUpdate(0);
-    end;
+  //    Perform(WM_HSCROLL, MakeWParam(SB_THUMBPOSITION, OriginalScrollInfo.nPos), 0); //Repos
+  //  finally
+  //    LockWindowUpdate(0);
+  //  end;
   end;
   DoAutoSizeColumns;
 
@@ -3203,8 +3292,9 @@ end;
 function TJvDBGrid.DrawThemedHighlighting(ACanvas: TCanvas; R: TRect): Boolean;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if UseThemedHighlighting and not JvDBGridDisableUseThemedHighlighting and
-     UseXPThemes and StyleServices.Enabled and (ACanvas.Brush.Color = clHighlight) then
+  if UseThemedHighlighting and not JvDBGridDisableUseThemedHighlighting
+     and  ((Win32BuildNumber < 22000) or (not StyleServices.IsSystemStyle)) // ajouté le 13/05/2024 par Jeff : Windows 11 on n'applique pas le theme car pas lisible !
+     and UseXPThemes and StyleServices.Enabled and (ACanvas.Brush.Color = clHighlight) then
   begin
     if ACanvas.Brush.Style <> bsSolid then
       ACanvas.Brush.Style := bsSolid;
@@ -3226,7 +3316,13 @@ begin
     end;
     ACanvas.Brush.Color := clHighlight;
     if ACanvas.Font.Color = clHighlightText then
-      ACanvas.Font.Color := StyleServices.GetSystemColor(clWindowText);
+      begin
+        if StyleServices.IsSystemStyle  then   // ajouté le 13/05/2024 par Jeff : correction fonte et surlignage avec thèmes !
+          ACanvas.Font.Color := StyleServices.GetSystemColor(clWindowText)
+        else
+          ACanvas.Font.Color := StyleServices.GetSystemColor(clHighlightText);
+
+      end;
     Result := True;
   end
   else
@@ -3273,8 +3369,8 @@ var
 
 begin
   if ReduceFlicker
-     {$IFDEF COMPILER14_UP} and not FixCell {$ENDIF}
-     {$IFDEF JVCLThemesEnabled} and not (UseXPThemes and StyleServices.Enabled) {$ENDIF} then
+    {$IFDEF COMPILER14_UP} and not FixCell {$ENDIF}
+    {$IFDEF JVCLThemesEnabled} and not (UseXPThemes and StyleServices.Enabled) {$ENDIF} then
   begin
     // Use offscreen bitmap to eliminate flicker and
     // brush origin tics in painting / scrolling.
@@ -4328,6 +4424,7 @@ var
   ColLineWidth, AvailableWidth, TotalColWidth, AWidth: Integer;
   I, ALeftCol, LastColIndex: Integer;
   ScaleFactor: Double;
+  FIndicatorWidth : Integer;
 begin
   if not HandleAllocated or not AutoSizeColumns or FInAutoSize or (Columns.Count = 0) or
      (FGridState = gsColSizing) or (csLoading in ComponentState) then
@@ -4336,10 +4433,17 @@ begin
   ALeftCol := LeftCol;
   try
     // Get useable width
-    ColLineWidth := Ord(dgColLines in Options) * GridLineWidth;
-    AvailableWidth := ClientWidth;
+    //    ColLineWidth := Ord(dgColLines in Options) * GridLineWidth;
+	// ****** correction AutoSizeColumns et ScaleBy **********
+    ColLineWidth := Ord(dgColLines in Options) *  Round(GridLineWidth * Self.ScaleFactor); // corrigé par Jeff le 29/01/2025
+    FIndicatorWidth := Round(IndicatorWidth * Self.ScaleFactor);  //corrigé par jeff le 29/01/2025
+    if Self.ScaleFactor > 1 then FIndicatorWidth := FIndicatorWidth + 2; //ajouté par jeff le 29/01/2025
+
+	
+    AvailableWidth := ClientWidth ; 
     if (dgIndicator in Options) then
-      Dec(AvailableWidth, PPIScale(Self, IndicatorWidth) + ColLineWidth);
+      Dec(AvailableWidth, PPIScale(Self, FIndicatorWidth) + ColLineWidth);  //corrigé par jeff le 29/01/2025
+// ******************************************** **********
     TotalColWidth := 0;
     if FixedCols = 0 then
       BeginLayout;
@@ -4356,6 +4460,7 @@ begin
           end;
         if TotalColWidth = 0 then
           TotalColWidth := 1;
+
         // Calculate the relationship between what's available and what's in use
         ScaleFactor := AvailableWidth / TotalColWidth;
         if ScaleFactor = 1.0 then
@@ -4449,6 +4554,7 @@ begin
   begin
     FAutoSizeColumnIndex := Value;
     DoAutoSizeColumns;
+    UpdateStyleFlickerMitigation;
   end;
 end;
 
@@ -4579,6 +4685,7 @@ begin
   end;
 
   DoAutoSizeColumns;
+  UpdateStyleFlickerMitigation;
 end;
 
 function TJvDBGrid.GetMaxColWidth(Default: Integer): Integer;
@@ -5216,6 +5323,7 @@ procedure TJvDBGrid.CreateWnd;
 begin
   inherited CreateWnd;
   DoAutoSizeColumns;
+  UpdateStyleFlickerMitigation; //Ajouté par jeff le 06/02/2026
 end;
 
 {$IFDEF COMPILER9_UP}
