@@ -236,6 +236,7 @@ type
     FShowGlyphs: Boolean;
     FDefaultDrawing: Boolean;
     FReduceFlicker: Boolean;
+    FMouseWheelRows: Integer;
     FMultiSelect: Boolean;
     FSelecting: Boolean;
     FClearSelection: Boolean;
@@ -358,6 +359,7 @@ type
     procedure IniSave(Sender: TObject);
     procedure IniLoad(Sender: TObject);
     procedure SetMultiSelect(Value: Boolean);
+    procedure SetMouseWheelRows(const Value: Integer);
     procedure SetTitleButtons(Value: Boolean);
     procedure StopTracking;
     procedure TrackButton(X, Y: Integer);
@@ -640,6 +642,7 @@ type
     property AutoSizeRows: Boolean read FAutoSizeRows write SetAutoSizeRows default True;
     { ReduceFlicker: improve (but slow) the display when painting/scrolling ? }
     property ReduceFlicker: Boolean read FReduceFlicker write FReduceFlicker default True;
+    property MouseWheelRows: Integer read FMouseWheelRows write SetMouseWheelRows default 2;
     { RowResize: can rows be resized with the mouse ? }
     property RowResize: Boolean read FRowResize write SetRowResize default False;
     { RowsHeight: data rows height }
@@ -1132,6 +1135,7 @@ begin
   FShowGlyphs := True;
   FDefaultDrawing := True;
   FReduceFlicker := True;
+  FMouseWheelRows := 2;
   FClearSelection := True;
   FAutoAppend := True;
   FAlternateRowColor := clNone;
@@ -2002,6 +2006,14 @@ begin
   end;
 end;
 
+
+procedure TJvDBGrid.SetMouseWheelRows(const Value: Integer);
+begin
+  if Value < 1 then
+    FMouseWheelRows := 1
+  else
+    FMouseWheelRows := Value;
+end;
 function TJvDBGrid.GetStorage: TJvFormPlacement;
 begin
   Result := FIniLink.Storage;
@@ -2364,7 +2376,7 @@ begin
     if ssShift in Shift then
       Distance := 1
     else
-      Distance := 2;
+      Distance := FMouseWheelRows;
     if DataLink.Active then
       Result := DataLink.DataSet.MoveBy(Distance) <> 0;
   end;
@@ -2387,7 +2399,7 @@ begin
     if ssShift in Shift then
       Distance := 1
     else
-      Distance := 2;
+      Distance := FMouseWheelRows;
     if DataLink.Active then
       Result := DataLink.DataSet.MoveBy(-Distance) <> 0;
   end;
