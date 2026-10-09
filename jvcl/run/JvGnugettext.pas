@@ -559,7 +559,8 @@ type
   end;
   TStrInfoArr = array[0..10000000] of TRStrinfo;
   PStrInfoArr = ^TStrInfoArr;
-  TCharArray5=array[0..4] of ansichar;
+  // Room for the longest patch: the 14-byte absolute jump used on Win64
+  THookPatch=array[0..13] of ansichar;
   THook=  // Replaces a runtime library procedure with a custom procedure
     class
     public
@@ -570,9 +571,11 @@ type
       procedure Enable;
     private
       oldproc,newproc:Pointer;
-      Patch:TCharArray5;
-      Original:TCharArray5;
+      Patch:THookPatch;
+      Original:THookPatch;
+      PatchSize:integer; // Number of bytes of Patch/Original actually used (5 or 14)
       PatchPosition:PAnsiChar;
+      procedure WritePatch (const Bytes: THookPatch);
       procedure Shutdown; // Same as destroy, except that object is not destroyed
     end;
 
@@ -3049,29 +3052,29 @@ begin
   inherited;
 end;
 
+procedure THook.WritePatch(const Bytes: THookPatch);
+begin
+  Move (Bytes[0], PatchPosition[0], PatchSize);
+  {$ifdef MSWINDOWS}
+  FlushInstructionCache (GetCurrentProcess, PatchPosition, PatchSize);
+  {$endif}
+end;
+
 procedure THook.Disable;
 begin
   Assert (PatchPosition<>nil,'Patch position in THook was nil when Disable was called');
-  PatchPosition[0]:=Original[0];
-  PatchPosition[1]:=Original[1];
-  PatchPosition[2]:=Original[2];
-  PatchPosition[3]:=Original[3];
-  PatchPosition[4]:=Original[4];
+  WritePatch (Original);
 end;
 
 procedure THook.Enable;
 begin
   Assert (PatchPosition<>nil,'Patch position in THook was nil when Enable was called');
-  PatchPosition[0]:=Patch[0];
-  PatchPosition[1]:=Patch[1];
-  PatchPosition[2]:=Patch[2];
-  PatchPosition[3]:=Patch[3];
-  PatchPosition[4]:=Patch[4];
+  WritePatch (Patch);
 end;
 
 procedure THook.Reset(FollowJump: boolean);
 var
-  offset:integer;
+  offset:NativeInt;
   {$ifdef LINUX}
   p:pointer;
   pagesize:integer;
@@ -3096,20 +3099,38 @@ begin
   end;
   offset:=pansiChar(NewProc)-pansiChar(pointer(patchPosition))-5;
 
-  Patch[0] := ansichar($E9);
-  Patch[1] := ansichar(offset and 255);
-  Patch[2] := ansichar((offset shr 8) and 255);
-  Patch[3] := ansichar((offset shr 16) and 255);
-  Patch[4] := ansichar((offset shr 24) and 255);
+  {$IFDEF CPUX64}
+  // A rel32 jump only reaches +/-2 GB. On Win64 the hooked RTL routine (in a
+  // runtime package when FollowJump is set) can be further away than that, and a
+  // truncated offset would jump to a random address: use an absolute jump instead,
+  // JMP QWORD PTR [RIP+0] followed by the 64-bit target. It needs no register.
+  // Overwriting 14 bytes is safe because the original routine is never executed
+  // while the hook is enabled, and Disable restores them.
+  // The short jump stays the default: when FollowJump is not set and runtime
+  // packages are used, PatchPosition is the 6-byte JMP [rip+disp32] import thunk,
+  // so writing 14 bytes there would overwrite the neighbouring thunks. The
+  // replacement routine then lives in the same module, within rel32 range.
+  if (offset < Low(Integer)) or (offset > High(Integer)) then begin
+    PatchSize := 14;
+    Patch[0] := ansichar($FF);
+    Patch[1] := ansichar($25);
+    PInteger(@Patch[2])^ := 0;
+    PPointer(@Patch[6])^ := NewProc;
+  end else
+  {$ENDIF CPUX64}
+  begin
+    PatchSize := 5;
+    Patch[0] := ansichar($E9);
+    Patch[1] := ansichar(offset and 255);
+    Patch[2] := ansichar((offset shr 8) and 255);
+    Patch[3] := ansichar((offset shr 16) and 255);
+    Patch[4] := ansichar((offset shr 24) and 255);
+  end;
 
-  Original[0]:=PatchPosition[0];
-  Original[1]:=PatchPosition[1];
-  Original[2]:=PatchPosition[2];
-  Original[3]:=PatchPosition[3];
-  Original[4]:=PatchPosition[4];
+  Move (PatchPosition[0], Original[0], PatchSize);
 
   {$ifdef MSWINDOWS}
-  if not VirtualProtect(Pointer(PatchPosition), 5, PAGE_EXECUTE_READWRITE, @ov) then
+  if not VirtualProtect(Pointer(PatchPosition), PatchSize, PAGE_EXECUTE_READWRITE, @ov) then
     RaiseLastOSError;
   {$endif}
   {$ifdef LINUX}
