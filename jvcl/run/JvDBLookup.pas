@@ -3454,6 +3454,7 @@ begin
   {$IFDEF JVCLStylesEnabled}
   if StyleServices.Enabled and TStyleManager.IsCustomStyleActive then
   begin
+    Canvas.Font := Font;
     if Selected then
     begin
       Canvas.Brush.Color := StyleServices.GetSystemColor(clHighlight);
