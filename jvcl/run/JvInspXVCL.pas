@@ -305,9 +305,9 @@ begin
   if AJvxNode = nil then
     raise EJVCLException.CreateRes(@RsENoNodeSpecified);
   if AJvxNode.NodeName <> '' then
-    Data := TJvInspectorxNodeData.CreatePrim(AJvxNode.NodeName, AJvxNode.TypeInfo))
+    Data := TJvInspectorxNodeData.CreatePrim(AJvxNode.NodeName, AJvxNode.TypeInfo)
   else
-    Data := TJvInspectorxNodeData.CreatePrim(AName, AJvxNode.TypeInfo));
+    Data := TJvInspectorxNodeData.CreatePrim(AName, AJvxNode.TypeInfo);
   Data.JvxNode := AJvxNode;
   Data := TJvInspectorxNodeData(RegisterInstance(Data));
   if Data <> nil then
